@@ -1,0 +1,26 @@
+{
+  "name": "MediaLibrary",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Gruntfile.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OXID-eSales/ddoe-media-library-module"
+  },
+  "keywords": [],
+  "author": "digidesk - media solutions",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-less": "^1.0.0",
+    "grunt-contrib-uglify": "^2.3.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-exec": "^3.0.0",
+    "less-plugin-autoprefix": "^1.5.1",
+    "load-grunt-config": "^0.19.2",
+    "time-grunt": "^1.4.0"
+  },
+  "scripts": {
+    "start": "grunt"
+  }
+}

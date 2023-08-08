@@ -1,0 +1,4 @@
+table_storage:
+  table_name: oxmigrations_ddoemedialibrary
+migrations_paths:
+  'OxidEsales\MediaLibrary\Migrations': data

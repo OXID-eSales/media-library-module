@@ -1,0 +1,16 @@
+development:
+  - "jshint:development"
+  - "less:base"
+  - "less:medialibrary"
+  - "uglify:medialibrary"
+
+production:
+  - "development"
+  - "less:bootstrap"
+  - "less:fontawesome"
+  - "uglify:bootstrap"
+  - "uglify:jquery"
+  - "uglify:jqueryui"
+
+default:
+  - "production"

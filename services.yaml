@@ -1,0 +1,15 @@
+services:
+
+  _defaults:
+    public: false
+    autowire: true
+    bind:
+      OxidEsales\Eshop\Core\UtilsObject: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getUtilsObject()'
+
+  OxidEsales\MediaLibrary\Core\Registry:
+    class: 'OxidEsales\Eshop\Core\Registry'
+    public: true
+
+  OxidEsales\MediaLibrary\Service\:
+    resource: 'src/Service/*'
+    public: true
