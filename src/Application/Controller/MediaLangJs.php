@@ -13,7 +13,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Core\Utils;
 
 /**
- * Class WysiwygLangJs
+ * Class MediaLangJs
  */
 class MediaLangJs extends FrontendController
 {

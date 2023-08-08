@@ -13,7 +13,7 @@ use OxidEsales\Codeception\Module\Translation\Translator;
 use OxidEsales\MediaLibrary\Tests\Codeception\AcceptanceTester;
 
 /**
- * @group ddoe_wysiwyg
+ * @group ddoe_medialibrary
  */
 final class MediaLibraryCest
 {

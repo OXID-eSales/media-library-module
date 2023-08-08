@@ -14,7 +14,7 @@ use OxidEsales\MediaLibrary\Traits\ServiceContainer;
 use Symfony\Component\Filesystem\Path;
 
 /**
- * Class WysiwygMedia
+ * Class MediaController
  */
 class MediaController extends AdminDetailsController
 {

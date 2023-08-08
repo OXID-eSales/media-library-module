@@ -10,7 +10,7 @@ namespace OxidEsales\MediaLibrary\Application\Controller\Admin;
 use OxidEsales\Eshop\Core\Registry;
 
 /**
- * Class WysiwygMediaWrapper
+ * Class MediaWrapperController
  */
 class MediaWrapperController extends MediaController
 {
