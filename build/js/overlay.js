@@ -55,7 +55,7 @@
 
     Overlay.prototype.loadStyles = function()
     {
-        if( !window.editorModuleUrl )
+        if( !window.MediaLibraryModuleUrl )
         {
             return;
         }
@@ -63,19 +63,19 @@
         if ( typeof document.createStyleSheet == 'function' )
         {
             document.createStyleSheet( 'https://fonts.googleapis.com/css?family=Open+Sans' );
-            document.createStyleSheet( window.editorModuleUrl + 'out/src/css/overlay.min.css' );
+            document.createStyleSheet( window.MediaLibraryModuleUrl + 'out/src/css/overlay.min.css' );
         }
         else
         {
             $( 'head' )
                 .append( $( '<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css" />' ) )
-                .append( $( '<link rel="stylesheet" href="' + window.editorModuleUrl + 'out/src/css/overlay.min.css" type="text/css" />' ) );
+                .append( $( '<link rel="stylesheet" href="' + window.MediaLibraryModuleUrl + 'out/src/css/overlay.min.css" type="text/css" />' ) );
         }
     };
 
     Overlay.prototype.loadOverlay = function()
     {
-        if( !window.editorModuleUrl )
+        if( !window.MediaLibraryModuleUrl )
         {
             return;
         }
