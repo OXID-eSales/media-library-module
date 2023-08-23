@@ -13,10 +13,6 @@ module.exports = {
         },
 
         files: {
-            "assets/out/src/js/backend.min.js": [
-                "build/js/backend.js"
-            ],
-
             "assets/out/src/js/base.min.js": [
                 "build/vendor/dropzone/js/dropzone.js",
                 "build/js/base/helper.js",

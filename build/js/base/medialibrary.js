@@ -1069,7 +1069,7 @@
         );
     };
 
-    MediaLibrary.prototype._loadMoreMediaContent = function ( page )
+    MediaLibrary.prototype._loadMoreMediaContent = function ( $dialog, page )
     {
         if ( !page || page === undefined )
         {
@@ -1080,7 +1080,7 @@
         var start      = page * 18;
         var ui         = this;
 
-        $.get( actionLink + 'cl=ddoemedia_view&fnc=moreFiles&start=' + start + '&folderid=' + $( '.dd-media-wrapper .dd-media' ).data( 'folderid' ), function ( data )
+        $.get( actionLink + 'cl=ddoemedia_view&fnc=moreFiles&start=' + start + '&folderid=' + $( '.dd-media', $dialog ).data( 'folderid' ), function ( data )
             {
                 if ( data.files && data.files.length )
                 {
@@ -1093,7 +1093,7 @@
 
                 if ( data.more )
                 {
-                    ui._loadMoreMediaContent( ( page + 1 ) );
+                    ui._loadMoreMediaContent( $dialog, ( page + 1 ) );
                 }
             }
         );
