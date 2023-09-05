@@ -1,5 +1,5 @@
 {
-    "name":              "ddoe/media-library-module",
+    "name":              "oxid-esales/media-library-module",
     "description":       "Media library for OXID eShop",
     "type":              "oxideshop-module",
     "keywords":          [
