@@ -14,6 +14,7 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use OxidEsales\MediaLibrary\Thumbnail\Service\ThumbnailGeneratorInterface;
 use Symfony\Component\Filesystem\Path;
 use Webmozart\Glob\Glob;
 
@@ -45,7 +46,8 @@ class Media
         protected ModuleSettings $moduleSettings,
         protected Config $shopConfig,
         ConnectionProviderInterface $connectionProvider,
-        protected UtilsObject $utilsObject
+        protected UtilsObject $utilsObject,
+		protected ThumbnailGeneratorInterface $thumbnailGenerator
     ) {
         $this->connection = $connectionProvider->get();
     }
@@ -228,101 +230,22 @@ class Media
     }
 
 
-    public function createThumbnail($sFileName, $iThumbSize = null, $blCrop = true)
-    {
-        $sFilePath = $this->getMediaPath($sFileName, true);
+	public function createThumbnail($sFileName, $iThumbSize = null, $blCrop = true)
+	{
+		$sFilePath = $this->getMediaPath($sFileName, true);
+		if (is_readable($sFilePath)) {
+			if (!$iThumbSize) {
+				$iThumbSize = $this->getDefaultThumbnailSize();
+			}
+			$sThumbName = $this->getThumbName($sFileName, $iThumbSize);
+			$thumbnailPath = $this->getThumbnailPath($sThumbName);
+			$this->thumbnailGenerator->generateThumbnail($sFilePath, $thumbnailPath, $iThumbSize, $blCrop);
 
-        if (is_readable($sFilePath)) {
-            if (!$iThumbSize) {
-                $iThumbSize = $this->getDefaultThumbnailSize();
-            }
+			return $sThumbName;
+		}
 
-            [$iImageWidth, $iImageHeight, $iImageType] = $this->getImageSize($sFilePath);
-
-            switch ($iImageType) {
-                case 1:
-                    $rImg = imagecreatefromgif($sFilePath);
-                    break;
-
-                case 2:
-                    $rImg = imagecreatefromjpeg($sFilePath);
-                    break;
-
-                case 3:
-                    $rImg = imagecreatefrompng($sFilePath);
-                    break;
-
-                default:
-                    throw new \Exception('Invalid filetype');
-            }
-
-            $iThumbWidth = $iImageWidth;
-            $iThumbHeight = $iImageHeight;
-
-            $iThumbX = 0;
-            $iThumbY = 0;
-
-            if ($blCrop) {
-                if ($iImageWidth < $iImageHeight) {
-                    $iThumbWidth = $iThumbSize;
-                    $iThumbHeight = $iImageHeight / ($iImageWidth / $iThumbWidth);
-
-                    $iThumbY = (int)(($iThumbSize - $iThumbHeight) / 2);
-                } elseif ($iImageHeight < $iImageWidth) {
-                    $iThumbHeight = $iThumbSize;
-                    $iThumbWidth = $iImageWidth / ($iImageHeight / $iThumbHeight);
-
-                    $iThumbX = (int)(($iThumbSize - $iThumbWidth) / 2);
-                }
-            } else {
-                if ($iImageWidth < $iImageHeight) {
-                    if ($iImageHeight > $iThumbSize) {
-                        $iThumbWidth *= ($iThumbSize / $iImageHeight);
-                        $iThumbHeight *= ($iThumbSize / $iImageHeight);
-                    }
-                } elseif ($iImageHeight < $iImageWidth) {
-                    if ($iImageHeight > $iThumbSize) {
-                        $iThumbWidth *= ($iThumbSize / $iImageWidth);
-                        $iThumbHeight *= ($iThumbSize / $iImageWidth);
-                    }
-                }
-            }
-            $iThumbWidth = (int)$iThumbWidth;
-            $iThumbHeight = (int)$iThumbHeight;
-
-            $rTmpImg = imagecreatetruecolor($iThumbWidth, $iThumbHeight);
-            imagecopyresampled(
-                $rTmpImg,
-                $rImg,
-                $iThumbX,
-                $iThumbY,
-                0,
-                0,
-                $iThumbWidth,
-                $iThumbHeight,
-                $iImageWidth,
-                $iImageHeight
-            );
-
-            if ($blCrop) {
-                $rThumbImg = imagecreatetruecolor($iThumbSize, $iThumbSize);
-                imagefill($rThumbImg, 0, 0, imagecolorallocate($rThumbImg, 0, 0, 0));
-
-                imagecopymerge($rThumbImg, $rTmpImg, 0, 0, 0, 0, $iThumbSize, $iThumbSize, 100);
-            } else {
-                $rThumbImg = $rTmpImg;
-            }
-
-            $sThumbName = $this->getThumbName($sFileName, $iThumbSize);
-
-            imagejpeg($rThumbImg, $this->getThumbnailPath($sThumbName));
-
-            return $sThumbName;
-        }
-
-        return false;
-    }
-
+		return false;
+	}
 
     public function createMoreThumbnails($sFileName)
     {
