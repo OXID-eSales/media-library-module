@@ -16,21 +16,21 @@ class ThumbnailGeneratorIntervention implements ThumbnailGeneratorInterface
     public function __construct(private readonly ImageManager $imageManager)
     {
     }
-	public function generateThumbnail(
-		string $sourcePath,
-		string $thumbnailPath,
-		int $thumbnailSize,
-		bool $blCrop,
-	): void {
+    public function generateThumbnail(
+        string $sourcePath,
+        string $thumbnailPath,
+        int $thumbnailSize,
+        bool $blCrop,
+    ): void {
 
-		$image = $this->imageManager->make($sourcePath);
-		if ($blCrop) {
-			$image->fit($thumbnailSize);
-		} else {
-			$image->resize($thumbnailSize, $thumbnailSize, function ($constraint) {
-				$constraint->aspectRatio();
-			});
-		}
-		$image->save($thumbnailPath);
-	}
+        $image = $this->imageManager->make($sourcePath);
+        if ($blCrop) {
+            $image->fit($thumbnailSize);
+        } else {
+            $image->resize($thumbnailSize, $thumbnailSize, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+        }
+        $image->save($thumbnailPath);
+    }
 }

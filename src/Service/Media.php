@@ -47,7 +47,7 @@ class Media
         protected Config $shopConfig,
         ConnectionProviderInterface $connectionProvider,
         protected UtilsObject $utilsObject,
-		protected ThumbnailGeneratorInterface $thumbnailGenerator
+        protected ThumbnailGeneratorInterface $thumbnailGenerator
     ) {
         $this->connection = $connectionProvider->get();
     }
@@ -230,22 +230,22 @@ class Media
     }
 
 
-	public function createThumbnail($sFileName, $iThumbSize = null, $blCrop = true)
-	{
-		$sFilePath = $this->getMediaPath($sFileName, true);
-		if (is_readable($sFilePath)) {
-			if (!$iThumbSize) {
-				$iThumbSize = $this->getDefaultThumbnailSize();
-			}
-			$sThumbName = $this->getThumbName($sFileName, $iThumbSize);
-			$thumbnailPath = $this->getThumbnailPath($sThumbName);
-			$this->thumbnailGenerator->generateThumbnail($sFilePath, $thumbnailPath, $iThumbSize, $blCrop);
+    public function createThumbnail($sFileName, $iThumbSize = null, $blCrop = true)
+    {
+        $sFilePath = $this->getMediaPath($sFileName, true);
+        if (is_readable($sFilePath)) {
+            if (!$iThumbSize) {
+                $iThumbSize = $this->getDefaultThumbnailSize();
+            }
+            $sThumbName = $this->getThumbName($sFileName, $iThumbSize);
+            $thumbnailPath = $this->getThumbnailPath($sThumbName);
+            $this->thumbnailGenerator->generateThumbnail($sFilePath, $thumbnailPath, $iThumbSize, $blCrop);
 
-			return $sThumbName;
-		}
+            return $sThumbName;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
     public function createMoreThumbnails($sFileName)
     {
