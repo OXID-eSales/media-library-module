@@ -277,7 +277,7 @@ class MediaTest extends IntegrationTestCase
             $shopConfig ?: Registry::getConfig(),
             $connectionProvider ?: new ConnectionProvider(),
             $utilsObject ?: Registry::getUtilsObject(),
-			$thumbnailGenerator ?: $this->getServiceFromContainer(ThumbnailGeneratorInterface::class)
+            $thumbnailGenerator ?: $this->getServiceFromContainer(ThumbnailGeneratorInterface::class)
         );
     }
 }

@@ -868,7 +868,7 @@ class MediaTest extends TestCase
             $shopConfig ?: $this->createStub(Config::class),
             $connectionProvider ?: $this->createStub(ConnectionProviderInterface::class),
             $utilsObject ?: $this->createStub(UtilsObject::class),
-			$thumbnailGenerator ?: $this->createStub(ThumbnailGeneratorInterface::class)
+            $thumbnailGenerator ?: $this->createStub(ThumbnailGeneratorInterface::class)
         );
     }
 }
