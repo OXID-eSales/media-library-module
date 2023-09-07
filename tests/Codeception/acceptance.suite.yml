@@ -63,8 +63,8 @@ modules:
         shop_path: '%SHOP_SOURCE_PATH%'
         paths:
           - Application/views/admin_twig
-          - Application/views/twig
-          - ../vendor/ddoe/media-library-module/views/admin_twig
+          - Application/views/apex
+          - ../vendor/oxid-esales/media-library-module/views/admin_twig
     - \OxidEsales\Codeception\Module\OxideshopModules
 
 step_decorators:
