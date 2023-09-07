@@ -16,6 +16,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProvider;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\MediaLibrary\Service\Media;
 use OxidEsales\MediaLibrary\Service\ModuleSettings;
+use OxidEsales\MediaLibrary\Thumbnail\Service\ThumbnailGeneratorInterface;
 use PHPUnit\Framework\TestCase;
 
 class MediaTest extends TestCase
@@ -617,7 +618,8 @@ class MediaTest extends TestCase
             $this->createStub(ModuleSettings::class),
             $this->createStub(Config::class),
             $this->createStub(ConnectionProviderInterface::class),
-            $this->createStub(UtilsObject::class)
+            $this->createStub(UtilsObject::class),
+            $this->createStub(ThumbnailGeneratorInterface::class)
         );
 
         $sThumbName = md5(self::FIXTURE_FILE) . '_thumb_' . $oMedia->getDefaultThumbnailSize() . '.jpg';
@@ -728,7 +730,8 @@ class MediaTest extends TestCase
             $this->createStub(ModuleSettings::class),
             $this->createStub(Config::class),
             $this->createStub(ConnectionProviderInterface::class),
-            $this->createStub(UtilsObject::class)
+            $this->createStub(UtilsObject::class),
+            $this->createStub(ThumbnailGeneratorInterface::class)
         );
         $sThumbName = '111_thumb_' . $oMedia->getDefaultThumbnailSize() . '.jpg';
 
@@ -829,7 +832,8 @@ class MediaTest extends TestCase
             $this->createStub(ModuleSettings::class),
             $this->createStub(Config::class),
             $this->createStub(ConnectionProviderInterface::class),
-            $this->createStub(UtilsObject::class)
+            $this->createStub(UtilsObject::class),
+            $this->createStub(ThumbnailGeneratorInterface::class)
         );
         $sThumbName = md5(self::FIXTURE_FILE) . '_thumb_' . $oMedia->getDefaultThumbnailSize() . '.jpg';
 
@@ -856,13 +860,15 @@ class MediaTest extends TestCase
         ?ModuleSettings $moduleSettings = null,
         ?Config $shopConfig = null,
         ?ConnectionProviderInterface $connectionProvider = null,
-        UtilsObject $utilsObject = null
+        UtilsObject $utilsObject = null,
+        ThumbnailGeneratorInterface $thumbnailGenerator = null
     ) {
         return new MediaMock(
             $moduleSettings ?: $this->createStub(ModuleSettings::class),
             $shopConfig ?: $this->createStub(Config::class),
             $connectionProvider ?: $this->createStub(ConnectionProviderInterface::class),
-            $utilsObject ?: $this->createStub(UtilsObject::class)
+            $utilsObject ?: $this->createStub(UtilsObject::class),
+			$thumbnailGenerator ?: $this->createStub(ThumbnailGeneratorInterface::class)
         );
     }
 }

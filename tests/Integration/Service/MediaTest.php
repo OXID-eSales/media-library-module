@@ -26,6 +26,7 @@ use OxidEsales\MediaLibrary\Tests\Integration\Service\MediaMock;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\MediaLibrary\Thumbnail\Service\ThumbnailGeneratorInterface;
 
 class MediaTest extends IntegrationTestCase
 {
@@ -267,14 +268,16 @@ class MediaTest extends IntegrationTestCase
         ?ModuleSettings $moduleSettings = null,
         ?Config $shopConfig = null,
         ?ConnectionProviderInterface $connectionProvider = null,
-        UtilsObject $utilsObject = null
+        UtilsObject $utilsObject = null,
+        ?ThumbnailGeneratorInterface $thumbnailGenerator = null
     ) {
         $container = ContainerFactory::getInstance()->getContainer();
         return new \OxidEsales\MediaLibrary\Tests\Integration\Service\MediaMock(
             $moduleSettings ?: $container->get(ModuleSettings::class),
             $shopConfig ?: Registry::getConfig(),
             $connectionProvider ?: new ConnectionProvider(),
-            $utilsObject ?: Registry::getUtilsObject()
+            $utilsObject ?: Registry::getUtilsObject(),
+			$thumbnailGenerator ?: $this->getServiceFromContainer(ThumbnailGeneratorInterface::class)
         );
     }
 }
