@@ -10,7 +10,6 @@ namespace OxidEsales\MediaLibrary\Application\Controller\Admin;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Service\Media;
-use OxidEsales\MediaLibrary\Traits\ServiceContainer;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -18,8 +17,6 @@ use Symfony\Component\Filesystem\Path;
  */
 class MediaController extends AdminDetailsController
 {
-    use ServiceContainer;
-
     protected ?Media $mediaService = null;
 
     /**

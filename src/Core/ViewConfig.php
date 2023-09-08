@@ -14,8 +14,6 @@
 
 namespace OxidEsales\MediaLibrary\Core;
 
-use OxidEsales\MediaLibrary\Traits\ServiceContainer;
-
 /**
  * Class ViewConfig
  *
@@ -23,8 +21,6 @@ use OxidEsales\MediaLibrary\Traits\ServiceContainer;
  */
 class ViewConfig extends ViewConfig_parent
 {
-    use ServiceContainer;
-
     public function getMediaUrl($sFile = '')
     {
         $oMedia = $this->getService(\OxidEsales\MediaLibrary\Service\Media::class);
