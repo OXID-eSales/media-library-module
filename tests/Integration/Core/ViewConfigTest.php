@@ -22,9 +22,9 @@ class ViewConfigTest extends IntegrationTestCase
 
         $sut = $this->createPartialMock(
             \OxidEsales\MediaLibrary\Core\ViewConfig::class,
-            ['getServiceFromContainer']
+            ['getService']
         );
-        $sut->expects($this->any())->method('getServiceFromContainer')
+        $sut->expects($this->any())->method('getService')
             ->with(Media::class)
             ->willReturn($mediaMock);
 

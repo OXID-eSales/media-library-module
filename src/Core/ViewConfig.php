@@ -27,7 +27,7 @@ class ViewConfig extends ViewConfig_parent
 
     public function getMediaUrl($sFile = '')
     {
-        $oMedia = $this->getServiceFromContainer(\OxidEsales\MediaLibrary\Service\Media::class);
+        $oMedia = $this->getService(\OxidEsales\MediaLibrary\Service\Media::class);
 
         return $oMedia->getMediaUrl($sFile);
     }
