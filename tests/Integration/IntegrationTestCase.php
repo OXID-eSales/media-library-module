@@ -7,6 +7,7 @@
 
 namespace OxidEsales\MediaLibrary\Tests\Integration;
 
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\Facts\Facts;
 use OxidEsales\MediaLibrary\Traits\ServiceContainer;
@@ -18,7 +19,8 @@ class IntegrationTestCase extends \OxidEsales\EshopCommunity\Tests\Integration\I
     public function setUp(): void
     {
         $facts = new Facts();
-        $connection = $this->getServiceFromContainer(QueryBuilderFactoryInterface::class)
+        $container = ContainerFactory::getInstance()->getContainer();
+        $connection = $container->get(QueryBuilderFactoryInterface::class)
             ->create()
             ->getConnection();
 

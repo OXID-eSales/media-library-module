@@ -14,6 +14,7 @@
 
 namespace OxidEsales\MediaLibrary\Tests\Integration\Service;
 
+use MyProject\Container;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
@@ -268,8 +269,9 @@ class MediaTest extends IntegrationTestCase
         ?ConnectionProviderInterface $connectionProvider = null,
         UtilsObject $utilsObject = null
     ) {
+        $container = ContainerFactory::getInstance()->getContainer();
         return new \OxidEsales\MediaLibrary\Tests\Integration\Service\MediaMock(
-            $moduleSettings ?: $this->getServiceFromContainer(ModuleSettings::class),
+            $moduleSettings ?: $container->get(ModuleSettings::class),
             $shopConfig ?: Registry::getConfig(),
             $connectionProvider ?: new ConnectionProvider(),
             $utilsObject ?: Registry::getUtilsObject()

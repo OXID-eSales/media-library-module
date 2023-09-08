@@ -46,7 +46,7 @@ class MediaController extends AdminDetailsController
             $this->_sFolderId = Registry::getRequest()->getRequestEscapedParameter('folderid');
         }
 
-        $this->mediaService = $this->getServiceFromContainer(Media::class);
+        $this->mediaService = $this->getService(Media::class);
 
         $this->mediaService->setFolder($this->_sFolderId);
 
