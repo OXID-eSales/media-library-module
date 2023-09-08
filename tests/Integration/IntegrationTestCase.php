@@ -10,12 +10,9 @@ namespace OxidEsales\MediaLibrary\Tests\Integration;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\Facts\Facts;
-use OxidEsales\MediaLibrary\Traits\ServiceContainer;
 
 class IntegrationTestCase extends \OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase
 {
-    use ServiceContainer;
-
     public function setUp(): void
     {
         $facts = new Facts();
