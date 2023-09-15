@@ -1,3 +1,6 @@
+imports:
+  - { resource: src/Thumbnail/Service/services.yaml }
+
 services:
 
   _defaults:
