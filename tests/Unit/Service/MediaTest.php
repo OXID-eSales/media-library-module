@@ -42,7 +42,11 @@ class MediaTest extends TestCase
             ->with('sShopDir')
             ->willReturn('someShopDir/');
 
-        $sut = $this->getSut($moduleSettingsMock, $shopConfigMock);
+        $sut = $this->getSut(
+            moduleSettings: $moduleSettingsMock,
+            shopConfig: $shopConfigMock
+        );
+
         $mediaPath = $sut->getMediaPath($file);
 
         $this->assertSame('someShopDir' . Media::MEDIA_PATH . $file, $mediaPath);
@@ -61,7 +65,7 @@ class MediaTest extends TestCase
             ]
         );
 
-        $sut = $this->getSut($moduleSettingsMock);
+        $sut = $this->getSut(moduleSettings: $moduleSettingsMock);
         $mediaPath = $sut->getMediaPath($file);
 
         $this->assertSame($externalUrl . Media::MEDIA_PATH_SHORT . $file, $mediaPath);
@@ -113,7 +117,10 @@ class MediaTest extends TestCase
             ->method('getSslShopUrl')
             ->willReturn($externalUrl);
 
-        $sut = $this->getSut($moduleSettingsMock, $shopConfigMock);
+        $sut = $this->getSut(
+            moduleSettings: $moduleSettingsMock,
+            shopConfig: $shopConfigMock
+        );
 
         $this->assertSame($externalUrl . Media::MEDIA_PATH . $file, $sut->getMediaUrl($file));
     }
@@ -139,7 +146,10 @@ class MediaTest extends TestCase
                 ]
             );
 
-        $sut = $this->getSut($moduleSettingsMock, $shopConfigMock);
+        $sut = $this->getSut(
+            moduleSettings: $moduleSettingsMock,
+            shopConfig: $shopConfigMock
+        );
 
         $this->assertSame(false, $sut->getMediaUrl($file));
     }
@@ -157,7 +167,7 @@ class MediaTest extends TestCase
             ]
         );
 
-        $sut = $this->getSut($moduleSettingsMock);
+        $sut = $this->getSut(moduleSettings: $moduleSettingsMock);
         $mediaPath = $sut->getMediaUrl($file);
 
         $this->assertSame($externalUrl . Media::MEDIA_PATH_SHORT . $file, $mediaPath);
@@ -213,7 +223,12 @@ class MediaTest extends TestCase
             ->method('generateUId')
             ->willReturn($sId);
 
-        $sut = $this->getSut(null, $shopConfigMock, $connectionProviderStub, $utilsObjectMock);
+        $sut = $this->getSut(
+            shopConfig: $shopConfigMock,
+            connectionProvider: $connectionProviderStub,
+            utilsObject: $utilsObjectMock
+        );
+
         $aCustomDir = $sut->createCustomDir('FolderTest', '');
 
         $aExpected = ['id' => $sId, 'dir' => 'FolderTest'];
@@ -262,7 +277,12 @@ class MediaTest extends TestCase
             ->method('generateUId')
             ->willReturn($sId);
 
-        $sut = $this->getSut(null, $shopConfigMock, $connectionProviderStub, $utilsObjectMock);
+        $sut = $this->getSut(
+            shopConfig: $shopConfigMock,
+            connectionProvider: $connectionProviderStub,
+            utilsObject: $utilsObjectMock
+        );
+
         $aCustomDir = $sut->createCustomDir('FolderTest', '');
 
         $aExpected = ['id' => $sId, 'dir' => 'FolderTest_1'];
@@ -300,7 +320,11 @@ class MediaTest extends TestCase
             ]
         );
 
-        $sut = $this->getSut(null, $shopConfigMock, $connectionProviderStub);
+        $sut = $this->getSut(
+            shopConfig: $shopConfigMock,
+            connectionProvider: $connectionProviderStub
+        );
+
         if ($folder) {
             $sut->setFolderName($folder);
         }
@@ -366,7 +390,10 @@ class MediaTest extends TestCase
             ]
         );
 
-        $sut = $this->getSut(null, $shopConfigMock, $connectionProviderStub);
+        $sut = $this->getSut(
+            shopConfig: $shopConfigMock,
+            connectionProvider: $connectionProviderStub
+        );
 
         $sut->moveFileToFolder($sSourceFileID, $sTargetFolderID, $sThumbName);
 
@@ -428,7 +455,11 @@ class MediaTest extends TestCase
             ]
         );
 
-        $sut = $this->getSut(null, $shopConfigMock, $connectionProviderStub);
+        $sut = $this->getSut(
+            shopConfig: $shopConfigMock,
+            connectionProvider: $connectionProviderStub
+        );
+
         if ($startFolder) {
             $sut->setFolderName($startFolder);
         }
@@ -461,7 +492,9 @@ class MediaTest extends TestCase
                     ['sSSLShopURL', null, 'https://test.com'],
                 ]
             );
-        $sut = $this->getSut(null, $shopConfigMock);
+        $sut = $this->getSut(
+            shopConfig: $shopConfigMock
+        );
 
         $sMediaUrl = $sut->getMediaUrl(self::FIXTURE_FOLDER . '/' . $anotherFile);
         $this->assertEquals(
@@ -497,7 +530,7 @@ class MediaTest extends TestCase
                     ['sSSLShopURL', null, 'https://test.com'],
                 ]
             );
-        $sut = $this->getSut(null, $shopConfigMock);
+        $sut = $this->getSut(shopConfig: $shopConfigMock);
 
         $result = $sut->getThumbnailUrl($sFile, $iThumbSize);
 
@@ -550,7 +583,11 @@ class MediaTest extends TestCase
             ->method('generateUId')
             ->willReturn($sId);
 
-        $sut = $this->getSut(null, $shopConfigMock, $connectionProviderStub, $utilsObjectMock);
+        $sut = $this->getSut(
+            shopConfig: $shopConfigMock,
+            connectionProvider: $connectionProviderStub,
+            utilsObject: $utilsObjectMock
+        );
 
         $sSourcePath = $directory->url() . '/tmp/uploaded.jpg';
         $sDestPath = $sut->getMediaPath() . self::FIXTURE_FILE;
@@ -860,8 +897,8 @@ class MediaTest extends TestCase
         ?ModuleSettings $moduleSettings = null,
         ?Config $shopConfig = null,
         ?ConnectionProviderInterface $connectionProvider = null,
-        UtilsObject $utilsObject = null,
-        ThumbnailGeneratorInterface $thumbnailGenerator = null
+        ?UtilsObject $utilsObject = null,
+        ?ThumbnailGeneratorInterface $thumbnailGenerator = null
     ) {
         return new MediaMock(
             $moduleSettings ?: $this->createStub(ModuleSettings::class),

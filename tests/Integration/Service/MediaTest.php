@@ -268,7 +268,7 @@ class MediaTest extends IntegrationTestCase
         ?ModuleSettings $moduleSettings = null,
         ?Config $shopConfig = null,
         ?ConnectionProviderInterface $connectionProvider = null,
-        UtilsObject $utilsObject = null,
+        ?UtilsObject $utilsObject = null,
         ?ThumbnailGeneratorInterface $thumbnailGenerator = null
     ) {
         $container = ContainerFactory::getInstance()->getContainer();
@@ -277,7 +277,7 @@ class MediaTest extends IntegrationTestCase
             $shopConfig ?: Registry::getConfig(),
             $connectionProvider ?: new ConnectionProvider(),
             $utilsObject ?: Registry::getUtilsObject(),
-            $thumbnailGenerator ?: $this->getServiceFromContainer(ThumbnailGeneratorInterface::class)
+            $thumbnailGenerator ?: $this->get(ThumbnailGeneratorInterface::class)
         );
     }
 }
