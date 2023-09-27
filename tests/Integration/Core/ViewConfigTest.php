@@ -7,20 +7,25 @@
 
 namespace OxidEsales\MediaLibrary\Tests\Integration\Core;
 
-use OxidEsales\MediaLibrary\Image\Service\ImageResource;
+use OxidEsales\MediaLibrary\Core\ViewConfig;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 
 /**
- * Class ddVisualEditorOxViewConfigTest
+ * @covers \OxidEsales\MediaLibrary\Core\ViewConfig
  */
 class ViewConfigTest extends IntegrationTestCase
 {
     public function testGetMediaUrl(): void
     {
-        $imageResourceMock = $this->createPartialMock(imageResource::class, ['getMediaUrl']);
+        $imageResourceMock = $this->createMock(ImageResourceInterface::class);
         $imageResourceMock->method('getMediaUrl')->with('someFile')->willReturn('someFilePath');
 
-        $this->assertSame('someFilePath', $imageResourceMock->getMediaUrl('someFile'));
+        $sut = $this->createPartialMock(ViewConfig::class, ['getService']);
+        $sut->method('getService')->willReturnMap([
+            [ImageResourceInterface::class, $imageResourceMock]
+        ]);
+
+        $this->assertSame('someFilePath', $sut->getMediaUrl('someFile'));
     }
 }
