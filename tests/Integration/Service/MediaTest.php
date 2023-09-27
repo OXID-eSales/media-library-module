@@ -19,20 +19,19 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProvider;
-use OxidEsales\MediaLibrary\Service\Media;
+use OxidEsales\MediaLibrary\Image\Service\ImageResource;
 use OxidEsales\MediaLibrary\Service\ModuleSettings;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
-use OxidEsales\MediaLibrary\Tests\Integration\Service\MediaMock;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
-use OxidEsales\MediaLibrary\Thumbnail\Service\ThumbnailGeneratorInterface;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
 
 class MediaTest extends IntegrationTestCase
 {
     private const FIXTURE_FILE = 'file.jpg';
     private const FIXTURE_FOLDER = 'Folder';
-
+    private \Psr\Container\ContainerInterface $containerFactory;
     /**
      * @return mixed
      */
@@ -57,7 +56,7 @@ class MediaTest extends IntegrationTestCase
     public function setUp(): void
     {
         parent::setUp();
-
+        $this->containerFactory = ContainerFactory::getInstance()->getContainer();
         $sFixturesImgPath = dirname(__FILE__) . '/../../fixtures/img/';
         $sTargetPath = Registry::getConfig()->getConfigParam('sShopDir') . '/tmp/';
 
@@ -74,15 +73,14 @@ class MediaTest extends IntegrationTestCase
     {
         $sut = $this->getSut();
 
-        $sut->setFolder();
+        $sut->imageResource->setFolder();
 
         $sSourcePath = Registry::getConfig()->getConfigParam('sShopDir') . 'tmp/' . $imageName;
-        $sDestPath = $sut->getMediaPath() . $destFileName;
+        $sDestPath = $sut->imageResource->getMediaPath() . $destFileName;
         $sFileSize = filesize($sSourcePath);
         $sFileType = $fileType;
-        $blCreateThumbs = true;
 
-        $aResult = $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, $blCreateThumbs);
+        $aResult = $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, true);
 
         $this->assertTrue(file_exists($sDestPath));
         $this->assertNotEmpty($aResult['id']);
@@ -107,10 +105,10 @@ class MediaTest extends IntegrationTestCase
 
         $this->assertNotEmpty($sFolderId);
 
-        $sut->setFolder($sFolderId);
+        $sut->imageResource->setFolder($sFolderId);
 
         $sSourcePath = Registry::getConfig()->getConfigParam('sShopDir') . 'tmp/' . $imageName;
-        $sDestPath = $sut->getMediaPath() . $destFileName;
+        $sDestPath = $sut->imageResource->getMediaPath() . $destFileName;
         $sFileSize = filesize($sSourcePath);
         $sFileType = $fileType;
         $blCreateThumbs = true;
@@ -139,7 +137,7 @@ class MediaTest extends IntegrationTestCase
     public function testFilesCount()
     {
         $sut = $this->getSut();
-        $sut->setFolder();
+        $sut->imageResource->setFolder();
         $this->assertEquals(9, $sut->getFileCount()); // 4 uploads and 1 folder
     }
 
@@ -151,7 +149,7 @@ class MediaTest extends IntegrationTestCase
     public function testGetFiles()
     {
         $sut = $this->getSut();
-        $sut->setFolder();
+        $sut->imageResource->setFolder();
         $aFiles = $sut->getFiles();
 
         $this->assertGreaterThan(0, $this->count($aFiles));
@@ -163,49 +161,27 @@ class MediaTest extends IntegrationTestCase
         $this->assertContains('file.jpg', $aFilesResult);
     }
 
-    /**
-     * This test depends on the test testUploadMedia
-     *
-     * @return void
-     */
-    public function testGenerateThumbnails()
-    {
-        $sut = $this->getSut();
-
-        $sut->setFolder('');
-
-        foreach (glob($sut->getMediaPath() . 'thumbs/*') as $file) {
-            unlink($file);
-        }
-        $this->assertEquals(0, count(glob($sut->getMediaPath() . 'thumbs/*')));
-
-        $sut->generateThumbnails();
-        $this->assertGreaterThan(0, count(glob($sut->getMediaPath() . 'thumbs/*')));
-
-        $sut->generateThumbnails(500);
-        $this->assertGreaterThan(0, count(glob($sut->getMediaPath() . 'thumbs/*500.jpg')));
-    }
 
     public function testCreateThumbnailException()
     {
         $sut = $this->getSut();
 
-        $sut->setFolder('');
+        $sut->imageResource->setFolder('');
 
         $sSourcePath = Registry::getConfig()->getConfigParam('sShopDir') . 'tmp/favicon.ico';
-        $sDestPath = $sut->getMediaPath() . 'favicon.ico';
+        $sDestPath = $sut->imageResource->getMediaPath() . 'favicon.ico';
         copy($sSourcePath, $sDestPath);
 
         $this->expectException(\Exception::class);
-        $sut->createThumbnail('favicon.ico');
+        $sut->imageResource->createThumbnail('favicon.ico');
     }
 
     public function testFolder()
     {
         $sut = $this->getSut();
 
-        $sut->setFolder('f256df3c2343b7e24ef5273c15f11e1b');
-        $this->assertEquals('Folder1', $sut->getFolderName());
+        $sut->imageResource->setFolder('f256df3c2343b7e24ef5273c15f11e1b');
+        $this->assertEquals('Folder1', $sut->imageResource->getFolderName());
     }
 
     public function getUploadMediaDataProvider()
@@ -271,13 +247,33 @@ class MediaTest extends IntegrationTestCase
         ?UtilsObject $utilsObject = null,
         ?ThumbnailGeneratorInterface $thumbnailGenerator = null
     ) {
-        $container = ContainerFactory::getInstance()->getContainer();
-        return new \OxidEsales\MediaLibrary\Tests\Integration\Service\MediaMock(
-            $moduleSettings ?: $container->get(ModuleSettings::class),
+        $imageResourceMock = $this->getImageResource(
+            $shopConfig,
+            $moduleSettings,
+            $thumbnailGenerator,
+            $connectionProvider,
+        );
+        return new MediaMock(
+            $moduleSettings ?: $this->containerFactory->get(ModuleSettings::class),
             $shopConfig ?: Registry::getConfig(),
             $connectionProvider ?: new ConnectionProvider(),
             $utilsObject ?: Registry::getUtilsObject(),
-            $thumbnailGenerator ?: $this->get(ThumbnailGeneratorInterface::class)
+            $thumbnailGenerator ?: $this->containerFactory->get(ThumbnailGeneratorInterface::class),
+            $imageResourceMock,
+        );
+    }
+
+    protected function getImageResource(
+        ?Config $shopConfig = null,
+        ?ModuleSettings $moduleSettings = null,
+        ?ThumbnailGeneratorInterface $thumbnailGenerator = null,
+        ?ConnectionProviderInterface $connectionProvider = null,
+    ) {
+        return new ImageResource(
+            $shopConfig ?: Registry::getConfig(),
+            $moduleSettings ?: $this->containerFactory->get(ModuleSettings::class),
+            $thumbnailGenerator ?: $this->containerFactory->get(ThumbnailGeneratorInterface::class),
+            $connectionProvider ?: new ConnectionProvider(),
         );
     }
 }

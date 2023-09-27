@@ -23,8 +23,7 @@ class ViewConfig extends ViewConfig_parent
 {
     public function getMediaUrl($sFile = '')
     {
-        $oMedia = $this->getService(\OxidEsales\MediaLibrary\Service\Media::class);
-
-        return $oMedia->getMediaUrl($sFile);
+        $imageResource = $this->getService('OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface');
+        return $imageResource->getMediaUrl($sFile);
     }
 }

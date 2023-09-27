@@ -14,18 +14,22 @@
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Service;
 
+use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
+use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
+
 class MediaMock extends \OxidEsales\MediaLibrary\Service\Media
 {
-    public function createThumbnail($sFileName, $iThumbSize = null, $blCrop = true)
+    public function createThumbnail($sFileName, ?ImageSizeInterface $imageSize = null, $thumbnailCrop = true)
     {
         $sFilePath = $this->getMediaPath($sFileName);
 
         if (is_readable($sFilePath)) {
-            if (!$iThumbSize) {
-                $iThumbSize = $this->getDefaultThumbnailSize();
+            if (!$imageSize instanceof ImageSizeInterface) {
+                $iSize = $this->getDefaultThumbnailSize();
+                $imageSize = new ImageSize($iSize, $iSize);
             }
 
-            $sThumbName = $this->getThumbName($sFileName, $iThumbSize);
+            $sThumbName = $this->getThumbName($sFileName, $imageSize);
 
             copy($sFilePath, $this->getThumbnailPath($sThumbName));
 

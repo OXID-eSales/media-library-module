@@ -9,6 +9,7 @@ namespace OxidEsales\MediaLibrary\Application\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Service\Media;
 use Symfony\Component\Filesystem\Path;
 
@@ -18,6 +19,7 @@ use Symfony\Component\Filesystem\Path;
 class MediaController extends AdminDetailsController
 {
     protected ?Media $mediaService = null;
+    protected ?ImageResourceInterface $imageResource = null;
 
     /**
      * Current class template name.
@@ -43,13 +45,14 @@ class MediaController extends AdminDetailsController
             $this->_sFolderId = Registry::getRequest()->getRequestEscapedParameter('folderid');
         }
 
-        $this->mediaService = $this->getService(Media::class);
+        $this->mediaService = $this->getService('OxidEsales\MediaLibrary\Service\Media');
+        $this->imageResource = $this->getService('OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface');
 
-        $this->mediaService->setFolder($this->_sFolderId);
+        $this->imageResource->setFolder($this->_sFolderId);
 
-        $this->_sUploadDir = $this->mediaService->getMediaPath();
-        $this->_sThumbDir = $this->mediaService->getThumbnailPath();
-        $this->_iDefaultThumbnailSize = $this->mediaService->getDefaultThumbnailSize();
+        $this->_sUploadDir = $this->imageResource->getMediaPath();
+        $this->_sThumbDir = $this->imageResource->getThumbnailPath();
+        $this->_iDefaultThumbnailSize = $this->imageResource->getDefaultThumbnailSize();
     }
 
     /**
@@ -64,10 +67,10 @@ class MediaController extends AdminDetailsController
 
         $this->_aViewData['aFiles'] = $this->mediaService->getFiles(0, $iShopId);
         $this->_aViewData['iFileCount'] = $this->mediaService->getFileCount($iShopId);
-        $this->_aViewData['sResourceUrl'] = $this->mediaService->getMediaUrl();
-        $this->_aViewData['sThumbsUrl'] = $this->mediaService->getThumbnailUrl();
-        $this->_aViewData['sFoldername'] = $this->mediaService->getFolderName();
-        $this->_aViewData['sFolderId'] = $this->_sFolderId;
+        $this->_aViewData['sResourceUrl'] = $this->imageResource->getMediaUrl();
+        $this->_aViewData['sThumbsUrl'] = $this->imageResource->getThumbnailUrl();
+        $this->_aViewData['sFoldername'] = $this->imageResource->getFolderName();
+        $this->_aViewData['sFolderId'] = $this->imageResource->getFolderId();
         $this->_aViewData['sTab'] = Registry::getRequest()->getRequestEscapedParameter('tab');
 
         $request = Registry::getRequest();
@@ -107,7 +110,7 @@ class MediaController extends AdminDetailsController
                 $sFileType = $_FILES['file']['type'];
 
                 $sSourcePath = $_FILES['file']['tmp_name'];
-                $sDestPath = Path::join($this->mediaService->getMediaPath(), $_FILES['file']['name']);
+                $sDestPath = Path::join($this->imageResource->getMediaPath(), $_FILES['file']['name']);
 
                 $aResult = $this->mediaService->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, true);
                 $sId = $aResult['id'];
@@ -243,7 +246,7 @@ class MediaController extends AdminDetailsController
                 'msg'     => $sMsg,
                 'name'    => $sNewName,
                 'id'      => $sNewId,
-                'thumb'   => $this->mediaService->getThumbnailUrl($sNewName),
+                'thumb'   => $this->imageResource->getThumbnailUrl($sNewName),
             ]
         );
         die($sReturn);
@@ -320,14 +323,14 @@ class MediaController extends AdminDetailsController
         $aBreadcrumb = [];
 
         $oPath = new \stdClass();
-        $oPath->active = ($this->mediaService->getFolderName() ? false : true);
+        $oPath->active = ($this->imageResource->getFolderName() ? false : true);
         $oPath->name = 'Root';
         $aBreadcrumb[] = $oPath;
 
-        if ($this->mediaService->getFolderName()) {
+        if ($this->imageResource->getFolderName()) {
             $oPath = new \stdClass();
             $oPath->active = true;
-            $oPath->name = $this->mediaService->getFolderName();
+            $oPath->name = $this->imageResource->getFolderName();
             $aBreadcrumb[] = $oPath;
         }
 

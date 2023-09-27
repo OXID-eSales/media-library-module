@@ -1,0 +1,15 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  Intervention\Image\ImageManager:
+    class: Intervention\Image\ImageManager
+
+  OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface:
+    class: OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorIntervention
+    public: true
+
+  OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface:
+    class: OxidEsales\MediaLibrary\Image\Service\ImageResource
+    public: true

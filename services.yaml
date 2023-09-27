@@ -1,5 +1,5 @@
 imports:
-  - { resource: src/Thumbnail/Service/services.yaml }
+  - { resource: src/Image/Service/services.yaml }
 
 services:
 

@@ -14,19 +14,16 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
-use OxidEsales\MediaLibrary\Thumbnail\Service\ThumbnailGeneratorInterface;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use Symfony\Component\Filesystem\Path;
 use Webmozart\Glob\Glob;
 
 class Media
 {
-    public const MEDIA_PATH = '/out/pictures/ddmedia/';
-    public const MEDIA_PATH_SHORT = '/ddmedia/';
     public const AMOUNT_OF_FILES = "18";
 
     protected Connection $connection;
-
-    protected $_iDefaultThumbnailSize = 185;
     protected $_aFileExtBlacklist = [
         'php.*',
         'exe',
@@ -39,102 +36,23 @@ class Media
         'phar',
     ]; // regex allowed
 
-    protected $_sFolderName;
-    protected $_sFolderId;
 
     public function __construct(
         protected ModuleSettings $moduleSettings,
         protected Config $shopConfig,
         ConnectionProviderInterface $connectionProvider,
         protected UtilsObject $utilsObject,
-        protected ThumbnailGeneratorInterface $thumbnailGenerator
+        public ThumbnailGeneratorInterface $thumbnailGenerator,
+        public ImageResourceInterface $imageResource,
     ) {
         $this->connection = $connectionProvider->get();
     }
 
-    public function setFolder($sFolderId = '')
-    {
-        $this->_sFolderId = $sFolderId;
-        if ($sFolderId) {
-            $this->setFolderNameForFolderId($sFolderId);
-        }
-    }
-
-    public function getMediaPath($filename = '', $blDoNotSetFolder = false): string
-    {
-        if (!$blDoNotSetFolder) {
-            $this->_checkAndSetFolderName($filename);
-        }
-
-        $sPath = $this->getPathToMediaFiles() . '/' . ($this->_sFolderName ? $this->_sFolderName . '/' : '');
-
-        if ($filename) {
-            return $sPath . (strpos($filename, 'thumbs/') !== false ? $filename : basename($filename));
-        }
-
-        return $sPath;
-    }
 
     /**
      * todo: exception in place of bool response
      */
-    public function getMediaUrl($filename = '')
-    {
-        $filepath = $this->getMediaPath($filename);
 
-        if ($this->isAlternativeImageUrlConfigured()) {
-            return $filepath;
-        }
-
-        if (!is_readable($filepath)) {
-            return false;
-        }
-
-        if (strpos($filename, 'thumbs/') === false) {
-            $filename = basename($filename);
-        }
-
-        return Path::join(
-            $this->shopConfig->getSslShopUrl(),
-            self::MEDIA_PATH,
-            ($this->_sFolderName ? $this->_sFolderName . '/' : ''),
-            $filename
-        );
-    }
-
-    public function getThumbnailPath($filename = ''): string
-    {
-        return Path::join($this->getMediaPath(), 'thumbs', $filename);
-    }
-
-    public function getThumbnailUrl($sFile = '', $iThumbSize = null)
-    {
-        if ($sFile) {
-            if (!$iThumbSize) {
-                $iThumbSize = $this->getDefaultThumbnailSize();
-            }
-
-            $sThumbName = $this->getThumbName($sFile, $iThumbSize);
-
-            if (file_exists($this->getThumbnailPath($sThumbName))) {
-                return $this->getMediaUrl('thumbs/' . $sThumbName);
-            }
-        } else {
-            return $this->getMediaUrl('thumbs/');
-        }
-
-        return false;
-    }
-
-
-    public function getThumbName($sFile, $iThumbSize = null)
-    {
-        if (!$iThumbSize) {
-            $iThumbSize = $this->getDefaultThumbnailSize();
-        }
-
-        return str_replace('.', '_', md5(basename($sFile))) . '_thumb_' . $iThumbSize . '.jpg';
-    }
 
     public function uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, $blCreateThumbs = false)
     {
@@ -153,9 +71,7 @@ class Media
 
             if ($blCreateThumbs) {
                 try {
-                    $sThumbName = $this->createThumbnail($sFileName);
-
-                    $this->createMoreThumbnails($sFileName);
+                    $sThumbName = $this->imageResource->createThumbnail($sFileName);
                 } catch (\Exception $e) {
                     $sThumbName = '';
                 }
@@ -199,13 +115,13 @@ class Media
                     $sFileType,
                     $sThumbName,
                     $sImageSize,
-                    $this->_sFolderId,
+                    $this->imageResource->getFolderId(),
                 ]
             );
 
             $aResult['id'] = $sId;
             $aResult['filename'] = $sFileName;
-            $aResult['thumb'] = $this->getThumbnailUrl($sFileName);
+            $aResult['thumb'] = $this->imageResource->getThumbnailUrl($sFileName);
             $aResult['imagesize'] = $sImageSize;
         }
 
@@ -229,40 +145,14 @@ class Media
         return true;
     }
 
-
-    public function createThumbnail($sFileName, $iThumbSize = null, $blCrop = true)
-    {
-        $sFilePath = $this->getMediaPath($sFileName, true);
-        if (is_readable($sFilePath)) {
-            if (!$iThumbSize) {
-                $iThumbSize = $this->getDefaultThumbnailSize();
-            }
-            $sThumbName = $this->getThumbName($sFileName, $iThumbSize);
-            $thumbnailPath = $this->getThumbnailPath($sThumbName);
-            $this->thumbnailGenerator->generateThumbnail($sFilePath, $thumbnailPath, $iThumbSize, $blCrop);
-
-            return $sThumbName;
-        }
-
-        return false;
-    }
-
-    public function createMoreThumbnails($sFileName)
-    {
-        // More Thumbnail Sizes
-        $this->createThumbnail($sFileName, 300);
-        $this->createThumbnail($sFileName, 800);
-    }
-
-
     public function createDirs()
     {
-        if (!is_dir($this->getMediaPath())) {
-            mkdir($this->getMediaPath());
+        if (!is_dir($this->imageResource->getMediaPath())) {
+            mkdir($this->imageResource->getMediaPath());
         }
 
-        if (!is_dir($this->getThumbnailPath())) {
-            mkdir($this->getThumbnailPath());
+        if (!is_dir($this->imageResource->getThumbnailPath())) {
+            mkdir($this->imageResource->getThumbnailPath());
         }
     }
 
@@ -270,7 +160,7 @@ class Media
     {
         $this->createDirs();
 
-        $sPath = $this->getMediaPath();
+        $sPath = $this->imageResource->getMediaPath();
         $sNewPath = $sPath . $sName;
 
         $sNewPath = $this->_checkAndGetFolderName($sNewPath, $sPath);
@@ -324,7 +214,7 @@ class Media
         // sanitize filename
         $sNewName = $this->_sanitizeFilename($sNewName);
 
-        $sPath = $this->getMediaPath();
+        $sPath = $this->imageResource->getMediaPath();
 
         $sOldPath = $sPath . $sOldName;
         $sNewPath = $sPath . $sNewName;
@@ -338,18 +228,21 @@ class Media
 
         $sOldThumbHash = $sNewThumbHash = $sNewThumbName = '';
         if (!$blDirectory) {
-            $iThumbSize = $this->getDefaultThumbnailSize();
-            $sOldThumbName = $this->getThumbName(basename($sOldPath));
-            $sOldThumbHash = str_replace('_thumb_' . $iThumbSize . '.jpg', '', $sOldThumbName);
-            $sNewThumbName = $this->getThumbName(basename($sNewPath));
-            $sNewThumbHash = str_replace('_thumb_' . $iThumbSize . '.jpg', '', $sNewThumbName);
+            $thumbSize = sprintf(
+                '%1$d*%1$d',
+                $this->imageResource->getDefaultThumbnailSize()
+            );
+            $sOldThumbName = $this->imageResource->getThumbName(basename($sOldPath));
+            $sOldThumbHash = str_replace('_thumb_' . $thumbSize . '.jpg', '', $sOldThumbName);
+            $sNewThumbName = $this->imageResource->getThumbName(basename($sNewPath));
+            $sNewThumbHash = str_replace('_thumb_' . $thumbSize . '.jpg', '', $sNewThumbName);
         }
 
         if (rename($sOldPath, $sNewPath)) {
             if (!$blDirectory) {
                 $thumbs = Glob::glob(
                     Path::join(
-                        $this->getMediaPath(),
+                        $this->imageResource->getMediaPath(),
                         'thumbs',
                         $sOldThumbHash . '*'
                     )
@@ -403,13 +296,13 @@ class Media
             }
 
             if ($sTargetFolderName && $sSourceFileName) {
-                $sOldName = $this->getMediaPath() . $sSourceFileName;
-                $sNewName = $this->getMediaPath() . $sTargetFolderName . '/' . $sSourceFileName;
+                $sOldName = $this->imageResource->getMediaPath() . $sSourceFileName;
+                $sNewName = $this->imageResource->getMediaPath() . $sTargetFolderName . '/' . $sSourceFileName;
 
                 if (rename($sOldName, $sNewName)) {
                     if ($sThumb) {
-                        $sOldThumbPath = $this->getMediaPath() . 'thumbs/';
-                        $sNewThumbPath = $this->getMediaPath() . $sTargetFolderName . '/thumbs/';
+                        $sOldThumbPath = $this->imageResource->getMediaPath() . 'thumbs/';
+                        $sNewThumbPath = $this->imageResource->getMediaPath() . $sTargetFolderName . '/thumbs/';
 
                         if (!is_dir($sNewThumbPath)) {
                             mkdir($sNewThumbPath);
@@ -418,7 +311,10 @@ class Media
                         foreach (
                             Glob::glob(
                                 $sOldThumbPath . str_replace(
-                                    'thumb_' . $this->getDefaultThumbnailSize() . '.jpg',
+                                    sprintf(
+                                        'thumb_%1$d*%1$d.jpg',
+                                        $this->imageResource->getDefaultThumbnailSize()
+                                    ),
                                     '*',
                                     $sThumb
                                 )
@@ -449,76 +345,6 @@ class Media
         }
 
         return $blReturn;
-    }
-
-
-    public function generateThumbnails($iThumbSize = null, $blOverwrite = false, $blCrop = true)
-    {
-        if (!$iThumbSize) {
-            $iThumbSize = $this->getDefaultThumbnailSize();
-        }
-
-        if (is_dir($this->getMediaPath())) {
-            foreach (new \DirectoryIterator($this->getMediaPath()) as $oFile) {
-                if ($oFile->isFile()) {
-                    $sThumbName = $this->getThumbName($oFile->getBasename(), $iThumbSize);
-                    $sThumbPath = $this->getThumbnailPath($sThumbName);
-
-                    if (!file_exists($sThumbPath) || $blOverwrite) {
-                        $this->createThumbnail($oFile->getBasename(), $iThumbSize, $blCrop);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * @param $sId
-     *
-     * @return void
-     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
-     */
-    public function setFolderNameForFolderId($sId)
-    {
-        $iShopId = $this->shopConfig->getActiveShop()->getShopId();
-
-        $sSelect = "SELECT `DDFILENAME` FROM `ddmedia` WHERE `OXID` = ? AND `DDFILETYPE` = ? AND `OXSHOPID` = ?";
-        $folderName = $this->connection->fetchOne($sSelect, [$sId, 'directory', $iShopId]);
-        $sFolderName = $folderName ?: '';
-
-        if ($sFolderName) {
-            $this->setFolderName($sFolderName);
-        }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFolderName()
-    {
-        return $this->_sFolderName;
-    }
-
-    public function setFolderName($sFolderName)
-    {
-        $this->_sFolderName = $sFolderName;
-    }
-
-    /**
-     * @param $sFile
-     */
-    protected function _checkAndSetFolderName($sFile)
-    {
-        if ($sFile) {
-            if (($iPos = strpos($sFile, '/')) !== false) {
-                $sFolderName = substr($sFile, 0, $iPos);
-                if ($sFolderName != 'thumbs') {
-                    $this->_sFolderName = substr($sFile, 0, $iPos);
-                }
-            } else {
-                $this->_sFolderName = '';
-            }
-        }
     }
 
     /**
@@ -607,36 +433,13 @@ class Media
         return $sNewName;
     }
 
-    private function getPathToMediaFiles(): string
-    {
-        if ($this->isAlternativeImageUrlConfigured()) {
-            $basePath = $this->getAlternativeImageUrl();
-            $mediaPath = self::MEDIA_PATH_SHORT;
-        } else {
-            $basePath = $this->shopConfig->getConfigParam('sShopDir');
-            $mediaPath = self::MEDIA_PATH;
-        }
-
-        return Path::join($basePath, $mediaPath);
-    }
-
-    private function isAlternativeImageUrlConfigured(): bool
-    {
-        return (bool)$this->getAlternativeImageUrl();
-    }
-
-    private function getAlternativeImageUrl(): string
-    {
-        return $this->moduleSettings->getAlternativeImageDirectory();
-    }
-
     public function getFileCount($iShopId = null)
     {
         $sSelect = "SELECT COUNT(*) AS 'count' FROM `ddmedia` WHERE 1 " .
                    ($iShopId != null ? "AND `OXSHOPID` = " . $this->connection->quote($iShopId) . " " : "") .
                    "AND `DDFOLDERID` = ?";
 
-        $fileCount = $this->connection->fetchOne($sSelect, [$this->_sFolderId ?: '']);
+        $fileCount = $this->connection->fetchOne($sSelect, [$this->imageResource->getFolderId() ?: '']);
 
         return $fileCount ?: 0;
     }
@@ -650,7 +453,7 @@ class Media
                    "AND `DDFOLDERID` = ? " .
                    "ORDER BY `OXTIMESTAMP` DESC LIMIT " . $iStart . ", " . self::AMOUNT_OF_FILES . " ";
 
-        return $this->connection->fetchAllAssociative($sSelect, [$this->_sFolderId ?: '']);
+        return $this->connection->fetchAllAssociative($sSelect, [$this->imageResource->getFolderId() ?: '']);
     }
 
     public function delete($aIds)
@@ -678,13 +481,16 @@ class Media
                 if ($aRow['DDFOLDERID'] && isset($aFolders[$aRow['DDFOLDERID']])) {
                     $sFolderName = $aFolders[$aRow['DDFOLDERID']];
                 }
-                unlink(Path::join($this->getMediaPath(), $sFolderName, $aRow['DDFILENAME']));
+                unlink(Path::join($this->imageResource->getMediaPath(), $sFolderName, $aRow['DDFILENAME']));
 
                 if ($aRow['DDTHUMB']) {
-                    $thumbFilename = 'thumb_' . $this->getDefaultThumbnailSize() . '.jpg';
+                    $thumbFilename = sprintf(
+                        'thumb_%1$d*%1$d.jpg',
+                        $this->imageResource->getDefaultThumbnailSize()
+                    );
                     $thumbs = Glob::glob(
                         Path::join(
-                            $this->getMediaPath(),
+                            $this->imageResource->getMediaPath(),
                             $sFolderName,
                             'thumbs',
                             str_replace($thumbFilename, '*', $aRow['DDTHUMB'])
@@ -702,8 +508,8 @@ class Media
 
         // remove folder
         foreach ($aFolders as $sOxid => $sFolderName) {
-            @rmdir(Path::join($this->getMediaPath(), $sFolderName, 'thumbs'));
-            @rmdir(Path::join($this->getMediaPath(), $sFolderName));
+            @rmdir(Path::join($this->imageResource->getMediaPath(), $sFolderName, 'thumbs'));
+            @rmdir(Path::join($this->imageResource->getMediaPath(), $sFolderName));
             $sDelete = "DELETE FROM `ddmedia` WHERE `OXID` = '" . $sOxid . "'; ";
             $this->connection->executeQuery($sDelete);
         }
@@ -715,14 +521,6 @@ class Media
     protected function generateUId(): string
     {
         return $this->utilsObject->generateUId();
-    }
-
-    /**
-     * @return int
-     */
-    public function getDefaultThumbnailSize(): int
-    {
-        return $this->_iDefaultThumbnailSize;
     }
 
     /**
