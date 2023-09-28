@@ -44,8 +44,8 @@ $aModule = [
     'templates'   => [
     ],
     'events'      => [
-        'onActivate'   => '\OxidEsales\MediaLibrary\Core\Events::onActivate',
-        'onDeactivate' => '\OxidEsales\MediaLibrary\Core\Events::onDeactivate',
+        'onActivate'   => '\OxidEsales\MediaLibrary\Transition\Core\Events::onActivate',
+        'onDeactivate' => '\OxidEsales\MediaLibrary\Transition\Core\Events::onDeactivate',
     ],
     'blocks'      => [],
     'settings'    => [
