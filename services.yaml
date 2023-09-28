@@ -13,6 +13,10 @@ services:
     class: 'OxidEsales\Eshop\Core\Registry'
     public: true
 
-  OxidEsales\MediaLibrary\Service\:
-    resource: 'src/Service/*'
+  OxidEsales\MediaLibrary\Service\Media:
+    class: OxidEsales\MediaLibrary\Service\Media
+    public: true
+
+  OxidEsales\MediaLibrary\Service\ModuleSettings:
+    class: OxidEsales\MediaLibrary\Service\ModuleSettings
     public: true
