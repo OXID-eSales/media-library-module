@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\MediaLibrary\Core;
+namespace OxidEsales\MediaLibrary\Transition\Core;
 
 use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
 use OxidEsales\MediaLibrary\Module;
