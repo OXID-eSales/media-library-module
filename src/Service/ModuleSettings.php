@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Service;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
-use OxidEsales\MediaLibrary\Core\Module;
+use OxidEsales\MediaLibrary\Module;
 
 /**
  * @extendable-class
