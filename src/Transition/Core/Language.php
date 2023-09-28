@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\MediaLibrary\Core;
+namespace OxidEsales\MediaLibrary\Transition\Core;
 
 /**
  * Class Language
@@ -14,6 +14,8 @@ namespace OxidEsales\MediaLibrary\Core;
  */
 class Language extends Language_parent
 {
+    protected $_aAdditionalLangFiles = [];
+
     /**
      * @param null|integer $iLang
      * @param null|bool $blAdminMode

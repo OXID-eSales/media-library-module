@@ -1,5 +1,6 @@
 imports:
   - { resource: src/Image/Service/services.yaml }
+  - { resource: src/Transition/Core/services.yaml }
 
 services:
 
