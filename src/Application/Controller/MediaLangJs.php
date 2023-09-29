@@ -28,7 +28,7 @@ class MediaLangJs extends FrontendController
 
         /** @var Utils $oUtils */
         $oUtils = Registry::getUtils();
-        $sJson = $oUtils->encodeJson($languages->getLanguageStringsArray());
+        $sJson = json_encode($languages->getLanguageStringsArray());
         $oUtils->showMessageAndExit(";( function(g){ g.i18n = " . $sJson . "; })(window);");
     }
 }
