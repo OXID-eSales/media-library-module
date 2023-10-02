@@ -218,7 +218,7 @@ jobs:
           path: |
             source/test-module/phpstan.report.json
 
-  integration_tests:
+  unit_integration_tests:
     needs: [ install_shop_with_module ]
     runs-on: ubuntu-latest
     steps:
@@ -243,9 +243,8 @@ jobs:
             -e XDEBUG_MODE=coverage \
             --workdir=/var/www/test-module \
             php composer phpunit -- \
-              --testsuite=Integration \
               --coverage-text \
-              --coverage-php=/var/www/integration.cov
+              --coverage-clover=/var/www/integration.xml
 
       - name: Upload log artifact
         if: always()
@@ -253,52 +252,7 @@ jobs:
         with:
           name: ModuleIntegrationTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
           path: |
-            source/integration.cov
-            source/source/log/oxideshop.log
-            data/php/logs/error_log.txt
-
-      - name: Stop containers
-        if: always()
-        run: |
-          docker-compose down
-          sleep 2
-
-  unit_tests:
-    needs: [ install_shop_with_module ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Load current installation from cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ./*
-          key: installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
-          restore-keys: |
-            installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
-            installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}
-
-      - name: Start containers
-        run: |
-          make up
-          sleep 2
-
-      - name: Run tests
-        run: |
-          docker-compose exec -T \
-            -e XDEBUG_MODE=coverage \
-            --workdir=/var/www/test-module \
-            php composer phpunit -- \
-              --testsuite=Unit \
-              --coverage-text \
-              --coverage-php=/var/www/unit.cov
-
-      - name: Upload log artifact
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: ModuleUnitTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
-          path: |
-            source/unit.cov
+            source/integration.xml
             source/source/log/oxideshop.log
             data/php/logs/error_log.txt
 
@@ -360,55 +314,8 @@ jobs:
           make down
           sleep 2
 
-  prepare_coverage_results:
-    needs: [ unit_tests, integration_tests ]
-    if: ${{ always() && inputs.report_sonarcloud }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Load current installation from cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ./*
-          key: installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
-          restore-keys: |
-            installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
-            installation-${{ github.sha }}-${{ join(inputs.*, '-') }}-${{ github.run_number }}
-
-      - name: Download unit artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: ModuleUnitTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
-          path: ./source/coverage/
-
-      - name: Download integration artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: ModuleIntegrationTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
-          path: ./source/coverage/
-
-      - name: Start containers
-        run: |
-          make up
-          sleep 2
-
-      - name: Collect and merge coverage reports
-        continue-on-error: true
-        run: |
-          ls -alh source/coverage
-          wget https://phar.phpunit.de/phpcov-8.2.1.phar
-          mv phpcov-8.2.1.phar source/phpcov.phar
-          docker-compose exec -T php php phpcov.phar merge --clover coverage.xml ./coverage
-          sed -i 's+/var/www/test-module/+./+' source/coverage.xml
-
-      - name: Upload log artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: TestsLog-${{ inputs.php }}-${{ inputs.mysql }}
-          path: source/coverage.xml
-
   sonarcloud:
-    needs: [ prepare_coverage_results ]
+    needs: [ unit_integration_tests ]
     if: ${{ always() && inputs.report_sonarcloud }}
     runs-on: ubuntu-latest
     steps:
@@ -419,8 +326,15 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@v3
         with:
-          name: TestsLog-${{ inputs.php }}-${{ inputs.mysql }}
-          path: ./tests/
+          name: ModuleCodeceptionTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
+          path: ./
+
+      - name: List file structure
+        if: always()
+        run: |
+          ls -alh
+          cd source
+          ls -alh
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
@@ -434,6 +348,6 @@ jobs:
             -Dsonar.sources=src
             -Dsonar.tests=tests
             -Dsonar.sourceEncoding=UTF-8
-            -Dsonar.php.coverage.reportPaths=tests/coverage.xml
+            -Dsonar.php.coverage.reportPaths=source/coverage.xml
             -Dsonar.cpd.php.minimumTokens=25
             -Dsonar.cpd.php.minimumLines=5
