@@ -326,7 +326,7 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@v3
         with:
-          name: ModuleCodeceptionTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
+          name: ModuleIntegrationTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
           path: ./
 
       - name: List file structure

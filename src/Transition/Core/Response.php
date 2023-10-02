@@ -2,7 +2,6 @@
 
 namespace OxidEsales\MediaLibrary\Transition\Core;
 
-
 use OxidEsales\Eshop\Core\Utils;
 
 class Response implements ResponseInterface
