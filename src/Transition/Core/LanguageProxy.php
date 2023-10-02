@@ -2,7 +2,7 @@
 
 namespace OxidEsales\MediaLibrary\Transition\Core;
 
-use OxidEsales\MediaLibrary\Core\Language;
+use OxidEsales\MediaLibrary\Transition\Core\Language;
 
 class LanguageProxy implements LanguageInterface
 {

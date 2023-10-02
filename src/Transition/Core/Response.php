@@ -2,17 +2,14 @@
 
 namespace OxidEsales\MediaLibrary\Transition\Core;
 
-use OxidEsales\MediaLibrary\Core\Utils;
+
+use OxidEsales\Eshop\Core\Utils;
 
 class Response implements ResponseInterface
 {
-    /** @var Utils $language */
-    private $utils;
-
-    public function __construct(\OxidEsales\Eshop\Core\Utils $utils)
-    {
-        /** @var Utils $utils */
-        $this->utils = $utils;
+    public function __construct(
+        private Utils $utils
+    ) {
     }
 
     public function responseAsJson(array $valueArray): void
