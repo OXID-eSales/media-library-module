@@ -30,7 +30,6 @@ $aModule = [
         // Core
         \OxidEsales\Eshop\Core\ViewConfig::class => \OxidEsales\MediaLibrary\Core\ViewConfig::class,
         \OxidEsales\Eshop\Core\Language::class   => \OxidEsales\MediaLibrary\Transition\Core\Language::class,
-        \OxidEsales\Eshop\Core\Utils::class      => \OxidEsales\MediaLibrary\Core\Utils::class,
     ],
     'controllers' => [
         // Lang

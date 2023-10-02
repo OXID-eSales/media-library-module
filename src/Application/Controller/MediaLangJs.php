@@ -8,9 +8,8 @@
 namespace OxidEsales\MediaLibrary\Application\Controller;
 
 use OxidEsales\Eshop\Application\Controller\FrontendController;
-use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\MediaLibrary\Core\Utils;
 use OxidEsales\MediaLibrary\Transition\Core\LanguageInterface;
+use OxidEsales\MediaLibrary\Transition\Core\ResponseInterface;
 
 /**
  * Class MediaLangJs
@@ -23,12 +22,9 @@ class MediaLangJs extends FrontendController
     public function init()
     {
         $languages = $this->getService(LanguageInterface::class);
+        $responseService = $this->getService(ResponseInterface::class);
 
-        header('Content-Type: application/javascript');
-
-        /** @var Utils $oUtils */
-        $oUtils = Registry::getUtils();
-        $sJson = json_encode($languages->getLanguageStringsArray());
-        $oUtils->showMessageAndExit(";( function(g){ g.i18n = " . $sJson . "; })(window);");
+        $jsonValue = json_encode($languages->getLanguageStringsArray());
+        $responseService->responseAsJavaScript(";( function(g){ g.i18n = " . $jsonValue . "; })(window);");
     }
 }
