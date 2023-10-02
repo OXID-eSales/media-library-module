@@ -329,12 +329,10 @@ jobs:
           name: ModuleIntegrationTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
           path: ./
 
-      - name: List file structure
+      - name: Fix coverage paths
         if: always()
         run: |
-          ls -alh
-          cd source
-          ls -alh
+          sed -i 's+/var/www/test-module/+./+' source/coverage.xml
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
