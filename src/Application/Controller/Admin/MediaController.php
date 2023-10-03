@@ -23,12 +23,6 @@ class MediaController extends AdminDetailsController
     protected ?Media $mediaService = null;
     protected ?ImageResourceInterface $imageResource = null;
 
-    protected $_sUploadDir = '';
-    protected $_sThumbDir = '';
-    protected $_iDefaultThumbnailSize = 0;
-    protected $_sFolderId = '';
-
-
     /**
      * Overrides oxAdminDetails::init()
      */
@@ -37,18 +31,12 @@ class MediaController extends AdminDetailsController
         parent::init();
         $this->setTemplateName('@ddoemedialibrary/dialog/ddoemedia');
 
-        if (Registry::getRequest()->getRequestEscapedParameter('folderid')) {
-            $this->_sFolderId = Registry::getRequest()->getRequestEscapedParameter('folderid');
-        }
-
         $this->mediaService = $this->getService(Media::class);
         $this->imageResource = $this->getService(ImageResourceInterface::class);
 
-        $this->imageResource->setFolder($this->_sFolderId);
-
-        $this->_sUploadDir = $this->imageResource->getMediaPath();
-        $this->_sThumbDir = $this->imageResource->getThumbnailPath();
-        $this->_iDefaultThumbnailSize = $this->imageResource->getDefaultThumbnailSize();
+        if (Registry::getRequest()->getRequestEscapedParameter('folderid')) {
+            $this->imageResource->setFolder(Registry::getRequest()->getRequestEscapedParameter('folderid'));
+        }
     }
 
     /**
