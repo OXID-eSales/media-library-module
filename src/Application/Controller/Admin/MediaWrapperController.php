@@ -8,6 +8,7 @@
 namespace OxidEsales\MediaLibrary\Application\Controller\Admin;
 
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\MediaLibrary\Transition\Core\RequestInterface;
 
 /**
  * Class MediaWrapperController
@@ -16,13 +17,8 @@ class MediaWrapperController extends MediaController
 {
     public function init()
     {
-        $request = Registry::getRequest();
-
         $this->addTplParam('oConf', Registry::getConfig());
-        $this->addTplParam('request', [
-            'overlay' => $request->getRequestParameter('overlay') ?: 0,
-            'popout' => $request->getRequestParameter('popout') ?: 0
-        ]);
+        $this->addTplParam('request', $this->getService(RequestInterface::class));
 
         parent::init();
         $this->setTemplateName('@ddoemedialibrary/dialog/ddoemedia_wrapper');

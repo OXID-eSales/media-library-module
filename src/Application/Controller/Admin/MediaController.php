@@ -11,6 +11,7 @@ use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Service\Media;
+use OxidEsales\MediaLibrary\Transition\Core\RequestInterface;
 use OxidEsales\MediaLibrary\Transition\Core\ResponseInterface;
 use Symfony\Component\Filesystem\Path;
 
@@ -68,9 +69,7 @@ class MediaController extends AdminDetailsController
         $this->addTplParam('sFoldername', $this->imageResource->getFolderName());
         $this->addTplParam('sFolderId', $this->imageResource->getFolderId());
         $this->addTplParam('sTab', $request->getRequestEscapedParameter('tab'));
-        $this->addTplParam('request', [
-            'overlay' => $request->getRequestParameter('overlay') ?: 0
-        ]);
+        $this->addTplParam('request', $this->getService(RequestInterface::class));
 
         return parent::render();
     }

@@ -16,9 +16,9 @@
 
     {{ style() }}
 </head>
-<body class="dd-media-wrapper{% if request.overlay %} dd-overlay{% endif %}">
+<body class="dd-media-wrapper{% if request.isOverlay() %} dd-overlay{% endif %}">
 
-    {% if not request.overlay %}
+    {% if not request.isOverlay() %}
         <nav class="navbar navbar-default dd-navbar">
             <div class="container-fluid">
 
@@ -28,7 +28,7 @@
                     </a>
                 </div>
 
-                {% if not request.popout %}
+                {% if not request.isPopout() %}
                     <ul class="nav navbar-nav navbar-right hidden-xs">
                         <li><a href="{{ oViewConf.getSelfLink()|replace({'&amp;':'&'})|raw }}cl={{ oViewConf.getActiveClassName() }}&popout=1" target="_blank" class="dd-admin-popout-action"><i class="fa fa-expand"></i></a></li>
                     </ul>
@@ -49,7 +49,7 @@
 {{ script({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/bootstrap.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 {{ script({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/base.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
 
-{% set sActionLink = oViewConf.getSelfLink()|replace({'&amp;':'&'})|cat('overlay=' ~ request.overlay ~ '&') %}
+{% set sActionLink = oViewConf.getSelfLink()|replace({'&amp;':'&'})|cat('overlay=' ~ request.isOverlay() ~ '&') %}
 {% set sMediaLink = oConf.getCurrentShopUrl(true)|regex_replace('/([^\/])(\/admin)/', '$1')|regex_replace('/http(s)?\, /', '')|trim('/', 'right')|cat('/out/pictures/ddmedia/') %}
 
 {{ script({ add: "MediaLibrary.setActionLink('" ~ sActionLink ~ "');", priority: 10, dynamic: __oxid_include_dynamic }) }}

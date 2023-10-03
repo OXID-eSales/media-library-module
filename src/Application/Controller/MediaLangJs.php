@@ -16,9 +16,6 @@ use OxidEsales\MediaLibrary\Transition\Core\ResponseInterface;
  */
 class MediaLangJs extends FrontendController
 {
-    /**
-     * Init function
-     */
     public function init()
     {
         $languages = $this->getService(LanguageInterface::class);

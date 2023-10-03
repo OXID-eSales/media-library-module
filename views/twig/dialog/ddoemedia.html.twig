@@ -1,4 +1,4 @@
-<div class="dd-media{% if not request.overlay %} dd-media-overview{% endif %}" data-foldername="{{ sFoldername }}" data-folderid="{{ sFolderId }}" data-medialink="{{ sResourceUrl }}/">
+<div class="dd-media{% if not request.isOverlay() %} dd-media-overview{% endif %}" data-foldername="{{ sFoldername }}" data-folderid="{{ sFolderId }}" data-medialink="{{ sResourceUrl }}/">
 
     <div class="dd-media-drag-helper">
         <span>{{ translate({ ident: "DD_MEDIA_DRAG_INFO" })|raw }}</span>
@@ -85,7 +85,7 @@
                                 </div>
 
                                 <div class="dd-media-dz-helper" style="display: none;">
-                                        <div class="dd-media-col {% if not request.overlay %}col-md-2{% else %}col-md-3{% endif %} col-sm-3 col-xs-4">
+                                        <div class="dd-media-col {% if not request.isOverlay() %}col-md-2{% else %}col-md-3{% endif %} col-sm-3 col-xs-4">
                                         <a class="dd-media-item" href="javascript:void(null);">
                                             <div class="dd-media-item-preview">
                                                 <div class="dd-media-item-centered">
@@ -107,7 +107,7 @@
 
                                 {% for file in aFiles %}
 
-                                    <div class="dd-media-col {% if not request.overlay %}col-md-2{% else %}col-md-3{% endif %} col-sm-3 col-xs-4">
+                                    <div class="dd-media-col {% if not request.isOverlay() %}col-md-2{% else %}col-md-3{% endif %} col-sm-3 col-xs-4">
                                         <a class="dd-media-item{% if not file.DDTHUMB %}{% endif %}"
                                            href="javascript:void(null);" data-id="{{ file.OXID }}"
                                            data-file="{{ file.DDFILENAME }}" data-filetype="{{ file.DDFILETYPE }}"
