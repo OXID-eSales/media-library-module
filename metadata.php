@@ -28,7 +28,7 @@ $aModule = [
     'email'       => 'info@oxid-esales.com',
     'extend'      => [
         // Core
-        \OxidEsales\Eshop\Core\ViewConfig::class => \OxidEsales\MediaLibrary\Core\ViewConfig::class,
+        \OxidEsales\Eshop\Core\ViewConfig::class => \OxidEsales\MediaLibrary\Transition\Core\ViewConfig::class,
         \OxidEsales\Eshop\Core\Language::class   => \OxidEsales\MediaLibrary\Transition\Core\Language::class,
     ],
     'controllers' => [

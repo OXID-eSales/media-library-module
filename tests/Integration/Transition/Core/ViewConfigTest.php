@@ -5,9 +5,9 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\MediaLibrary\Tests\Integration\Core;
+namespace OxidEsales\MediaLibrary\Tests\Integration\Transition\Core;
 
-use OxidEsales\MediaLibrary\Core\ViewConfig;
+use OxidEsales\MediaLibrary\Transition\Core\ViewConfig;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 

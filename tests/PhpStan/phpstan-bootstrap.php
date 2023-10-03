@@ -14,5 +14,5 @@ class_alias(
 
 class_alias(
     \OxidEsales\Eshop\Core\ViewConfig::class,
-    \OxidEsales\MediaLibrary\Core\ViewConfig_parent::class
+    \OxidEsales\MediaLibrary\Transition\Core\ViewConfig_parent::class
 );

@@ -12,7 +12,7 @@
  * @version       OXID eSales Visual CMS
  */
 
-namespace OxidEsales\MediaLibrary\Core;
+namespace OxidEsales\MediaLibrary\Transition\Core;
 
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 
