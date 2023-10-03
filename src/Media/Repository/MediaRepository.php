@@ -15,7 +15,8 @@ class MediaRepository implements MediaRepositoryInterface
 {
     public function __construct(
         private QueryBuilderFactoryInterface $queryBuilderFactory
-    ){}
+    ) {
+    }
 
     public function getShopFolderMediaCount(int $shopId, string $folderId): int
     {
