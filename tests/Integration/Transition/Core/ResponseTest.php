@@ -27,7 +27,7 @@ class ResponseTest extends TestCase
 
         $correctHeaderSet = false;
         $utilsMock->method('setHeader')->willReturnCallback(function ($value) use (&$correctHeaderSet) {
-            if (preg_match("@Content-Type:\s?application/json@i", $value)) {
+            if (preg_match("@Content-Type:\s?application/json;\s?charset=UTF-8@i", $value)) {
                 $correctHeaderSet = true;
             }
         });
@@ -49,13 +49,35 @@ class ResponseTest extends TestCase
 
         $correctHeaderSet = false;
         $utilsMock->method('setHeader')->willReturnCallback(function ($value) use (&$correctHeaderSet) {
-            if (preg_match("@Content-Type:\s?application/javascript@i", $value)) {
+            if (preg_match("@Content-Type:\s?application/javascript;\s?charset=UTF-8@i", $value)) {
                 $correctHeaderSet = true;
             }
         });
 
         $sut = new Response($utilsMock);
         $sut->responseAsJavaScript($exampleData);
+
+        $this->assertTrue($correctHeaderSet);
+    }
+
+    public function testRespondAsText(): void
+    {
+        $exampleData = 'someTextExample';
+
+        $utilsMock = $this->createPartialMock(Utils::class, ['setHeader', 'showMessageAndExit']);
+        $utilsMock->expects($this->once())
+            ->method('showMessageAndExit')
+            ->with($exampleData);
+
+        $correctHeaderSet = false;
+        $utilsMock->method('setHeader')->willReturnCallback(function ($value) use (&$correctHeaderSet) {
+            if (preg_match("@Content-Type:\s?text/html;\s?charset=UTF-8@i", $value)) {
+                $correctHeaderSet = true;
+            }
+        });
+
+        $sut = new Response($utilsMock);
+        $sut->responseAsTextHtml($exampleData);
 
         $this->assertTrue($correctHeaderSet);
     }

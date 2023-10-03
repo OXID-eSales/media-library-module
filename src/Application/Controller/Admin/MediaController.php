@@ -11,6 +11,7 @@ use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Service\Media;
+use OxidEsales\MediaLibrary\Transition\Core\ResponseInterface;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -45,8 +46,8 @@ class MediaController extends AdminDetailsController
             $this->_sFolderId = Registry::getRequest()->getRequestEscapedParameter('folderid');
         }
 
-        $this->mediaService = $this->getService('OxidEsales\MediaLibrary\Service\Media');
-        $this->imageResource = $this->getService('OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface');
+        $this->mediaService = $this->getService(Media::class);
+        $this->imageResource = $this->getService(ImageResourceInterface::class);
 
         $this->imageResource->setFolder($this->_sFolderId);
 
@@ -64,17 +65,18 @@ class MediaController extends AdminDetailsController
     {
         $oConfig = Registry::getConfig();
         $iShopId = $oConfig->getActiveShop()->getShopId();
-
-        $this->_aViewData['aFiles'] = $this->mediaService->getFiles(0, $iShopId);
-        $this->_aViewData['iFileCount'] = $this->mediaService->getFileCount($iShopId);
-        $this->_aViewData['sResourceUrl'] = $this->imageResource->getMediaUrl();
-        $this->_aViewData['sThumbsUrl'] = $this->imageResource->getThumbnailUrl();
-        $this->_aViewData['sFoldername'] = $this->imageResource->getFolderName();
-        $this->_aViewData['sFolderId'] = $this->imageResource->getFolderId();
-        $this->_aViewData['sTab'] = Registry::getRequest()->getRequestEscapedParameter('tab');
-
         $request = Registry::getRequest();
-        $this->_aViewData["request"]["overlay"] = $request->getRequestParameter('overlay') ?: 0;
+
+        $this->addTplParam('aFiles', $this->mediaService->getFiles(0, $iShopId));
+        $this->addTplParam('iFileCount', $this->mediaService->getFileCount($iShopId));
+        $this->addTplParam('sResourceUrl', $this->imageResource->getMediaUrl());
+        $this->addTplParam('sThumbsUrl', $this->imageResource->getThumbnailUrl());
+        $this->addTplParam('sFoldername', $this->imageResource->getFolderName());
+        $this->addTplParam('sFolderId', $this->imageResource->getFolderId());
+        $this->addTplParam('sTab', $request->getRequestEscapedParameter('tab'));
+        $this->addTplParam('request', [
+            'overlay' => $request->getRequestParameter('overlay') ?: 0
+        ]);
 
         return parent::render();
     }
@@ -85,6 +87,7 @@ class MediaController extends AdminDetailsController
     public function upload()
     {
         $request = Registry::getRequest();
+        $responseService = $this->getService(ResponseInterface::class);
 
         $sId = null;
         $sFileName = '';
@@ -100,8 +103,7 @@ class MediaController extends AdminDetailsController
                 $extension = strtolower($path_parts['extension']);
                 if (!in_array($extension, $allowedExtensions)) {
                     header('HTTP/1.1 415 Invalid File Type Upload');
-                    header('Content-Type: application/json; charset=UTF-8');
-                    die(json_encode(['error' => "Invalid file type"]));
+                    $responseService->responseAsJson(['error' => "Invalid file type"]);
                 }
 
                 $this->mediaService->createDirs();
@@ -122,33 +124,25 @@ class MediaController extends AdminDetailsController
             if ($request->getRequestParameter('src') == 'fallback') {
                 $this->fallback(true);
             } else {
-                header('Content-Type: application/json');
-                $sReturn = json_encode(
-                    [
-                        'success'   => true,
-                        'id'        => $sId,
-                        'file'      => $sFileName ?? '',
-                        'filetype'  => $sFileType ?? '',
-                        'filesize'  => $sFileSize ?? '',
-                        'imagesize' => $sImageSize ?? '',
-                        'thumb'     => $sThumb ?? '',
-                    ]
-                );
-                die($sReturn);
+                $responseService->responseAsJson([
+                    'success'   => true,
+                    'id'        => $sId,
+                    'file'      => $sFileName ?? '',
+                    'filetype'  => $sFileType ?? '',
+                    'filesize'  => $sFileSize ?? '',
+                    'imagesize' => $sImageSize ?? '',
+                    'thumb'     => $sThumb ?? '',
+                ]);
             }
         } catch (\Exception $e) {
             if ($request->getRequestParameter('src') == 'fallback') {
                 $this->fallback(false, true);
             } else {
-                header('Content-Type: application/json');
-                $sReturn = json_encode(
-                    [
-                        'success'      => false,
-                        'id'           => $sId,
-                        'errorMessage' => $e->getMessage(),
-                    ]
-                );
-                die($sReturn);
+                $responseService->responseAsJson([
+                    'success'      => false,
+                    'id'           => $sId,
+                    'errorMessage' => $e->getMessage(),
+                ]);
             }
         }
     }
@@ -175,8 +169,8 @@ class MediaController extends AdminDetailsController
 
         $sFormHTML .= '</body></html>';
 
-        header('Content-Type: text/html');
-        die($sFormHTML);
+        $responseService = $this->getService(ResponseInterface::class);
+        $responseService->responseAsTextHtml($sFormHTML);
     }
 
     /**
@@ -193,22 +187,20 @@ class MediaController extends AdminDetailsController
 
             // todo: catch exception and return appropriate result
 
-            header('Content-Type: application/json');
-            $sReturn = json_encode(
-                [
-                    'success'   => true,
-                    'id'        => $aCustomDir['id'],
-                    'file'      => $aCustomDir['dir'],
-                    'filetype'  => 'directory',
-                    'filesize'  => 0,
-                    'imagesize' => '',
-                ]
-            );
-            die($sReturn);
+            $responseData = [
+                'success'   => true,
+                'id'        => $aCustomDir['id'],
+                'file'      => $aCustomDir['dir'],
+                'filetype'  => 'directory',
+                'filesize'  => 0,
+                'imagesize' => '',
+            ];
         } else {
-            header('Content-Type: application/json');
-            die(json_encode(['success' => false]));
+            $responseData = ['success' => false];
         }
+
+        $responseService = $this->getService(ResponseInterface::class);
+        $responseService->responseAsJson($responseData);
     }
 
     /**
@@ -239,17 +231,14 @@ class MediaController extends AdminDetailsController
             $sNewName = $aResult['filename'];
         }
 
-        header('Content-Type: application/json');
-        $sReturn = json_encode(
-            [
-                'success' => $blReturn,
-                'msg'     => $sMsg,
-                'name'    => $sNewName,
-                'id'      => $sNewId,
-                'thumb'   => $this->imageResource->getThumbnailUrl($sNewName),
-            ]
-        );
-        die($sReturn);
+        $responseService = $this->getService(ResponseInterface::class);
+        $responseService->responseAsJson([
+            'success' => $blReturn,
+            'msg'     => $sMsg,
+            'name'    => $sNewName,
+            'id'      => $sNewId,
+            'thumb'   => $this->imageResource->getThumbnailUrl($sNewName),
+        ]);
     }
 
     /**
@@ -269,8 +258,8 @@ class MediaController extends AdminDetailsController
             $sMsg = '';
         }
 
-        header('Content-Type: application/json');
-        die(json_encode(['success' => $blReturn, 'msg' => $sMsg]));
+        $responseService = $this->getService(ResponseInterface::class);
+        $responseService->responseAsJson(['success' => $blReturn, 'msg' => $sMsg]);
     }
 
     public function movefile()
@@ -293,8 +282,8 @@ class MediaController extends AdminDetailsController
             }
         }
 
-        header('Content-Type: application/json');
-        die(json_encode(['success' => $blReturn, 'msg' => $sMsg]));
+        $responseService = $this->getService(ResponseInterface::class);
+        $responseService->responseAsJson(['success' => $blReturn, 'msg' => $sMsg]);
     }
 
     /**
@@ -311,8 +300,8 @@ class MediaController extends AdminDetailsController
         $aFiles = $this->mediaService->getFiles($iStart, $iShopId);
         $blLoadMore = ($iStart + 18 < $this->mediaService->getFileCount($iShopId));
 
-        header('Content-Type: application/json');
-        die(json_encode(['files' => $aFiles, 'more' => $blLoadMore]));
+        $responseService = $this->getService(ResponseInterface::class);
+        $responseService->responseAsJson(['files' => $aFiles, 'more' => $blLoadMore]);
     }
 
     /**

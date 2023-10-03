@@ -25,9 +25,11 @@ class MediaWrapperController extends MediaController
     {
         $request = Registry::getRequest();
 
-        $this->_aViewData["oConf"] = Registry::getConfig();
-        $this->_aViewData["request"]["overlay"] = $request->getRequestParameter('overlay') ?: 0;
-        $this->_aViewData["request"]["popout"] = $request->getRequestParameter('popout') ?: 0;
+        $this->addTplParam('oConf', Registry::getConfig());
+        $this->addTplParam('request', [
+            'overlay' => $request->getRequestParameter('overlay') ?: 0,
+            'popout' => $request->getRequestParameter('popout') ?: 0
+        ]);
 
         parent::init();
     }

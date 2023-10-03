@@ -7,4 +7,6 @@ interface ResponseInterface
     public function responseAsJson(array $valueArray): void;
 
     public function responseAsJavaScript(string $value): void;
+
+    public function responseAsTextHtml(string $value): void;
 }
