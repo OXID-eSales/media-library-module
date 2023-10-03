@@ -1,0 +1,8 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface:
+    class: OxidEsales\MediaLibrary\Media\Repository\MediaRepository
+    public: true
