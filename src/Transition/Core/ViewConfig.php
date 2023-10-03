@@ -1,16 +1,11 @@
 <?php
 
 /**
- * This Software is the property of OXID eSales and is protected
- * by copyright law.
- *
- * Any unauthorized use of this software will be prosecuted by
- * civil and criminal law.
- *
- * @link          http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2017
- * @version       OXID eSales Visual CMS
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Transition\Core;
 

@@ -1,15 +1,8 @@
 <?php
 
 /**
- *
- *     |o     o    |          |
- * ,---|.,---..,---|,---.,---.|__/
- * |   |||   |||   ||---'`---.|  \
- * `---'``---|``---'`---'`---'`   `
- *       `---'    [media solutions]
- *
- * @copyright   (c) digidesk - media solutions
- * @link            https://www.digidesk.de
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
  */
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Service;
