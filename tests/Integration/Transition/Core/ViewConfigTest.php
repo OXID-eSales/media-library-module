@@ -12,7 +12,7 @@ use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 
 /**
- * @covers \OxidEsales\MediaLibrary\Core\ViewConfig
+ * @covers \OxidEsales\MediaLibrary\Transition\Core\ViewConfig
  */
 class ViewConfigTest extends IntegrationTestCase
 {

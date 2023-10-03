@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+    bind:
+      OxidEsales\Eshop\Core\Language: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getLang()'
+
+  OxidEsales\MediaLibrary\Language\Core\LanguageInterface:
+    class: OxidEsales\MediaLibrary\Language\Core\LanguageProxy
+    public: true

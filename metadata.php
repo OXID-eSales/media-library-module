@@ -29,11 +29,11 @@ $aModule = [
     'extend'      => [
         // Core
         \OxidEsales\Eshop\Core\ViewConfig::class => \OxidEsales\MediaLibrary\Transition\Core\ViewConfig::class,
-        \OxidEsales\Eshop\Core\Language::class   => \OxidEsales\MediaLibrary\Transition\Core\Language::class,
+        \OxidEsales\Eshop\Core\Language::class   => \OxidEsales\MediaLibrary\Language\Core\LanguageExtension::class,
     ],
     'controllers' => [
         // Lang
-        'ddoelangjs'        => \OxidEsales\MediaLibrary\Application\Controller\MediaLangJs::class,
+        'ddoelangjs'        => \OxidEsales\MediaLibrary\Language\Controller\MediaLangJs::class,
 
         // Admin Controller
         'ddoemedia_view'    => \OxidEsales\MediaLibrary\Application\Controller\Admin\MediaController::class,

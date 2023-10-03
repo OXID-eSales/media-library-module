@@ -5,15 +5,12 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\MediaLibrary\Application\Controller;
+namespace OxidEsales\MediaLibrary\Language\Controller;
 
 use OxidEsales\Eshop\Application\Controller\FrontendController;
-use OxidEsales\MediaLibrary\Transition\Core\LanguageInterface;
+use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Transition\Core\ResponseInterface;
 
-/**
- * Class MediaLangJs
- */
 class MediaLangJs extends FrontendController
 {
     public function init()

@@ -3,13 +3,8 @@ services:
     public: false
     autowire: true
     bind:
-      OxidEsales\Eshop\Core\Language: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getLang()'
       OxidEsales\Eshop\Core\Request: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getRequest()'
       OxidEsales\Eshop\Core\Utils: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getUtils()'
-
-  OxidEsales\MediaLibrary\Transition\Core\LanguageInterface:
-    class: OxidEsales\MediaLibrary\Transition\Core\LanguageProxy
-    public: true
 
   OxidEsales\MediaLibrary\Transition\Core\ResponseInterface:
     class: OxidEsales\MediaLibrary\Transition\Core\Response

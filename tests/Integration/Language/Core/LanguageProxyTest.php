@@ -7,10 +7,10 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Tests\Integration\Transition\Core;
+namespace OxidEsales\MediaLibrary\Tests\Integration\Language\Core;
 
-use OxidEsales\MediaLibrary\Transition\Core\Language;
-use OxidEsales\MediaLibrary\Transition\Core\LanguageProxy;
+use OxidEsales\MediaLibrary\Language\Core\LanguageExtension;
+use OxidEsales\MediaLibrary\Language\Core\LanguageProxy;
 use PHPUnit\Framework\TestCase;
 
 class LanguageProxyTest extends TestCase
@@ -20,7 +20,7 @@ class LanguageProxyTest extends TestCase
         $languageStringsList = ['somekey' => 'someValue'];
 
         /** @var \OxidEsales\Eshop\Core\Language $languageMock */
-        $languageMock = $this->createPartialMock(Language::class, ['getLanguageStrings']);
+        $languageMock = $this->createPartialMock(LanguageExtension::class, ['getLanguageStrings']);
         $languageMock->method('getLanguageStrings')->willReturn($languageStringsList);
 
         $sut = new LanguageProxy($languageMock);

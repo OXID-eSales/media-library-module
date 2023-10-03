@@ -1,6 +1,6 @@
 <?php
 
-namespace OxidEsales\MediaLibrary\Transition\Core;
+namespace OxidEsales\MediaLibrary\Language\Core;
 
 interface LanguageInterface
 {

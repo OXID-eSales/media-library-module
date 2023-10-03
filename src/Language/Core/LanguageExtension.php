@@ -5,14 +5,12 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\MediaLibrary\Transition\Core;
+namespace OxidEsales\MediaLibrary\Language\Core;
 
 /**
- * Class Language
- *
  * @mixin \OxidEsales\Eshop\Core\Language
  */
-class Language extends Language_parent
+class LanguageExtension extends LanguageExtension_parent
 {
     protected $_aAdditionalLangFiles = [];
 
