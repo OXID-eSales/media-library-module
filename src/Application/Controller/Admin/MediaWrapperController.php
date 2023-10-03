@@ -14,13 +14,6 @@ use OxidEsales\Eshop\Core\Registry;
  */
 class MediaWrapperController extends MediaController
 {
-    /**
-     * Current class template name.
-     *
-     * @var string
-     */
-    protected $_sThisTemplate = '@ddoemedialibrary/dialog/ddoemedia_wrapper';
-
     public function init()
     {
         $request = Registry::getRequest();
@@ -32,5 +25,6 @@ class MediaWrapperController extends MediaController
         ]);
 
         parent::init();
+        $this->setTemplateName('@ddoemedialibrary/dialog/ddoemedia_wrapper');
     }
 }

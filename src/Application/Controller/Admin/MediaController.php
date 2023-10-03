@@ -22,13 +22,6 @@ class MediaController extends AdminDetailsController
     protected ?Media $mediaService = null;
     protected ?ImageResourceInterface $imageResource = null;
 
-    /**
-     * Current class template name.
-     *
-     * @var string
-     */
-    protected $_sThisTemplate = '@ddoemedialibrary/dialog/ddoemedia';
-
     protected $_sUploadDir = '';
     protected $_sThumbDir = '';
     protected $_iDefaultThumbnailSize = 0;
@@ -41,6 +34,7 @@ class MediaController extends AdminDetailsController
     public function init()
     {
         parent::init();
+        $this->setTemplateName('@ddoemedialibrary/dialog/ddoemedia');
 
         if (Registry::getRequest()->getRequestEscapedParameter('folderid')) {
             $this->_sFolderId = Registry::getRequest()->getRequestEscapedParameter('folderid');
