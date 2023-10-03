@@ -24,7 +24,7 @@ class MediaLangJsTest extends \PHPUnit\Framework\TestCase
         $responseMock = $this->createMock(ResponseInterface::class);
         $responseMock->expects($this->once())
             ->method('responseAsJavaScript')
-            ->with($this->matchesRegularExpression('/i18n\s?=\s?'.json_encode($exampleLanguageKeys).';/'));
+            ->with($this->matchesRegularExpression('/i18n\s?=\s?' . json_encode($exampleLanguageKeys) . ';/'));
 
         $sut = $this->createPartialMock(MediaLangJs::class, ['getService']);
         $sut->method('getService')->willReturnMap([

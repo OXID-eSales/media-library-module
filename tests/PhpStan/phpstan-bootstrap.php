@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 class_alias(
     \OxidEsales\Eshop\Core\Language::class,
-    \OxidEsales\MediaLibrary\Transition\Core\Language_parent::class
+    \OxidEsales\MediaLibrary\Language\Core\LanguageExtension_parent::class
 );
 
 class_alias(
