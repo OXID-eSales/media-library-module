@@ -15,7 +15,7 @@ use OxidEsales\Codeception\Admin\AdminPanel;
 use OxidEsales\Codeception\Page\Home;
 use OxidEsales\MediaLibrary\Tests\Codeception\_generated\AcceptanceTesterActions;
 
-final class AcceptanceTester extends \Codeception\Actor
+class AcceptanceTester extends \Codeception\Actor
 {
     use AcceptanceTesterActions;
 
