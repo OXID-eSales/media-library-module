@@ -9,27 +9,54 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Media\Repository;
 
-use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use Doctrine\DBAL\Driver\Connection;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 
 class MediaRepository implements MediaRepositoryInterface
 {
+    private Connection $connection;
+
     public function __construct(
-        private QueryBuilderFactoryInterface $queryBuilderFactory
+        private ConnectionProviderInterface $connectionProvider,
+        private BasicContextInterface $basicContext,
+        private MediaFactoryInterface $mediaFactory,
     ) {
+        $this->connection = $this->connectionProvider->get();
     }
 
-    public function getShopFolderMediaCount(int $shopId, string $folderId): int
+    public function getFolderMediaCount(string $folderId): int
     {
-        $queryBuilder = $this->queryBuilderFactory->create();
-        $result = $queryBuilder->select("count(*)")
-            ->from("ddmedia")
-            ->where('OXSHOPID = :OXSHOPID and DDFOLDERID = :DDFOLDERID')
-            ->setParameters([
-                'OXSHOPID' => $shopId,
+        $result = $this->connection->executeQuery(
+            "SELECT count(*) FROM ddmedia WHERE OXSHOPID = :OXSHOPID AND DDFOLDERID = :DDFOLDERID",
+            [
+                'OXSHOPID' => $this->basicContext->getCurrentShopId(),
                 'DDFOLDERID' => $folderId
-            ])
-            ->execute();
+            ]
+        );
 
         return $result->fetchOne();
+    }
+
+    public function getFolderMedia(string $folderId, int $page): array
+    {
+        $limit = 18;
+        $offset = $page * $limit;
+
+        $queryResult = $this->connection->executeQuery(
+            "SELECT * FROM ddmedia WHERE OXSHOPID = :OXSHOPID AND DDFOLDERID = :DDFOLDERID
+            ORDER BY OXTIMESTAMP DESC LIMIT $offset, $limit",
+            [
+                'OXSHOPID' => $this->basicContext->getCurrentShopId(),
+                'DDFOLDERID' => $folderId
+            ]
+        );
+
+        $result = [];
+        while ($data = $queryResult->fetchAssociative()) {
+            $result[] = $this->mediaFactory->fromDatabaseArray($data);
+        }
+
+        return $result;
     }
 }

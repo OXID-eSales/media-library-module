@@ -9,36 +9,73 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Integration\Media\Repository;
 
-use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
+use OxidEsales\MediaLibrary\Media\DataType\Media;
+use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepository;
 
 class MediaRepositoryTest extends IntegrationTestCase
 {
-    public function setUp(): void
+    protected QueryBuilderFactoryInterface $queryBuilderFactory;
+
+    public function testGetShopFolderMediaCount(): void
     {
-        parent::setUp();
-        $this->prepareDatabase();
+        $this->createItems(3, 'someFolder');
+        $this->createItems(2, '');
+
+        $basicContextStub = $this->createMock(BasicContextInterface::class);
+        $basicContextStub->method('getCurrentShopId')->willReturn(2);
+
+        $sut = $this->getSut(
+            basicContext: $basicContextStub
+        );
+        $this->assertSame(3, $sut->getFolderMediaCount('someFolder'));
+        $this->assertSame(2, $sut->getFolderMediaCount(''));
     }
 
-    public function testGetFilesCount(): void
+    public function testGetShopFolderMedia(): void
+    {
+        $folder = 'someFolder';
+        $this->createItems(20, $folder);
+        $this->createItems(3, '');
+
+        $basicContextStub = $this->createMock(BasicContextInterface::class);
+        $basicContextStub->method('getCurrentShopId')->willReturn(2);
+
+        $sut = $this->getSut(
+            basicContext: $basicContextStub
+        );
+
+        $result = $sut->getFolderMedia($folder, 0);
+
+        $this->assertSame(18, count($result));
+        foreach ($result as $oneItem) {
+            $this->assertInstanceOf(Media::class, $oneItem);
+        }
+
+        $result = $sut->getFolderMedia($folder, 1);
+
+        $this->assertSame(2, count($result));
+        foreach ($result as $oneItem) {
+            $this->assertInstanceOf(Media::class, $oneItem);
+        }
+
+        $result = $sut->getFolderMedia('', 0);
+
+        $this->assertSame(3, count($result));
+        foreach ($result as $oneItem) {
+            $this->assertInstanceOf(Media::class, $oneItem);
+        }
+    }
+
+    protected function createItems(int $amount, string $folderId): void
     {
         $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
-
-        $sut = new MediaRepository($queryBuilderFactory);
-        $this->assertSame(3, $sut->getShopFolderMediaCount(2, ''));
-    }
-
-    /**
-     * @return void
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function prepareDatabase(): void
-    {
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $this->get(QueryBuilderFactoryInterface::class)->create();
+        $queryBuilder = $queryBuilderFactory->create();
         $queryBuilder->insert("ddmedia")->values([
             'OXID' => ':OXID',
             'OXSHOPID' => ':OXSHOPID',
@@ -50,64 +87,35 @@ class MediaRepositoryTest extends IntegrationTestCase
             'DDFOLDERID' => ':DDFOLDERID',
         ]);
 
-        $queryBuilder->setParameters([
-            'OXID' => 'example1',
-            'OXSHOPID' => 2,
-            'DDFILENAME' => 'filename1.jpg',
-            'DDFILESIZE' => 1 * 10,
-            'DDFILETYPE' => 'image/gif',
-            'DDTHUMB' => 'thumbfilename1.jpg',
-            'DDIMAGESIZE' => '100x100.jpg',
-            'DDFOLDERID' => '',
-        ]);
-        $queryBuilder->execute();
+        for ($i = 1; $i <= $amount; $i++) {
+            $queryBuilder->setParameters([
+                'OXID' => $folderId . 'example' . $i,
+                'OXSHOPID' => 2,
+                'DDFILENAME' => 'filename' . $i . '.jpg',
+                'DDFILESIZE' => $i * 10,
+                'DDFILETYPE' => 'image/gif',
+                'DDTHUMB' => 'thumbfilename' . $i . '.jpg',
+                'DDIMAGESIZE' => $i . '00x' . $i . '00.jpg',
+                'DDFOLDERID' => $folderId,
+            ]);
+            $queryBuilder->execute();
+        }
+    }
 
-        $queryBuilder->setParameters([
-            'OXID' => 'example2',
-            'OXSHOPID' => 2,
-            'DDFILENAME' => 'filename2.jpg',
-            'DDFILESIZE' => 2 * 10,
-            'DDFILETYPE' => 'image/gif',
-            'DDTHUMB' => 'thumbfilename2.jpg',
-            'DDIMAGESIZE' => '200x200.jpg',
-            'DDFOLDERID' => '',
-        ]);
-        $queryBuilder->execute();
+    /**
+     * @return MediaRepository
+     */
+    protected function getSut(
+        ?BasicContextInterface $basicContext = null,
+        ?ConnectionProviderInterface $connectionProvider = null,
+        ?MediaFactoryInterface $mediaFactory = null,
+    ): MediaRepository {
+        $sut = new MediaRepository(
+            connectionProvider: $connectionProvider ?? $this->get(ConnectionProviderInterface::class),
+            basicContext: $basicContext ?? $this->get(BasicContextInterface::class),
+            mediaFactory: $mediaFactory ?? $this->get(MediaFactoryInterface::class),
+        );
 
-        $queryBuilder->setParameters([
-            'OXID' => 'example3',
-            'OXSHOPID' => 3,
-            'DDFILENAME' => 'filename3.jpg',
-            'DDFILESIZE' => 3 * 10,
-            'DDFILETYPE' => 'image/gif',
-            'DDTHUMB' => 'thumbfilename3.jpg',
-            'DDIMAGESIZE' => '300x300.jpg',
-            'DDFOLDERID' => '',
-        ]);
-        $queryBuilder->execute();
-
-        $queryBuilder->setParameters([
-            'OXID' => 'example4',
-            'OXSHOPID' => 2,
-            'DDFILENAME' => 'directory',
-            'DDFILESIZE' => 0,
-            'DDFILETYPE' => 'directory',
-            'DDTHUMB' => '',
-            'DDIMAGESIZE' => '',
-            'DDFOLDERID' => '',
-        ]);
-        $queryBuilder->execute();
-
-        $queryBuilder->setParameters([
-            'OXID' => 'example5',
-            'OXSHOPID' => 2,
-            'DDFILENAME' => 'filename5.jpg',
-            'DDFILESIZE' => 0,
-            'DDFILETYPE' => 'img/jpeg',
-            'DDTHUMB' => 'thumbfilename5.jpg',
-            'DDIMAGESIZE' => '500x500.jpg',
-            'DDFOLDERID' => 'subfolder',
-        ]);
-        $queryBuilder->execute();
+        return $sut;
     }
 }

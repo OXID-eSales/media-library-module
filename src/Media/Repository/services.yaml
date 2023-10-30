@@ -6,3 +6,6 @@ services:
   OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface:
     class: OxidEsales\MediaLibrary\Media\Repository\MediaRepository
     public: true
+
+  OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface:
+    class: OxidEsales\MediaLibrary\Media\Repository\MediaFactory
