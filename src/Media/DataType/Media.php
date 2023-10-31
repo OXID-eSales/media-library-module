@@ -13,6 +13,8 @@ use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 
 class Media implements MediaInterface
 {
+    public const FILETYPE_DIRECTORY = 'directory';
+
     public function __construct(
         private string $oxid,
         private int $shopId,
@@ -63,5 +65,10 @@ class Media implements MediaInterface
     public function getOxid(): string
     {
         return $this->oxid;
+    }
+
+    public function isDirectory(): bool
+    {
+        return $this->getFileType() == self::FILETYPE_DIRECTORY;
     }
 }

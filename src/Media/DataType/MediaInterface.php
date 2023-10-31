@@ -21,4 +21,6 @@ interface MediaInterface
     public function getShopId(): int;
 
     public function getOxid(): string;
+
+    public function isDirectory(): bool;
 }

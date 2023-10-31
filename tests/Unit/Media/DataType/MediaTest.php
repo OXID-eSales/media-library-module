@@ -39,4 +39,28 @@ class MediaTest extends TestCase
         $this->assertSame($imageSize, $sut->getImageSize());
         $this->assertSame('someFolderId', $sut->getFolderId());
     }
+
+    /** @dataProvider isDirectoryDataProvider */
+    public function testIsDirectory(string $fileType, bool $expectedResult): void
+    {
+        $sut = new Media(
+            oxid: 'someOxid',
+            shopId: 2,
+            fileName: 'filename.jpg',
+            fileSize: 25,
+            fileType: $fileType,
+            thumbFileName: 'thumbfilename.jpg',
+            imageSize: $this->createStub(ImageSize::class),
+            folderId: 'someFolderId'
+        );
+
+        $this->assertSame($expectedResult, $sut->isDirectory());
+    }
+
+    public function isDirectoryDataProvider(): \Generator
+    {
+        yield "some gif image filetype" => ['fileType' => 'image/gif', 'expectedResult' => false];
+        yield "some jpeg image filetype" => ['fileType' => 'image/jpeg', 'expectedResult' => false];
+        yield "directory media type" => ['fileType' => Media::FILETYPE_DIRECTORY, 'expectedResult' => true];
+    }
 }
