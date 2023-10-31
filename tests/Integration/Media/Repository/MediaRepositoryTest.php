@@ -24,55 +24,67 @@ class MediaRepositoryTest extends IntegrationTestCase
 
     public function testGetShopFolderMediaCount(): void
     {
-        $this->createItems(3, 'someFolder');
-        $this->createItems(2, '');
+        $this->createTestItems(3, 'someFolder');
+        $this->createTestItems(2, '');
 
         $basicContextStub = $this->createMock(BasicContextInterface::class);
         $basicContextStub->method('getCurrentShopId')->willReturn(2);
-
         $sut = $this->getSut(
             basicContext: $basicContextStub
         );
+
         $this->assertSame(3, $sut->getFolderMediaCount('someFolder'));
         $this->assertSame(2, $sut->getFolderMediaCount(''));
     }
 
-    public function testGetShopFolderMedia(): void
+    /**
+     * @dataProvider getFolderMediaDataProvider
+     */
+    public function testGetShopFolderMedia(string $folder, int $page, int $expectedItems, int $firstListItemId): void
     {
-        $folder = 'someFolder';
-        $this->createItems(20, $folder);
-        $this->createItems(3, '');
+        $this->createTestItems(20, 'someFolder');
+        $this->createTestItems(3, '');
 
         $basicContextStub = $this->createMock(BasicContextInterface::class);
         $basicContextStub->method('getCurrentShopId')->willReturn(2);
-
         $sut = $this->getSut(
             basicContext: $basicContextStub
         );
 
-        $result = $sut->getFolderMedia($folder, 0);
+        $result = $sut->getFolderMedia($folder, $page);
 
-        $this->assertSame(18, count($result));
-        foreach ($result as $oneItem) {
+        $this->assertSame($expectedItems, count($result));
+        foreach ($result as $key => $oneItem) {
             $this->assertInstanceOf(Media::class, $oneItem);
-        }
-
-        $result = $sut->getFolderMedia($folder, 1);
-
-        $this->assertSame(2, count($result));
-        foreach ($result as $oneItem) {
-            $this->assertInstanceOf(Media::class, $oneItem);
-        }
-
-        $result = $sut->getFolderMedia('', 0);
-
-        $this->assertSame(3, count($result));
-        foreach ($result as $oneItem) {
-            $this->assertInstanceOf(Media::class, $oneItem);
+            $this->assertSame($folder . 'example' . ($firstListItemId - $key), $oneItem->getOxid());
         }
     }
 
-    protected function createItems(int $amount, string $folderId): void
+    public function getFolderMediaDataProvider(): \Generator
+    {
+        yield "first page in folder" => [
+            'folder' => 'someFolder',
+            'page' => 0,
+            'expectedItems' => 18,
+            'firstListItemId' => 20
+        ];
+
+        yield "second page in folder" => [
+            'folder' => 'someFolder',
+            'page' => 1,
+            'expectedItems' => 2,
+            'firstListItemId' => 2
+        ];
+
+        yield "first page without folder" => [
+            'folder' => '',
+            'page' => 0,
+            'expectedItems' => 3,
+            'firstListItemId' => 3
+        ];
+    }
+
+    protected function createTestItems(int $amount, string $folderId): void
     {
         $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
         $queryBuilder = $queryBuilderFactory->create();
@@ -85,6 +97,7 @@ class MediaRepositoryTest extends IntegrationTestCase
             'DDTHUMB' => ':DDTHUMB',
             'DDIMAGESIZE' => ':DDIMAGESIZE',
             'DDFOLDERID' => ':DDFOLDERID',
+            'OXTIMESTAMP' => ':OXTIMESTAMP'
         ]);
 
         for ($i = 1; $i <= $amount; $i++) {
@@ -97,6 +110,7 @@ class MediaRepositoryTest extends IntegrationTestCase
                 'DDTHUMB' => 'thumbfilename' . $i . '.jpg',
                 'DDIMAGESIZE' => $i . '00x' . $i . '00.jpg',
                 'DDFOLDERID' => $folderId,
+                'OXTIMESTAMP' => date("Y-m-d H:i:") . $i
             ]);
             $queryBuilder->execute();
         }
