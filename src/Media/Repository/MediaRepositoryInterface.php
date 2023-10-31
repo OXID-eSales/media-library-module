@@ -2,6 +2,7 @@
 
 namespace OxidEsales\MediaLibrary\Media\Repository;
 
+use OxidEsales\MediaLibrary\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 
 interface MediaRepositoryInterface
@@ -13,5 +14,8 @@ interface MediaRepositoryInterface
      */
     public function getFolderMedia(string $folderId, int $start, int $limit = 18): array;
 
+    /**
+     * @throws MediaNotFoundException
+     */
     public function getMediaById(string $mediaId): ?Media;
 }

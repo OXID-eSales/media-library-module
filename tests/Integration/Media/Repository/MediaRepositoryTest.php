@@ -14,6 +14,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInte
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
+use OxidEsales\MediaLibrary\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepository;
@@ -86,11 +87,17 @@ class MediaRepositoryTest extends IntegrationTestCase
             basicContext: $basicContextStub
         );
 
-        $this->assertNull($sut->getMediaById('someWrongId'));
-
         $result = $sut->getMediaById('someFolderId');
         $this->assertInstanceOf(Media::class, $result);
         $this->assertSame('someDirectoryName', $result->getFileName());
+    }
+
+    public function testGetMediaByIdNotFound(): void
+    {
+        $sut = $this->getSut();
+
+        $this->expectException(MediaNotFoundException::class);
+        $sut->getMediaById('someWrongId');
     }
 
     public function getFolderMediaDataProvider(): \Generator

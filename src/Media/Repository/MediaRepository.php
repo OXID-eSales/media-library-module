@@ -12,6 +12,7 @@ namespace OxidEsales\MediaLibrary\Media\Repository;
 use Doctrine\DBAL\Connection;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
+use OxidEsales\MediaLibrary\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 
 class MediaRepository implements MediaRepositoryInterface
@@ -58,7 +59,7 @@ class MediaRepository implements MediaRepositoryInterface
         return $result;
     }
 
-    public function getMediaById(string $mediaId): ?Media
+    public function getMediaById(string $mediaId): Media
     {
         $result = $this->connection->executeQuery(
             "SELECT * FROM ddmedia WHERE OXSHOPID = :OXSHOPID AND OXID = :OXID",
@@ -70,8 +71,8 @@ class MediaRepository implements MediaRepositoryInterface
 
         if ($data = $result->fetchAssociative()) {
             return $this->mediaFactory->fromDatabaseArray($data);
-        } else {
-            return null;
         }
+
+        throw new MediaNotFoundException();
     }
 }
