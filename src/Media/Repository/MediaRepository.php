@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Media\Repository;
 
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 
