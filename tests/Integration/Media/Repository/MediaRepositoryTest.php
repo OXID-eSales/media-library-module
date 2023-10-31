@@ -64,6 +64,35 @@ class MediaRepositoryTest extends IntegrationTestCase
         }
     }
 
+    public function testGetMediaById(): void
+    {
+        $addItemQueryBuilder = $this->getAddItemQueryBuilder();
+        $addItemQueryBuilder->setParameters([
+            'OXID' => 'someFolderId',
+            'OXSHOPID' => 2,
+            'DDFILENAME' => 'someDirectoryName',
+            'DDFILESIZE' => 0,
+            'DDFILETYPE' => 'directory',
+            'DDTHUMB' => '',
+            'DDIMAGESIZE' => '',
+            'DDFOLDERID' => '',
+            'OXTIMESTAMP' => 'NOW()'
+        ]);
+        $addItemQueryBuilder->execute();
+
+        $basicContextStub = $this->createMock(BasicContextInterface::class);
+        $basicContextStub->method('getCurrentShopId')->willReturn(2);
+        $sut = $this->getSut(
+            basicContext: $basicContextStub
+        );
+
+        $this->assertNull($sut->getMediaById('someWrongId'));
+
+        $result = $sut->getMediaById('someFolderId');
+        $this->assertInstanceOf(Media::class, $result);
+        $this->assertSame('someDirectoryName', $result->getFileName());
+    }
+
     public function getFolderMediaDataProvider(): \Generator
     {
         yield "first page in folder" => [
@@ -88,21 +117,9 @@ class MediaRepositoryTest extends IntegrationTestCase
         ];
     }
 
-    protected function createTestItems(int $amount, string $folderId): void
+    private function createTestItems(int $amount, string $folderId): void
     {
-        $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
-        $queryBuilder = $queryBuilderFactory->create();
-        $queryBuilder->insert("ddmedia")->values([
-            'OXID' => ':OXID',
-            'OXSHOPID' => ':OXSHOPID',
-            'DDFILENAME' => ':DDFILENAME',
-            'DDFILESIZE' => ':DDFILESIZE',
-            'DDFILETYPE' => ':DDFILETYPE',
-            'DDTHUMB' => ':DDTHUMB',
-            'DDIMAGESIZE' => ':DDIMAGESIZE',
-            'DDFOLDERID' => ':DDFOLDERID',
-            'OXTIMESTAMP' => ':OXTIMESTAMP'
-        ]);
+        $queryBuilder = $this->getAddItemQueryBuilder();
 
         for ($i = 1; $i <= $amount; $i++) {
             $queryBuilder->setParameters([
@@ -120,10 +137,7 @@ class MediaRepositoryTest extends IntegrationTestCase
         }
     }
 
-    /**
-     * @return MediaRepository
-     */
-    protected function getSut(
+    private function getSut(
         ?BasicContextInterface $basicContext = null,
         ?ConnectionProviderInterface $connectionProvider = null,
         ?MediaFactoryInterface $mediaFactory = null,
@@ -135,5 +149,24 @@ class MediaRepositoryTest extends IntegrationTestCase
         );
 
         return $sut;
+    }
+
+    private function getAddItemQueryBuilder(): \Doctrine\DBAL\Query\QueryBuilder
+    {
+        $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
+        $queryBuilder = $queryBuilderFactory->create();
+        $queryBuilder->insert("ddmedia")->values([
+            'OXID' => ':OXID',
+            'OXSHOPID' => ':OXSHOPID',
+            'DDFILENAME' => ':DDFILENAME',
+            'DDFILESIZE' => ':DDFILESIZE',
+            'DDFILETYPE' => ':DDFILETYPE',
+            'DDTHUMB' => ':DDTHUMB',
+            'DDIMAGESIZE' => ':DDIMAGESIZE',
+            'DDFOLDERID' => ':DDFOLDERID',
+            'OXTIMESTAMP' => ':OXTIMESTAMP'
+        ]);
+
+        return $queryBuilder;
     }
 }

@@ -12,4 +12,6 @@ interface MediaRepositoryInterface
      * @return array<Media>
      */
     public function getFolderMedia(string $folderId, int $start, int $limit = 18): array;
+
+    public function getMediaById(string $mediaId): ?Media;
 }
