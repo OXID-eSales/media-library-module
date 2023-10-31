@@ -38,14 +38,11 @@ class MediaRepository implements MediaRepositoryInterface
         return $result->fetchOne();
     }
 
-    public function getFolderMedia(string $folderId, int $page): array
+    public function getFolderMedia(string $folderId, int $start, int $limit = 18): array
     {
-        $limit = 18;
-        $offset = $page * $limit;
-
         $queryResult = $this->connection->executeQuery(
             "SELECT * FROM ddmedia WHERE OXSHOPID = :OXSHOPID AND DDFOLDERID = :DDFOLDERID
-            ORDER BY OXTIMESTAMP DESC LIMIT $offset, $limit",
+            ORDER BY OXTIMESTAMP DESC LIMIT $start, $limit",
             [
                 'OXSHOPID' => $this->basicContext->getCurrentShopId(),
                 'DDFOLDERID' => $folderId

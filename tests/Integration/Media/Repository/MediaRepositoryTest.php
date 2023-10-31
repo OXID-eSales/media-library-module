@@ -40,9 +40,13 @@ class MediaRepositoryTest extends IntegrationTestCase
     /**
      * @dataProvider getFolderMediaDataProvider
      */
-    public function testGetShopFolderMedia(string $folder, int $page, int $expectedItems, int $firstListItemId): void
-    {
-        $this->createTestItems(20, 'someFolder');
+    public function testGetShopFolderMedia(
+        string $folder,
+        int $start,
+        int $expectedItems,
+        int $firstListItemId
+    ): void {
+        $this->createTestItems(7, 'someFolder');
         $this->createTestItems(3, '');
 
         $basicContextStub = $this->createMock(BasicContextInterface::class);
@@ -51,7 +55,7 @@ class MediaRepositoryTest extends IntegrationTestCase
             basicContext: $basicContextStub
         );
 
-        $result = $sut->getFolderMedia($folder, $page);
+        $result = $sut->getFolderMedia($folder, $start, 5);
 
         $this->assertSame($expectedItems, count($result));
         foreach ($result as $key => $oneItem) {
@@ -64,14 +68,14 @@ class MediaRepositoryTest extends IntegrationTestCase
     {
         yield "first page in folder" => [
             'folder' => 'someFolder',
-            'page' => 0,
-            'expectedItems' => 18,
-            'firstListItemId' => 20
+            'start' => 0,
+            'expectedItems' => 5,
+            'firstListItemId' => 7
         ];
 
         yield "second page in folder" => [
             'folder' => 'someFolder',
-            'page' => 1,
+            'start' => 5,
             'expectedItems' => 2,
             'firstListItemId' => 2
         ];
