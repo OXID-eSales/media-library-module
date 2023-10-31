@@ -50,7 +50,6 @@ class MediaController extends AdminDetailsController
         $iShopId = $oConfig->getActiveShop()->getShopId();
         $request = Registry::getRequest();
 
-        $this->addTplParam('aFiles', $this->mediaService->getFiles(0, $iShopId));
         $this->addTplParam('iFileCount', $this->mediaService->getFileCount($iShopId));
         $this->addTplParam('sResourceUrl', $this->imageResource->getMediaUrl());
         $this->addTplParam('sThumbsUrl', $this->imageResource->getThumbnailUrl());

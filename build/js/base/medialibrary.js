@@ -1055,16 +1055,7 @@
                     }
                 );
 
-                if ( $( '.dd-media-item', $dialog ).length >= 18 )
-                {
-                    window.setTimeout( function ()
-                        {
-                            ui._loadMoreMediaContent();
-                        },
-                        500
-                    );
-                }
-
+                ui._loadMoreMediaContent();
             }
         );
     };
@@ -1073,7 +1064,7 @@
     {
         if ( !page || page === undefined )
         {
-            page = 1;
+            page = 0;
         }
 
         var actionLink = this._actionLink;
