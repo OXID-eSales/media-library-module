@@ -14,4 +14,6 @@ interface RequestInterface
     public function isOverlay(): bool;
 
     public function isPopout(): bool;
+
+    public function getFolderId(): string;
 }

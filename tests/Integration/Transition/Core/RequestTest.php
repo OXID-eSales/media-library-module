@@ -54,4 +54,29 @@ class RequestTest extends TestCase
             [false, false]
         ];
     }
+
+    /**
+     * @dataProvider requestOnlyStringDataProvider
+     */
+    public function testGetFolderId($requestValue, $expectedValue): void
+    {
+        $requestMock = $this->createPartialMock(ShopRequest::class, ['getRequestEscapedParameter']);
+        $requestMock->method('getRequestEscapedParameter')->willReturnMap([
+            [Request::REQUEST_PARAM_FOLDER_ID, null, $requestValue]
+        ]);
+
+        $sut = new Request($requestMock);
+        $this->assertSame($expectedValue, $sut->getFolderId());
+    }
+
+    public function requestOnlyStringDataProvider(): array
+    {
+        return [
+            [null, ''],
+            [0, ''],
+            [1, ''],
+            [['someArray'], ''],
+            ['random', 'random'],
+        ];
+    }
 }
