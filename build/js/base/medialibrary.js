@@ -857,7 +857,7 @@
                 $( '.dd-media', $dialog ).on( 'click', '.dd-media-item', function ( e )
                     {
                         e.preventDefault();
-                        
+
                         if ( $( this ).parent( '.dz-error' ).length )
                         {
                             return;
@@ -1048,40 +1048,27 @@
                     }
                 );
 
-                ui._loadMoreMediaContent();
+                ui._loadMoreMediaContent(0);
             }
         );
     };
 
-    MediaLibrary.prototype._loadMoreMediaContent = function ( $dialog, page )
-    {
-        if ( !page || page === undefined )
-        {
-            page = 0;
-        }
-
+    MediaLibrary.prototype._loadMoreMediaContent = function (page) {
         var actionLink = this._actionLink;
-        var start      = page * 18;
-        var ui         = this;
+        var start = page * 18;
+        var ui= this;
 
-        $.get( actionLink + 'cl=ddoemedia_view&fnc=moreFiles&start=' + start + '&folderid=' + $( '.dd-media', $dialog ).data( 'folderid' ), function ( data )
-            {
-                if ( data.files && data.files.length )
-                {
-                    $.each( data.files, function ()
-                        {
-                            ui.addMediaItem( this.OXID, this.DDFILENAME, this.DDFILETYPE, this.DDFILESIZE, ( this.DDTHUMB || false ), ( this.DDIMAGESIZE || null ) );
-                        }
-                    );
-                }
-
-                if ( data.more )
-                {
-                    ui._loadMoreMediaContent( $dialog, ( page + 1 ) );
-                }
+        $.get(actionLink + 'cl=ddoemedia_view&fnc=moreFiles&start=' + start + '&folderid=' + $('.dd-media').data('folderid'), function (data) {
+            if (data.files && data.files.length) {
+                $.each(data.files, function () {
+                    ui.addMediaItem(this.id, this.file, this.filetype, this.filesize, (this.thumb || false), (this.imageSize || null));
+                });
             }
-        );
 
+            if (data.more) {
+                ui._loadMoreMediaContent(page + 1);
+            }
+        });
     };
 
     // Make MediaLibrary public

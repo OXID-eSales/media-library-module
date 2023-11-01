@@ -23,4 +23,6 @@ interface MediaInterface
     public function getOxid(): string;
 
     public function isDirectory(): bool;
+
+    public function getFrontendData(): FrontendMedia;
 }

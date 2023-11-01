@@ -11,6 +11,7 @@ use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
+use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\Media;
 use OxidEsales\MediaLibrary\Transition\Core\RequestInterface;
 use OxidEsales\MediaLibrary\Transition\Core\ResponseInterface;
@@ -21,6 +22,7 @@ use Symfony\Component\Filesystem\Path;
  */
 class MediaController extends AdminDetailsController
 {
+    protected RequestInterface $request;
     protected ?Media $mediaService = null;
     protected ?ImageResourceInterface $imageResource = null;
 
@@ -32,6 +34,7 @@ class MediaController extends AdminDetailsController
         parent::init();
         $this->setTemplateName('@ddoemedialibrary/dialog/ddoemedia');
 
+        $this->request = $this->getService(RequestInterface::class);
         $this->mediaService = $this->getService(Media::class);
         $this->imageResource = $this->getService(ImageResourceInterface::class);
 
@@ -47,11 +50,11 @@ class MediaController extends AdminDetailsController
      */
     public function render()
     {
-        $oConfig = Registry::getConfig();
-        $iShopId = $oConfig->getActiveShop()->getShopId();
         $request = Registry::getRequest();
 
-        $this->addTplParam('iFileCount', $this->mediaService->getFileCount($iShopId));
+        $mediaRepository = $this->getService(MediaRepositoryInterface::class);
+        $this->addTplParam('iFileCount', $mediaRepository->getFolderMediaCount($this->request->getFolderId()));
+
         $this->addTplParam('sResourceUrl', $this->imageResource->getMediaUrl());
         $this->addTplParam('sThumbsUrl', $this->imageResource->getThumbnailUrl());
         $this->addTplParam('sFoldername', $this->imageResource->getFolderName());
@@ -238,17 +241,22 @@ class MediaController extends AdminDetailsController
      */
     public function moreFiles()
     {
-        $oConfig = Registry::getConfig();
-        $request = Registry::getRequest();
+        $pageSize = 18;
+        $folderId = $this->request->getFolderId();
+        $listStartIndex = $this->request->getMediaListStartIndex();
 
-        $iStart = $request->getRequestParameter('start') ? $request->getRequestParameter('start') : 0;
-        $iShopId = $oConfig->getActiveShop()->getShopId();
+        $mediaRepository = $this->getService(MediaRepositoryInterface::class);
+        $folderMediaCount = $mediaRepository->getFolderMediaCount($folderId);
 
-        $aFiles = $this->mediaService->getFiles($iStart, $iShopId);
-        $blLoadMore = ($iStart + 18 < $this->mediaService->getFileCount($iShopId));
+        $isThereMoreToLoad = ($listStartIndex + $pageSize < $folderMediaCount);
+
+        $files = array_map(
+            fn($item) => $item->getFrontendData(),
+            $mediaRepository->getFolderMedia($folderId, $listStartIndex, $pageSize)
+        );
 
         $responseService = $this->getService(ResponseInterface::class);
-        $responseService->responseAsJson(['files' => $aFiles, 'more' => $blLoadMore]);
+        $responseService->responseAsJson(['files' => $files, 'more' => $isThereMoreToLoad]);
     }
 
     public function getBreadcrumb(): array

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Media\DataType;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
+use OxidEsales\MediaLibrary\Media\DataType\FrontendMedia;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use PHPUnit\Framework\TestCase;
 
@@ -62,5 +63,32 @@ class MediaTest extends TestCase
         yield "some gif image filetype" => ['fileType' => 'image/gif', 'expectedResult' => false];
         yield "some jpeg image filetype" => ['fileType' => 'image/jpeg', 'expectedResult' => false];
         yield "directory media type" => ['fileType' => Media::FILETYPE_DIRECTORY, 'expectedResult' => true];
+    }
+
+    public function testGetFrontendObject(): void
+    {
+        $imageSize = new ImageSize(100, 100);
+
+        $sut = new Media(
+            oxid: 'someOxid',
+            shopId: 2,
+            fileName: 'filename.jpg',
+            fileSize: 25,
+            fileType: 'image/gif',
+            thumbFileName: 'thumbfilename.jpg',
+            imageSize: $imageSize,
+            folderId: 'someFolderId'
+        );
+
+        $expected = new FrontendMedia(
+            id: 'someOxid',
+            file: 'filename.jpg',
+            filetype: 'image/gif',
+            filesize: 25,
+            thumb: 'thumbfilename.jpg',
+            imageSize: '100x100'
+        );
+
+        $this->assertEquals($expected, $sut->getFrontendData());
     }
 }
