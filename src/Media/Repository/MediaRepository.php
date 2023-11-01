@@ -14,6 +14,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInte
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\MediaLibrary\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
+use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 
 class MediaRepository implements MediaRepositoryInterface
 {
@@ -59,7 +60,7 @@ class MediaRepository implements MediaRepositoryInterface
         return $result;
     }
 
-    public function getMediaById(string $mediaId): Media
+    public function getMediaById(string $mediaId): MediaInterface
     {
         $result = $this->connection->executeQuery(
             "SELECT * FROM ddmedia WHERE OXSHOPID = :OXSHOPID AND OXID = :OXID",

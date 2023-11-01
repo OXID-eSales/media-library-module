@@ -1,0 +1,8 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface:
+    class: OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbService
+    public: true

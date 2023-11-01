@@ -9,6 +9,7 @@ namespace OxidEsales\MediaLibrary\Application\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Service\Media;
 use OxidEsales\MediaLibrary\Transition\Core\RequestInterface;
@@ -284,25 +285,9 @@ class MediaController extends AdminDetailsController
         $responseService->responseAsJson(['files' => $aFiles, 'more' => $blLoadMore]);
     }
 
-    /**
-     * @return array
-     */
-    public function getBreadcrumb()
+    public function getBreadcrumb(): array
     {
-        $aBreadcrumb = [];
-
-        $oPath = new \stdClass();
-        $oPath->active = ($this->imageResource->getFolderName() ? false : true);
-        $oPath->name = 'Root';
-        $aBreadcrumb[] = $oPath;
-
-        if ($this->imageResource->getFolderName()) {
-            $oPath = new \stdClass();
-            $oPath->active = true;
-            $oPath->name = $this->imageResource->getFolderName();
-            $aBreadcrumb[] = $oPath;
-        }
-
-        return $aBreadcrumb;
+        $breadcrumbService = $this->getService(BreadcrumbServiceInterface::class);
+        return $breadcrumbService->getBreadcrumbsByRequest();
     }
 }
