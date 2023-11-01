@@ -16,4 +16,6 @@ interface RequestInterface
     public function isPopout(): bool;
 
     public function getFolderId(): string;
+
+    public function getMediaListStartIndex(): int;
 }
