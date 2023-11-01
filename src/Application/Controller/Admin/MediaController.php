@@ -102,56 +102,22 @@ class MediaController extends AdminDetailsController
                 $sThumb = $aResult['thumb'];
             }
 
-            if ($request->getRequestParameter('src') == 'fallback') {
-                $this->fallback(true);
-            } else {
-                $responseService->responseAsJson([
-                    'success'   => true,
-                    'id'        => $sId,
-                    'file'      => $sFileName ?? '',
-                    'filetype'  => $sFileType ?? '',
-                    'filesize'  => $sFileSize ?? '',
-                    'imagesize' => $sImageSize ?? '',
-                    'thumb'     => $sThumb ?? '',
-                ]);
-            }
+            $responseService->responseAsJson([
+                'success'   => true,
+                'id'        => $sId,
+                'file'      => $sFileName ?? '',
+                'filetype'  => $sFileType ?? '',
+                'filesize'  => $sFileSize ?? '',
+                'imagesize' => $sImageSize ?? '',
+                'thumb'     => $sThumb ?? '',
+            ]);
         } catch (\Exception $e) {
-            if ($request->getRequestParameter('src') == 'fallback') {
-                $this->fallback(false, true);
-            } else {
-                $responseService->responseAsJson([
-                    'success'      => false,
-                    'id'           => $sId,
-                    'errorMessage' => $e->getMessage(),
-                ]);
-            }
+            $responseService->responseAsJson([
+                'success'      => false,
+                'id'           => $sId,
+                'errorMessage' => $e->getMessage(),
+            ]);
         }
-    }
-
-    /**
-     * todo: extract template
-     *
-     * @param bool $blComplete
-     * @param bool $blError
-     */
-    public function fallback($blComplete = false, $blError = false)
-    {
-        $oViewConf = $this->getViewConfig();
-
-        $sFormHTML = '<html><head></head><body style="text-align:center;">
-          <form action="' . $oViewConf->getSelfLink()
-                     . 'cl=ddoemedia_view&fnc=upload&src=fallback" method="post" enctype="multipart/form-data">
-              <input type="file" name="file" onchange="this.form.submit();" />
-          </form>';
-
-        if ($blComplete) {
-            $sFormHTML .= '<script>window.parent.MediaLibrary.refreshMedia();</script>';
-        }
-
-        $sFormHTML .= '</body></html>';
-
-        $responseService = $this->getService(ResponseInterface::class);
-        $responseService->responseAsTextHtml($sFormHTML);
     }
 
     /**

@@ -959,13 +959,6 @@
                             }
                         },
 
-                        //forceFallback: true,
-                        fallback: function ()
-                        {
-                            $( '.dd-media-upload-info', $dialog ).hide();
-                            $( '.dd-media-upload-fallback', $dialog ).show();
-                        },
-
                         init: function ()
                         {
                             this.on( 'addedfile', function ()

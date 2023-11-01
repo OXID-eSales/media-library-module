@@ -156,18 +156,9 @@
                 </div>
 
                 <div class="dd-media-upload">
-
                     <div class="dd-media-upload-info">
                         {{ translate({ ident: "DD_MEDIA_UPLOAD_INFO" })|raw }}
                     </div>
-
-                    <div class="dd-media-upload-fallback" style="display: none;">
-                        <span>{{ translate({ ident: "DD_MEDIA_FALLBACK_INFO" })|raw }}</span>
-                        <br />
-
-                        <iframe src="{{ oViewConf.getSelfLink()|replace({'&amp;':'&'})|raw }}cl=ddoemedia_view&fnc=fallback" frameborder="0" scrolling="no"></iframe>
-                    </div>
-
                 </div>
 
             </div>
