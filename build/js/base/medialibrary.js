@@ -857,7 +857,7 @@
                 $( '.dd-media', $dialog ).on( 'click', '.dd-media-item', function ( e )
                     {
                         e.preventDefault();
-                        
+
                         if ( $( this ).parent( '.dz-error' ).length )
                         {
                             return;
@@ -959,13 +959,6 @@
                             }
                         },
 
-                        //forceFallback: true,
-                        fallback: function ()
-                        {
-                            $( '.dd-media-upload-info', $dialog ).hide();
-                            $( '.dd-media-upload-fallback', $dialog ).show();
-                        },
-
                         init: function ()
                         {
                             this.on( 'addedfile', function ()
@@ -1055,49 +1048,27 @@
                     }
                 );
 
-                if ( $( '.dd-media-item', $dialog ).length >= 18 )
-                {
-                    window.setTimeout( function ()
-                        {
-                            ui._loadMoreMediaContent();
-                        },
-                        500
-                    );
-                }
-
+                ui._loadMoreMediaContent(0);
             }
         );
     };
 
-    MediaLibrary.prototype._loadMoreMediaContent = function ( $dialog, page )
-    {
-        if ( !page || page === undefined )
-        {
-            page = 1;
-        }
-
+    MediaLibrary.prototype._loadMoreMediaContent = function (page) {
         var actionLink = this._actionLink;
-        var start      = page * 18;
-        var ui         = this;
+        var start = page * 18;
+        var ui= this;
 
-        $.get( actionLink + 'cl=ddoemedia_view&fnc=moreFiles&start=' + start + '&folderid=' + $( '.dd-media', $dialog ).data( 'folderid' ), function ( data )
-            {
-                if ( data.files && data.files.length )
-                {
-                    $.each( data.files, function ()
-                        {
-                            ui.addMediaItem( this.OXID, this.DDFILENAME, this.DDFILETYPE, this.DDFILESIZE, ( this.DDTHUMB || false ), ( this.DDIMAGESIZE || null ) );
-                        }
-                    );
-                }
-
-                if ( data.more )
-                {
-                    ui._loadMoreMediaContent( $dialog, ( page + 1 ) );
-                }
+        $.get(actionLink + 'cl=ddoemedia_view&fnc=moreFiles&start=' + start + '&folderid=' + $('.dd-media').data('folderid'), function (data) {
+            if (data.files && data.files.length) {
+                $.each(data.files, function () {
+                    ui.addMediaItem(this.id, this.file, this.filetype, this.filesize, (this.thumb || false), (this.imageSize || null));
+                });
             }
-        );
 
+            if (data.more) {
+                ui._loadMoreMediaContent(page + 1);
+            }
+        });
     };
 
     // Make MediaLibrary public

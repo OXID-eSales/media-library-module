@@ -433,29 +433,6 @@ class Media
         return $sNewName;
     }
 
-    public function getFileCount($iShopId = null)
-    {
-        $sSelect = "SELECT COUNT(*) AS 'count' FROM `ddmedia` WHERE 1 " .
-                   ($iShopId != null ? "AND `OXSHOPID` = " . $this->connection->quote($iShopId) . " " : "") .
-                   "AND `DDFOLDERID` = ?";
-
-        $fileCount = $this->connection->fetchOne($sSelect, [$this->imageResource->getFolderId() ?: '']);
-
-        return $fileCount ?: 0;
-    }
-
-    public function getFiles($iStart = 0, $iShopId = null)
-    {
-        /** Cast $iStart parameter to int in order to avoid SQL injection */
-        $iStart = (int)$iStart;
-        $sSelect = "SELECT * FROM `ddmedia` WHERE 1 " .
-                   ($iShopId != null ? "AND `OXSHOPID` = " . $this->connection->quote($iShopId) . " " : "") .
-                   "AND `DDFOLDERID` = ? " .
-                   "ORDER BY `OXTIMESTAMP` DESC LIMIT " . $iStart . ", " . self::AMOUNT_OF_FILES . " ";
-
-        return $this->connection->fetchAllAssociative($sSelect, [$this->imageResource->getFolderId() ?: '']);
-    }
-
     public function delete($aIds)
     {
         foreach ($aIds as $iKey => $sId) {

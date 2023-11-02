@@ -54,4 +54,56 @@ class RequestTest extends TestCase
             [false, false]
         ];
     }
+
+    /**
+     * @dataProvider requestOnlyStringDataProvider
+     */
+    public function testGetFolderId($requestValue, $expectedValue): void
+    {
+        $requestMock = $this->createPartialMock(ShopRequest::class, ['getRequestEscapedParameter']);
+        $requestMock->method('getRequestEscapedParameter')->willReturnMap([
+            [Request::REQUEST_PARAM_FOLDER_ID, null, $requestValue]
+        ]);
+
+        $sut = new Request($requestMock);
+        $this->assertSame($expectedValue, $sut->getFolderId());
+    }
+
+    public function requestOnlyStringDataProvider(): array
+    {
+        return [
+            [null, ''],
+            [0, ''],
+            [1, ''],
+            [['someArray'], ''],
+            ['random', 'random'],
+        ];
+    }
+
+    /**
+     * @dataProvider getMediaListStartIndexDataProvider
+     */
+    public function testGetMediaListStartIndex($requestValue, $expectedValue): void
+    {
+        $requestMock = $this->createPartialMock(ShopRequest::class, ['getRequestParameter']);
+        $requestMock->method('getRequestParameter')->willReturnMap([
+            [Request::REQUEST_PARAM_MEDIA_LIST_START_INDEX, null, $requestValue]
+        ]);
+
+        $sut = new Request($requestMock);
+        $this->assertSame($expectedValue, $sut->getMediaListStartIndex());
+    }
+
+    public function getMediaListStartIndexDataProvider(): array
+    {
+        return [
+            'null' => [null, 0],
+            'empty string' => ['', 0],
+            'one string' => ['1', 1],
+            'one as int' => [1, 1],
+            'ten as int' => [10, 10],
+            'string with 10 as start' => ['10something', 10],
+            'string with 10 inside' => ['some10xx', 0]
+        ];
+    }
 }

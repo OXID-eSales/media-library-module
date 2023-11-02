@@ -122,39 +122,6 @@ class MediaTest extends IntegrationTestCase
         $this->assertTrue(file_exists($sThumbFile));
     }
 
-    /**
-     * This test depends on the test testUploadMedia
-     *
-     * @return void
-     */
-    public function testFilesCount()
-    {
-        $sut = $this->getSut();
-        $sut->imageResource->setFolder();
-        $this->assertEquals(9, $sut->getFileCount()); // 4 uploads and 1 folder
-    }
-
-    /**
-     * This test depends on the test testUploadMedia
-     *
-     * @return void
-     */
-    public function testGetFiles()
-    {
-        $sut = $this->getSut();
-        $sut->imageResource->setFolder();
-        $aFiles = $sut->getFiles();
-
-        $this->assertGreaterThan(0, $this->count($aFiles));
-
-        foreach ($aFiles as $aRow) {
-            $aFilesResult[] = $aRow['DDFILENAME'];
-        }
-
-        $this->assertContains('file.jpg', $aFilesResult);
-    }
-
-
     public function testCreateThumbnailException()
     {
         $sut = $this->getSut();

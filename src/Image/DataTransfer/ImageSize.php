@@ -24,4 +24,15 @@ class ImageSize implements ImageSizeInterface
     {
         return $this->height;
     }
+
+    public function isEmpty(): bool
+    {
+        return !$this->getWidth() || !$this->getHeight();
+    }
+
+    public function getInFormat(string $format, string $emptyFormat): string
+    {
+        $finalFormat = $this->isEmpty() ? $emptyFormat : $format;
+        return sprintf($finalFormat, $this->getWidth(), $this->getHeight());
+    }
 }

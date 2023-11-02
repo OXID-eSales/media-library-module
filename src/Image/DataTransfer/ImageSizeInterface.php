@@ -13,4 +13,8 @@ interface ImageSizeInterface
 {
     public function getWidth(): int;
     public function getheight(): int;
+
+    public function isEmpty(): bool;
+
+    public function getInFormat(string $format, string $emptyFormat);
 }
