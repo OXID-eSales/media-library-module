@@ -12,12 +12,16 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\visitor\vfsStreamStructureVisitor;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\UtilsObject;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResource;
+use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Service\Media;
 use OxidEsales\MediaLibrary\Service\ModuleSettings;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
+use OxidEsales\MediaLibrary\Service\NamingService;
+use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use PHPUnit\Framework\TestCase;
 
 class MediaTest extends TestCase
@@ -160,6 +164,7 @@ class MediaTest extends TestCase
         $sut = $this->getSut(
             shopConfig: $shopConfigMock,
             connectionProvider: $connectionProviderStub,
+            namingService: ContainerFactory::getInstance()->getContainer()->get(NamingServiceInterface::class),
         );
         if ($folder) {
             $sut->imageResource->setFolderName($folder);
@@ -406,6 +411,7 @@ class MediaTest extends TestCase
             $this->createStub(UtilsObject::class),
             $this->createStub(ThumbnailGeneratorInterface::class),
             $this->createStub(ImageResourceInterface::class),
+            namingService: ContainerFactory::getInstance()->getContainer()->get(NamingServiceInterface::class),
         );
 
         $defaultThumbnailSize = $oMedia->imageResource->getDefaultThumbnailSize();
@@ -637,7 +643,8 @@ class MediaTest extends TestCase
         ?Config $shopConfig = null,
         ?ConnectionProviderInterface $connectionProvider = null,
         ?UtilsObject $utilsObject = null,
-        ?ThumbnailGeneratorInterface $thumbnailGenerator = null
+        ?ThumbnailGeneratorInterface $thumbnailGenerator = null,
+        ?NamingServiceInterface $namingService = null,
     ) {
 
         $imageResourceMock = $this->getImageResourceStub(
@@ -652,7 +659,8 @@ class MediaTest extends TestCase
             $connectionProvider ?: $this->createStub(ConnectionProviderInterface::class),
             $utilsObject ?: $this->createStub(UtilsObject::class),
             $thumbnailGenerator ?: $this->createStub(ThumbnailGeneratorInterface::class),
-            $imageResourceMock
+            $imageResourceMock,
+            namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
         );
     }
 

@@ -44,6 +44,7 @@ class Media
         protected UtilsObject $utilsObject,
         public ThumbnailGeneratorInterface $thumbnailGenerator,
         public ImageResourceInterface $imageResource,
+        protected NamingServiceInterface $namingService,
     ) {
         $this->connection = $connectionProvider->get();
     }
@@ -212,7 +213,7 @@ class Media
         ];
 
         // sanitize filename
-        $sNewName = $this->_sanitizeFilename($sNewName);
+        $sNewName = $this->namingService->sanitizeFilename($sNewName);
 
         $sPath = $this->imageResource->getMediaPath();
 
@@ -418,21 +419,6 @@ class Media
      *
      * @return mixed|null|string|string[]
      */
-    protected function _sanitizeFilename($sNewName)
-    {
-        $iLang = \OxidEsales\Eshop\Core\Registry::getLang()->getEditLanguage();
-        if ($aReplaceChars = \OxidEsales\Eshop\Core\Registry::getLang()->getSeoReplaceChars($iLang)) {
-            $sNewName = str_replace(array_keys($aReplaceChars), array_values($aReplaceChars), $sNewName);
-        }
-        if (pathinfo($sNewName, PATHINFO_EXTENSION)) {
-            $sNewName = preg_replace('/[^a-zA-Z0-9-_]+/', '-', pathinfo($sNewName, PATHINFO_FILENAME)) .
-                        '.' .
-                        pathinfo($sNewName, PATHINFO_EXTENSION);
-        }
-
-        return $sNewName;
-    }
-
     public function delete($aIds)
     {
         foreach ($aIds as $iKey => $sId) {

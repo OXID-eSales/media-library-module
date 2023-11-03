@@ -12,3 +12,7 @@ services:
   OxidEsales\MediaLibrary\Service\ModuleSettings:
     class: OxidEsales\MediaLibrary\Service\ModuleSettings
     public: true
+
+  OxidEsales\MediaLibrary\Service\NamingServiceInterface:
+    class: OxidEsales\MediaLibrary\Service\NamingService
+    public: true

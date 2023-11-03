@@ -26,4 +26,14 @@ class LanguageProxy implements LanguageInterface
     {
         return $this->language->getLanguageStrings();
     }
+
+    public function getSeoReplaceChars(): array
+    {
+        $editLanguage = $this->language->getEditLanguage();
+
+        /** @var array $seoChars */
+        $seoChars = $this->language->getSeoReplaceChars($editLanguage);
+
+        return $seoChars;
+    }
 }
