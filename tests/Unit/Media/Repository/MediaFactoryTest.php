@@ -42,6 +42,6 @@ class MediaFactoryTest extends TestCase
 
         $size = $result->getImageSize();
         $this->assertSame(100, $size->getWidth());
-        $this->assertSame(200, $size->getheight());
+        $this->assertSame(200, $size->getHeight());
     }
 }
