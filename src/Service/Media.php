@@ -16,6 +16,7 @@ use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
+use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use Symfony\Component\Filesystem\Path;
 use Webmozart\Glob\Glob;
 
@@ -45,6 +46,7 @@ class Media
         public ThumbnailGeneratorInterface $thumbnailGenerator,
         public ImageResourceInterface $imageResource,
         protected NamingServiceInterface $namingService,
+        protected MediaRepositoryInterface $mediaRepository
     ) {
         $this->connection = $connectionProvider->get();
     }

@@ -16,6 +16,7 @@ use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResource;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
+use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\Media;
 use OxidEsales\MediaLibrary\Service\ModuleSettings;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
@@ -412,6 +413,7 @@ class MediaTest extends TestCase
             $this->createStub(ThumbnailGeneratorInterface::class),
             $this->createStub(ImageResourceInterface::class),
             namingService: ContainerFactory::getInstance()->getContainer()->get(NamingServiceInterface::class),
+            mediaRepository: $this->createStub(MediaRepositoryInterface::class)
         );
 
         $defaultThumbnailSize = $oMedia->imageResource->getDefaultThumbnailSize();
@@ -661,6 +663,7 @@ class MediaTest extends TestCase
             $thumbnailGenerator ?: $this->createStub(ThumbnailGeneratorInterface::class),
             $imageResourceMock,
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
+            mediaRepository: $this->createStub(MediaRepositoryInterface::class),
         );
     }
 

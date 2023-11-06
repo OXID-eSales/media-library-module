@@ -13,6 +13,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProvider;
 use OxidEsales\MediaLibrary\Image\Service\ImageResource;
+use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\ModuleSettings;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
@@ -223,6 +224,7 @@ class MediaTest extends IntegrationTestCase
             $thumbnailGenerator ?: $this->containerFactory->get(ThumbnailGeneratorInterface::class),
             $imageResourceMock,
             namingService: $namingService ?: $this->containerFactory->get(NamingServiceInterface::class),
+            mediaRepository: $this->containerFactory->get(MediaRepositoryInterface::class),
         );
     }
 
