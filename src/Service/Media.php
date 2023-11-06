@@ -14,8 +14,10 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
+use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use Symfony\Component\Filesystem\Path;
 use Webmozart\Glob\Glob;
@@ -81,7 +83,7 @@ class Media
             }
 
             $aFile = [
-                'filename'  => $sFileName,
+                'filename' => $sFileName,
                 'thumbnail' => $sThumbName,
             ];
 
@@ -89,43 +91,28 @@ class Media
             $sThumbName = $aFile['thumbnail'];
             $sFileName = $aFile['filename'];
 
-            $sImageSize = '';
+            $imageSize = new ImageSize(0, 0);
             if (is_readable($sDestPath) && preg_match("/image\//", $sFileType)) {
                 $aImageSize = $this->getImageSize($sDestPath);
-                $sImageSize = ($aImageSize ? $aImageSize[0] . 'x' . $aImageSize[1] : '');
+                $imageSize = new ImageSize($aImageSize[0] ?? 0, $aImageSize[1] ?? 0);
             }
 
-            $iShopId = $this->shopConfig->getActiveShop()->getShopId();
-
-            $sInsert = "REPLACE INTO `ddmedia`
-                              ( `OXID`, 
-                               `OXSHOPID`, 
-                               `DDFILENAME`, 
-                               `DDFILESIZE`, 
-                               `DDFILETYPE`, 
-                               `DDTHUMB`, 
-                               `DDIMAGESIZE`, 
-                               `DDFOLDERID` )
-                            VALUES
-                              ( ?, ?, ?, ?, ?, ?, ?, ? );";
-            $this->connection->executeQuery(
-                $sInsert,
-                [
-                    $sId,
-                    $iShopId,
-                    $sFileName,
-                    $sFileSize,
-                    $sFileType,
-                    $sThumbName,
-                    $sImageSize,
-                    $this->imageResource->getFolderId(),
-                ]
+            $newMedia = new MediaDataType(
+                oxid: $sId,
+                fileName: $sFileName,
+                fileSize: (int)$sFileSize,
+                fileType: $sFileType,
+                thumbFileName: $sThumbName,
+                imageSize: $imageSize,
+                folderId: $this->imageResource->getFolderId()
             );
+
+            $this->mediaRepository->addMedia($newMedia);
 
             $aResult['id'] = $sId;
             $aResult['filename'] = $sFileName;
             $aResult['thumb'] = $this->imageResource->getThumbnailUrl($sFileName);
-            $aResult['imagesize'] = $sImageSize;
+            $aResult['imagesize'] = $imageSize->getInFormat('%dx%d', '');
         }
 
         return $aResult;
@@ -182,25 +169,13 @@ class Media
         if (!$sId) {
             $sId = $this->generateUId();
 
-            $iShopId = $this->shopConfig->getActiveShop()->getShopId();
-
-            $sInsert = "INSERT INTO `ddmedia`
-                              ( `OXID`, `OXSHOPID`, `DDFILENAME`, `DDFILESIZE`, `DDFILETYPE`, `DDTHUMB`, `DDIMAGESIZE` )
-                            VALUES
-                              ( ?, ?, ?, ?, ?, ?, ? );";
-
-            $this->connection->executeQuery(
-                $sInsert,
-                [
-                    $sId,
-                    $iShopId,
-                    $sFolderName,
-                    0,
-                    'directory',
-                    '',
-                    '',
-                ]
+            $newMedia = new MediaDataType(
+                oxid: $sId,
+                fileName: $sFolderName,
+                fileType: 'directory'
             );
+
+            $this->mediaRepository->addMedia($newMedia);
         }
 
 

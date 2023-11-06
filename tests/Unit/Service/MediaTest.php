@@ -8,6 +8,7 @@
 namespace OxidEsales\MediaLibrary\Tests\Unit\Service;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception as DBALException;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\visitor\vfsStreamStructureVisitor;
 use OxidEsales\Eshop\Core\Config;
@@ -48,18 +49,19 @@ class MediaTest extends TestCase
                 ]
             );
 
-        $connectionMock = $this->createPartialMock(Connection::class, ['fetchOne', 'executeQuery']);
+        $connectionMock = $this->createPartialMock(Connection::class, ['fetchOne']);
         $connectionMock->expects($this->once())
             ->method('fetchOne')
             ->willReturn(null);
-        $connectionMock->expects($this->once())
-            ->method('executeQuery');
         $connectionProviderStub = $this->createConfiguredMock(
             ConnectionProviderInterface::class,
             [
                 'get' => $connectionMock,
             ]
         );
+
+        $mediaRepositoryMock = $this->createMock(MediaRepositoryInterface::class);
+        $mediaRepositoryMock->expects($this->once())->method('addMedia');
 
         $sId = md5('FolderTest');
         $utilsObjectMock = $this->createPartialMock(UtilsObject::class, ['generateUId']);
@@ -71,6 +73,7 @@ class MediaTest extends TestCase
             shopConfig: $shopConfigMock,
             connectionProvider: $connectionProviderStub,
             utilsObject: $utilsObjectMock,
+            mediaRepository: $mediaRepositoryMock,
         );
         $aCustomDir = $sut->createCustomDir('FolderTest', '');
 
@@ -101,18 +104,19 @@ class MediaTest extends TestCase
                 ]
             );
 
-        $connectionMock = $this->createPartialMock(Connection::class, ['fetchOne', 'executeQuery']);
+        $connectionMock = $this->createPartialMock(Connection::class, ['fetchOne']);
         $connectionMock->expects($this->any())
             ->method('fetchOne')
             ->willReturn(null);
-        $connectionMock->expects($this->exactly(2))
-            ->method('executeQuery');
         $connectionProviderStub = $this->createConfiguredMock(
             ConnectionProviderInterface::class,
             [
                 'get' => $connectionMock,
             ]
         );
+
+        $mediaRepositoryMock = $this->createMock(MediaRepositoryInterface::class);
+        $mediaRepositoryMock->method('addMedia')->willThrowException(new DBALException());
 
         $sId = md5('FolderTest_1');
         $utilsObjectMock = $this->createPartialMock(UtilsObject::class, ['generateUId']);
@@ -647,6 +651,7 @@ class MediaTest extends TestCase
         ?UtilsObject $utilsObject = null,
         ?ThumbnailGeneratorInterface $thumbnailGenerator = null,
         ?NamingServiceInterface $namingService = null,
+        ?MediaRepositoryInterface $mediaRepository = null,
     ) {
 
         $imageResourceMock = $this->getImageResourceStub(
@@ -663,7 +668,7 @@ class MediaTest extends TestCase
             $thumbnailGenerator ?: $this->createStub(ThumbnailGeneratorInterface::class),
             $imageResourceMock,
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
-            mediaRepository: $this->createStub(MediaRepositoryInterface::class),
+            mediaRepository: $mediaRepository ?? $this->createStub(MediaRepositoryInterface::class),
         );
     }
 
