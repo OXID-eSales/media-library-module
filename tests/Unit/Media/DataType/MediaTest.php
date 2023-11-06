@@ -22,7 +22,6 @@ class MediaTest extends TestCase
 
         $sut = new Media(
             oxid: 'someOxid',
-            shopId: 2,
             fileName: 'filename.jpg',
             fileSize: 25,
             fileType: 'image/gif',
@@ -32,7 +31,6 @@ class MediaTest extends TestCase
         );
 
         $this->assertSame('someOxid', $sut->getOxid());
-        $this->assertSame(2, $sut->getShopId());
         $this->assertSame('filename.jpg', $sut->getFileName());
         $this->assertSame(25, $sut->getFileSize());
         $this->assertSame('image/gif', $sut->getFileType());
@@ -46,7 +44,6 @@ class MediaTest extends TestCase
     {
         $sut = new Media(
             oxid: 'someOxid',
-            shopId: 2,
             fileName: 'filename.jpg',
             fileSize: 25,
             fileType: $fileType,
@@ -71,7 +68,6 @@ class MediaTest extends TestCase
 
         $sut = new Media(
             oxid: 'someOxid',
-            shopId: 2,
             fileName: 'filename.jpg',
             fileSize: 25,
             fileType: 'image/gif',

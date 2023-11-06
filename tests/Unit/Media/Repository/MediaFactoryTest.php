@@ -33,7 +33,6 @@ class MediaFactoryTest extends TestCase
         $result = $sut->fromDatabaseArray($data);
 
         $this->assertSame('oxidValue', $result->getOxid());
-        $this->assertSame(2, $result->getShopId());
         $this->assertSame('filenameValue', $result->getFileName());
         $this->assertSame(123, $result->getFileSize());
         $this->assertSame('filetypeValue', $result->getFileType());

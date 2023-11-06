@@ -18,8 +18,6 @@ interface MediaInterface
 
     public function getFileName(): string;
 
-    public function getShopId(): int;
-
     public function getOxid(): string;
 
     public function isDirectory(): bool;

@@ -17,7 +17,6 @@ class Media implements MediaInterface
 
     public function __construct(
         private string $oxid,
-        private int $shopId,
         private string $fileName,
         private int $fileSize,
         private string $fileType,
@@ -55,11 +54,6 @@ class Media implements MediaInterface
     public function getFileName(): string
     {
         return $this->fileName;
-    }
-
-    public function getShopId(): int
-    {
-        return $this->shopId;
     }
 
     public function getOxid(): string

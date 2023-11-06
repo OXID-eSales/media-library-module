@@ -19,7 +19,6 @@ class MediaFactory implements MediaFactoryInterface
         $size = explode("x", $item['DDIMAGESIZE']);
         return new Media(
             oxid: (string)$item['OXID'],
-            shopId: (int)$item['OXSHOPID'],
             fileName: (string)$item['DDFILENAME'],
             fileSize: (int)$item['DDFILESIZE'],
             fileType: (string)$item['DDFILETYPE'],
