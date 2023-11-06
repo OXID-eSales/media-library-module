@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Transition\Core;
+namespace OxidEsales\MediaLibrary\Transput;
 
 use OxidEsales\Eshop\Core\Utils;
 

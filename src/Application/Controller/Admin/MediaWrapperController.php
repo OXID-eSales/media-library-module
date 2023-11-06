@@ -8,7 +8,7 @@
 namespace OxidEsales\MediaLibrary\Application\Controller\Admin;
 
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\MediaLibrary\Transition\Core\RequestInterface;
+use OxidEsales\MediaLibrary\Transput\RequestInterface;
 
 /**
  * Class MediaWrapperController

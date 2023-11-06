@@ -11,7 +11,7 @@ namespace OxidEsales\MediaLibrary\Breadcrumb\Service;
 
 use OxidEsales\MediaLibrary\Breadcrumb\DataType\Breadcrumb;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
-use OxidEsales\MediaLibrary\Transition\Core\RequestInterface;
+use OxidEsales\MediaLibrary\Transput\RequestInterface;
 
 class BreadcrumbService implements BreadcrumbServiceInterface
 {

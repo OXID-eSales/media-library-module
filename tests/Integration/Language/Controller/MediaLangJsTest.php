@@ -11,7 +11,7 @@ namespace OxidEsales\MediaLibrary\Tests\Integration\Language\Controller;
 
 use OxidEsales\MediaLibrary\Language\Controller\MediaLangJs;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
-use OxidEsales\MediaLibrary\Transition\Core\ResponseInterface;
+use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 
 class MediaLangJsTest extends \PHPUnit\Framework\TestCase
 {

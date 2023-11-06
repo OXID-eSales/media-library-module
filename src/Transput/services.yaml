@@ -6,10 +6,10 @@ services:
       OxidEsales\Eshop\Core\Request: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getRequest()'
       OxidEsales\Eshop\Core\Utils: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getUtils()'
 
-  OxidEsales\MediaLibrary\Transition\Core\ResponseInterface:
-    class: OxidEsales\MediaLibrary\Transition\Core\Response
+  OxidEsales\MediaLibrary\Transput\ResponseInterface:
+    class: OxidEsales\MediaLibrary\Transput\Response
     public: true
 
-  OxidEsales\MediaLibrary\Transition\Core\RequestInterface:
-    class: OxidEsales\MediaLibrary\Transition\Core\Request
+  OxidEsales\MediaLibrary\Transput\RequestInterface:
+    class: OxidEsales\MediaLibrary\Transput\Request
     public: true
