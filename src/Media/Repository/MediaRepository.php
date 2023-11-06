@@ -80,13 +80,13 @@ class MediaRepository implements MediaRepositoryInterface
     {
         $this->connection->executeQuery(
             "insert into ddmedia SET 
-                OXID = :OXID, 
-                OXSHOPID = :OXSHOPID, 
-                DDFILENAME = :DDFILENAME, 
-                DDFILESIZE = :DDFILESIZE, 
-                DDFILETYPE = :DDFILETYPE, 
-                DDTHUMB = :DDTHUMB, 
-                DDIMAGESIZE = :DDIMAGESIZE, 
+                OXID = :OXID,
+                OXSHOPID = :OXSHOPID,
+                DDFILENAME = :DDFILENAME,
+                DDFILESIZE = :DDFILESIZE,
+                DDFILETYPE = :DDFILETYPE,
+                DDTHUMB = :DDTHUMB,
+                DDIMAGESIZE = :DDIMAGESIZE,
                 DDFOLDERID = :DDFOLDERID",
             [
                 'OXSHOPID' => $this->basicContext->getCurrentShopId(),
