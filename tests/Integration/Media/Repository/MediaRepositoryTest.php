@@ -50,11 +50,7 @@ class MediaRepositoryTest extends IntegrationTestCase
         $this->createTestItems(7, 'someFolder');
         $this->createTestItems(3, '');
 
-        $basicContextStub = $this->createMock(BasicContextInterface::class);
-        $basicContextStub->method('getCurrentShopId')->willReturn(2);
-        $sut = $this->getSut(
-            basicContext: $basicContextStub
-        );
+        $sut = $this->getSutForShop(2);
 
         $result = $sut->getFolderMedia($folder, $start, 5);
 
@@ -81,11 +77,7 @@ class MediaRepositoryTest extends IntegrationTestCase
         ]);
         $addItemQueryBuilder->execute();
 
-        $basicContextStub = $this->createMock(BasicContextInterface::class);
-        $basicContextStub->method('getCurrentShopId')->willReturn(2);
-        $sut = $this->getSut(
-            basicContext: $basicContextStub
-        );
+        $sut = $this->getSutForShop(2);
 
         $result = $sut->getMediaById('someFolderId');
         $this->assertInstanceOf(Media::class, $result);
@@ -142,6 +134,15 @@ class MediaRepositoryTest extends IntegrationTestCase
             ]);
             $queryBuilder->execute();
         }
+    }
+
+    private function getSutForShop(int $shopId): MediaRepository
+    {
+        $basicContextStub = $this->createMock(BasicContextInterface::class);
+        $basicContextStub->method('getCurrentShopId')->willReturn($shopId);
+        return $this->getSut(
+            basicContext: $basicContextStub
+        );
     }
 
     private function getSut(
