@@ -39,6 +39,22 @@ class MediaTest extends TestCase
         $this->assertSame('someFolderId', $sut->getFolderId());
     }
 
+    public function testOptionalDefaults(): void
+    {
+        $sut = new Media(
+            oxid: 'someOxid',
+            fileName: 'someFileName.jpg'
+        );
+
+        $this->assertSame('someOxid', $sut->getOxid());
+        $this->assertSame('someFileName.jpg', $sut->getFileName());
+        $this->assertSame(0, $sut->getFileSize());
+        $this->assertSame('', $sut->getFileType());
+        $this->assertSame('', $sut->getThumbFileName());
+        $this->assertEquals(new ImageSize(0, 0), $sut->getImageSize());
+        $this->assertSame('', $sut->getFolderId());
+    }
+
     /** @dataProvider isDirectoryDataProvider */
     public function testIsDirectory(string $fileType, bool $expectedResult): void
     {
