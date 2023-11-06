@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Integration\Transition\Core;
 
 use OxidEsales\Eshop\Core\Utils;
-use OxidEsales\MediaLibrary\Transition\Core\Response;
+use OxidEsales\MediaLibrary\Transput\Response;
 use PHPUnit\Framework\TestCase;
 
 class ResponseTest extends TestCase

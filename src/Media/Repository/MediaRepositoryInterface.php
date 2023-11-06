@@ -18,4 +18,6 @@ interface MediaRepositoryInterface
      * @throws MediaNotFoundException
      */
     public function getMediaById(string $mediaId): ?MediaInterface;
+
+    public function addMedia(MediaInterface $exampleMedia): void;
 }

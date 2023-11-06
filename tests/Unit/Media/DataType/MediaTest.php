@@ -22,7 +22,6 @@ class MediaTest extends TestCase
 
         $sut = new Media(
             oxid: 'someOxid',
-            shopId: 2,
             fileName: 'filename.jpg',
             fileSize: 25,
             fileType: 'image/gif',
@@ -32,7 +31,6 @@ class MediaTest extends TestCase
         );
 
         $this->assertSame('someOxid', $sut->getOxid());
-        $this->assertSame(2, $sut->getShopId());
         $this->assertSame('filename.jpg', $sut->getFileName());
         $this->assertSame(25, $sut->getFileSize());
         $this->assertSame('image/gif', $sut->getFileType());
@@ -41,12 +39,27 @@ class MediaTest extends TestCase
         $this->assertSame('someFolderId', $sut->getFolderId());
     }
 
+    public function testOptionalDefaults(): void
+    {
+        $sut = new Media(
+            oxid: 'someOxid',
+            fileName: 'someFileName.jpg'
+        );
+
+        $this->assertSame('someOxid', $sut->getOxid());
+        $this->assertSame('someFileName.jpg', $sut->getFileName());
+        $this->assertSame(0, $sut->getFileSize());
+        $this->assertSame('', $sut->getFileType());
+        $this->assertSame('', $sut->getThumbFileName());
+        $this->assertEquals(new ImageSize(0, 0), $sut->getImageSize());
+        $this->assertSame('', $sut->getFolderId());
+    }
+
     /** @dataProvider isDirectoryDataProvider */
     public function testIsDirectory(string $fileType, bool $expectedResult): void
     {
         $sut = new Media(
             oxid: 'someOxid',
-            shopId: 2,
             fileName: 'filename.jpg',
             fileSize: 25,
             fileType: $fileType,
@@ -71,7 +84,6 @@ class MediaTest extends TestCase
 
         $sut = new Media(
             oxid: 'someOxid',
-            shopId: 2,
             fileName: 'filename.jpg',
             fileSize: 25,
             fileType: 'image/gif',

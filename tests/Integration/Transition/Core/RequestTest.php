@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Integration\Transition\Core;
 
 use OxidEsales\Eshop\Core\Request as ShopRequest;
-use OxidEsales\MediaLibrary\Transition\Core\Request;
+use OxidEsales\MediaLibrary\Transput\Request;
 use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase

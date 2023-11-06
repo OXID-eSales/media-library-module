@@ -9,7 +9,7 @@ namespace OxidEsales\MediaLibrary\Language\Controller;
 
 use OxidEsales\Eshop\Application\Controller\FrontendController;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
-use OxidEsales\MediaLibrary\Transition\Core\ResponseInterface;
+use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 
 class MediaLangJs extends FrontendController
 {

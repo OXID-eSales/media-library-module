@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Media\DataType;
 
+use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 
 class Media implements MediaInterface
@@ -17,13 +18,12 @@ class Media implements MediaInterface
 
     public function __construct(
         private string $oxid,
-        private int $shopId,
         private string $fileName,
-        private int $fileSize,
-        private string $fileType,
-        private string $thumbFileName,
-        private ImageSizeInterface $imageSize,
-        private string $folderId
+        private int $fileSize = 0,
+        private string $fileType = '',
+        private string $thumbFileName = '',
+        private ImageSizeInterface $imageSize = new ImageSize(0, 0),
+        private string $folderId = ''
     ) {
     }
 
@@ -55,11 +55,6 @@ class Media implements MediaInterface
     public function getFileName(): string
     {
         return $this->fileName;
-    }
-
-    public function getShopId(): int
-    {
-        return $this->shopId;
     }
 
     public function getOxid(): string
