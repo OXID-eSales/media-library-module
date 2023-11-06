@@ -15,6 +15,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\MediaLibrary\Exception\MediaNotFoundException;
+use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepository;
@@ -59,29 +60,6 @@ class MediaRepositoryTest extends IntegrationTestCase
             $this->assertInstanceOf(Media::class, $oneItem);
             $this->assertSame($folder . 'example' . ($firstListItemId - $key), $oneItem->getOxid());
         }
-    }
-
-    public function testGetMediaById(): void
-    {
-        $addItemQueryBuilder = $this->getAddItemQueryBuilder();
-        $addItemQueryBuilder->setParameters([
-            'OXID' => 'someFolderId',
-            'OXSHOPID' => 2,
-            'DDFILENAME' => 'someDirectoryName',
-            'DDFILESIZE' => 0,
-            'DDFILETYPE' => 'directory',
-            'DDTHUMB' => '',
-            'DDIMAGESIZE' => '',
-            'DDFOLDERID' => '',
-            'OXTIMESTAMP' => 'NOW()'
-        ]);
-        $addItemQueryBuilder->execute();
-
-        $sut = $this->getSutForShop(2);
-
-        $result = $sut->getMediaById('someFolderId');
-        $this->assertInstanceOf(Media::class, $result);
-        $this->assertSame('someDirectoryName', $result->getFileName());
     }
 
     public function testGetMediaByIdNotFound(): void
@@ -176,5 +154,23 @@ class MediaRepositoryTest extends IntegrationTestCase
         ]);
 
         return $queryBuilder;
+    }
+
+    public function testAddMedia(): void
+    {
+        $oxid = 'someExampleMediaId';
+        $fileName = 'someFilename';
+        $fileSize = 123;
+        $fileType = 'image/gif';
+        $thumbFileName = 'someThumbName';
+        $imageSize = new ImageSize(111, 222);
+        $folderId = 'someFolderId';
+        $exampleMedia = new Media($oxid, $fileName, $fileSize, $fileType, $thumbFileName, $imageSize, $folderId);
+
+        $sut = $this->getSutForShop(3);
+        $sut->addMedia($exampleMedia);
+
+        $resultMedia = $sut->getMediaById($oxid);
+        $this->assertEquals($exampleMedia, $resultMedia);
     }
 }

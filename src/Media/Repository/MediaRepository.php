@@ -13,7 +13,6 @@ use Doctrine\DBAL\Connection;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\MediaLibrary\Exception\MediaNotFoundException;
-use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 
 class MediaRepository implements MediaRepositoryInterface
@@ -75,5 +74,30 @@ class MediaRepository implements MediaRepositoryInterface
         }
 
         throw new MediaNotFoundException();
+    }
+
+    public function addMedia(MediaInterface $exampleMedia): void
+    {
+        $this->connection->executeQuery(
+            "insert into ddmedia SET 
+                OXID = :OXID, 
+                OXSHOPID = :OXSHOPID, 
+                DDFILENAME = :DDFILENAME, 
+                DDFILESIZE = :DDFILESIZE, 
+                DDFILETYPE = :DDFILETYPE, 
+                DDTHUMB = :DDTHUMB, 
+                DDIMAGESIZE = :DDIMAGESIZE, 
+                DDFOLDERID = :DDFOLDERID",
+            [
+                'OXSHOPID' => $this->basicContext->getCurrentShopId(),
+                'OXID' => $exampleMedia->getOxid(),
+                'DDFILENAME' => $exampleMedia->getFileName(),
+                'DDFILESIZE' => $exampleMedia->getFileSize(),
+                'DDFILETYPE' => $exampleMedia->getFileType(),
+                'DDTHUMB' => $exampleMedia->getThumbFileName(),
+                'DDIMAGESIZE' => $exampleMedia->getImageSize()->getInFormat("%dx%d", ""),
+                'DDFOLDERID' => $exampleMedia->getFolderId()
+            ]
+        );
     }
 }
