@@ -21,7 +21,8 @@ class ViewConfigTest extends IntegrationTestCase
         $imageResourceMock = $this->createMock(ImageResourceInterface::class);
         $imageResourceMock->method('getMediaUrl')->with('someFile')->willReturn('someFilePath');
 
-        $sut = $this->createPartialMock(ViewConfig::class, ['getService']);
+        /** @var ViewConfig $sut */
+        $sut = $this->createPartialMock(oxNew(\OxidEsales\Eshop\Core\ViewConfig::class)::class, ['getService']);
         $sut->method('getService')->willReturnMap([
             [ImageResourceInterface::class, $imageResourceMock]
         ]);
