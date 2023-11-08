@@ -96,6 +96,7 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
     {
         $I = $this;
         $locator = sprintf($this->removeDirectorySelector, $directoryNumber);
+        $I->waitForElement($locator);
         $I->click($locator);
         $I->click($this->removeDirectoryButton);
         $I->click($this->removeDirectoryConfirmButton);
@@ -168,6 +169,7 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
         $I->waitForElementVisible($this->mediaDetails);
 
         $I->click($this->removeImageButton);
+        $I->waitForElementVisible($this->removeImageConfirmButton);
         $I->click($this->removeImageConfirmButton);
         $I->waitForElementNotVisible($this->mediaDetails);
 
