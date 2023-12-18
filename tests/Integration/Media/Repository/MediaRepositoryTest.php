@@ -70,7 +70,7 @@ class MediaRepositoryTest extends IntegrationTestCase
         $sut->getMediaById('someWrongId');
     }
 
-    public function getFolderMediaDataProvider(): \Generator
+    public static function getFolderMediaDataProvider(): \Generator
     {
         yield "first page in folder" => [
             'folder' => 'someFolder',

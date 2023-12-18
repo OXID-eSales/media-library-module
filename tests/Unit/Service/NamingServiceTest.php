@@ -33,7 +33,7 @@ class NamingServiceTest extends TestCase
         $this->assertSame($expectedResult, $sut->sanitizeFilename($filename));
     }
 
-    public function sanitizeFilenameDataProvider(): \Generator
+    public static function sanitizeFilenameDataProvider(): \Generator
     {
         yield "no extension" => ['filename' => 'somexc', 'expectedResult' => 'someyb'];
         yield "extension should not be changed" => ['filename' => 'somexc.xcabc', 'expectedResult' => 'someyb.xcabc'];

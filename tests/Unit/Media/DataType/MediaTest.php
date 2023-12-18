@@ -71,7 +71,7 @@ class MediaTest extends TestCase
         $this->assertSame($expectedResult, $sut->isDirectory());
     }
 
-    public function isDirectoryDataProvider(): \Generator
+    public static function isDirectoryDataProvider(): \Generator
     {
         yield "some gif image filetype" => ['fileType' => 'image/gif', 'expectedResult' => false];
         yield "some jpeg image filetype" => ['fileType' => 'image/jpeg', 'expectedResult' => false];

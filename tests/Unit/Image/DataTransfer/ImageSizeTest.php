@@ -31,7 +31,7 @@ class ImageSizeTest extends TestCase
         $this->assertSame($expected, $sut->isEmpty());
     }
 
-    public function isEmptyDataProvider(): array
+    public static function isEmptyDataProvider(): array
     {
         return [
             [0, 0, true],
@@ -53,7 +53,7 @@ class ImageSizeTest extends TestCase
         $this->assertSame($expectedResult, $sut->getInFormat($format, $emptyFormat));
     }
 
-    public function getInFormatDataProvider(): array
+    public static function getInFormatDataProvider(): array
     {
         return [
             [123, 321, '%dx%d', '', '123x321'],

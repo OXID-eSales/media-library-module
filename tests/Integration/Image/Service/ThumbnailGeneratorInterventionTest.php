@@ -56,7 +56,7 @@ class ThumbnailGeneratorInterventionTest extends IntegrationTestCase
     }
 
 
-    public function getThumbnailDataProvider()
+    public static function getThumbnailDataProvider()
     {
         return [
             'cropped_thumbnail_of_size_800x800_when_bigger_source_size_landscape' => [

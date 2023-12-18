@@ -190,7 +190,7 @@ class MediaTest extends TestCase
         $sTargetFolderID = '9999';
         $sSourceFileName = self::FIXTURE_FILE;
         $sSourceFileID = '111';
-        $sThumbName = $this->getImageSizeAsString(
+        $sThumbName = self::getImageSizeAsString(
             '111_thumb_',
             $this->getSut()->imageResource->getDefaultThumbnailSize()
         );
@@ -321,12 +321,12 @@ class MediaTest extends TestCase
 
     public function testUploadMedia()
     {
-        $sThumbName = $this->getImageSizeAsString(
+        $sThumbName = self::getImageSizeAsString(
             md5(self::FIXTURE_FILE) . '_thumb_',
             $this->getSut()->imageResource->getDefaultThumbnailSize()
         );
         $sFile2 = 'file_1.jpg';
-        $sThumbName1 = $this->getImageSizeAsString(
+        $sThumbName1 = self::getImageSizeAsString(
             md5($sFile2) . '_thumb_',
             $this->getSut()->imageResource->getDefaultThumbnailSize()
         );
@@ -407,26 +407,26 @@ class MediaTest extends TestCase
         $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, true);
     }
 
-    public function getRenameDataProvider(): array
+    public static function getRenameDataProvider(): array
     {
         $oMedia = new Media(
-            $this->createStub(ModuleSettings::class),
-            $this->createStub(Config::class),
-            $this->createStub(ConnectionProviderInterface::class),
-            $this->createStub(UtilsObject::class),
-            $this->createStub(ThumbnailGeneratorInterface::class),
-            $this->createStub(ImageResourceInterface::class),
+            self::createStub(ModuleSettings::class),
+            self::createStub(Config::class),
+            self::createStub(ConnectionProviderInterface::class),
+            self::createStub(UtilsObject::class),
+            self::createStub(ThumbnailGeneratorInterface::class),
+            self::createStub(ImageResourceInterface::class),
             namingService: ContainerFactory::getInstance()->getContainer()->get(NamingServiceInterface::class),
-            mediaRepository: $this->createStub(MediaRepositoryInterface::class)
+            mediaRepository: self::createStub(MediaRepositoryInterface::class)
         );
 
         $defaultThumbnailSize = $oMedia->imageResource->getDefaultThumbnailSize();
 
-        $sThumbName = $this->getImageSizeAsString(
+        $sThumbName = self::getImageSizeAsString(
             md5(self::FIXTURE_FILE) . '_thumb_',
             $defaultThumbnailSize
         );
-        $sThumbNameNew = $this->getImageSizeAsString(
+        $sThumbNameNew = self::getImageSizeAsString(
             md5('new.jpg') . '_thumb_',
             $defaultThumbnailSize
         );
@@ -436,7 +436,7 @@ class MediaTest extends TestCase
         $structureExpected['root']['out']['pictures']['ddmedia']['new.jpg'] = 'some file';
         $structureExpected['root']['out']['pictures']['ddmedia']['thumbs'][$sThumbNameNew] = 'some file';
 
-        $sThumbName = $this->getImageSizeAsString(
+        $sThumbName = self::getImageSizeAsString(
             md5(self::FIXTURE_FILE) . '_thumb_',
             $defaultThumbnailSize
         );
@@ -462,19 +462,19 @@ class MediaTest extends TestCase
         $structure2['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER] = [];
         $structureExpected2['root']['out']['pictures']['ddmedia']['folderNew'] = [];
 
-        $sThumbName = $this->getImageSizeAsString(
+        $sThumbName = self::getImageSizeAsString(
             md5(self::FIXTURE_FILE) . '_thumb_',
             $defaultThumbnailSize
         );
-        $sThumbName2 = $this->getImageSizeAsString(
+        $sThumbName2 = self::getImageSizeAsString(
             md5('new_1.jpg') . '_thumb_',
             $defaultThumbnailSize
         );
-        $sThumbName3 = $this->getImageSizeAsString(
+        $sThumbName3 = self::getImageSizeAsString(
             md5('new_1.jpg') . '_thumb_',
             $defaultThumbnailSize
         );
-        $sThumbNameNew2 = $this->getImageSizeAsString(
+        $sThumbNameNew2 = self::getImageSizeAsString(
             md5('new_2.jpg') . '_thumb_',
             $defaultThumbnailSize
         );
@@ -545,12 +545,11 @@ class MediaTest extends TestCase
         ];
     }
 
-    public function getDeleteDataProvider()
+    public static function getDeleteDataProvider()
     {
-        $oMedia = $this->getSut();
-        $sThumbName = $this->getImageSizeAsString(
+        $sThumbName = self::getImageSizeAsString(
             '111_thumb_',
-            $oMedia->imageResource->getDefaultThumbnailSize()
+            185
         );
 
         // scenario 1 - file in media root
@@ -661,14 +660,14 @@ class MediaTest extends TestCase
             $connectionProvider
         );
         return new MediaMock(
-            $moduleSettings ?: $this->createStub(ModuleSettings::class),
-            $shopConfig ?: $this->createStub(Config::class),
-            $connectionProvider ?: $this->createStub(ConnectionProviderInterface::class),
-            $utilsObject ?: $this->createStub(UtilsObject::class),
-            $thumbnailGenerator ?: $this->createStub(ThumbnailGeneratorInterface::class),
+            $moduleSettings ?: self::createStub(ModuleSettings::class),
+            $shopConfig ?: self::createStub(Config::class),
+            $connectionProvider ?: self::createStub(ConnectionProviderInterface::class),
+            $utilsObject ?: self::createStub(UtilsObject::class),
+            $thumbnailGenerator ?: self::createStub(ThumbnailGeneratorInterface::class),
             $imageResourceMock,
-            namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
-            mediaRepository: $mediaRepository ?? $this->createStub(MediaRepositoryInterface::class),
+            namingService: $namingService ?? self::createStub(NamingServiceInterface::class),
+            mediaRepository: $mediaRepository ?? self::createStub(MediaRepositoryInterface::class),
         );
     }
 
@@ -679,14 +678,14 @@ class MediaTest extends TestCase
         ?ConnectionProviderInterface $connectionProvider = null,
     ) {
         return new ImageResource(
-            $shopConfig ?: $this->createStub(Config::class),
-            $moduleSettings ?: $this->createStub(ModuleSettings::class),
-            $thumbnailGenerator ?: $this->createStub(ThumbnailGeneratorInterface::class),
-            $connectionProvider ?: $this->createStub(ConnectionProviderInterface::class),
+            $shopConfig ?: self::createStub(Config::class),
+            $moduleSettings ?: self::createStub(ModuleSettings::class),
+            $thumbnailGenerator ?: self::createStub(ThumbnailGeneratorInterface::class),
+            $connectionProvider ?: self::createStub(ConnectionProviderInterface::class),
         );
     }
 
-    private function getImageSizeAsString(string $prefix, int $imageSize, $suffix = '.jpg'): string
+    private static function getImageSizeAsString(string $prefix, int $imageSize, $suffix = '.jpg'): string
     {
         return sprintf(
             '%s%d*%d%s',

@@ -278,7 +278,7 @@ class ImageResourceTest extends TestCase
         $this->assertEquals($expected ? ('https://test.com/out/pictures/ddmedia/' . $expected) : $expected, $result);
     }
 
-    public function getImagePathDataProvider(): array
+    public static function getImagePathDataProvider(): array
     {
         return [
             [
@@ -290,7 +290,7 @@ class ImageResourceTest extends TestCase
         ];
     }
 
-    public function getThumbnailPathDataProvider(): array
+    public static function getThumbnailPathDataProvider(): array
     {
         return [
             [
@@ -304,12 +304,11 @@ class ImageResourceTest extends TestCase
         ];
     }
 
-    public function getThumbnailUrlProvider()
+    public static function getThumbnailUrlProvider()
     {
-        $sut = $this->getSut();
-        $sThumbName = $this->getImageSizeAsString(
+        $sThumbName = self::getImageSizeAsString(
             md5(self::FIXTURE_FILE) . '_thumb_',
-            $sut->getDefaultThumbnailSize()
+            '185'
         );
 
         return [
@@ -332,7 +331,7 @@ class ImageResourceTest extends TestCase
     }
 
 
-    private function getImageSizeAsString(string $prefix, int $imageSize, $suffix = '.jpg'): string
+    private static function getImageSizeAsString(string $prefix, int $imageSize, $suffix = '.jpg'): string
     {
         return sprintf(
             '%s%d*%d%s',
@@ -343,7 +342,7 @@ class ImageResourceTest extends TestCase
         );
     }
 
-    protected function getSut(
+    protected  function getSut(
         ?Config $shopConfig = null,
         ?ModuleSettings $moduleSettings = null,
         ?ThumbnailGeneratorInterface $thumbnailGenerator = null,

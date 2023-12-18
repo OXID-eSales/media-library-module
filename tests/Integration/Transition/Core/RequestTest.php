@@ -43,7 +43,7 @@ class RequestTest extends TestCase
         $this->assertSame($expectedValue, $sut->isPopout());
     }
 
-    public function requestBoolDataProvider(): array
+    public static function requestBoolDataProvider(): array
     {
         return [
             [null, false],
@@ -69,7 +69,7 @@ class RequestTest extends TestCase
         $this->assertSame($expectedValue, $sut->getFolderId());
     }
 
-    public function requestOnlyStringDataProvider(): array
+    public static function requestOnlyStringDataProvider(): array
     {
         return [
             [null, ''],
@@ -94,7 +94,7 @@ class RequestTest extends TestCase
         $this->assertSame($expectedValue, $sut->getMediaListStartIndex());
     }
 
-    public function getMediaListStartIndexDataProvider(): array
+    public static function getMediaListStartIndexDataProvider(): array
     {
         return [
             'null' => [null, 0],
