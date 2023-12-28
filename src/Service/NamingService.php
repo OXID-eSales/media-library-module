@@ -30,4 +30,26 @@ class NamingService implements NamingServiceInterface
 
         return $fileName . ($fileExtension ? '.' . $fileExtension : '');
     }
+
+    public function getUniqueFilename(string $path): string
+    {
+        while (file_exists($path)) {
+            $path = $this->findNextPossibleFilename($path);
+        }
+
+        return $path;
+    }
+
+    private function findNextPossibleFilename(string $path): string
+    {
+        $pathInfo = pathinfo($path);
+
+        if (preg_match('/(?P<baseFilename>.+)_(?P<numericPart>[0-9]+)$/', $pathInfo['filename'], $matches)) {
+            $fileName = $matches['baseFilename'] . '_' . ++$matches['numericPart'];
+        } else {
+            $fileName = $pathInfo['filename'] . '_1';
+        }
+
+        return $pathInfo['dirname'] . DIRECTORY_SEPARATOR . $fileName . '.' . $pathInfo['extension'];
+    }
 }

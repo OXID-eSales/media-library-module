@@ -65,7 +65,7 @@ class Media
 
         $sThumbName = '';
 
-        $sDestPath = $this->_checkAndGetFileName($sDestPath);
+        $sDestPath = $this->namingService->getUniqueFilename($sDestPath);
 
         $sFileName = basename($sDestPath);
         $iFileCount = 0;
@@ -201,7 +201,7 @@ class Media
         if ($blDirectory) {
             $sNewPath = $this->_checkAndGetFolderName($sNewPath, $sPath);
         } else {
-            $sNewPath = $this->_checkAndGetFileName($sNewPath);
+            $sNewPath = $this->namingService->getUniqueFilename($sNewPath);
         }
 
         $sOldThumbHash = $sNewThumbHash = $sNewThumbName = '';
@@ -352,43 +352,6 @@ class Media
         }
 
         return $sNewPath;
-    }
-
-    /**
-     * @param $sDestPath
-     *
-     * @return array
-     */
-    protected function _checkAndGetFileName($sDestPath)
-    {
-        $iFileCount = 0;
-
-        while (file_exists($sDestPath)) {
-            $sFileName = basename($sDestPath);
-
-            $aFileParts = explode('.', $sFileName);
-            $aFileParts = array_reverse($aFileParts);
-
-            $sFileExt = $aFileParts[0];
-            unset($aFileParts[0]);
-
-            $sBaseName = implode('.', array_reverse($aFileParts));
-
-            $aBaseParts = explode('_', $sBaseName);
-            $aBaseParts = array_reverse($aBaseParts);
-
-            if (strlen($aBaseParts[0]) == 1 && is_numeric($aBaseParts[0])) {
-                $iFileCount = (int)$aBaseParts[0];
-                unset($aBaseParts[0]);
-            }
-
-            $sBaseName = implode('_', array_reverse($aBaseParts));
-
-            $sFileName = $sBaseName . '_' . (++$iFileCount) . '.' . $sFileExt;
-            $sDestPath = dirname($sDestPath) . '/' . $sFileName;
-        }
-
-        return $sDestPath;
     }
 
     /**

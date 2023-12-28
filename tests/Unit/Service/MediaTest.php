@@ -16,12 +16,11 @@ use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResource;
-use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\Media;
 use OxidEsales\MediaLibrary\Service\ModuleSettings;
-use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Service\NamingService;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use PHPUnit\Framework\TestCase;
@@ -160,14 +159,10 @@ class MediaTest extends TestCase
             );
 
         $connectionMock = $this->createPartialMock(Connection::class, ['executeQuery']);
-        $connectionMock->expects($this->once())
-            ->method('executeQuery');
-        $connectionProviderStub = $this->createConfiguredMock(
-            ConnectionProviderInterface::class,
-            [
-                'get' => $connectionMock,
-            ]
-        );
+        $connectionMock->expects($this->once())->method('executeQuery');
+        $connectionProviderStub = $this->createConfiguredMock(ConnectionProviderInterface::class, [
+            'get' => $connectionMock,
+        ]);
 
         $sut = $this->getSut(
             shopConfig: $shopConfigMock,
@@ -227,7 +222,7 @@ class MediaTest extends TestCase
                 [
                     0 => [
                         'DDFILENAME' => $sSourceFileName,
-                        'DDTHUMB'    => $sThumbName,
+                        'DDTHUMB' => $sThumbName,
                     ],
                 ]
             );
@@ -254,7 +249,7 @@ class MediaTest extends TestCase
         unset($structureExpected['root']['out']['pictures']['ddmedia']['thumbs'][$sThumbName]);
         $structureExpected['root']['out']['pictures']['ddmedia'][$sTargetFolderName] = [
             $sSourceFileName => 'some file',
-            'thumbs'         => [
+            'thumbs' => [
                 $sThumbName => 'some file',
             ],
         ];
@@ -335,7 +330,7 @@ class MediaTest extends TestCase
         );
         $structure['out']['pictures']['ddmedia'] = [
             self::FIXTURE_FILE => 'some file',
-            'thumbs'           => [$sThumbName => 'some file',$sThumbName1 => 'some file'],
+            'thumbs' => [$sThumbName => 'some file', $sThumbName1 => 'some file'],
         ];
         $structure['tmp'] = ['uploaded.jpg' => 'some file'];
         $directory = vfsStream::setup('root', 0777, $structure);
@@ -376,6 +371,7 @@ class MediaTest extends TestCase
             shopConfig: $shopConfigMock,
             connectionProvider: $connectionProviderStub,
             utilsObject: $utilsObjectMock,
+            namingService: $this->createPartialMock(NamingService::class, [])
         );
 
         $sSourcePath = $directory->url() . '/tmp/uploaded.jpg';
@@ -390,9 +386,9 @@ class MediaTest extends TestCase
                 'pictures' => [
                     'ddmedia' => [
                         self::FIXTURE_FILE => 'some file',
-                        $sFile2            => 'some file',
-                        'thumbs'           => [
-                            $sThumbName  => 'some file',
+                        $sFile2 => 'some file',
+                        'thumbs' => [
+                            $sThumbName => 'some file',
                             $sThumbName1 => 'some file',
                         ],
                     ],
@@ -452,7 +448,7 @@ class MediaTest extends TestCase
                         'ddmedia' => [
                             self::FIXTURE_FOLDER => [
                                 'new.jpg' => 'some file',
-                                'thumbs'  => [
+                                'thumbs' => [
                                     $sThumbNameNew => 'some file',
                                 ],
                             ],
@@ -481,24 +477,38 @@ class MediaTest extends TestCase
             md5('new_2.jpg') . '_thumb_',
             $defaultThumbnailSize
         );
-        $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER][self::FIXTURE_FILE] = 'some file';
-        $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['new.jpg'] = 'some file';
-        $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['new_1.jpg'] = 'some file';
-        $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'][$sThumbName] = 'some file';
-        $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'][$sThumbName3] = 'some file';
-        $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'][$sThumbName2] = 'some file';
+
+        $structure3 = [
+            'out' => [
+                'pictures' => [
+                    'ddmedia' => [
+                        self::FIXTURE_FOLDER => [
+                            self::FIXTURE_FILE => 'some file',
+                            'new.jpg' => 'some file',
+                            'new_1.jpg' => 'some file',
+                            'thumbs' => [
+                                $sThumbName => 'some file',
+                                $sThumbName2 => 'some file',
+                                $sThumbName3 => 'some file',
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
         $structureExpected3 = [
             'root' => [
                 'out' => [
                     'pictures' => [
                         'ddmedia' => [
                             self::FIXTURE_FOLDER => [
-                                'new.jpg'   => 'some file',
+                                'new.jpg' => 'some file',
                                 'new_1.jpg' => 'some file',
                                 'new_2.jpg' => 'some file',
-                                'thumbs'    => [
-                                    $sThumbName2    => 'some file',
-                                    $sThumbName3    => 'some file',
+                                'thumbs' => [
+                                    $sThumbName2 => 'some file',
+                                    $sThumbName3 => 'some file',
                                     $sThumbNameNew2 => 'some file',
                                 ],
                             ],
@@ -510,40 +520,40 @@ class MediaTest extends TestCase
 
         return [
             [
-                'structure'         => $structure,
-                'oldName'           => self::FIXTURE_FILE,
-                'newName'           => 'new.jpg',
+                'structure' => $structure,
+                'oldName' => self::FIXTURE_FILE,
+                'newName' => 'new.jpg',
                 'structureExpected' => $structureExpected,
-                'folder'            => '',
-                'expectedNewName'   => 'new.jpg',
-                'type'              => 'file',
+                'folder' => '',
+                'expectedNewName' => 'new.jpg',
+                'type' => 'file',
             ],
             [
-                'structure'         => $structure1,
-                'oldName'           => self::FIXTURE_FILE,
-                'newName'           => 'new.jpg',
+                'structure' => $structure1,
+                'oldName' => self::FIXTURE_FILE,
+                'newName' => 'new.jpg',
                 'structureExpected' => $structureExpected1,
-                'folder'            => self::FIXTURE_FOLDER,
-                'expectedNewName'   => 'new.jpg',
-                'type'              => 'file',
+                'folder' => self::FIXTURE_FOLDER,
+                'expectedNewName' => 'new.jpg',
+                'type' => 'file',
             ],
             [
-                'structure'         => $structure2,
-                'oldName'           => self::FIXTURE_FOLDER,
-                'newName'           => 'folderNew',
+                'structure' => $structure2,
+                'oldName' => self::FIXTURE_FOLDER,
+                'newName' => 'folderNew',
                 'structureExpected' => $structureExpected2,
-                'folder'            => '',
-                'expectedNewName'   => 'folderNew',
-                'type'              => 'folder',
+                'folder' => '',
+                'expectedNewName' => 'folderNew',
+                'type' => 'folder',
             ],
             [
-                'structure'         => $structure3,
-                'oldName'           => self::FIXTURE_FILE,
-                'newName'           => 'new.jpg',
+                'structure' => $structure3,
+                'oldName' => self::FIXTURE_FILE,
+                'newName' => 'new.jpg',
                 'structureExpected' => $structureExpected3,
-                'folder'            => self::FIXTURE_FOLDER,
-                'expectedNewName'   => 'new_2.jpg',
-                'type'              => 'file',
+                'folder' => self::FIXTURE_FOLDER,
+                'expectedNewName' => 'new_2.jpg',
+                'type' => 'file',
             ],
         ];
     }
@@ -562,9 +572,9 @@ class MediaTest extends TestCase
         $structureExpected['root']['out']['pictures']['ddmedia']['thumbs'] = [];
         $aIds = ['111'];
         $aDBData[] = [
-            'OXID'       => '111',
+            'OXID' => '111',
             'DDFILENAME' => self::FIXTURE_FILE,
-            'DDTHUMB'    => $sThumbName,
+            'DDTHUMB' => $sThumbName,
             'DDFILETYPE' => 'image/jpeg',
             'DDFOLDERID' => '',
         ];
@@ -575,9 +585,9 @@ class MediaTest extends TestCase
         $structureExpected1['root']['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'] = [];
         $aIds1 = ['111'];
         $aDBData1[] = [
-            'OXID'       => '111',
+            'OXID' => '111',
             'DDFILENAME' => self::FIXTURE_FILE,
-            'DDTHUMB'    => $sThumbName,
+            'DDTHUMB' => $sThumbName,
             'DDFILETYPE' => 'image/jpeg',
             'DDFOLDERID' => '2222',
         ];
@@ -588,9 +598,9 @@ class MediaTest extends TestCase
         $structureExpected2['root']['out']['pictures']['ddmedia'] = [];
         $aIds2 = ['111'];
         $aDBData2[] = [
-            'OXID'       => '111',
+            'OXID' => '111',
             'DDFILENAME' => self::FIXTURE_FOLDER,
-            'DDTHUMB'    => '',
+            'DDTHUMB' => '',
             'DDFILETYPE' => 'directory',
             'DDFOLDERID' => '',
         ];
@@ -601,48 +611,48 @@ class MediaTest extends TestCase
         $structureExpected3['root']['out']['pictures']['ddmedia'] = [];
         $aIds3 = ['111'];
         $aDBData3[] = [
-            'OXID'       => '111',
+            'OXID' => '111',
             'DDFILENAME' => self::FIXTURE_FOLDER,
-            'DDTHUMB'    => '',
+            'DDTHUMB' => '',
             'DDFILETYPE' => 'directory',
             'DDFOLDERID' => '',
         ];
         $aDBData3[] = [
-            'OXID'       => '222',
+            'OXID' => '222',
             'DDFILENAME' => self::FIXTURE_FILE,
-            'DDTHUMB'    => $sThumbName,
+            'DDTHUMB' => $sThumbName,
             'DDFILETYPE' => 'image/jpeg',
             'DDFOLDERID' => '111',
         ];
 
         return [
             [
-                'structure'         => $structure,
+                'structure' => $structure,
                 'structureExpected' => $structureExpected,
-                'aIds'              => $aIds,
-                'aDBData'           => $aDBData,
-                'startFolder'       => '',
+                'aIds' => $aIds,
+                'aDBData' => $aDBData,
+                'startFolder' => '',
             ],
             [
-                'structure'         => $structure1,
+                'structure' => $structure1,
                 'structureExpected' => $structureExpected1,
-                'aIds'              => $aIds1,
-                'aDBData'           => $aDBData1,
-                'startFolder'       => self::FIXTURE_FOLDER,
+                'aIds' => $aIds1,
+                'aDBData' => $aDBData1,
+                'startFolder' => self::FIXTURE_FOLDER,
             ],
             [
-                'structure'         => $structure2,
+                'structure' => $structure2,
                 'structureExpected' => $structureExpected2,
-                'aIds'              => $aIds2,
-                'aDBData'           => $aDBData2,
-                'startFolder'       => '',
+                'aIds' => $aIds2,
+                'aDBData' => $aDBData2,
+                'startFolder' => '',
             ],
             [
-                'structure'         => $structure3,
+                'structure' => $structure3,
                 'structureExpected' => $structureExpected3,
-                'aIds'              => $aIds3,
-                'aDBData'           => $aDBData3,
-                'startFolder'       => '',
+                'aIds' => $aIds3,
+                'aDBData' => $aDBData3,
+                'startFolder' => '',
             ],
         ];
     }
@@ -656,7 +666,6 @@ class MediaTest extends TestCase
         ?NamingServiceInterface $namingService = null,
         ?MediaRepositoryInterface $mediaRepository = null,
     ) {
-
         $imageResourceMock = $this->getImageResourceStub(
             $shopConfig,
             $moduleSettings,
