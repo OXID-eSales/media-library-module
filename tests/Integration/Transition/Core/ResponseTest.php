@@ -13,6 +13,9 @@ use OxidEsales\Eshop\Core\Utils;
 use OxidEsales\MediaLibrary\Transput\Response;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Transput\Response
+ */
 class ResponseTest extends TestCase
 {
     public function testRespondAsJson(): void

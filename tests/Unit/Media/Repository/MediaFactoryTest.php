@@ -12,6 +12,9 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Repository;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactory;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Media\Repository\MediaFactory
+ */
 class MediaFactoryTest extends TestCase
 {
     public function testFromDatabaseArray(): void

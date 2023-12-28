@@ -13,6 +13,9 @@ use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorIntervention;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorIntervention
+ */
 class ThumbnailGeneratorInterventionTest extends IntegrationTestCase
 {
     private $vfsRootUrl;

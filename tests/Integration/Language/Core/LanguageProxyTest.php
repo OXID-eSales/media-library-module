@@ -13,6 +13,9 @@ use OxidEsales\MediaLibrary\Language\Core\LanguageExtension;
 use OxidEsales\MediaLibrary\Language\Core\LanguageProxy;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Language\Core\LanguageExtension
+ */
 class LanguageProxyTest extends TestCase
 {
     public function testGetLanguageStrings(): void

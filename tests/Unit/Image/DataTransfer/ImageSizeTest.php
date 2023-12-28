@@ -10,6 +10,9 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Image\DataTransfer;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize
+ */
 class ImageSizeTest extends TestCase
 {
     public function testGetWidth(): void

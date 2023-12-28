@@ -13,6 +13,9 @@ use OxidEsales\Eshop\Core\Request as ShopRequest;
 use OxidEsales\MediaLibrary\Transput\Request;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Transput\Request
+ */
 class RequestTest extends TestCase
 {
     /**

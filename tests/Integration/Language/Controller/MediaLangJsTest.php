@@ -13,6 +13,9 @@ use OxidEsales\MediaLibrary\Language\Controller\MediaLangJs;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Language\Controller\MediaLangJs
+ */
 class MediaLangJsTest extends \PHPUnit\Framework\TestCase
 {
     public function testInit(): void

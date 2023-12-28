@@ -11,6 +11,9 @@ use OxidEsales\Eshop\Core\Language as ShopLanguage;
 use OxidEsales\MediaLibrary\Language\Core\LanguageProxy;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Language\Core\LanguageProxy
+ */
 class LanguageProxyTest extends TestCase
 {
     public function testSanitizeFilename(): void

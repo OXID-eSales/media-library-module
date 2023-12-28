@@ -20,6 +20,9 @@ use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepository;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Media\Repository\MediaRepository
+ */
 class MediaRepositoryTest extends IntegrationTestCase
 {
     protected QueryBuilderFactoryInterface $queryBuilderFactory;

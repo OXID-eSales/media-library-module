@@ -14,6 +14,9 @@ use OxidEsales\MediaLibrary\Media\DataType\FrontendMedia;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Media\DataType\Media
+ */
 class MediaTest extends TestCase
 {
     public function testGetters(): void

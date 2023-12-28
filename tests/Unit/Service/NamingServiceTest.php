@@ -13,6 +13,9 @@ use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Service\NamingService;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Service\NamingService
+ */
 class NamingServiceTest extends TestCase
 {
     /** @dataProvider sanitizeFilenameDataProvider */

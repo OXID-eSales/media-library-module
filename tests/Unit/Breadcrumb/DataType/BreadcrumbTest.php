@@ -12,6 +12,9 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Breadcrumb\DataType;
 use OxidEsales\MediaLibrary\Breadcrumb\DataType\Breadcrumb;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Breadcrumb\DataType\Breadcrumb
+ */
 class BreadcrumbTest extends TestCase
 {
     public function testGetters(): void

@@ -22,6 +22,9 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Service\Media
+ */
 class MediaTest extends IntegrationTestCase
 {
     private const FIXTURE_FILE = 'file.jpg';

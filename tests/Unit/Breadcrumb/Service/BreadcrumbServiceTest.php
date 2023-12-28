@@ -16,6 +16,9 @@ use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Transput\RequestInterface;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbService
+ */
 class BreadcrumbServiceTest extends TestCase
 {
     public function testNoFolderId(): void

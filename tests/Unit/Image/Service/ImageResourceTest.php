@@ -17,6 +17,9 @@ use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Service\ModuleSettings;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Image\Service\ImageResource
+ */
 class ImageResourceTest extends TestCase
 {
     private const FIXTURE_FILE = 'file.jpg';

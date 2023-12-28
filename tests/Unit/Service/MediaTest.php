@@ -26,6 +26,9 @@ use OxidEsales\MediaLibrary\Service\NamingService;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Service\Media
+ */
 class MediaTest extends TestCase
 {
     private const FIXTURE_FILE = 'file.jpg';
