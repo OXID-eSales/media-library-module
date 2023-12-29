@@ -45,11 +45,13 @@ class NamingService implements NamingServiceInterface
         $pathInfo = pathinfo($path);
 
         if (preg_match('/(?P<baseFilename>.+)_(?P<numericPart>[0-9]+)$/', $pathInfo['filename'], $matches)) {
-            $fileName = $matches['baseFilename'] . '_' . ++$matches['numericPart'];
+            $newFileName = $matches['baseFilename'] . '_' . ++$matches['numericPart'];
         } else {
-            $fileName = $pathInfo['filename'] . '_1';
+            $newFileName = $pathInfo['filename'] . '_1';
         }
 
-        return $pathInfo['dirname'] . DIRECTORY_SEPARATOR . $fileName . '.' . $pathInfo['extension'];
+        return $pathInfo['dirname']
+            . DIRECTORY_SEPARATOR . $newFileName
+            . ($pathInfo['extension'] ? '.' . $pathInfo['extension'] : '');
     }
 }

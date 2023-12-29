@@ -73,9 +73,19 @@ class NamingServiceTest extends TestCase
             'expectation' => 'vfs://root/someSimpleFile.ext'
         ];
 
+        yield 'not existing directory' => [
+            'filename' => 'vfs://root/directory',
+            'expectation' => 'vfs://root/directory'
+        ];
+
         yield 'not existing file in directory' => [
             'filename' => 'vfs://root/someDirectory/someSimpleFile.ext',
             'expectation' => 'vfs://root/someDirectory/someSimpleFile.ext'
+        ];
+
+        yield 'not existing directory in directory' => [
+            'filename' => 'vfs://root/someDirectory/directory',
+            'expectation' => 'vfs://root/someDirectory/directory'
         ];
 
         yield 'not existing file in not existing directory' => [
@@ -91,6 +101,11 @@ class NamingServiceTest extends TestCase
         yield 'existing file no directory higher number' => [
             'filename' => 'vfs://root/someFile_3.doc',
             'expectation' => 'vfs://root/someFile_4.doc'
+        ];
+
+        yield 'existing directory' => [
+            'filename' => 'vfs://root/someDirectory',
+            'expectation' => 'vfs://root/someDirectory_1'
         ];
 
         yield 'existing file in directory' => [

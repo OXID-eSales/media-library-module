@@ -75,7 +75,8 @@ class MediaTest extends TestCase
             shopConfig: $shopConfigMock,
             connectionProvider: $connectionProviderStub,
             utilsObject: $utilsObjectMock,
-            mediaRepository: $mediaRepositoryMock,
+            namingService: $this->createPartialMock(NamingService::class, []),
+            mediaRepository: $mediaRepositoryMock
         );
         $aCustomDir = $sut->createCustomDir('FolderTest', '');
 
@@ -130,6 +131,7 @@ class MediaTest extends TestCase
             shopConfig: $shopConfigMock,
             connectionProvider: $connectionProviderStub,
             utilsObject: $utilsObjectMock,
+            namingService: $this->createPartialMock(NamingService::class, [])
         );
         $aCustomDir = $sut->createCustomDir('FolderTest', '');
 

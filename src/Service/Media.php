@@ -153,7 +153,7 @@ class Media
         $sPath = $this->imageResource->getMediaPath();
         $sNewPath = $sPath . $sName;
 
-        $sNewPath = $this->_checkAndGetFolderName($sNewPath, $sPath);
+        $sNewPath = $this->namingService->getUniqueFilename($sNewPath);
 
         if (!is_dir($sNewPath)) {
             mkdir($sNewPath);
@@ -198,11 +198,7 @@ class Media
         $sNewPath = $sPath . $sNewName;
 
         $blDirectory = $sType == 'directory';
-        if ($blDirectory) {
-            $sNewPath = $this->_checkAndGetFolderName($sNewPath, $sPath);
-        } else {
-            $sNewPath = $this->namingService->getUniqueFilename($sNewPath);
-        }
+        $sNewPath = $this->namingService->getUniqueFilename($sNewPath);
 
         $sOldThumbHash = $sNewThumbHash = $sNewThumbName = '';
         if (!$blDirectory) {
@@ -323,35 +319,6 @@ class Media
         }
 
         return $blReturn;
-    }
-
-    /**
-     * @param $sNewPath
-     * @param $sPath
-     *
-     * @return string
-     */
-    protected function _checkAndGetFolderName($sNewPath, $sPath)
-    {
-        while (file_exists($sNewPath)) {
-            $sBaseName = basename($sNewPath);
-
-            $aBaseParts = explode('_', $sBaseName);
-            $aBaseParts = array_reverse($aBaseParts);
-
-            $iFileCount = 0;
-            if (strlen($aBaseParts[0]) && is_numeric($aBaseParts[0])) {
-                $iFileCount = (int)$aBaseParts[0];
-                unset($aBaseParts[0]);
-            }
-
-            $sBaseName = implode('_', array_reverse($aBaseParts));
-
-            $sFileName = $sBaseName . '_' . (++$iFileCount);
-            $sNewPath = $sPath . $sFileName;
-        }
-
-        return $sNewPath;
     }
 
     /**
