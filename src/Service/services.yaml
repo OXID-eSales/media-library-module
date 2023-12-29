@@ -5,6 +5,10 @@ services:
     bind:
       OxidEsales\Eshop\Core\UtilsObject: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getUtilsObject()'
 
+  OxidEsales\MediaLibrary\Service\FileSystemServiceInterface:
+    class: OxidEsales\MediaLibrary\Service\FileSystemService
+    public: true
+
   OxidEsales\MediaLibrary\Service\Media:
     class: OxidEsales\MediaLibrary\Service\Media
     public: true

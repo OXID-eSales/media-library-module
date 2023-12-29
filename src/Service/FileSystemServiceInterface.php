@@ -7,8 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Exception;
+namespace OxidEsales\MediaLibrary\Service;
 
-class WrongFileTypeException extends \Exception
+interface FileSystemServiceInterface
 {
+    public function ensureDirectory(string $path): bool;
 }

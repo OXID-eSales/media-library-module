@@ -19,6 +19,8 @@ use OxidEsales\MediaLibrary\Image\Service\ImageResource;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
+use OxidEsales\MediaLibrary\Service\FileSystemService;
+use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Service\Media;
 use OxidEsales\MediaLibrary\Service\ModuleSettings;
 use OxidEsales\MediaLibrary\Service\NamingService;
@@ -418,7 +420,8 @@ class MediaTest extends TestCase
             $this->createStub(ThumbnailGeneratorInterface::class),
             $this->createStub(ImageResourceInterface::class),
             namingService: ContainerFactory::getInstance()->getContainer()->get(NamingServiceInterface::class),
-            mediaRepository: $this->createStub(MediaRepositoryInterface::class)
+            mediaRepository: $this->createStub(MediaRepositoryInterface::class),
+            fileSystemService: $this->createStub(FileSystemServiceInterface::class)
         );
 
         $defaultThumbnailSize = $oMedia->imageResource->getDefaultThumbnailSize();
@@ -667,6 +670,7 @@ class MediaTest extends TestCase
         ?ThumbnailGeneratorInterface $thumbnailGenerator = null,
         ?NamingServiceInterface $namingService = null,
         ?MediaRepositoryInterface $mediaRepository = null,
+        ?FileSystemServiceInterface $fileSystemService = null,
     ) {
         $imageResourceMock = $this->getImageResourceStub(
             $shopConfig,
@@ -683,6 +687,7 @@ class MediaTest extends TestCase
             $imageResourceMock,
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
             mediaRepository: $mediaRepository ?? $this->createStub(MediaRepositoryInterface::class),
+            fileSystemService: $fileSystemService ?? $this->createPartialMock(FileSystemService::class, [])
         );
     }
 

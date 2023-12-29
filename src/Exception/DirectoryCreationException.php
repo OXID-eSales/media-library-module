@@ -9,6 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Exception;
 
-class WrongFileTypeException extends \Exception
+class DirectoryCreationException extends \Exception
 {
 }

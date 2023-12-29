@@ -34,7 +34,8 @@ class Media
         public ThumbnailGeneratorInterface $thumbnailGenerator,
         public ImageResourceInterface $imageResource,
         protected NamingServiceInterface $namingService,
-        protected MediaRepositoryInterface $mediaRepository
+        protected MediaRepositoryInterface $mediaRepository,
+        private FileSystemServiceInterface $fileSystemService
     ) {
         $this->connection = $connectionProvider->get();
     }
@@ -106,13 +107,8 @@ class Media
 
     public function createDirs()
     {
-        if (!is_dir($this->imageResource->getMediaPath())) {
-            mkdir($this->imageResource->getMediaPath());
-        }
-
-        if (!is_dir($this->imageResource->getThumbnailPath())) {
-            mkdir($this->imageResource->getThumbnailPath());
-        }
+        $this->fileSystemService->ensureDirectory($this->imageResource->getMediaPath());
+        $this->fileSystemService->ensureDirectory($this->imageResource->getThumbnailPath());
     }
 
     public function createCustomDir($sName)
@@ -124,9 +120,7 @@ class Media
 
         $sNewPath = $this->namingService->getUniqueFilename($sNewPath);
 
-        if (!is_dir($sNewPath)) {
-            mkdir($sNewPath);
-        }
+        $this->fileSystemService->ensureDirectory($sNewPath);
 
         // todo: before adding entry into db the existence should be checked
 
@@ -247,9 +241,7 @@ class Media
                         $sOldThumbPath = $this->imageResource->getMediaPath() . 'thumbs/';
                         $sNewThumbPath = $this->imageResource->getMediaPath() . $sTargetFolderName . '/thumbs/';
 
-                        if (!is_dir($sNewThumbPath)) {
-                            mkdir($sNewThumbPath);
-                        }
+                        $this->fileSystemService->ensureDirectory($sNewThumbPath);
 
                         foreach (
                             Glob::glob(
