@@ -17,10 +17,8 @@ class LanguageExtension extends LanguageExtension_parent
     /**
      * @param null|integer $iLang
      * @param null|bool $blAdminMode
-     *
-     * @return array
      */
-    public function getLanguageStrings($iLang = null, $blAdminMode = null)
+    public function getLanguageStrings($iLang = null, $blAdminMode = null): array
     {
         $aLang = [];
 

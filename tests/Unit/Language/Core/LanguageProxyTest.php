@@ -8,6 +8,7 @@
 namespace OxidEsales\MediaLibrary\Tests\Unit\Language\Core;
 
 use OxidEsales\Eshop\Core\Language as ShopLanguage;
+use OxidEsales\MediaLibrary\Language\Core\LanguageExtension;
 use OxidEsales\MediaLibrary\Language\Core\LanguageProxy;
 use PHPUnit\Framework\TestCase;
 
@@ -16,7 +17,22 @@ use PHPUnit\Framework\TestCase;
  */
 class LanguageProxyTest extends TestCase
 {
-    public function testSanitizeFilename(): void
+    public function testGetLanguageStringsArray(): void
+    {
+        $exampleLanguageStrings = [
+            'key1' => 'value1',
+            'key2' => 'value2'
+        ];
+
+        /** @var LanguageExtension&ShopLanguage $shopLanguageMock */
+        $shopLanguageMock = $this->createPartialMock(LanguageExtension::class, ['getLanguageStrings']);
+        $shopLanguageMock->method('getLanguageStrings')->willReturn($exampleLanguageStrings);
+
+        $sut = $this->getSut(shopLanguage:  $shopLanguageMock);
+        $this->assertSame($exampleLanguageStrings, $sut->getLanguageStringsArray());
+    }
+
+    public function testGetSeoReplaceChars(): void
     {
         $exampleTranslation = [
             'x' => 'y',
@@ -30,7 +46,15 @@ class LanguageProxyTest extends TestCase
             [10, $exampleTranslation]
         ]);
 
-        $sut = new LanguageProxy($shopLanguageMock);
+        $sut = $this->getSut(shopLanguage: $shopLanguageMock);
         $this->assertSame($exampleTranslation, $sut->getSeoReplaceChars());
+    }
+
+    public function getSut(
+        ShopLanguage $shopLanguage = null
+    ): LanguageProxy {
+        return new LanguageProxy(
+            language: $shopLanguage ?? $this->createStub(ShopLanguage::class)
+        );
     }
 }
