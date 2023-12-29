@@ -25,7 +25,7 @@ class RequestTest extends TestCase
     {
         $requestMock = $this->createPartialMock(ShopRequest::class, ['getRequestParameter']);
         $requestMock->method('getRequestParameter')->willReturnMap([
-            [Request::REQUEST_PARAM_OVERLAY, false, $requestValue]
+            [Request::REQUEST_PARAM_OVERLAY, null, $requestValue]
         ]);
 
         $sut = new Request($requestMock);
@@ -39,7 +39,7 @@ class RequestTest extends TestCase
     {
         $requestMock = $this->createPartialMock(ShopRequest::class, ['getRequestParameter']);
         $requestMock->method('getRequestParameter')->willReturnMap([
-            [Request::REQUEST_PARAM_POPUP, false, $requestValue]
+            [Request::REQUEST_PARAM_POPUP, null, $requestValue]
         ]);
 
         $sut = new Request($requestMock);

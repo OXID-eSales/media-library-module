@@ -9,14 +9,14 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Image\Service;
 
-use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
+use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 
 interface ThumbnailGeneratorInterface
 {
     public function generateThumbnail(
         string $sourcePath,
         string $thumbnailPath,
-        ImageSize $size,
+        ImageSizeInterface $size,
         bool $blCrop,
     ): void;
 }

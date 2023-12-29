@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Language\Core;
 
-use OxidEsales\MediaLibrary\Language\Core\LanguageExtension;
-
 class LanguageProxy implements LanguageInterface
 {
     /** @var LanguageExtension $language */
@@ -29,7 +27,7 @@ class LanguageProxy implements LanguageInterface
 
     public function getSeoReplaceChars(): array
     {
-        $editLanguage = $this->language->getEditLanguage();
+        $editLanguage = (int)$this->language->getEditLanguage();
 
         /** @var array $seoChars */
         $seoChars = $this->language->getSeoReplaceChars($editLanguage);

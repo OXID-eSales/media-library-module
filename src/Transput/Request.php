@@ -24,14 +24,14 @@ class Request implements RequestInterface
     public function isOverlay(): bool
     {
         /** @var string|int|null $value */
-        $value = $this->request->getRequestParameter(self::REQUEST_PARAM_OVERLAY, false);
+        $value = $this->request->getRequestParameter(self::REQUEST_PARAM_OVERLAY);
         return (bool)$value;
     }
 
     public function isPopout(): bool
     {
         /** @var string|int|null $value */
-        $value = $this->request->getRequestParameter(self::REQUEST_PARAM_POPUP, false);
+        $value = $this->request->getRequestParameter(self::REQUEST_PARAM_POPUP);
         return (bool)$value;
     }
 
