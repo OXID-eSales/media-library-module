@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Tests\Integration\Transition\Core;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Transput;
 
 use OxidEsales\Eshop\Core\Request as ShopRequest;
 use OxidEsales\MediaLibrary\Transput\Request;

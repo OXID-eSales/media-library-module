@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Tests\Integration\Transition\Core;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Transput;
 
 use OxidEsales\Eshop\Core\Utils;
 use OxidEsales\MediaLibrary\Transput\Response;
