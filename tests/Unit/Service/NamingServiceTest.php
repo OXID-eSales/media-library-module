@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Service;
 
 use org\bovigo\vfs\vfsStream;
+use OxidEsales\MediaLibrary\Exception\WrongFileTypeException;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Service\NamingService;
 use PHPUnit\Framework\TestCase;
@@ -117,6 +118,37 @@ class NamingServiceTest extends TestCase
             'filename' => 'vfs://root/someDirectory/someFilename_5.txt',
             'expectation' => 'vfs://root/someDirectory/someFilename_6.txt'
         ];
+    }
+
+    /** @dataProvider validationGoodFileNamesDataProvider */
+    public function testValidateGoodFilename(string $goodFilename): void
+    {
+        $sut = $this->getSut();
+        $this->assertTrue($sut->validateFileName($goodFilename));
+    }
+
+    public function validationGoodFileNamesDataProvider(): \Generator
+    {
+        yield ['fileName' => 'example.txt'];
+    }
+
+    /** @dataProvider validationBadFileNamesDataProvider */
+    public function testValidateBadFilename(string $badFilename): void
+    {
+        $sut = $this->getSut();
+
+        $this->expectException(WrongFileTypeException::class);
+        $sut->validateFileName($badFilename);
+    }
+
+    public function validationBadFileNamesDataProvider(): \Generator
+    {
+        yield ['fileName' => 'someFileNameWithoutExtension'];
+        yield ['fileName' => ''];
+        yield ['fileName' => 'example.exe'];
+        yield ['fileName' => 'someJs.js'];
+        yield ['fileName' => 'somePhp.php'];
+        yield ['fileName' => 'otherTypePhp.phtmp'];
     }
 
     private function getSut(

@@ -71,7 +71,7 @@ class Media
         $iFileCount = 0;
 
         $aResult = [];
-        if ($this->validateFilename($sFileName)) {
+        if ($this->namingService->validateFileName($sFileName)) {
             $this->moveUploadedFile($sSourcePath, $sDestPath);
 
             if ($blCreateThumbs) {
@@ -116,23 +116,6 @@ class Media
         }
 
         return $aResult;
-    }
-
-
-    public function validateFilename($sFileName)
-    {
-        $aFileNameParts = explode('.', $sFileName);
-        $aFileNameParts = array_reverse($aFileNameParts);
-
-        $sFileNameExt = $aFileNameParts[0];
-
-        foreach ($this->_aFileExtBlacklist as $sBlacklistPattern) {
-            if (preg_match("/" . $sBlacklistPattern . "/", $sFileNameExt)) {
-                throw new \Exception(Registry::getLang()->translateString('DD_MEDIA_EXCEPTION_INVALID_FILEEXT'));
-            }
-        }
-
-        return true;
     }
 
     public function createDirs()

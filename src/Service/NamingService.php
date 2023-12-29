@@ -9,10 +9,22 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Service;
 
+use OxidEsales\MediaLibrary\Exception\WrongFileTypeException;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 
 class NamingService implements NamingServiceInterface
 {
+    protected array $fileExtensionBlacklistRegex = [
+        'php.*',
+        'exe',
+        'js',
+        'jsp',
+        'cgi',
+        'cmf',
+        'pht.*',
+        'phar',
+    ];
+
     public function __construct(
         private LanguageInterface $language
     ) {
@@ -53,5 +65,28 @@ class NamingService implements NamingServiceInterface
         return $pathInfo['dirname']
             . DIRECTORY_SEPARATOR . $newFileName
             . ($pathInfo['extension'] ? '.' . $pathInfo['extension'] : '');
+    }
+
+    public function validateFileName(string $fileName): bool
+    {
+        $extension = $this->getFileNameExtension($fileName);
+
+        foreach ($this->fileExtensionBlacklistRegex as $oneExpression) {
+            if (preg_match("/{$oneExpression}/si", $extension)) {
+                throw new WrongFileTypeException();
+            }
+        }
+
+        return true;
+    }
+
+    public function getFileNameExtension(string $fileName): string
+    {
+        $fileNameParts = explode(".", $fileName);
+        if (count($fileNameParts) < 2) {
+            throw new WrongFileTypeException();
+        }
+
+        return end($fileNameParts);
     }
 }
