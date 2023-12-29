@@ -24,21 +24,7 @@ use Webmozart\Glob\Glob;
 
 class Media
 {
-    public const AMOUNT_OF_FILES = "18";
-
     protected Connection $connection;
-    protected $_aFileExtBlacklist = [
-        'php.*',
-        'exe',
-        'js',
-        'jsp',
-        'cgi',
-        'cmf',
-        'phtml',
-        'pht',
-        'phar',
-    ]; // regex allowed
-
 
     public function __construct(
         protected ModuleSettings $moduleSettings,
