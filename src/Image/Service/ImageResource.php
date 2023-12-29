@@ -112,7 +112,7 @@ class ImageResource implements ImageResourceInterface
             return $this->getMediaUrl('thumbs/' . $sThumbName);
         }
 
-        return false;
+        return '';
     }
 
     public function getThumbnailPath($filename = ''): string
