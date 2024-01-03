@@ -1,0 +1,12 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface:
+    class: OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequest
+    public: true
+
+  OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface:
+    class: OxidEsales\MediaLibrary\Transput\RequestData\UIRequest
+    public: true

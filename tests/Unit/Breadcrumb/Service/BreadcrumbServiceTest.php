@@ -13,7 +13,7 @@ use OxidEsales\MediaLibrary\Breadcrumb\DataType\BreadcrumbInterface;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbService;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
-use OxidEsales\MediaLibrary\Transput\Request\UIRequestInterface;
+use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use PHPUnit\Framework\TestCase;
 
 /**

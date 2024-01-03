@@ -13,7 +13,7 @@ use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\Media;
-use OxidEsales\MediaLibrary\Transput\Request\UIRequestInterface;
+use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use Symfony\Component\Filesystem\Path;
 

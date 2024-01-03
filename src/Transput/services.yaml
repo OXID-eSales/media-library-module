@@ -1,3 +1,6 @@
+imports:
+  - { resource: RequestData/services.yaml }
+
 services:
   _defaults:
     public: false
@@ -6,10 +9,9 @@ services:
       OxidEsales\Eshop\Core\Request: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getRequest()'
       OxidEsales\Eshop\Core\Utils: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getUtils()'
 
+  OxidEsales\MediaLibrary\Transput\RequestInterface:
+    class: OxidEsales\MediaLibrary\Transput\Request
+
   OxidEsales\MediaLibrary\Transput\ResponseInterface:
     class: OxidEsales\MediaLibrary\Transput\Response
-    public: true
-
-  OxidEsales\MediaLibrary\Transput\Request\UIRequestInterface:
-    class: OxidEsales\MediaLibrary\Transput\Request\UIRequest
     public: true

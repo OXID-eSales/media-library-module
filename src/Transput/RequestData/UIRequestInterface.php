@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Transput\Request;
+namespace OxidEsales\MediaLibrary\Transput\RequestData;
 
 interface UIRequestInterface
 {
