@@ -13,7 +13,7 @@ use OxidEsales\MediaLibrary\Breadcrumb\DataType\BreadcrumbInterface;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbService;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
-use OxidEsales\MediaLibrary\Transput\RequestInterface;
+use OxidEsales\MediaLibrary\Transput\Request\UIRequestInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -56,7 +56,7 @@ class BreadcrumbServiceTest extends TestCase
 
     private function getSutWithFolderIdInRequestPreconfigured(): BreadcrumbService
     {
-        $requestStub = $this->createMock(RequestInterface::class);
+        $requestStub = $this->createMock(UIRequestInterface::class);
         $requestStub->method('getFolderId')->willReturn('someFolderId');
 
         $exampleMedia = $this->createMock(MediaInterface::class);
@@ -75,7 +75,7 @@ class BreadcrumbServiceTest extends TestCase
 
     private function getSutWithoutFolderIdInRequest(): BreadcrumbService
     {
-        $requestStub = $this->createStub(RequestInterface::class);
+        $requestStub = $this->createStub(UIRequestInterface::class);
         $mediaRepository = $this->createStub(MediaRepositoryInterface::class);
 
         $sut = new BreadcrumbService(

@@ -7,16 +7,16 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Tests\Unit\Transput;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Transput\Request;
 
 use OxidEsales\Eshop\Core\Request as ShopRequest;
-use OxidEsales\MediaLibrary\Transput\Request;
+use OxidEsales\MediaLibrary\Transput\Request\UIRequest;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \OxidEsales\MediaLibrary\Transput\Request
+ * @covers \OxidEsales\MediaLibrary\Transput\Request\UIRequest
  */
-class RequestTest extends TestCase
+class UIRequestTest extends TestCase
 {
     /**
      * @dataProvider requestBoolDataProvider
@@ -25,10 +25,10 @@ class RequestTest extends TestCase
     {
         $requestMock = $this->createPartialMock(ShopRequest::class, ['getRequestParameter']);
         $requestMock->method('getRequestParameter')->willReturnMap([
-            [Request::REQUEST_PARAM_OVERLAY, null, $requestValue]
+            [UIRequest::REQUEST_PARAM_OVERLAY, null, $requestValue]
         ]);
 
-        $sut = new Request($requestMock);
+        $sut = new UIRequest($requestMock);
         $this->assertSame($expectedValue, $sut->isOverlay());
     }
 
@@ -39,10 +39,10 @@ class RequestTest extends TestCase
     {
         $requestMock = $this->createPartialMock(ShopRequest::class, ['getRequestParameter']);
         $requestMock->method('getRequestParameter')->willReturnMap([
-            [Request::REQUEST_PARAM_POPUP, null, $requestValue]
+            [UIRequest::REQUEST_PARAM_POPUP, null, $requestValue]
         ]);
 
-        $sut = new Request($requestMock);
+        $sut = new UIRequest($requestMock);
         $this->assertSame($expectedValue, $sut->isPopout());
     }
 
@@ -65,10 +65,10 @@ class RequestTest extends TestCase
     {
         $requestMock = $this->createPartialMock(ShopRequest::class, ['getRequestEscapedParameter']);
         $requestMock->method('getRequestEscapedParameter')->willReturnMap([
-            [Request::REQUEST_PARAM_FOLDER_ID, null, $requestValue]
+            [UIRequest::REQUEST_PARAM_FOLDER_ID, null, $requestValue]
         ]);
 
-        $sut = new Request($requestMock);
+        $sut = new UIRequest($requestMock);
         $this->assertSame($expectedValue, $sut->getFolderId());
     }
 
@@ -90,10 +90,10 @@ class RequestTest extends TestCase
     {
         $requestMock = $this->createPartialMock(ShopRequest::class, ['getRequestParameter']);
         $requestMock->method('getRequestParameter')->willReturnMap([
-            [Request::REQUEST_PARAM_MEDIA_LIST_START_INDEX, null, $requestValue]
+            [UIRequest::REQUEST_PARAM_MEDIA_LIST_START_INDEX, null, $requestValue]
         ]);
 
-        $sut = new Request($requestMock);
+        $sut = new UIRequest($requestMock);
         $this->assertSame($expectedValue, $sut->getMediaListStartIndex());
     }
 

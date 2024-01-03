@@ -7,19 +7,14 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Transput;
+namespace OxidEsales\MediaLibrary\Transput\Request;
 
-class Request implements RequestInterface
+class UIRequest extends AbstractRequest implements UIRequestInterface
 {
     public const REQUEST_PARAM_FOLDER_ID = 'folderid';
     public const REQUEST_PARAM_OVERLAY = 'overlay';
     public const REQUEST_PARAM_POPUP = 'popout';
     public const REQUEST_PARAM_MEDIA_LIST_START_INDEX = 'start';
-
-    public function __construct(
-        private \OxidEsales\Eshop\Core\Request $request
-    ) {
-    }
 
     public function isOverlay(): bool
     {

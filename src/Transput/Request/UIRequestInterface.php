@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Transput;
+namespace OxidEsales\MediaLibrary\Transput\Request;
 
-interface RequestInterface
+interface UIRequestInterface
 {
     public function isOverlay(): bool;
 

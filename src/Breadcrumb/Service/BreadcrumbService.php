@@ -11,12 +11,12 @@ namespace OxidEsales\MediaLibrary\Breadcrumb\Service;
 
 use OxidEsales\MediaLibrary\Breadcrumb\DataType\Breadcrumb;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
-use OxidEsales\MediaLibrary\Transput\RequestInterface;
+use OxidEsales\MediaLibrary\Transput\Request\UIRequestInterface;
 
 class BreadcrumbService implements BreadcrumbServiceInterface
 {
     public function __construct(
-        private RequestInterface $request,
+        private UIRequestInterface $request,
         private MediaRepositoryInterface $mediaRepository
     ) {
     }

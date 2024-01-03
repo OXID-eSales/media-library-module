@@ -13,7 +13,7 @@ use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\Media;
-use OxidEsales\MediaLibrary\Transput\RequestInterface;
+use OxidEsales\MediaLibrary\Transput\Request\UIRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use Symfony\Component\Filesystem\Path;
 
@@ -22,7 +22,7 @@ use Symfony\Component\Filesystem\Path;
  */
 class MediaController extends AdminDetailsController
 {
-    protected RequestInterface $request;
+    protected UIRequestInterface $request;
     protected ?Media $mediaService = null;
     protected ?ImageResourceInterface $imageResource = null;
 
@@ -34,7 +34,7 @@ class MediaController extends AdminDetailsController
         parent::init();
         $this->setTemplateName('@ddoemedialibrary/dialog/ddoemedia');
 
-        $this->request = $this->getService(RequestInterface::class);
+        $this->request = $this->getService(UIRequestInterface::class);
         $this->mediaService = $this->getService(Media::class);
         $this->imageResource = $this->getService(ImageResourceInterface::class);
 
@@ -60,7 +60,7 @@ class MediaController extends AdminDetailsController
         $this->addTplParam('sFoldername', $this->imageResource->getFolderName());
         $this->addTplParam('sFolderId', $this->imageResource->getFolderId());
         $this->addTplParam('sTab', $request->getRequestEscapedParameter('tab'));
-        $this->addTplParam('request', $this->getService(RequestInterface::class));
+        $this->addTplParam('request', $this->getService(UIRequestInterface::class));
 
         return parent::render();
     }

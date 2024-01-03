@@ -10,6 +10,6 @@ services:
     class: OxidEsales\MediaLibrary\Transput\Response
     public: true
 
-  OxidEsales\MediaLibrary\Transput\RequestInterface:
-    class: OxidEsales\MediaLibrary\Transput\Request
+  OxidEsales\MediaLibrary\Transput\Request\UIRequestInterface:
+    class: OxidEsales\MediaLibrary\Transput\Request\UIRequest
     public: true
