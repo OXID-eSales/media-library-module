@@ -36,7 +36,10 @@ class MediaController extends AdminDetailsController
         $this->setTemplateName('@ddoemedialibrary/dialog/ddoemedia');
 
         $this->request = $this->getService(UIRequestInterface::class);
+
         $this->mediaService = $this->getService(Media::class);
+        $this->mediaService->createDirs();
+
         $this->imageResource = $this->getService(ImageResourceInterface::class);
 
         if (Registry::getRequest()->getRequestEscapedParameter('folderid')) {
@@ -91,8 +94,6 @@ class MediaController extends AdminDetailsController
                     $responseService->responseAsJson(['error' => "Invalid file type"]);
                 }
 
-                $this->mediaService->createDirs();
-
                 $sFileSize = $_FILES['file']['size'];
                 $sFileType = $_FILES['file']['type'];
 
@@ -128,16 +129,14 @@ class MediaController extends AdminDetailsController
     {
         $addFolderRequest = $this->getService(AddFolderRequestInterface::class);
 
-        $responseData = ['success' => false];
-
+        $responseData = [];
         if ($folderName = $addFolderRequest->getName()) {
             $mediaService = $this->getService(Media::class);
             $newDirectoryInformation = $mediaService->createCustomDir($folderName);
 
             $responseData = [
-                'success'   => true,
                 'id'        => $newDirectoryInformation['id'],
-                'file'      => $newDirectoryInformation['dir']
+                'name'      => $newDirectoryInformation['dir']
             ];
         }
 

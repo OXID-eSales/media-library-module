@@ -680,9 +680,11 @@
                 $('.dd-media-folder-action', $dialog).on('click', function () {
                     ddh.prompt(ddh.translate('DD_MEDIA_ADD_FOLDER'), function (val) {
                         $.post(actionLink + 'cl=ddoemedia_view&fnc=addFolder', {name: val}, function (addFolderResult) {
-                            ui.addMediaItem(addFolderResult.id, addFolderResult.file, 'directory', 0, null, '');
-                            $('.dd-media-list', $dialog).removeClass('empty');
-                            $('.dd-media-file-count', $dialog).text(parseInt($('.dd-media-file-count', $dialog).text()) + 1);
+                            if (addFolderResult.id) {
+                                ui.addMediaItem(addFolderResult.id, addFolderResult.name, 'directory', 0, null, '');
+                                $('.dd-media-list', $dialog).removeClass('empty');
+                                $('.dd-media-file-count', $dialog).text(parseInt($('.dd-media-file-count', $dialog).text()) + 1);
+                            }
                         });
                     });
                 });

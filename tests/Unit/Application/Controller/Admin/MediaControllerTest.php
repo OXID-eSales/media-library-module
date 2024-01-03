@@ -32,9 +32,8 @@ class MediaControllerTest extends TestCase
 
         $responseSpy = $this->createMock(ResponseInterface::class);
         $responseSpy->expects($this->once())->method('responseAsJson')->with([
-            'success' => true,
             'id' => 'fid',
-            'file' => 'someDirName'
+            'name' => 'someDirName'
         ]);
 
         $sut = $this->createPartialMock(MediaController::class, ['getService']);
