@@ -13,6 +13,7 @@ use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\Media;
+use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use Symfony\Component\Filesystem\Path;
@@ -123,30 +124,21 @@ class MediaController extends AdminDetailsController
         }
     }
 
-    /**
-     * @return void
-     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
-     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseErrorException
-     */
-    public function addFolder()
+    public function addFolder(): void
     {
-        $oRequest = Registry::getRequest();
+        $addFolderRequest = $this->getService(AddFolderRequestInterface::class);
 
-        if (($sName = $oRequest->getRequestEscapedParameter('name'))) {
-            $aCustomDir = $this->mediaService->createCustomDir($sName);
+        $responseData = ['success' => false];
 
-            // todo: catch exception and return appropriate result
+        if ($folderName = $addFolderRequest->getName()) {
+            $mediaService = $this->getService(Media::class);
+            $newDirectoryInformation = $mediaService->createCustomDir($folderName);
 
             $responseData = [
                 'success'   => true,
-                'id'        => $aCustomDir['id'],
-                'file'      => $aCustomDir['dir'],
-                'filetype'  => 'directory',
-                'filesize'  => 0,
-                'imagesize' => '',
+                'id'        => $newDirectoryInformation['id'],
+                'file'      => $newDirectoryInformation['dir']
             ];
-        } else {
-            $responseData = ['success' => false];
         }
 
         $responseService = $this->getService(ResponseInterface::class);

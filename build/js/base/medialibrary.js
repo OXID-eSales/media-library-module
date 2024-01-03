@@ -677,25 +677,15 @@
 
                 $( '.dd-media-remove-action, .dd-media-move-action, .dd-media-rename-action', $dialog ).prop( 'disabled', true );
 
-                $( '.dd-media-folder-action', $dialog ).on( 'click',
-                    function()
-                    {
-                        ddh.prompt(
-                            ddh.translate( 'DD_MEDIA_ADD_FOLDER' ),
-                            function( val )
-                            {
-                                $.post( actionLink + 'cl=ddoemedia_view&fnc=addFolder', { name: val },
-                                    function( _res )
-                                    {
-                                        ui.addMediaItem( _res.id, _res.file, _res.filetype, _res.filesize, null, _res.imagesize );
-                                        $( '.dd-media-list', $dialog ).removeClass( 'empty' );
-                                        $( '.dd-media-file-count', $dialog ).text( parseInt( $( '.dd-media-file-count', $dialog ).text() ) + 1 );
-                                    }
-                                );
-                            }
-                        );
-                    }
-                );
+                $('.dd-media-folder-action', $dialog).on('click', function () {
+                    ddh.prompt(ddh.translate('DD_MEDIA_ADD_FOLDER'), function (val) {
+                        $.post(actionLink + 'cl=ddoemedia_view&fnc=addFolder', {name: val}, function (addFolderResult) {
+                            ui.addMediaItem(addFolderResult.id, addFolderResult.file, 'directory', 0, null, '');
+                            $('.dd-media-list', $dialog).removeClass('empty');
+                            $('.dd-media-file-count', $dialog).text(parseInt($('.dd-media-file-count', $dialog).text()) + 1);
+                        });
+                    });
+                });
 
                 // if folder id is given then we are in a folder
                 if( folderId )
@@ -883,7 +873,7 @@
                         {
                             $detailsItem = $( this ).parent().siblings().find( '.dd-media-item.active' ).first();
                         }
- 
+
                         if ( $detailsItem && $detailsItem.length )
                         {
                             var itemData = $detailsItem.data();
