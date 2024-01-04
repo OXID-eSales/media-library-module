@@ -27,16 +27,12 @@ class Media
     protected Connection $connection;
 
     public function __construct(
-        protected ModuleSettings $moduleSettings,
         protected Config $shopConfig,
         ConnectionProviderInterface $connectionProvider,
-        protected UtilsObject $utilsObject,
-        public ThumbnailGeneratorInterface $thumbnailGenerator,
         public ImageResourceInterface $imageResource,
         protected NamingServiceInterface $namingService,
         protected MediaRepositoryInterface $mediaRepository,
         private FileSystemServiceInterface $fileSystemService,
-        protected FolderServiceInterface $folderService,
         protected ShopAdapterInterface $shopAdapter,
     ) {
         $this->connection = $connectionProvider->get();

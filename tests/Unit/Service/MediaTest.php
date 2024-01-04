@@ -298,18 +298,8 @@ class MediaTest extends TestCase
 
     public function getRenameDataProvider(): array
     {
-        $oMedia = new Media(
-            $this->createStub(ModuleSettings::class),
-            $this->createStub(Config::class),
-            $this->createStub(ConnectionProviderInterface::class),
-            $this->createStub(UtilsObject::class),
-            $this->createStub(ThumbnailGeneratorInterface::class),
-            $this->createStub(ImageResourceInterface::class),
+        $oMedia = $this->getSut(
             namingService: ContainerFactory::getInstance()->getContainer()->get(NamingServiceInterface::class),
-            mediaRepository: $this->createStub(MediaRepositoryInterface::class),
-            fileSystemService: $this->createStub(FileSystemServiceInterface::class),
-            folderService: $this->createStub(FolderServiceInterface::class),
-            shopAdapter: $this->createStub(ShopAdapterInterface::class)
         );
 
         $defaultThumbnailSize = $oMedia->imageResource->getDefaultThumbnailSize();
@@ -567,17 +557,13 @@ class MediaTest extends TestCase
             $connectionProvider
         );
         return new MediaMock(
-            $moduleSettings ?: $this->createStub(ModuleSettings::class),
-            $shopConfig ?: $this->createStub(Config::class),
-            $connectionProvider ?: $this->createStub(ConnectionProviderInterface::class),
-            $utilsObject ?: $this->createStub(UtilsObject::class),
-            $thumbnailGenerator ?: $this->createStub(ThumbnailGeneratorInterface::class),
-            $imageResourceMock,
+            shopConfig: $shopConfig ?: $this->createStub(Config::class),
+            connectionProvider: $connectionProvider ?: $this->createStub(ConnectionProviderInterface::class),
+            imageResource: $imageResourceMock,
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
             mediaRepository: $mediaRepository ?? $this->createStub(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemService ?? $this->createPartialMock(FileSystemService::class, []),
-            folderService: $this->createStub(FolderServiceInterface::class),
-            shopAdapter: $this->createStub(ShopAdapterInterface::class)
+            shopAdapter: $this->createStub(ShopAdapterInterface::class),
         );
     }
 
