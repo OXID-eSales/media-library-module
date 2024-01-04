@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace Application\Controller\Admin;
 
 use OxidEsales\MediaLibrary\Application\Controller\Admin\MediaController;
+use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
+use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
 use OxidEsales\MediaLibrary\Service\Media;
 use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
@@ -27,8 +29,14 @@ class MediaControllerTest extends TestCase
         $requestStub = $this->createStub(AddFolderRequestInterface::class);
         $requestStub->method('getName')->willReturn($folderName);
 
-        $mediaStub = $this->createStub(Media::class);
-        $mediaStub->method('createCustomDir')->with($folderName)->willReturn(['id' => 'fid', 'dir' => 'someDirName']);
+        $newMediaItem = new MediaDataType(
+            oxid: 'fid',
+            fileName: 'someDirName',
+            fileType: 'directory'
+        );
+
+        $folderServiceStub = $this->createStub(FolderServiceInterface::class);
+        $folderServiceStub->method('createCustomDir')->with($folderName)->willReturn($newMediaItem);
 
         $responseSpy = $this->createMock(ResponseInterface::class);
         $responseSpy->expects($this->once())->method('responseAsJson')->with([
@@ -39,7 +47,7 @@ class MediaControllerTest extends TestCase
         $sut = $this->createPartialMock(MediaController::class, ['getService']);
         $sut->method('getService')->willReturnMap([
             [AddFolderRequestInterface::class, $requestStub],
-            [Media::class, $mediaStub],
+            [FolderServiceInterface::class, $folderServiceStub],
             [ResponseInterface::class, $responseSpy],
         ]);
 

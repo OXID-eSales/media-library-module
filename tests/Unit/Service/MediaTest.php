@@ -21,6 +21,7 @@ use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemService;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
+use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
 use OxidEsales\MediaLibrary\Service\Media;
 use OxidEsales\MediaLibrary\Service\ModuleSettings;
 use OxidEsales\MediaLibrary\Service\NamingService;
@@ -34,117 +35,6 @@ class MediaTest extends TestCase
 {
     private const FIXTURE_FILE = 'file.jpg';
     private const FIXTURE_FOLDER = 'some_folder';
-
-    public function testCreateFolderWithNewName()
-    {
-        $structure = [
-            'out' => [
-                'pictures' => [],
-            ],
-        ];
-        $directory = vfsStream::setup('root', 0777, $structure);
-
-        $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam']);
-        $shopConfigMock->expects($this->any())
-            ->method('getConfigParam')
-            ->willReturnMap(
-                [
-                    ['sShopDir', null, $directory->url()],
-                ]
-            );
-
-        $connectionMock = $this->createPartialMock(Connection::class, ['fetchOne']);
-        $connectionMock->expects($this->once())
-            ->method('fetchOne')
-            ->willReturn(null);
-        $connectionProviderStub = $this->createConfiguredMock(
-            ConnectionProviderInterface::class,
-            [
-                'get' => $connectionMock,
-            ]
-        );
-
-        $mediaRepositoryMock = $this->createMock(MediaRepositoryInterface::class);
-        $mediaRepositoryMock->expects($this->once())->method('addMedia');
-
-        $sId = md5('FolderTest');
-        $utilsObjectMock = $this->createPartialMock(UtilsObject::class, ['generateUId']);
-        $utilsObjectMock->expects($this->once())
-            ->method('generateUId')
-            ->willReturn($sId);
-
-        $sut = $this->getSut(
-            shopConfig: $shopConfigMock,
-            connectionProvider: $connectionProviderStub,
-            utilsObject: $utilsObjectMock,
-            namingService: $this->createPartialMock(NamingService::class, []),
-            mediaRepository: $mediaRepositoryMock
-        );
-        $aCustomDir = $sut->createCustomDir('FolderTest', '');
-
-        $aExpected = ['id' => $sId, 'dir' => 'FolderTest'];
-
-        $this->assertSame($aExpected, $aCustomDir);
-    }
-
-    public function testCreateFolderWithExistingName()
-    {
-        $structure = [
-            'out' => [
-                'pictures' => [
-                    'ddmedia' => [
-                        'FolderTest' => [],
-                    ],
-                ],
-            ],
-        ];
-        $directory = vfsStream::setup('root', 0777, $structure);
-
-        $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam']);
-        $shopConfigMock->expects($this->any())
-            ->method('getConfigParam')
-            ->willReturnMap(
-                [
-                    ['sShopDir', null, $directory->url()],
-                ]
-            );
-
-        $connectionMock = $this->createPartialMock(Connection::class, ['fetchOne']);
-        $connectionMock->expects($this->any())
-            ->method('fetchOne')
-            ->willReturn(null);
-        $connectionProviderStub = $this->createConfiguredMock(
-            ConnectionProviderInterface::class,
-            [
-                'get' => $connectionMock,
-            ]
-        );
-
-        $mediaRepositoryMock = $this->createMock(MediaRepositoryInterface::class);
-        $mediaRepositoryMock->method('addMedia')->willThrowException(new DBALException());
-
-        $sId = md5('FolderTest_1');
-        $utilsObjectMock = $this->createPartialMock(UtilsObject::class, ['generateUId']);
-        $utilsObjectMock->expects($this->exactly(2))
-            ->method('generateUId')
-            ->willReturn($sId);
-
-        $sut = $this->getSut(
-            shopConfig: $shopConfigMock,
-            connectionProvider: $connectionProviderStub,
-            utilsObject: $utilsObjectMock,
-            namingService: $this->createPartialMock(NamingService::class, [])
-        );
-        $aCustomDir = $sut->createCustomDir('FolderTest', '');
-
-        $aExpected = ['id' => $sId, 'dir' => 'FolderTest_1'];
-
-        $this->assertSame($aExpected, $aCustomDir);
-
-        $aCustomDir = $sut->createCustomDir('FolderTest', '');
-        $aExpected = ['id' => $sId, 'dir' => 'FolderTest_2'];
-        $this->assertSame($aExpected, $aCustomDir);
-    }
 
     /**
      * @dataProvider getRenameDataProvider
@@ -421,7 +311,8 @@ class MediaTest extends TestCase
             $this->createStub(ImageResourceInterface::class),
             namingService: ContainerFactory::getInstance()->getContainer()->get(NamingServiceInterface::class),
             mediaRepository: $this->createStub(MediaRepositoryInterface::class),
-            fileSystemService: $this->createStub(FileSystemServiceInterface::class)
+            fileSystemService: $this->createStub(FileSystemServiceInterface::class),
+            folderService: $this->createStub(FolderServiceInterface::class)
         );
 
         $defaultThumbnailSize = $oMedia->imageResource->getDefaultThumbnailSize();
@@ -687,7 +578,8 @@ class MediaTest extends TestCase
             $imageResourceMock,
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
             mediaRepository: $mediaRepository ?? $this->createStub(MediaRepositoryInterface::class),
-            fileSystemService: $fileSystemService ?? $this->createPartialMock(FileSystemService::class, [])
+            fileSystemService: $fileSystemService ?? $this->createPartialMock(FileSystemService::class, []),
+            folderService: $this->createStub(FolderServiceInterface::class)
         );
     }
 

@@ -15,6 +15,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
@@ -35,7 +36,8 @@ class Media
         public ImageResourceInterface $imageResource,
         protected NamingServiceInterface $namingService,
         protected MediaRepositoryInterface $mediaRepository,
-        private FileSystemServiceInterface $fileSystemService
+        private FileSystemServiceInterface $fileSystemService,
+        protected FolderServiceInterface $folderService
     ) {
         $this->connection = $connectionProvider->get();
     }
@@ -109,40 +111,6 @@ class Media
     {
         $this->fileSystemService->ensureDirectory($this->imageResource->getMediaPath());
         $this->fileSystemService->ensureDirectory($this->imageResource->getThumbnailPath());
-    }
-
-    public function createCustomDir($sName)
-    {
-        $this->createDirs();
-
-        $sPath = $this->imageResource->getMediaPath();
-        $sNewPath = $sPath . $sName;
-
-        $sNewPath = $this->namingService->getUniqueFilename($sNewPath);
-
-        $this->fileSystemService->ensureDirectory($sNewPath);
-
-        // todo: before adding entry into db the existence should be checked
-
-        $sFolderName = basename($sNewPath);
-
-        $sSelect = "SELECT OXID FROM `ddmedia` WHERE `DDFILENAME` = ? AND `DDFILETYPE` = ?";
-        $sId = $this->connection->fetchOne($sSelect, [$sFolderName, 'directory']);
-
-        if (!$sId) {
-            $sId = $this->generateUId();
-
-            $newMedia = new MediaDataType(
-                oxid: $sId,
-                fileName: $sFolderName,
-                fileType: 'directory'
-            );
-
-            $this->mediaRepository->addMedia($newMedia);
-        }
-
-
-        return ['id' => $sId, 'dir' => $sFolderName];
     }
 
     public function rename($sOldName, $sNewName, $sId, $sType = 'file')

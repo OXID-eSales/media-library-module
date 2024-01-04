@@ -13,3 +13,7 @@ services:
   OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface:
     class: OxidEsales\MediaLibrary\Image\Service\ImageResource
     public: true
+
+  OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface:
+    class: OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactored
+    public: true

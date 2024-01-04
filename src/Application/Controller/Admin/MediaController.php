@@ -12,6 +12,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
+use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
 use OxidEsales\MediaLibrary\Service\Media;
 use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
@@ -131,12 +132,12 @@ class MediaController extends AdminDetailsController
 
         $responseData = [];
         if ($folderName = $addFolderRequest->getName()) {
-            $mediaService = $this->getService(Media::class);
-            $newDirectoryInformation = $mediaService->createCustomDir($folderName);
+            $folderService = $this->getService(FolderServiceInterface::class);
+            $newDirectoryInformation = $folderService->createCustomDir($folderName);
 
             $responseData = [
-                'id'        => $newDirectoryInformation['id'],
-                'name'      => $newDirectoryInformation['dir']
+                'id'        => $newDirectoryInformation->getOxid(),
+                'name'      => $newDirectoryInformation->getFileName()
             ];
         }
 

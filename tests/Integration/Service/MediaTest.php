@@ -15,6 +15,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProvider;
 use OxidEsales\MediaLibrary\Image\Service\ImageResource;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
+use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
 use OxidEsales\MediaLibrary\Service\ModuleSettings;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
@@ -98,9 +99,12 @@ class MediaTest extends IntegrationTestCase
     {
         $sut = $this->getSut();
 
-        $aResult = $sut->createCustomDir(self::FIXTURE_FOLDER);
-        $sFolderId = $aResult['id'];
-        $sFolderName = $aResult['dir'];
+        /** @var FolderServiceInterface $folderService */
+        $folderService = $this->get(FolderServiceInterface::class);
+        $folderData = $folderService->createCustomDir(self::FIXTURE_FOLDER);
+
+        $sFolderId = $folderData->getOxid();
+        $sFolderName = $folderData->getFileName();
 
         $this->assertNotEmpty($sFolderId);
 
@@ -229,7 +233,8 @@ class MediaTest extends IntegrationTestCase
             $imageResourceMock,
             namingService: $namingService ?: $this->containerFactory->get(NamingServiceInterface::class),
             mediaRepository: $this->containerFactory->get(MediaRepositoryInterface::class),
-            fileSystemService: $this->containerFactory->get(FileSystemServiceInterface::class)
+            fileSystemService: $this->containerFactory->get(FileSystemServiceInterface::class),
+            folderService: $this->containerFactory->get(FolderServiceInterface::class)
         );
     }
 

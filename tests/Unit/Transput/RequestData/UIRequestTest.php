@@ -20,7 +20,7 @@ class UIRequestTest extends TestCase
 {
     public function testIsOverlay(): void
     {
-        $requestExampleValue = (bool)rand(0,1);
+        $requestExampleValue = (bool)rand(0, 1);
 
         $requestMock = $this->createMock(RequestInterface::class);
         $requestMock->method('getBoolRequestParameter')->willReturnMap([
@@ -33,7 +33,7 @@ class UIRequestTest extends TestCase
 
     public function testIsPopup(): void
     {
-        $requestExampleValue = (bool)rand(0,1);
+        $requestExampleValue = (bool)rand(0, 1);
 
         $requestMock = $this->createMock(RequestInterface::class);
         $requestMock->method('getBoolRequestParameter')->willReturnMap([
@@ -59,7 +59,7 @@ class UIRequestTest extends TestCase
 
     public function testGetMediaListStartIndex(): void
     {
-        $requestExampleValue = rand(0,1000);
+        $requestExampleValue = rand(0, 1000);
 
         $requestMock = $this->createMock(RequestInterface::class);
         $requestMock->method('getIntRequestParameter')->willReturnMap([
