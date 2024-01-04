@@ -24,7 +24,6 @@ use Symfony\Component\Filesystem\Path;
  */
 class MediaController extends AdminDetailsController
 {
-    protected UIRequestInterface $request;
     protected ?Media $mediaService = null;
     protected ?ImageResourceInterface $imageResource = null;
 
@@ -35,8 +34,6 @@ class MediaController extends AdminDetailsController
     {
         parent::init();
         $this->setTemplateName('@ddoemedialibrary/dialog/ddoemedia');
-
-        $this->request = $this->getService(UIRequestInterface::class);
 
         $this->mediaService = $this->getService(Media::class);
         $this->mediaService->createDirs();
@@ -57,15 +54,17 @@ class MediaController extends AdminDetailsController
     {
         $request = Registry::getRequest();
 
+        $uiRequest = $this->getService(UIRequestInterface::class);
         $mediaRepository = $this->getService(MediaRepositoryInterface::class);
-        $this->addTplParam('iFileCount', $mediaRepository->getFolderMediaCount($this->request->getFolderId()));
+        $this->addTplParam('iFileCount', $mediaRepository->getFolderMediaCount($uiRequest->getFolderId()));
 
         $this->addTplParam('sResourceUrl', $this->imageResource->getMediaUrl());
         $this->addTplParam('sThumbsUrl', $this->imageResource->getThumbnailUrl());
         $this->addTplParam('sFoldername', $this->imageResource->getFolderName());
         $this->addTplParam('sFolderId', $this->imageResource->getFolderId());
         $this->addTplParam('sTab', $request->getRequestEscapedParameter('tab'));
-        $this->addTplParam('request', $this->getService(UIRequestInterface::class));
+
+        $this->addTplParam('request', $uiRequest);
 
         return parent::render();
     }
@@ -233,9 +232,11 @@ class MediaController extends AdminDetailsController
      */
     public function moreFiles()
     {
+        $uiRequest = $this->getService(UIRequestInterface::class);
+
         $pageSize = 18;
-        $folderId = $this->request->getFolderId();
-        $listStartIndex = $this->request->getMediaListStartIndex();
+        $folderId = $uiRequest->getFolderId();
+        $listStartIndex = $uiRequest->getMediaListStartIndex();
 
         $mediaRepository = $this->getService(MediaRepositoryInterface::class);
         $folderMediaCount = $mediaRepository->getFolderMediaCount($folderId);
