@@ -15,6 +15,7 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResource;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
@@ -256,15 +257,10 @@ class MediaTest extends TestCase
         );
 
         $sId = md5(self::FIXTURE_FILE);
-        $utilsObjectMock = $this->createPartialMock(UtilsObject::class, ['generateUId']);
-        $utilsObjectMock->expects($this->once())
-            ->method('generateUId')
-            ->willReturn($sId);
 
         $sut = $this->getSut(
             shopConfig: $shopConfigMock,
             connectionProvider: $connectionProviderStub,
-            utilsObject: $utilsObjectMock,
             namingService: $this->createPartialMock(NamingService::class, [])
         );
 
@@ -312,7 +308,8 @@ class MediaTest extends TestCase
             namingService: ContainerFactory::getInstance()->getContainer()->get(NamingServiceInterface::class),
             mediaRepository: $this->createStub(MediaRepositoryInterface::class),
             fileSystemService: $this->createStub(FileSystemServiceInterface::class),
-            folderService: $this->createStub(FolderServiceInterface::class)
+            folderService: $this->createStub(FolderServiceInterface::class),
+            shopAdapter: $this->createStub(ShopAdapterInterface::class)
         );
 
         $defaultThumbnailSize = $oMedia->imageResource->getDefaultThumbnailSize();
@@ -579,7 +576,8 @@ class MediaTest extends TestCase
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
             mediaRepository: $mediaRepository ?? $this->createStub(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemService ?? $this->createPartialMock(FileSystemService::class, []),
-            folderService: $this->createStub(FolderServiceInterface::class)
+            folderService: $this->createStub(FolderServiceInterface::class),
+            shopAdapter: $this->createStub(ShopAdapterInterface::class)
         );
     }
 

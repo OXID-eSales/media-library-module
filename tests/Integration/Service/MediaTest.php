@@ -12,6 +12,7 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProvider;
+use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResource;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
@@ -224,6 +225,10 @@ class MediaTest extends IntegrationTestCase
             $thumbnailGenerator,
             $connectionProvider,
         );
+
+        $shopAdapterStub = $this->createStub(ShopAdapterInterface::class);
+        $shopAdapterStub->method('generateUniqueId')->willReturn(uniqid());
+
         return new MediaMock(
             $moduleSettings ?: $this->containerFactory->get(ModuleSettings::class),
             $shopConfig ?: Registry::getConfig(),
@@ -234,7 +239,8 @@ class MediaTest extends IntegrationTestCase
             namingService: $namingService ?: $this->containerFactory->get(NamingServiceInterface::class),
             mediaRepository: $this->containerFactory->get(MediaRepositoryInterface::class),
             fileSystemService: $this->containerFactory->get(FileSystemServiceInterface::class),
-            folderService: $this->containerFactory->get(FolderServiceInterface::class)
+            folderService: $this->containerFactory->get(FolderServiceInterface::class),
+            shopAdapter: $shopAdapterStub
         );
     }
 

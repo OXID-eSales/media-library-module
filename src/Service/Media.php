@@ -11,11 +11,10 @@ namespace OxidEsales\MediaLibrary\Service;
 
 use Doctrine\DBAL\Connection;
 use OxidEsales\Eshop\Core\Config;
-use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
@@ -37,7 +36,8 @@ class Media
         protected NamingServiceInterface $namingService,
         protected MediaRepositoryInterface $mediaRepository,
         private FileSystemServiceInterface $fileSystemService,
-        protected FolderServiceInterface $folderService
+        protected FolderServiceInterface $folderService,
+        protected ShopAdapterInterface $shopAdapter,
     ) {
         $this->connection = $connectionProvider->get();
     }
@@ -76,7 +76,7 @@ class Media
                 'thumbnail' => $sThumbName,
             ];
 
-            $sId = $this->generateUId();
+            $sId = $this->shopAdapter->generateUniqueId();
             $sThumbName = $aFile['thumbnail'];
             $sFileName = $aFile['filename'];
 
@@ -312,14 +312,6 @@ class Media
             $sDelete = "DELETE FROM `ddmedia` WHERE `OXID` = '" . $sOxid . "'; ";
             $this->connection->executeQuery($sDelete);
         }
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateUId(): string
-    {
-        return $this->utilsObject->generateUId();
     }
 
     /**
