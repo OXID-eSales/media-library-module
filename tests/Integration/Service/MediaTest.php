@@ -81,7 +81,7 @@ class MediaTest extends IntegrationTestCase
         $sFileSize = filesize($sSourcePath);
         $sFileType = $fileType;
 
-        $aResult = $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, true);
+        $aResult = $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType);
 
         $this->assertTrue(file_exists($sDestPath));
         $this->assertNotEmpty($aResult['id']);
@@ -115,11 +115,10 @@ class MediaTest extends IntegrationTestCase
         $sDestPath = $sut->imageResource->getMediaPath() . $destFileName;
         $sFileSize = filesize($sSourcePath);
         $sFileType = $fileType;
-        $blCreateThumbs = true;
 
         $this->assertStringContainsString($sFolderName, $sDestPath);
 
-        $aResult = $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, $blCreateThumbs);
+        $aResult = $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType);
 
         $this->assertTrue(file_exists($sDestPath));
         $this->assertNotEmpty($aResult['id']);

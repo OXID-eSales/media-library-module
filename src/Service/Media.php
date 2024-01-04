@@ -44,27 +44,22 @@ class Media
      */
 
 
-    public function uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, $blCreateThumbs = false)
+    public function uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType)
     {
         $this->createDirs();
-
-        $sThumbName = '';
 
         $sDestPath = $this->namingService->getUniqueFilename($sDestPath);
 
         $sFileName = basename($sDestPath);
-        $iFileCount = 0;
 
         $aResult = [];
         if ($this->namingService->validateFileName($sFileName)) {
             $this->moveUploadedFile($sSourcePath, $sDestPath);
 
-            if ($blCreateThumbs) {
-                try {
-                    $sThumbName = $this->imageResource->createThumbnail($sFileName);
-                } catch (\Exception $e) {
-                    $sThumbName = '';
-                }
+            try {
+                $sThumbName = $this->imageResource->createThumbnail($sFileName);
+            } catch (\Exception $e) {
+                $sThumbName = '';
             }
 
             $aFile = [

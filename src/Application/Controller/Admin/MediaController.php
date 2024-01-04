@@ -100,7 +100,7 @@ class MediaController extends AdminDetailsController
                 $sSourcePath = $_FILES['file']['tmp_name'];
                 $sDestPath = Path::join($this->imageResource->getMediaPath(), $_FILES['file']['name']);
 
-                $aResult = $this->mediaService->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, true);
+                $aResult = $this->mediaService->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType);
                 $sId = $aResult['id'];
                 $sFileName = $aResult['filename'];
                 $sImageSize = $aResult['imagesize'];

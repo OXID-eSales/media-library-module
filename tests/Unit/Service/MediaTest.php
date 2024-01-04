@@ -268,7 +268,7 @@ class MediaTest extends TestCase
         $sDestPath = $sut->imageResource->getMediaPath() . self::FIXTURE_FILE;
         $sFileSize = '1024';
         $sFileType = 'image/jpeg';
-        $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, true);
+        $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType);
 
         $structureExpected['root'] = [
             'tmp' => [],
@@ -293,7 +293,7 @@ class MediaTest extends TestCase
         $sDestPath = $sut->imageResource->getMediaPath() . 'test.js';
         $sFileType = 'text/javascript';
         $this->expectException(\Exception::class);
-        $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType, true);
+        $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType);
     }
 
     public function getRenameDataProvider(): array
