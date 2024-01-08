@@ -57,6 +57,19 @@ class UIRequestTest extends TestCase
         $this->assertSame($requestExampleValue, $sut->getFolderId());
     }
 
+    public function testGetTabName(): void
+    {
+        $requestExampleValue = uniqid();
+
+        $requestMock = $this->createMock(RequestInterface::class);
+        $requestMock->method('getStringRequestParameter')->willReturnMap([
+            [UIRequest::REQUEST_PARAM_TAB, '', $requestExampleValue]
+        ]);
+
+        $sut = new UIRequest($requestMock);
+        $this->assertSame($requestExampleValue, $sut->getTabName());
+    }
+
     public function testGetMediaListStartIndex(): void
     {
         $requestExampleValue = rand(0, 1000);

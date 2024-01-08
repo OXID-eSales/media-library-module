@@ -52,8 +52,6 @@ class MediaController extends AdminDetailsController
      */
     public function render()
     {
-        $request = Registry::getRequest();
-
         $uiRequest = $this->getService(UIRequestInterface::class);
         $mediaRepository = $this->getService(MediaRepositoryInterface::class);
         $this->addTplParam('iFileCount', $mediaRepository->getFolderMediaCount($uiRequest->getFolderId()));
@@ -62,7 +60,7 @@ class MediaController extends AdminDetailsController
         $this->addTplParam('sThumbsUrl', $this->imageResource->getThumbnailUrl());
         $this->addTplParam('sFolderId', $uiRequest->getFolderId());
         $this->addTplParam('sFoldername', $this->imageResource->getFolderName());
-        $this->addTplParam('sTab', $request->getRequestEscapedParameter('tab'));
+        $this->addTplParam('sTab', $uiRequest->getTabName());
 
         $this->addTplParam('request', $uiRequest);
 

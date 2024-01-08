@@ -17,6 +17,7 @@ class UIRequest implements UIRequestInterface
     public const REQUEST_PARAM_OVERLAY = 'overlay';
     public const REQUEST_PARAM_POPUP = 'popout';
     public const REQUEST_PARAM_MEDIA_LIST_START_INDEX = 'start';
+    public const REQUEST_PARAM_TAB = 'tab';
 
     public function __construct(protected RequestInterface $request)
     {
@@ -40,5 +41,10 @@ class UIRequest implements UIRequestInterface
     public function getMediaListStartIndex(): int
     {
         return $this->request->getIntRequestParameter(self::REQUEST_PARAM_MEDIA_LIST_START_INDEX);
+    }
+
+    public function getTabName(): string
+    {
+        return $this->request->getStringRequestParameter(self::REQUEST_PARAM_TAB);
     }
 }
