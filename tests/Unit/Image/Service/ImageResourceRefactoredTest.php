@@ -8,6 +8,7 @@
 namespace Image\Service;
 
 use OxidEsales\Eshop\Core\Config;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactored;
 use PHPUnit\Framework\TestCase;
 
@@ -40,11 +41,39 @@ class ImageResourceRefactoredTest extends TestCase
         );
     }
 
+    /** @dataProvider mediaThumbnailUrlDataProvider */
+    public function testCalculateMediaThumbnailUrl(string $fileName, string $fileType, string $expected): void
+    {
+        $sut = $this->getSut(
+            oldImageResource: $oldImageResource = $this->createMock(ImageResourceInterface::class)
+        );
+        $oldImageResource->method('getThumbnailUrl')->willReturn('thumbgenerated.gif');
+
+        $this->assertSame($expected, $sut->calculateMediaThumbnailUrl(fileName: $fileName, fileType: $fileType));
+    }
+
+    public function mediaThumbnailUrlDataProvider(): \Generator
+    {
+        yield 'image' => [
+            'fileName' => 'someFilename.gif',
+            'fileType' => 'notDirectory',
+            'expected' => 'thumbgenerated.gif'
+        ];
+
+        yield 'directory' => [
+            'fileName' => 'someFilename.gif',
+            'fileType' => 'directory',
+            'expected' => ''
+        ];
+    }
+
     protected function getSut(
         Config $shopConfig = null,
+        ImageResourceInterface $oldImageResource = null,
     ) {
         return new ImageResourceRefactored(
-            $shopConfig ?: $this->createStub(Config::class),
+            shopConfig: $shopConfig ?: $this->createStub(Config::class),
+            oldImageResource: $oldImageResource ?: $this->createStub(ImageResourceInterface::class),
         );
     }
 }

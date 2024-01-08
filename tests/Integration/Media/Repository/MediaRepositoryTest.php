@@ -16,7 +16,10 @@ use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\MediaLibrary\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
+use OxidEsales\MediaLibrary\Media\Repository\MediaFactory;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepository;
 
@@ -134,7 +137,7 @@ class MediaRepositoryTest extends IntegrationTestCase
         $sut = new MediaRepository(
             connectionProvider: $connectionProvider ?? $this->get(ConnectionProviderInterface::class),
             basicContext: $basicContext ?? $this->get(BasicContextInterface::class),
-            mediaFactory: $mediaFactory ?? $this->get(MediaFactoryInterface::class),
+            mediaFactory: $mediaFactory ?? $this->getMediaFactoryMock(),
         );
 
         return $sut;
@@ -162,18 +165,33 @@ class MediaRepositoryTest extends IntegrationTestCase
     public function testAddMedia(): void
     {
         $oxid = 'someExampleMediaId';
-        $fileName = 'someFilename';
-        $fileSize = 123;
-        $fileType = 'image/gif';
-        $thumbFileName = 'someThumbName';
-        $imageSize = new ImageSize(111, 222);
-        $folderId = 'someFolderId';
-        $exampleMedia = new Media($oxid, $fileName, $fileSize, $fileType, $thumbFileName, $imageSize, $folderId);
+        $exampleMedia = new Media(
+            oxid: $oxid,
+            fileName: 'someFilename',
+            fileSize: 123,
+            fileType: 'image/gif',
+            thumbFileName: 'someFilenameThumbUrl',
+            imageSize: new ImageSize(111, 222),
+            folderId: 'someFolderId'
+        );
 
         $sut = $this->getSutForShop(3);
         $sut->addMedia($exampleMedia);
 
         $resultMedia = $sut->getMediaById($oxid);
         $this->assertEquals($exampleMedia, $resultMedia);
+    }
+
+    private function getMediaFactoryMock(): MediaFactory
+    {
+        $mediaFactoryMock = new MediaFactory(
+            imageResource: $imageResourceStub = $this->createStub(ImageResourceRefactoredInterface::class)
+        );
+
+        $imageResourceStub->method('calculateMediaThumbnailUrl')->willReturnCallback(function ($value) {
+            return $value . 'ThumbUrl';
+        });
+
+        return $mediaFactoryMock;
     }
 }

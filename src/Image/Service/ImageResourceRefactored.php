@@ -16,6 +16,7 @@ class ImageResourceRefactored implements ImageResourceRefactoredInterface
 
     public function __construct(
         protected Config $shopConfig,
+        protected ImageResourceInterface $oldImageResource,
     ) {
     }
 
@@ -26,5 +27,16 @@ class ImageResourceRefactored implements ImageResourceRefactoredInterface
             self::MEDIA_PATH,
             $subDirectory
         );
+    }
+
+    public function calculateMediaThumbnailUrl(string $fileName, string $fileType): string
+    {
+        $result = '';
+
+        if ($fileType !== 'directory') {
+            $result = $this->oldImageResource->getThumbnailUrl($fileName);
+        }
+
+        return $result;
     }
 }

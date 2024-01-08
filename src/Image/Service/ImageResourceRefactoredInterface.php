@@ -12,4 +12,6 @@ namespace OxidEsales\MediaLibrary\Image\Service;
 interface ImageResourceRefactoredInterface
 {
     public function getPathToMediaFiles(string $subDirectory = ''): string;
+
+    public function calculateMediaThumbnailUrl(string $fileName, string $fileType): string;
 }

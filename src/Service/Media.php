@@ -48,28 +48,27 @@ class Media
     {
         $this->createDirs();
 
-        $sDestPath = $this->namingService->getUniqueFilename($sDestPath);
-
-        $sFileName = basename($sDestPath);
-
         $aResult = [];
-        if ($this->namingService->validateFileName($sFileName)) {
+        if ($this->namingService->validateFileName(basename($sDestPath))) {
+            $sDestPath = $this->namingService->getUniqueFilename($sDestPath);
+            $finalFileName = basename($sDestPath);
+
             $this->moveUploadedFile($sSourcePath, $sDestPath);
 
             try {
-                $sThumbName = $this->imageResource->createThumbnail($sFileName);
+                $sThumbName = $this->imageResource->createThumbnail($finalFileName);
             } catch (\Exception $e) {
                 $sThumbName = '';
             }
 
             $aFile = [
-                'filename' => $sFileName,
+                'filename' => $finalFileName,
                 'thumbnail' => $sThumbName,
             ];
 
             $sId = $this->shopAdapter->generateUniqueId();
             $sThumbName = $aFile['thumbnail'];
-            $sFileName = $aFile['filename'];
+            $finalFileName = $aFile['filename'];
 
             $imageSize = new ImageSize(0, 0);
             if (is_readable($sDestPath) && preg_match("/image\//", $sFileType)) {
@@ -79,10 +78,10 @@ class Media
 
             $newMedia = new MediaDataType(
                 oxid: $sId,
-                fileName: $sFileName,
+                fileName: $finalFileName,
                 fileSize: (int)$sFileSize,
                 fileType: $sFileType,
-                thumbFileName: $sThumbName,
+                thumbFileName: '',
                 imageSize: $imageSize,
                 folderId: $this->imageResource->getFolderId()
             );
@@ -90,8 +89,8 @@ class Media
             $this->mediaRepository->addMedia($newMedia);
 
             $aResult['id'] = $sId;
-            $aResult['filename'] = $sFileName;
-            $aResult['thumb'] = $this->imageResource->getThumbnailUrl($sFileName);
+            $aResult['filename'] = $finalFileName;
+            $aResult['thumb'] = $this->imageResource->getThumbnailUrl($finalFileName);
             $aResult['imagesize'] = $imageSize->getInFormat('%dx%d', '');
         }
 

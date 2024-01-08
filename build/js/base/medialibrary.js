@@ -621,7 +621,7 @@
         }
         else
         {
-            $( '.dd-media-thumb', $item ).attr( 'src', resourceLink + 'thumbs/' + thumb );
+            $( '.dd-media-thumb', $item ).attr( 'src', thumb );
             $( '.dd-media-item', $item ).removeClass( 'no-thumb' );
         }
 
