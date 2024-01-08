@@ -24,6 +24,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInte
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
+use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 
 /**
  * @covers \OxidEsales\MediaLibrary\Service\Media
@@ -235,7 +236,8 @@ class MediaTest extends IntegrationTestCase
             namingService: $namingService ?: $this->containerFactory->get(NamingServiceInterface::class),
             mediaRepository: $this->containerFactory->get(MediaRepositoryInterface::class),
             fileSystemService: $this->containerFactory->get(FileSystemServiceInterface::class),
-            shopAdapter: $shopAdapterStub
+            shopAdapter: $shopAdapterStub,
+            UIRequest: $this->createStub(UIRequestInterface::class),
         );
     }
 

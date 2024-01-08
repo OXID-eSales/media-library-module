@@ -17,8 +17,6 @@ interface ImageResourceInterface
 
     public function setFolderName($sFolderName): void;
 
-    public function getFolderId(): string;
-
     public function setFolder($sFolderId = ''): void;
 
     public function getDefaultThumbnailSize(): int;

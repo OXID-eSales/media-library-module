@@ -11,14 +11,13 @@ namespace OxidEsales\MediaLibrary\Service;
 
 use Doctrine\DBAL\Connection;
 use OxidEsales\Eshop\Core\Config;
-use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
-use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
+use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use Symfony\Component\Filesystem\Path;
 use Webmozart\Glob\Glob;
 
@@ -34,6 +33,7 @@ class Media
         protected MediaRepositoryInterface $mediaRepository,
         private FileSystemServiceInterface $fileSystemService,
         protected ShopAdapterInterface $shopAdapter,
+        protected UIRequestInterface $UIRequest,
     ) {
         $this->connection = $connectionProvider->get();
     }
@@ -83,7 +83,7 @@ class Media
                 fileType: $sFileType,
                 thumbFileName: '',
                 imageSize: $imageSize,
-                folderId: $this->imageResource->getFolderId()
+                folderId: $this->UIRequest->getFolderId()
             );
 
             $this->mediaRepository->addMedia($newMedia);

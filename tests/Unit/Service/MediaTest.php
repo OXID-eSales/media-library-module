@@ -8,7 +8,6 @@
 namespace OxidEsales\MediaLibrary\Tests\Unit\Service;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception as DBALException;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\visitor\vfsStreamStructureVisitor;
 use OxidEsales\Eshop\Core\Config;
@@ -17,16 +16,14 @@ use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResource;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemService;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
-use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
-use OxidEsales\MediaLibrary\Service\Media;
 use OxidEsales\MediaLibrary\Service\ModuleSettings;
 use OxidEsales\MediaLibrary\Service\NamingService;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
+use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -564,6 +561,7 @@ class MediaTest extends TestCase
             mediaRepository: $mediaRepository ?? $this->createStub(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemService ?? $this->createPartialMock(FileSystemService::class, []),
             shopAdapter: $this->createStub(ShopAdapterInterface::class),
+            UIRequest: $this->createStub(UIRequestInterface::class)
         );
     }
 

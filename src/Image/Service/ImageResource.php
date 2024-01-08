@@ -45,14 +45,6 @@ class ImageResource implements ImageResourceInterface
     }
 
     /**
-     * @deprecated This is temporary solution, it should be removed in next release.
-     */
-    public function getFolderId(): string
-    {
-        return $this->_sFolderId;
-    }
-
-    /**
      * @param $sId
      *
      * @return void

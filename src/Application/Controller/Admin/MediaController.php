@@ -60,8 +60,8 @@ class MediaController extends AdminDetailsController
 
         $this->addTplParam('sResourceUrl', $this->imageResource->getMediaUrl());
         $this->addTplParam('sThumbsUrl', $this->imageResource->getThumbnailUrl());
+        $this->addTplParam('sFolderId', $uiRequest->getFolderId());
         $this->addTplParam('sFoldername', $this->imageResource->getFolderName());
-        $this->addTplParam('sFolderId', $this->imageResource->getFolderId());
         $this->addTplParam('sTab', $request->getRequestEscapedParameter('tab'));
 
         $this->addTplParam('request', $uiRequest);
