@@ -27,7 +27,7 @@
   "require-dev": {
     "squizlabs/php_codesniffer": "3.*",
     "phpstan/phpstan": "^1.8.11",
-    "phpunit/phpunit": "^9.6",
+    "phpunit/phpunit": "^10.4",
     "oxid-esales/oxideshop-ce": "dev-b-7.1.x",
     "mikey179/vfsstream": "~1.6.8"
   },

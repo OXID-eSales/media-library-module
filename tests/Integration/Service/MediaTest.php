@@ -155,7 +155,7 @@ class MediaTest extends IntegrationTestCase
         $this->assertEquals('Folder1', $sut->imageResource->getFolderName());
     }
 
-    public function getUploadMediaDataProvider()
+    public static function getUploadMediaDataProvider()
     {
         return [
             [

@@ -27,7 +27,7 @@ class FileSystemServiceTest extends TestCase
         $this->assertTrue(is_dir($path));
     }
 
-    public function ensureDirectorySuccessCasesDataProvider(): \Generator
+    public static function ensureDirectorySuccessCasesDataProvider(): \Generator
     {
         yield ['pathExample' => 'someDirectory'];
         yield ['pathExample' => 'someDirectory/withSubDirectory'];

@@ -52,7 +52,7 @@ class ImageResourceRefactoredTest extends TestCase
         $this->assertSame($expected, $sut->calculateMediaThumbnailUrl(fileName: $fileName, fileType: $fileType));
     }
 
-    public function mediaThumbnailUrlDataProvider(): \Generator
+    public static function mediaThumbnailUrlDataProvider(): \Generator
     {
         yield 'image' => [
             'fileName' => 'someFilename.gif',

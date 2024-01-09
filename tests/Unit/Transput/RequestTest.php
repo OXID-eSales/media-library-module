@@ -42,7 +42,7 @@ class RequestTest extends TestCase
         }
     }
 
-    public function requestOnlyStringDataProvider(): array
+    public static function requestOnlyStringDataProvider(): array
     {
         $defaultValue = 'someDefault';
         return [
@@ -71,7 +71,7 @@ class RequestTest extends TestCase
         $this->assertSame($expectedValue, $sut->getBoolRequestParameter($paramName));
     }
 
-    public function requestBoolDataProvider(): array
+    public static function requestBoolDataProvider(): array
     {
         return [
             [null, false],
@@ -99,7 +99,7 @@ class RequestTest extends TestCase
         $this->assertSame($expectedValue, $sut->getIntRequestParameter($paramName));
     }
 
-    public function getIntDataProvider(): array
+    public static function getIntDataProvider(): array
     {
         return [
             'null' => [null, 0],

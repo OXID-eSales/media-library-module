@@ -52,7 +52,7 @@ class NamingServiceTest extends TestCase
         $this->assertSame($expectedResult, $sut->sanitizeFilename($filename));
     }
 
-    public function sanitizeFilenameDataProvider(): \Generator
+    public static function sanitizeFilenameDataProvider(): \Generator
     {
         yield "no extension" => ['filename' => 'somexc', 'expectedResult' => 'someyb'];
         yield "extension should not be changed" => ['filename' => 'somexc.xcabc', 'expectedResult' => 'someyb.xcabc'];
@@ -67,7 +67,7 @@ class NamingServiceTest extends TestCase
         $this->assertSame($expectation, $sut->getUniqueFilename($filename));
     }
 
-    public function getUniqueFilenameDataProvider(): \Generator
+    public static function getUniqueFilenameDataProvider(): \Generator
     {
         yield 'not existing file no directory' => [
             'filename' => 'vfs://root/someSimpleFile.ext',
@@ -127,7 +127,7 @@ class NamingServiceTest extends TestCase
         $this->assertTrue($sut->validateFileName($goodFilename));
     }
 
-    public function validationGoodFileNamesDataProvider(): \Generator
+    public static function validationGoodFileNamesDataProvider(): \Generator
     {
         yield ['fileName' => 'example.txt'];
     }
@@ -141,7 +141,7 @@ class NamingServiceTest extends TestCase
         $sut->validateFileName($badFilename);
     }
 
-    public function validationBadFileNamesDataProvider(): \Generator
+    public static function validationBadFileNamesDataProvider(): \Generator
     {
         yield ['fileName' => 'someFileNameWithoutExtension'];
         yield ['fileName' => ''];

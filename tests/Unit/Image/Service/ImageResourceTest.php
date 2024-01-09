@@ -281,7 +281,7 @@ class ImageResourceTest extends TestCase
         $this->assertEquals($expected ? ('https://test.com/out/pictures/ddmedia/' . $expected) : $expected, $result);
     }
 
-    public function getImagePathDataProvider(): array
+    public static function getImagePathDataProvider(): array
     {
         return [
             [
@@ -293,7 +293,7 @@ class ImageResourceTest extends TestCase
         ];
     }
 
-    public function getThumbnailPathDataProvider(): array
+    public static function getThumbnailPathDataProvider(): array
     {
         return [
             [
