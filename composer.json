@@ -22,7 +22,7 @@
     "php": "^8.1",
     "symfony/filesystem": "*",
     "ext-gd": "*",
-    "intervention/image": "^2.7"
+    "intervention/image": "^3.3"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "3.*",
