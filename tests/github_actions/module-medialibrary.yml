@@ -2,6 +2,9 @@ prepare_shop:
   git:
     shop_ref: '{{ .Data.global.git.default_ref }}'
 
+# {{ $ids := "ddoemedialibrary" }}ids: {{ print $ids }}
+# {{ $org := "oxid-esales" }}organisation: {{ print $org }}
+# {{ $name := "media-library-module" }}name: {{ print $name }}
 install_module:
   matrix:
     testplan: '["-"]'
@@ -13,7 +16,7 @@ install_module:
     module:
       url: &git_module_url '{{ .Github.Repository }}'
       ref: '{{ .Github.RefName }}'
-  package_name: &package_name 'oxid-esales/media-library-module'
+  package_name: &package_name '{{ print $org }}/{{ print $name }}'
   path: *ids
 
 phpunit:
@@ -34,7 +37,7 @@ runtest:
 sonarcloud:
   matrix:
     testplan: '["-"]'
-  project_key: 'OXID-eSales_media-library-module'
+  project_key: 'OXID-eSales_{{ print $name }}'
   project_name: *package_name
   parameters: |
     -Dsonar.language=php
