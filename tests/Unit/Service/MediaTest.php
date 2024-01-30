@@ -293,19 +293,15 @@ class MediaTest extends TestCase
         $sut->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType);
     }
 
-    public function getRenameDataProvider(): array
+    public static function getRenameDataProvider(): array
     {
-        $oMedia = $this->getSut(
-            namingService: ContainerFactory::getInstance()->getContainer()->get(NamingServiceInterface::class),
-        );
+        $defaultThumbnailSize = 185;
 
-        $defaultThumbnailSize = $oMedia->imageResource->getDefaultThumbnailSize();
-
-        $sThumbName = $this->getImageSizeAsString(
+        $sThumbName = self::getImageSizeAsString(
             md5(self::FIXTURE_FILE) . '_thumb_',
             $defaultThumbnailSize
         );
-        $sThumbNameNew = $this->getImageSizeAsString(
+        $sThumbNameNew = self::getImageSizeAsString(
             md5('new.jpg') . '_thumb_',
             $defaultThumbnailSize
         );
@@ -315,7 +311,7 @@ class MediaTest extends TestCase
         $structureExpected['root']['out']['pictures']['ddmedia']['new.jpg'] = 'some file';
         $structureExpected['root']['out']['pictures']['ddmedia']['thumbs'][$sThumbNameNew] = 'some file';
 
-        $sThumbName = $this->getImageSizeAsString(
+        $sThumbName = self::getImageSizeAsString(
             md5(self::FIXTURE_FILE) . '_thumb_',
             $defaultThumbnailSize
         );
@@ -341,19 +337,19 @@ class MediaTest extends TestCase
         $structure2['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER] = [];
         $structureExpected2['root']['out']['pictures']['ddmedia']['folderNew'] = [];
 
-        $sThumbName = $this->getImageSizeAsString(
+        $sThumbName = self::getImageSizeAsString(
             md5(self::FIXTURE_FILE) . '_thumb_',
             $defaultThumbnailSize
         );
-        $sThumbName2 = $this->getImageSizeAsString(
+        $sThumbName2 = self::getImageSizeAsString(
             md5('new_1.jpg') . '_thumb_',
             $defaultThumbnailSize
         );
-        $sThumbName3 = $this->getImageSizeAsString(
+        $sThumbName3 = self::getImageSizeAsString(
             md5('new_1.jpg') . '_thumb_',
             $defaultThumbnailSize
         );
-        $sThumbNameNew2 = $this->getImageSizeAsString(
+        $sThumbNameNew2 = self::getImageSizeAsString(
             md5('new_2.jpg') . '_thumb_',
             $defaultThumbnailSize
         );
@@ -438,12 +434,11 @@ class MediaTest extends TestCase
         ];
     }
 
-    public function getDeleteDataProvider()
+    public static function getDeleteDataProvider()
     {
-        $oMedia = $this->getSut();
-        $sThumbName = $this->getImageSizeAsString(
+        $sThumbName = self::getImageSizeAsString(
             '111_thumb_',
-            $oMedia->imageResource->getDefaultThumbnailSize()
+            185
         );
 
         // scenario 1 - file in media root
@@ -579,7 +574,7 @@ class MediaTest extends TestCase
         );
     }
 
-    private function getImageSizeAsString(string $prefix, int $imageSize, $suffix = '.jpg'): string
+    private static function getImageSizeAsString(string $prefix, int $imageSize, $suffix = '.jpg'): string
     {
         return sprintf(
             '%s%d*%d%s',

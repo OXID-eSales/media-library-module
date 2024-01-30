@@ -64,7 +64,7 @@ class NamingService implements NamingServiceInterface
 
         return $pathInfo['dirname']
             . DIRECTORY_SEPARATOR . $newFileName
-            . ($pathInfo['extension'] ? '.' . $pathInfo['extension'] : '');
+            . (isset($pathInfo['extension']) && $pathInfo['extension'] ? '.' . $pathInfo['extension'] : '');
     }
 
     public function validateFileName(string $fileName): bool

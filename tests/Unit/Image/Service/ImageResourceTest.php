@@ -307,14 +307,8 @@ class ImageResourceTest extends TestCase
         ];
     }
 
-    public function getThumbnailUrlProvider()
+    public static function getThumbnailUrlProvider()
     {
-        $sut = $this->getSut();
-        $sThumbName = $this->getImageSizeAsString(
-            md5(self::FIXTURE_FILE) . '_thumb_',
-            $sut->getDefaultThumbnailSize()
-        );
-
         return [
             [
                 'sFile'      => '',
@@ -324,7 +318,7 @@ class ImageResourceTest extends TestCase
             [
                 'sFile'      => self::FIXTURE_FILE,
                 'imageSize' => null,
-                'expected'   => 'thumbs/' . $sThumbName,
+                'expected'   => 'thumbs/d0b3244693f743a542dc6a84b8f5ae22_thumb_185*185.jpg',
             ],
             [
                 'sFile'      => '111.jpg',
