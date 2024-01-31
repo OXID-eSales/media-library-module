@@ -9,11 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Codeception\Acceptance;
 
+use Codeception\Attribute\Group;
 use OxidEsales\MediaLibrary\Tests\Codeception\Step\MediaLibraryAcceptanceTester;
 
-/**
- * @group ddoe_medialibrary
- */
+#[Group('ddoemedialibrary')]
 final class MediaLibraryCest
 {
     private string $testImage = 'dummy.png';
