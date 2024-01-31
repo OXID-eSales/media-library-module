@@ -7,6 +7,7 @@
 
 namespace OxidEsales\MediaLibrary\Tests\Integration\Image\Service;
 
+use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 use org\bovigo\vfs\vfsStream;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
@@ -36,11 +37,11 @@ class ThumbnailGeneratorInterventionTest extends IntegrationTestCase
         $expectedThumbnailHeight,
         $cropThumbnail
     ): void {
-        $imageManager = new ImageManager();
+        $imageManager = new ImageManager(new Driver());
         $thumbnailGenerator = new ThumbnailGeneratorIntervention($imageManager);
 
         $sourcePath = $this->vfsRootUrl . '/source.jpg';
-        $img = $imageManager->canvas($sourceWidth, $sourceHeight);
+        $img = $imageManager->create($sourceWidth, $sourceHeight);
         $img->save($sourcePath);
 
         $thumbnailPath = $this->vfsRootUrl . '/thumbnail.jpg';
@@ -53,7 +54,7 @@ class ThumbnailGeneratorInterventionTest extends IntegrationTestCase
 
         self::assertFileExists($thumbnailPath);
 
-        $resultThumbnailImage = $imageManager->make($thumbnailPath);
+        $resultThumbnailImage = $imageManager->read($thumbnailPath);
         self::assertSame($expectedThumbnailWidth, $resultThumbnailImage->width());
         self::assertSame($expectedThumbnailHeight, $resultThumbnailImage->height());
     }

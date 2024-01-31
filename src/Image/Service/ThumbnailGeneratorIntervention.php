@@ -27,16 +27,17 @@ class ThumbnailGeneratorIntervention implements ThumbnailGeneratorInterface
         $thumbnailWidth = $size->getWidth();
         $thumbnailHeight = $size->getHeight();
 
-        $image = $this->imageManager->make($sourcePath);
+        $image = $this->imageManager->read($sourcePath);
         if ($blCrop) {
-            $image->fit($thumbnailWidth, $thumbnailHeight, function ($constraint) {
-                $constraint->upsize();
-            });
+            $image->coverDown(
+                width: $thumbnailWidth,
+                height: $thumbnailHeight
+            );
         } else {
-            $image->resize($thumbnailWidth, $thumbnailHeight, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+            $image->scaleDown(
+                width: $thumbnailWidth,
+                height: $thumbnailHeight
+            );
         }
         $image->save($thumbnailPath);
     }

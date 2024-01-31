@@ -7,6 +7,8 @@ services:
 
   Intervention\Image\ImageManager:
     class: Intervention\Image\ImageManager
+    arguments:
+      $driver: 'Intervention\Image\Drivers\Gd\Driver'
 
   OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface:
     class: OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorIntervention
