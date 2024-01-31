@@ -14,7 +14,7 @@ use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 
 class NamingService implements NamingServiceInterface
 {
-    protected array $fileExtensionBlacklistRegex = [
+    protected array $extensionBlacklist = [
         'php.*',
         'exe',
         'js',
@@ -55,11 +55,10 @@ class NamingService implements NamingServiceInterface
     private function findNextPossibleFilename(string $path): string
     {
         $pathInfo = pathinfo($path);
+        $newFileName = $pathInfo['filename'] . '_1';
 
         if (preg_match('/(?P<baseFilename>.+)_(?P<numericPart>[0-9]+)$/', $pathInfo['filename'], $matches)) {
             $newFileName = $matches['baseFilename'] . '_' . ++$matches['numericPart'];
-        } else {
-            $newFileName = $pathInfo['filename'] . '_1';
         }
 
         return $pathInfo['dirname']
@@ -71,7 +70,7 @@ class NamingService implements NamingServiceInterface
     {
         $extension = $this->getFileNameExtension($fileName);
 
-        foreach ($this->fileExtensionBlacklistRegex as $oneExpression) {
+        foreach ($this->extensionBlacklist as $oneExpression) {
             if (preg_match("/{$oneExpression}/si", $extension)) {
                 throw new WrongFileTypeException();
             }

@@ -15,7 +15,7 @@ class FileSystemService implements FileSystemServiceInterface
 {
     public function ensureDirectory(string $path): bool
     {
-        if (!is_dir($path) && !@mkdir(directory: $path, recursive: true)) {
+        if (!is_dir($path) && !mkdir(directory: $path, recursive: true)) {
             throw new DirectoryCreationException();
         }
 

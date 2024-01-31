@@ -69,7 +69,8 @@ class MediaRepository implements MediaRepositoryInterface
             ]
         );
 
-        if ($data = $result->fetchAssociative()) {
+        $data = $result->fetchAssociative();
+        if ($data) {
             return $this->mediaFactory->fromDatabaseArray($data);
         }
 
