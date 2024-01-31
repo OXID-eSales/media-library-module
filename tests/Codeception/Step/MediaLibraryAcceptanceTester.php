@@ -10,11 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Codeception\Step;
 
 use OxidEsales\Codeception\Module\Translation\Translator;
-use OxidEsales\MediaLibrary\Tests\Codeception\AcceptanceTester;
+use OxidEsales\MediaLibrary\Tests\Codeception\Support\AcceptanceTester;
 
-/**
- * @group ddoe_medialibrary
- */
 class MediaLibraryAcceptanceTester extends AcceptanceTester
 {
 	// @codingStandardsIgnoreStart

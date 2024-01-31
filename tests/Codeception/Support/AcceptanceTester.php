@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Tests\Codeception;
+namespace OxidEsales\MediaLibrary\Tests\Codeception\Support;
 
 use Codeception\Util\Fixtures;
 use OxidEsales\Codeception\Admin\AdminLoginPage;
 use OxidEsales\Codeception\Admin\AdminPanel;
 use OxidEsales\Codeception\Page\Home;
-use OxidEsales\MediaLibrary\Tests\Codeception\_generated\AcceptanceTesterActions;
+use OxidEsales\MediaLibrary\Tests\Codeception\Support\_generated\AcceptanceTesterActions;
 
 class AcceptanceTester extends \Codeception\Actor
 {
