@@ -7,13 +7,12 @@
 
 namespace OxidEsales\MediaLibrary\Image\Service;
 
-use OxidEsales\Eshop\Core\Config;
+use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
-use Symfony\Component\Filesystem\Path;
 
 class ThumbnailResource implements ThumbnailResourceInterface
 {
-    public const MEDIA_PATH = 'out/pictures/ddmedia';
+    public const THUMBNAIL_DEFAULT_SIZE = 185;
 
     public function __construct(
         protected ImageResourceInterface $oldImageResource,
@@ -44,5 +43,10 @@ class ThumbnailResource implements ThumbnailResourceInterface
             $crop ? '' : '_nocrop',
             '.jpg'
         );
+    }
+
+    public function getDefaultThumbnailSize(): ImageSizeInterface
+    {
+        return new ImageSize(width: self::THUMBNAIL_DEFAULT_SIZE, height: self::THUMBNAIL_DEFAULT_SIZE);
     }
 }

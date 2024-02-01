@@ -20,4 +20,6 @@ interface ThumbnailResourceInterface
         ImageSizeInterface $thumbnailSize,
         bool $crop
     ): string;
+
+    public function getDefaultThumbnailSize(): ImageSizeInterface;
 }

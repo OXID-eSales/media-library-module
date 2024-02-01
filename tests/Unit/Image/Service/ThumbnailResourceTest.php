@@ -11,7 +11,6 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactored;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResource;
 use PHPUnit\Framework\TestCase;
 
@@ -68,15 +67,6 @@ class ThumbnailResourceTest extends TestCase
         ];
     }
 
-    protected function getSut(
-        Config $shopConfig = null,
-        ImageResourceInterface $oldImageResource = null,
-    ) {
-        return new ThumbnailResource(
-            oldImageResource: $oldImageResource ?: $this->createStub(ImageResourceInterface::class),
-        );
-    }
-
     /** @dataProvider mediaThumbnailUrlDataProvider */
     public function testCalculateMediaThumbnailUrl(string $fileName, string $fileType, string $expected): void
     {
@@ -86,6 +76,15 @@ class ThumbnailResourceTest extends TestCase
         $oldImageResource->method('getThumbnailUrl')->willReturn('thumbgenerated.gif');
 
         $this->assertSame($expected, $sut->calculateMediaThumbnailUrl(fileName: $fileName, fileType: $fileType));
+    }
+
+    protected function getSut(
+        Config $shopConfig = null,
+        ImageResourceInterface $oldImageResource = null,
+    ) {
+        return new ThumbnailResource(
+            oldImageResource: $oldImageResource ?: $this->createStub(ImageResourceInterface::class),
+        );
     }
 
     /** @dataProvider getThumbnailFileNameDataProvider */
@@ -104,5 +103,15 @@ class ThumbnailResourceTest extends TestCase
         );
 
         $this->assertSame($expectedName, $result);
+    }
+
+    public function testGetDefaultThumbnailSize(): void
+    {
+        $sut = $this->getSut();
+
+        $size = $sut->getDefaultThumbnailSize();
+
+        $this->assertSame($sut::THUMBNAIL_DEFAULT_SIZE, $size->getWidth());
+        $this->assertSame($sut::THUMBNAIL_DEFAULT_SIZE, $size->getHeight());
     }
 }
