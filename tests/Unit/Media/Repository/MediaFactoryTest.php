@@ -39,7 +39,6 @@ class MediaFactoryTest extends TestCase
             'DDFILENAME' => $fileNameValue,
             'DDFILESIZE' => 123,
             'DDFILETYPE' => $fileTypeValue,
-            'DDTHUMB' => '',
             'DDIMAGESIZE' => '100x200',
             'DDFOLDERID' => 'someFolderId',
             'OXTIMESTAMP' => '2023-10-30 12:53:10',

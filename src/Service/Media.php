@@ -152,14 +152,13 @@ class Media
             $iShopId = $this->shopConfig->getActiveShop()->getShopId();
 
             $sUpdate = "UPDATE `ddmedia`
-                              SET `DDFILENAME` = ?, `DDTHUMB` = ? 
+                              SET `DDFILENAME` = ?
                             WHERE `OXID` = ? AND `OXSHOPID` = ?;";
 
             $this->connection->executeQuery(
                 $sUpdate,
                 [
                     $sNewName,
-                    !$blDirectory ? basename($sNewThumbName) : '',
                     $sId,
                     $iShopId,
                 ]

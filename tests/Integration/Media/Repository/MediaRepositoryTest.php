@@ -112,7 +112,6 @@ class MediaRepositoryTest extends IntegrationTestCase
                 'DDFILENAME' => 'filename' . $i . '.jpg',
                 'DDFILESIZE' => $i * 10,
                 'DDFILETYPE' => 'image/gif',
-                'DDTHUMB' => 'thumbfilename' . $i . '.jpg',
                 'DDIMAGESIZE' => $i . '00x' . $i . '00.jpg',
                 'DDFOLDERID' => $folderId,
                 'OXTIMESTAMP' => date("Y-m-d H:i:") . $i
@@ -154,7 +153,6 @@ class MediaRepositoryTest extends IntegrationTestCase
             'DDFILENAME' => ':DDFILENAME',
             'DDFILESIZE' => ':DDFILESIZE',
             'DDFILETYPE' => ':DDFILETYPE',
-            'DDTHUMB' => ':DDTHUMB',
             'DDIMAGESIZE' => ':DDIMAGESIZE',
             'DDFOLDERID' => ':DDFOLDERID',
             'OXTIMESTAMP' => ':OXTIMESTAMP'

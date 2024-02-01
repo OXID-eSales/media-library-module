@@ -86,7 +86,6 @@ class MediaRepository implements MediaRepositoryInterface
                 DDFILENAME = :DDFILENAME,
                 DDFILESIZE = :DDFILESIZE,
                 DDFILETYPE = :DDFILETYPE,
-                DDTHUMB = :DDTHUMB,
                 DDIMAGESIZE = :DDIMAGESIZE,
                 DDFOLDERID = :DDFOLDERID",
             [
@@ -95,7 +94,6 @@ class MediaRepository implements MediaRepositoryInterface
                 'DDFILENAME' => $exampleMedia->getFileName(),
                 'DDFILESIZE' => $exampleMedia->getFileSize(),
                 'DDFILETYPE' => $exampleMedia->getFileType(),
-                'DDTHUMB' => $exampleMedia->getThumbFileName(),
                 'DDIMAGESIZE' => $exampleMedia->getImageSize()->getInFormat("%dx%d", ""),
                 'DDFOLDERID' => $exampleMedia->getFolderId()
             ]

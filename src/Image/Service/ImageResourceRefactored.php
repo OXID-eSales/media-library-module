@@ -8,7 +8,6 @@
 namespace OxidEsales\MediaLibrary\Image\Service;
 
 use OxidEsales\Eshop\Core\Config;
-use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use Symfony\Component\Filesystem\Path;
 
 class ImageResourceRefactored implements ImageResourceRefactoredInterface
