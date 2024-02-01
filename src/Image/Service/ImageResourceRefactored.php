@@ -8,6 +8,7 @@
 namespace OxidEsales\MediaLibrary\Image\Service;
 
 use OxidEsales\Eshop\Core\Config;
+use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use Symfony\Component\Filesystem\Path;
 
 class ImageResourceRefactored implements ImageResourceRefactoredInterface
@@ -38,5 +39,20 @@ class ImageResourceRefactored implements ImageResourceRefactoredInterface
         }
 
         return $result;
+    }
+
+    public function getThumbnailFileName(
+        string $originalFileName,
+        ImageSizeInterface $thumbnailSize,
+        bool $crop
+    ): string {
+        return sprintf(
+            '%s_thumb_%d*%d%s%s',
+            md5($originalFileName),
+            $thumbnailSize->getWidth(),
+            $thumbnailSize->getHeight(),
+            $crop ? '' : '_nocrop',
+            '.jpg'
+        );
     }
 }
