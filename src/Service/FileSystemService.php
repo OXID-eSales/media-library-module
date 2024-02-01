@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Service;
 
 use OxidEsales\MediaLibrary\Exception\DirectoryCreationException;
+use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 
 class FileSystemService implements FileSystemServiceInterface
 {
@@ -20,5 +21,17 @@ class FileSystemService implements FileSystemServiceInterface
         }
 
         return true;
+    }
+
+    public function getImageSize(string $filePath): ImageSize
+    {
+        $result = new ImageSize(0, 0);
+
+        $imageData = @getimagesize($filePath);
+        if ($imageData !== false) {
+            $result = new ImageSize($imageData[0], $imageData[1]);
+        }
+
+        return $result;
     }
 }

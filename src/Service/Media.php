@@ -55,40 +55,22 @@ class Media
 
             $this->moveUploadedFile($sSourcePath, $sDestPath);
 
-            try {
-                $sThumbName = $this->imageResource->createThumbnail($finalFileName);
-            } catch (\Exception $e) {
-                $sThumbName = '';
-            }
+            $newMediaId = $this->shopAdapter->generateUniqueId();
 
-            $aFile = [
-                'filename' => $finalFileName,
-                'thumbnail' => $sThumbName,
-            ];
-
-            $sId = $this->shopAdapter->generateUniqueId();
-            $sThumbName = $aFile['thumbnail'];
-            $finalFileName = $aFile['filename'];
-
-            $imageSize = new ImageSize(0, 0);
-            if (is_readable($sDestPath) && preg_match("/image\//", $sFileType)) {
-                $aImageSize = $this->getImageSize($sDestPath);
-                $imageSize = new ImageSize($aImageSize[0] ?? 0, $aImageSize[1] ?? 0);
-            }
+            $imageSize = $this->fileSystemService->getImageSize($sDestPath);
 
             $newMedia = new MediaDataType(
-                oxid: $sId,
+                oxid: $newMediaId,
                 fileName: $finalFileName,
                 fileSize: (int)$sFileSize,
                 fileType: $sFileType,
-                thumbFileName: '',
                 imageSize: $imageSize,
                 folderId: $this->UIRequest->getFolderId()
             );
 
             $this->mediaRepository->addMedia($newMedia);
 
-            $aResult['id'] = $sId;
+            $aResult['id'] = $newMediaId;
             $aResult['filename'] = $finalFileName;
             $aResult['thumb'] = $this->imageResource->getThumbnailUrl($finalFileName);
             $aResult['imagesize'] = $imageSize->getInFormat('%dx%d', '');
@@ -312,15 +294,5 @@ class Media
     protected function moveUploadedFile($sSourcePath, array|string $sDestPath): bool
     {
         return move_uploaded_file($sSourcePath, $sDestPath);
-    }
-
-    /**
-     * @param array|string $sDestPath
-     *
-     * @return array|false
-     */
-    protected function getImageSize(array|string $sDestPath): array|false
-    {
-        return getimagesize($sDestPath);
     }
 }

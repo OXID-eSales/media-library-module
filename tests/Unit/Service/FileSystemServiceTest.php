@@ -43,4 +43,34 @@ class FileSystemServiceTest extends TestCase
         $this->expectException(DirectoryCreationException::class);
         $sut->ensureDirectory($path);
     }
+
+    public function testGetImageSize(): void
+    {
+        $sut = new FileSystemService();
+
+        $size = $sut->getImageSize(__DIR__ . '/../../fixtures/img/image.gif');
+
+        $this->assertSame(640, $size->getWidth());
+        $this->assertSame(853, $size->getHeight());
+    }
+
+    public function testGetImageSizeOnNotImageGivesZeros(): void
+    {
+        $sut = new FileSystemService();
+
+        $size = $sut->getImageSize(__DIR__ . '/../../fixtures/img/LICENSE');
+
+        $this->assertSame(0, $size->getWidth());
+        $this->assertSame(0, $size->getHeight());
+    }
+
+    public function testGetImageSizeOnNotExistingFileGivesZeros(): void
+    {
+        $sut = new FileSystemService();
+
+        $size = $sut->getImageSize('random');
+
+        $this->assertSame(0, $size->getWidth());
+        $this->assertSame(0, $size->getHeight());
+    }
 }
