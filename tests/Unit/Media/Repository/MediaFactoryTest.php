@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Repository;
 
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -22,13 +23,13 @@ class MediaFactoryTest extends TestCase
     public function testFromDatabaseArray(): void
     {
         $sut = $this->getSut(
-            imageResource: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class)
+            thumbnailResource: $thumbnailResource = $this->createStub(ThumbnailResourceInterface::class)
         );
         $thumbUrlExample = 'thumbUrlValue';
         $fileNameValue = 'filenameValue';
         $fileTypeValue = 'filetypeValue';
 
-        $imageResource->method('calculateMediaThumbnailUrl')
+        $thumbnailResource->method('calculateMediaThumbnailUrl')
             ->with($fileNameValue, $fileTypeValue)
             ->willReturn($thumbUrlExample);
 
@@ -59,10 +60,10 @@ class MediaFactoryTest extends TestCase
     }
 
     public function getSut(
-        ImageResourceRefactoredInterface $imageResource = null
+        ThumbnailResourceInterface $thumbnailResource = null
     ): MediaFactory {
         return new MediaFactory(
-            imageResource: $imageResource ?? $this->createStub(ImageResourceRefactoredInterface::class)
+            thumbnailResource: $thumbnailResource ?? $this->createStub(ThumbnailResourceInterface::class)
         );
     }
 }

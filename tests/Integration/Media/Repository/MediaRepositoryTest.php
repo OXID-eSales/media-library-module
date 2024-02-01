@@ -18,6 +18,7 @@ use OxidEsales\MediaLibrary\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactory;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
@@ -185,10 +186,10 @@ class MediaRepositoryTest extends IntegrationTestCase
     private function getMediaFactoryMock(): MediaFactory
     {
         $mediaFactoryMock = new MediaFactory(
-            imageResource: $imageResourceStub = $this->createStub(ImageResourceRefactoredInterface::class)
+            thumbnailResource: $thumbnailResourceStub = $this->createStub(ThumbnailResourceInterface::class)
         );
 
-        $imageResourceStub->method('calculateMediaThumbnailUrl')->willReturnCallback(function ($value) {
+        $thumbnailResourceStub->method('calculateMediaThumbnailUrl')->willReturnCallback(function ($value) {
             return $value . 'ThumbUrl';
         });
 

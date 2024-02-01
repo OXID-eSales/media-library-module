@@ -12,19 +12,20 @@ namespace OxidEsales\MediaLibrary\Media\Repository;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 
 class MediaFactory implements MediaFactoryInterface
 {
     public function __construct(
-        protected ImageResourceRefactoredInterface $imageResource
+        protected ThumbnailResourceInterface $thumbnailResource
     ) {
     }
 
     public function fromDatabaseArray(array $item): Media
     {
         $size = explode("x", $item['DDIMAGESIZE']);
-        $thumbnailUrl = $this->imageResource->calculateMediaThumbnailUrl(
+        $thumbnailUrl = $this->thumbnailResource->calculateMediaThumbnailUrl(
             fileName: (string)$item['DDFILENAME'],
             fileType: (string)$item['DDFILETYPE']
         );

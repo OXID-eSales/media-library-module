@@ -21,3 +21,7 @@ services:
   OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface:
     class: OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactored
     public: true
+
+  OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface:
+    class: OxidEsales\MediaLibrary\Image\Service\ThumbnailResource
+    public: true

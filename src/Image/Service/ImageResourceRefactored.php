@@ -17,7 +17,6 @@ class ImageResourceRefactored implements ImageResourceRefactoredInterface
 
     public function __construct(
         protected Config $shopConfig,
-        protected ImageResourceInterface $oldImageResource,
     ) {
     }
 
@@ -27,32 +26,6 @@ class ImageResourceRefactored implements ImageResourceRefactoredInterface
             $this->shopConfig->getConfigParam('sShopDir'),
             self::MEDIA_PATH,
             $subDirectory
-        );
-    }
-
-    public function calculateMediaThumbnailUrl(string $fileName, string $fileType): string
-    {
-        $result = '';
-
-        if ($fileType !== 'directory') {
-            $result = $this->oldImageResource->getThumbnailUrl($fileName);
-        }
-
-        return $result;
-    }
-
-    public function getThumbnailFileName(
-        string $originalFileName,
-        ImageSizeInterface $thumbnailSize,
-        bool $crop
-    ): string {
-        return sprintf(
-            '%s_thumb_%d*%d%s%s',
-            md5($originalFileName),
-            $thumbnailSize->getWidth(),
-            $thumbnailSize->getHeight(),
-            $crop ? '' : '_nocrop',
-            '.jpg'
         );
     }
 }
