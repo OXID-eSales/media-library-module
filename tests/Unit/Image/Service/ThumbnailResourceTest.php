@@ -7,15 +7,15 @@
 
 namespace Image\Service;
 
-use OxidEsales\Eshop\Core\Config;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResource;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactored
+ * @covers \OxidEsales\MediaLibrary\Image\Service\ThumbnailResource
  */
 class ThumbnailResourceTest extends TestCase
 {
@@ -79,11 +79,12 @@ class ThumbnailResourceTest extends TestCase
     }
 
     protected function getSut(
-        Config $shopConfig = null,
         ImageResourceInterface $oldImageResource = null,
+        ImageResourceRefactoredInterface $imageResource = null,
     ) {
         return new ThumbnailResource(
             oldImageResource: $oldImageResource ?: $this->createStub(ImageResourceInterface::class),
+            imageResource: $imageResource ?: $this->createStub(ImageResourceRefactoredInterface::class),
         );
     }
 
@@ -113,5 +114,39 @@ class ThumbnailResourceTest extends TestCase
 
         $this->assertSame($sut::THUMBNAIL_DEFAULT_SIZE, $size->getWidth());
         $this->assertSame($sut::THUMBNAIL_DEFAULT_SIZE, $size->getHeight());
+    }
+
+    public static function getPathToThumbnailFilesDataProvider(): \Generator
+    {
+        $folder = uniqid();
+        yield 'specific folder' => [
+            'folder' => $folder,
+            'expectedResult' => 'somePathToMediaFiles/' . $folder . '/thumbs'
+        ];
+    }
+
+    public function testGetPathToThumbnailFilesNoFolder(): void
+    {
+        $mediaFilesPath = 'somePathToMediaFiles';
+
+        $sut = $this->getSut(
+            imageResource: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class)
+        );
+        $imageResource->method('getPathToMediaFiles')->with('')->willReturn($mediaFilesPath);
+
+        $this->assertSame($mediaFilesPath . '/thumbs', $sut->getPathToThumbnailFiles(''));
+    }
+
+    public function testGetPathToThumbnailFilesWithFolder(): void
+    {
+        $mediaFilesPath = 'somePathToMediaFilesWithFolder';
+        $folder = uniqid();
+
+        $sut = $this->getSut(
+            imageResource: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class)
+        );
+        $imageResource->method('getPathToMediaFiles')->with($folder)->willReturn($mediaFilesPath);
+
+        $this->assertSame($mediaFilesPath . '/thumbs', $sut->getPathToThumbnailFiles($folder));
     }
 }

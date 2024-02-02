@@ -19,12 +19,12 @@ class ImageResourceRefactored implements ImageResourceRefactoredInterface
     ) {
     }
 
-    public function getPathToMediaFiles(string $subDirectory = ''): string
+    public function getPathToMediaFiles(string $folder = ''): string
     {
         return Path::join(
             $this->shopConfig->getConfigParam('sShopDir'),
             self::MEDIA_PATH,
-            $subDirectory
+            $folder
         );
     }
 }

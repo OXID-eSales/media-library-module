@@ -13,5 +13,5 @@ use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 
 interface ImageResourceRefactoredInterface
 {
-    public function getPathToMediaFiles(string $subDirectory = ''): string;
+    public function getPathToMediaFiles(string $folder = ''): string;
 }
