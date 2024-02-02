@@ -73,4 +73,28 @@ class FileSystemServiceTest extends TestCase
         $this->assertSame(0, $size->getWidth());
         $this->assertSame(0, $size->getHeight());
     }
+
+    public static function removeByGlobDataProvider(): \Generator
+    {
+        yield "regular file list" => [
+            'startStructure' => [
+                'special.txt' => 'content',
+                'special_2.txt' => 'content',
+                'other.xxx' => 'content'
+            ],
+            'expectedStructure' => [
+                'other'
+            ],
+            'glob' => 'special*'
+        ];
+    }
+
+    /** @dataProvider removeByGlobDataProvider */
+    public function testRemoveByGlob(array $startStructure): void
+    {
+        $root = vfsStream::setup('root', 0777, $startStructure)->url();
+
+        $files = scandir($root);
+        var_dump($files);
+    }
 }
