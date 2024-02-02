@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Image\Service;
 
-use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
-
 interface ImageResourceRefactoredInterface
 {
     public function getPathToMediaFiles(string $folder = ''): string;
+
+    public function getUrlToMedia(string $folder = '', string $fileName = ''): string;
 }

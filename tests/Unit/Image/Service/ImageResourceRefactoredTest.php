@@ -8,7 +8,6 @@
 namespace Image\Service;
 
 use OxidEsales\Eshop\Core\Config;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactored;
 use PHPUnit\Framework\TestCase;
 
@@ -17,6 +16,8 @@ use PHPUnit\Framework\TestCase;
  */
 class ImageResourceRefactoredTest extends TestCase
 {
+    protected const EXAMPLE_SHOP_URL = 'someShopUrl';
+
     public function testGetPathToMediaFiles(): void
     {
         $sut = $this->getSut(
@@ -47,5 +48,46 @@ class ImageResourceRefactoredTest extends TestCase
             'someShopDir/' . ImageResourceRefactored::MEDIA_PATH . $subDirectory,
             $sut->getPathToMediaFiles($subDirectory)
         );
+    }
+
+    public static function getUrlToMediaDataProvider(): \Generator
+    {
+        yield "no folder no filename" => [
+            'folder' => '',
+            'fileName' => '',
+            'expectedResult' => self::EXAMPLE_SHOP_URL . '/' . ImageResourceRefactored::MEDIA_PATH
+        ];
+
+        yield "some folder no filename" => [
+            'folder' => 'some',
+            'fileName' => '',
+            'expectedResult' => self::EXAMPLE_SHOP_URL . '/' . ImageResourceRefactored::MEDIA_PATH . '/some'
+        ];
+
+        yield "some folder other filename" => [
+            'folder' => 'some',
+            'fileName' => 'other.xx',
+            'expectedResult' => self::EXAMPLE_SHOP_URL . '/' . ImageResourceRefactored::MEDIA_PATH . '/some/other.xx'
+        ];
+
+        yield "no folder other filename" => [
+            'folder' => '',
+            'fileName' => 'other.xx',
+            'expectedResult' => self::EXAMPLE_SHOP_URL . '/' . ImageResourceRefactored::MEDIA_PATH . '/other.xx'
+        ];
+    }
+
+    /** @dataProvider getUrlToMediaDataProvider */
+    public function testGetUrlToMedia(
+        string $folder,
+        string $fileName,
+        string $expectedResult
+    ): void {
+        $sut = $this->getSut(
+            shopConfig: $shopConfigStub = $this->createStub(Config::class)
+        );
+        $shopConfigStub->method('getSslShopUrl')->willReturn(self::EXAMPLE_SHOP_URL);
+
+        $this->assertSame($expectedResult, $sut->getUrlToMedia($folder, $fileName));
     }
 }

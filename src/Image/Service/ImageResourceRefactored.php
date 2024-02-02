@@ -27,4 +27,15 @@ class ImageResourceRefactored implements ImageResourceRefactoredInterface
             $folder
         );
     }
+
+    // TODO: Alternative image URL should be handled
+    public function getUrlToMedia(string $folder = '', string $fileName = ''): string
+    {
+        return Path::join(
+            $this->shopConfig->getSslShopUrl(),
+            self::MEDIA_PATH,
+            $folder,
+            $fileName
+        );
+    }
 }
