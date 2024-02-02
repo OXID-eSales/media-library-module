@@ -134,7 +134,7 @@ class ThumbnailResourceTest extends TestCase
         );
         $imageResource->method('getPathToMediaFiles')->with('')->willReturn($mediaFilesPath);
 
-        $this->assertSame($mediaFilesPath . '/thumbs', $sut->getPathToThumbnailFiles(''));
+        $this->assertSame($mediaFilesPath . '/thumbs', $sut->getPathToThumbnailFiles());
     }
 
     public function testGetPathToThumbnailFilesWithFolder(): void
@@ -148,5 +148,30 @@ class ThumbnailResourceTest extends TestCase
         $imageResource->method('getPathToMediaFiles')->with($folder)->willReturn($mediaFilesPath);
 
         $this->assertSame($mediaFilesPath . '/thumbs', $sut->getPathToThumbnailFiles($folder));
+    }
+
+    public function testGetUrlToThumbnailFilesNoFolder(): void
+    {
+        $mediaFilesUrl = 'someUrlToMediaFiles';
+
+        $sut = $this->getSut(
+            imageResource: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class)
+        );
+        $imageResource->method('getUrlToMedia')->with($this->isEmpty(), $this->isEmpty())->willReturn($mediaFilesUrl);
+
+        $this->assertSame($mediaFilesUrl . '/thumbs', $sut->getUrlToThumbnailFiles());
+    }
+
+    public function testGetUrlToThumbnailFilesWithFolder(): void
+    {
+        $mediaFilesUrl = 'someUrlToMediaFiles';
+        $folder = uniqid();
+
+        $sut = $this->getSut(
+            imageResource: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class)
+        );
+        $imageResource->method('getUrlToMedia')->with($folder, $this->isEmpty())->willReturn($mediaFilesUrl);
+
+        $this->assertSame($mediaFilesUrl . '/thumbs', $sut->getUrlToThumbnailFiles($folder));
     }
 }

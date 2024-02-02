@@ -53,10 +53,18 @@ class ThumbnailResource implements ThumbnailResourceInterface
         return new ImageSize(width: self::THUMBNAIL_DEFAULT_SIZE, height: self::THUMBNAIL_DEFAULT_SIZE);
     }
 
-    public function getPathToThumbnailFiles(string $folder)
+    public function getPathToThumbnailFiles(string $folder = ''): string
     {
         return Path::join(
             $this->imageResource->getPathToMediaFiles($folder),
+            self::THUMBNAIL_DIRECTORY
+        );
+    }
+
+    public function getUrlToThumbnailFiles(string $folder = ''): string
+    {
+        return Path::join(
+            $this->imageResource->getUrlToMedia(folder: $folder),
             self::THUMBNAIL_DIRECTORY
         );
     }
