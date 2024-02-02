@@ -14,7 +14,7 @@ $aLang = array(
 
     // Lang-Strings
     'SHOP_MODULE_GROUP_main'                                => 'General',
-    'SHOP_MODULE_ddoeMediaLibraryAlternativeImageDirectory' => 'Alternative image directory',
+    'SHOP_MODULE_ddoeMediaLibraryAlternativeImageDirectory' => 'Alternative image URL',
 
     // Base Module
 
