@@ -30,7 +30,8 @@ class MediaTest extends TestCase
             fileType: 'image/gif',
             thumbFileName: 'thumbfilename.jpg',
             imageSize: $imageSize,
-            folderId: 'someFolderId'
+            folderId: 'someFolderId',
+            folderName: 'someFolderName'
         );
 
         $this->assertSame('someOxid', $sut->getOxid());
@@ -40,6 +41,7 @@ class MediaTest extends TestCase
         $this->assertSame('thumbfilename.jpg', $sut->getThumbFileName());
         $this->assertSame($imageSize, $sut->getImageSize());
         $this->assertSame('someFolderId', $sut->getFolderId());
+        $this->assertSame('someFolderName', $sut->getFolderName());
     }
 
     public function testOptionalDefaults(): void
@@ -56,6 +58,7 @@ class MediaTest extends TestCase
         $this->assertSame('', $sut->getThumbFileName());
         $this->assertEquals(new ImageSize(0, 0), $sut->getImageSize());
         $this->assertSame('', $sut->getFolderId());
+        $this->assertSame('', $sut->getFolderName());
     }
 
     /** @dataProvider isDirectoryDataProvider */

@@ -23,7 +23,8 @@ class Media implements MediaInterface
         private string $fileType = '',
         private string $thumbFileName = '',
         private ImageSizeInterface $imageSize = new ImageSize(0, 0),
-        private string $folderId = ''
+        private string $folderId = '',
+        private string $folderName = ''
     ) {
     }
 
@@ -45,6 +46,11 @@ class Media implements MediaInterface
     public function getFolderId(): string
     {
         return $this->folderId;
+    }
+
+    public function getFolderName(): string
+    {
+        return $this->folderName;
     }
 
     public function getFileSize(): int

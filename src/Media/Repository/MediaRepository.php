@@ -43,8 +43,9 @@ class MediaRepository implements MediaRepositoryInterface
     public function getFolderMedia(string $folderId, int $start, int $limit = 18): array
     {
         $queryResult = $this->connection->executeQuery(
-            "SELECT * FROM ddmedia WHERE OXSHOPID = :OXSHOPID AND DDFOLDERID = :DDFOLDERID
-            ORDER BY OXTIMESTAMP DESC LIMIT $start, $limit",
+            $this->getMediaSelectSqlPart()
+            . "WHERE m.OXSHOPID = :OXSHOPID AND m.DDFOLDERID = :DDFOLDERID
+            ORDER BY m.OXTIMESTAMP DESC LIMIT $start, $limit",
             [
                 'OXSHOPID' => $this->basicContext->getCurrentShopId(),
                 'DDFOLDERID' => $folderId
@@ -62,7 +63,8 @@ class MediaRepository implements MediaRepositoryInterface
     public function getMediaById(string $mediaId): MediaInterface
     {
         $result = $this->connection->executeQuery(
-            "SELECT * FROM ddmedia WHERE OXSHOPID = :OXSHOPID AND OXID = :OXID",
+            $this->getMediaSelectSqlPart()
+            . "WHERE m.OXSHOPID = :OXSHOPID AND m.OXID = :OXID",
             [
                 'OXSHOPID' => $this->basicContext->getCurrentShopId(),
                 'OXID' => $mediaId
@@ -98,5 +100,11 @@ class MediaRepository implements MediaRepositoryInterface
                 'DDFOLDERID' => $exampleMedia->getFolderId()
             ]
         );
+    }
+
+    private function getMediaSelectSqlPart(): string
+    {
+        return "SELECT m.*, j.DDFILENAME as FOLDERNAME FROM ddmedia m
+            LEFT JOIN ddmedia j ON j.OXID=m.DDFOLDERID AND m.DDFOLDERID <> ''";
     }
 }

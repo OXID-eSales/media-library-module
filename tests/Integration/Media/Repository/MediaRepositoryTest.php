@@ -43,13 +43,13 @@ class MediaRepositoryTest extends IntegrationTestCase
         );
 
         $this->assertSame(3, $sut->getFolderMediaCount('someFolder'));
-        $this->assertSame(2, $sut->getFolderMediaCount(''));
+        $this->assertSame(3, $sut->getFolderMediaCount(''));
     }
 
     /**
      * @dataProvider getFolderMediaDataProvider
      */
-    public function testGetShopFolderMedia(
+    public function testGetShopFolderMediaInFolder(
         string $folder,
         int $start,
         int $expectedItems,
@@ -66,6 +66,31 @@ class MediaRepositoryTest extends IntegrationTestCase
         foreach ($result as $key => $oneItem) {
             $this->assertInstanceOf(Media::class, $oneItem);
             $this->assertSame($folder . 'example' . ($firstListItemId - $key), $oneItem->getOxid());
+        }
+    }
+
+    public function testGetShopFolderMediaInRootWithFolderPresent(): void {
+        $expectedItems = 4;
+        $firstListItemId = 3;
+
+        $this->createTestItems(7, 'someFolder');
+        $this->createTestItems(3, '');
+
+        $sut = $this->getSutForShop(2);
+
+        $result = $sut->getFolderMedia('', 0, 5);
+
+        $this->assertSame($expectedItems, count($result));
+
+        $oneItem = current($result);
+        $this->assertInstanceOf(Media::class, $oneItem);
+        $this->assertSame('someFolder', $oneItem->getOxid());
+        next($result);
+
+        foreach ($result as $key => $oneItem) {
+            if (!$key) continue;
+            $this->assertInstanceOf(Media::class, $oneItem);
+            $this->assertSame('example' . ($firstListItemId - $key + 1), $oneItem->getOxid());
         }
     }
 
@@ -92,18 +117,25 @@ class MediaRepositoryTest extends IntegrationTestCase
             'expectedItems' => 2,
             'firstListItemId' => 2
         ];
-
-        yield "first page without folder" => [
-            'folder' => '',
-            'page' => 0,
-            'expectedItems' => 3,
-            'firstListItemId' => 3
-        ];
     }
 
     private function createTestItems(int $amount, string $folderId): void
     {
         $queryBuilder = $this->getAddItemQueryBuilder();
+
+        if ($folderId) {
+            $queryBuilder->setParameters([
+                'OXID' => $folderId,
+                'OXSHOPID' => 2,
+                'DDFILENAME' => $folderId . 'Filename',
+                'DDFILESIZE' => 0,
+                'DDFILETYPE' => 'directory',
+                'DDIMAGESIZE' => 0,
+                'DDFOLDERID' => '',
+                'OXTIMESTAMP' => date("Y-m-d H:i:s")
+            ]);
+            $queryBuilder->execute();
+        }
 
         for ($i = 1; $i <= $amount; $i++) {
             $queryBuilder->setParameters([

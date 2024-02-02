@@ -10,8 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Media\Repository;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 
@@ -25,6 +23,8 @@ class MediaFactory implements MediaFactoryInterface
     public function fromDatabaseArray(array $item): Media
     {
         $size = explode("x", $item['DDIMAGESIZE']);
+        $mediaSize = new ImageSize(intval($size[0] ?? 0), intval($size[1] ?? 0));
+
         $thumbnailUrl = $this->thumbnailResource->calculateMediaThumbnailUrl(
             fileName: (string)$item['DDFILENAME'],
             fileType: (string)$item['DDFILETYPE']
@@ -36,8 +36,9 @@ class MediaFactory implements MediaFactoryInterface
             fileSize: (int)$item['DDFILESIZE'],
             fileType: (string)$item['DDFILETYPE'],
             thumbFileName: $thumbnailUrl,
-            imageSize: new ImageSize(intval($size[0]), intval($size[1])),
-            folderId: $item['DDFOLDERID']
+            imageSize: $mediaSize,
+            folderId: $item['DDFOLDERID'],
+            folderName: $item['FOLDERNAME'] ?? ''
         );
     }
 }
