@@ -132,7 +132,7 @@ class MediaRepositoryTest extends IntegrationTestCase
                 'DDFILETYPE' => 'directory',
                 'DDIMAGESIZE' => 0,
                 'DDFOLDERID' => '',
-                'OXTIMESTAMP' => date("Y-m-d H:i:s")
+                'OXTIMESTAMP' => date("Y-m-d H:i:59")
             ]);
             $queryBuilder->execute();
         }
