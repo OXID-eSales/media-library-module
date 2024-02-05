@@ -232,7 +232,7 @@ class MediaRepositoryTest extends IntegrationTestCase
         $queryBuilder = $this->getAddItemQueryBuilder();
         $queryBuilder->setParameters([
             'OXID' => $mediaIdToRename,
-            'OXSHOPID' => 1,
+            'OXSHOPID' => 2,
             'DDFILENAME' => 'OriginalName',
             'DDFILESIZE' => 0,
             'DDFILETYPE' => 'any',

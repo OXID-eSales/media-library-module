@@ -64,9 +64,8 @@ class MediaRepository implements MediaRepositoryInterface
     {
         $result = $this->connection->executeQuery(
             $this->getMediaSelectSqlPart()
-            . "WHERE m.OXSHOPID = :OXSHOPID AND m.OXID = :OXID",
+            . "WHERE m.OXID = :OXID",
             [
-                'OXSHOPID' => $this->basicContext->getCurrentShopId(),
                 'OXID' => $mediaId
             ]
         );
