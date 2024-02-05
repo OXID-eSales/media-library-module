@@ -14,10 +14,10 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInte
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
-use OxidEsales\MediaLibrary\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
+use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Exception\WrongMediaIdGivenException;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactory;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
@@ -245,7 +245,7 @@ class MediaRepositoryTest extends IntegrationTestCase
         $newName = 'NewName';
 
         $sut = $this->getSut();
-        $sut->rename($mediaIdToRename, $newName);
+        $sut->renameMedia($mediaIdToRename, $newName);
 
         $updatedData = $sut->getMediaById($mediaIdToRename);
         $this->assertSame($newName, $updatedData->getFileName());

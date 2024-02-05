@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Exception;
+namespace OxidEsales\MediaLibrary\Media\Exception;
 
 class MediaNotFoundException extends \Exception
 {

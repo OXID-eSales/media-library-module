@@ -13,8 +13,8 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
-use OxidEsales\MediaLibrary\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
+use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Exception\WrongMediaIdGivenException;
 
 class MediaRepository implements MediaRepositoryInterface
@@ -112,7 +112,7 @@ class MediaRepository implements MediaRepositoryInterface
     /**
      * @throws Exception
      */
-    public function rename(string $mediaIdToRename, string $newName): void
+    public function renameMedia(string $mediaIdToRename, string $newName): void
     {
         $this->connection->executeQuery(
             "UPDATE ddmedia SET DDFILENAME = :DDFILENAME WHERE OXID = :OXID",

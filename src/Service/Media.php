@@ -132,7 +132,7 @@ class Media
 
             $sNewName = basename($sNewPath);
 
-            $this->mediaRepository->rename($sId, $sNewName);
+            $this->mediaRepository->renameMedia($sId, $sNewName);
 
             $aResult = [
                 'success'  => true,

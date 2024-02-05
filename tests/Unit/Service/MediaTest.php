@@ -51,7 +51,7 @@ class MediaTest extends TestCase
             );
 
         $mediaRepositorySpy = $this->createMock(MediaRepositoryInterface::class);
-        $mediaRepositorySpy->expects($this->once())->method('rename');
+        $mediaRepositorySpy->expects($this->once())->method('renameMedia');
 
         $sut = $this->getSut(
             shopConfig: $shopConfigMock,
