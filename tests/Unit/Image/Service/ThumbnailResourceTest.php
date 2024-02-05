@@ -106,6 +106,14 @@ class ThumbnailResourceTest extends TestCase
         $this->assertSame($expectedName, $result);
     }
 
+    public function testGetThumbnailHash(): void
+    {
+        $sut = $this->getSut();
+
+        $originalFilename = 'someExampleFilename.txt';
+        $this->assertSame('8910f1d8c070ff09e13d4977fc339a29', $sut->getThumbnailFileHash($originalFilename));
+    }
+
     public function testGetDefaultThumbnailSize(): void
     {
         $sut = $this->getSut();

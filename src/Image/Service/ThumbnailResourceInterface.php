@@ -24,7 +24,7 @@ interface ThumbnailResourceInterface
 
     public function getDefaultThumbnailSize(): ImageSizeInterface;
 
-    public function getPathToThumbnailFiles(string $folder): string;
+    public function getPathToThumbnailFiles(string $folderName): string;
 
-    public function getUrlToThumbnailFiles(string $folder): string;
+    public function getUrlToThumbnailFiles(string $folderName): string;
 }

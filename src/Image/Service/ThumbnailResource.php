@@ -33,6 +33,11 @@ class ThumbnailResource implements ThumbnailResourceInterface
         return $result;
     }
 
+    public function getThumbnailFileHash(string $originalFilename): string
+    {
+        return md5($originalFilename);
+    }
+
     public function getThumbnailFileName(
         string $originalFileName,
         ImageSizeInterface $thumbnailSize,
@@ -40,7 +45,7 @@ class ThumbnailResource implements ThumbnailResourceInterface
     ): string {
         return sprintf(
             '%s_thumb_%d*%d%s%s',
-            md5($originalFileName),
+            $this->getThumbnailFileHash($originalFileName),
             $thumbnailSize->getWidth(),
             $thumbnailSize->getHeight(),
             $crop ? '' : '_nocrop',
@@ -53,18 +58,18 @@ class ThumbnailResource implements ThumbnailResourceInterface
         return new ImageSize(width: self::THUMBNAIL_DEFAULT_SIZE, height: self::THUMBNAIL_DEFAULT_SIZE);
     }
 
-    public function getPathToThumbnailFiles(string $folder = ''): string
+    public function getPathToThumbnailFiles(string $folderName = ''): string
     {
         return Path::join(
-            $this->imageResource->getPathToMediaFiles($folder),
+            $this->imageResource->getPathToMediaFiles($folderName),
             self::THUMBNAIL_DIRECTORY
         );
     }
 
-    public function getUrlToThumbnailFiles(string $folder = ''): string
+    public function getUrlToThumbnailFiles(string $folderName = ''): string
     {
         return Path::join(
-            $this->imageResource->getUrlToMedia(folder: $folder),
+            $this->imageResource->getUrlToMedia(folder: $folderName),
             self::THUMBNAIL_DIRECTORY
         );
     }
