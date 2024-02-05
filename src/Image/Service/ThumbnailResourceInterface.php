@@ -27,4 +27,6 @@ interface ThumbnailResourceInterface
     public function getPathToThumbnailFiles(string $folderName): string;
 
     public function getUrlToThumbnailFiles(string $folderName): string;
+
+    public function getThumbnailsGlob(string $originalFilename): string;
 }

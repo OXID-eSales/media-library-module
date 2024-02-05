@@ -33,7 +33,7 @@ class ThumbnailResource implements ThumbnailResourceInterface
         return $result;
     }
 
-    public function getThumbnailFileHash(string $originalFilename): string
+    private function getThumbnailFileHash(string $originalFilename): string
     {
         return md5($originalFilename);
     }
@@ -72,5 +72,10 @@ class ThumbnailResource implements ThumbnailResourceInterface
             $this->imageResource->getUrlToMedia(folder: $folderName),
             self::THUMBNAIL_DIRECTORY
         );
+    }
+
+    public function getThumbnailsGlob(string $originalFilename): string
+    {
+        return $this->getThumbnailFileHash($originalFilename) . '*.*';
     }
 }

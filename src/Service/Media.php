@@ -13,9 +13,11 @@ use Doctrine\DBAL\Connection;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
-use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
+use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use Symfony\Component\Filesystem\Path;
@@ -34,6 +36,8 @@ class Media
         private FileSystemServiceInterface $fileSystemService,
         protected ShopAdapterInterface $shopAdapter,
         protected UIRequestInterface $UIRequest,
+        protected ImageResourceRefactoredInterface $imageResourceRefactored,
+        protected ThumbnailResourceInterface $thumbnailResource,
     ) {
         $this->connection = $connectionProvider->get();
     }
@@ -88,7 +92,7 @@ class Media
     public function rename($sOldName, $sNewName, $sId, $sType = 'file')
     {
         $aResult = [
-            'success'  => false,
+            'success' => false,
             'filename' => '',
         ];
 
@@ -135,7 +139,7 @@ class Media
             $this->mediaRepository->renameMedia($sId, $sNewName);
 
             $aResult = [
-                'success'  => true,
+                'success' => true,
                 'filename' => $sNewName,
             ];
         }
@@ -209,67 +213,11 @@ class Media
         return $blReturn;
     }
 
-    /**
-     * @param $sNewName
-     *
-     * @return mixed|null|string|string[]
-     */
-    public function delete($aIds)
+    public function delete(array $ids): void
     {
-        foreach ($aIds as $iKey => $sId) {
-            $aIds[$iKey] = $this->connection->quote($sId);
-        }
-        $sIds = implode(",", $aIds);
-
-        $sSelect = "SELECT `OXID`, `DDFILENAME`, `DDTHUMB`, `DDFILETYPE`, `DDFOLDERID` 
-                FROM `ddmedia` WHERE `OXID` IN($sIds) OR `DDFOLDERID` IN($sIds) ORDER BY `DDFOLDERID` ASC;";
-        $aData = $this->connection->fetchAllAssociative($sSelect);
-
-        $aFolders = [];
-        foreach ($aData as $sKey => $aRow) {
-            if ($aRow['DDFILETYPE'] == 'directory') {
-                $aFolders[$aRow['OXID']] = $aRow['DDFILENAME'];
-                unset($aData[$sKey]);
-            }
-        }
-
-        foreach ($aData as $aRow) {
-            if ($aRow['DDFILETYPE'] != 'directory') {
-                $sFolderName = '';
-                if ($aRow['DDFOLDERID'] && isset($aFolders[$aRow['DDFOLDERID']])) {
-                    $sFolderName = $aFolders[$aRow['DDFOLDERID']];
-                }
-                unlink(Path::join($this->imageResource->getMediaPath(), $sFolderName, $aRow['DDFILENAME']));
-
-                if ($aRow['DDTHUMB']) {
-                    $thumbFilename = sprintf(
-                        'thumb_%1$d*%1$d.jpg',
-                        $this->imageResource->getDefaultThumbnailSize()
-                    );
-                    $thumbs = Glob::glob(
-                        Path::join(
-                            $this->imageResource->getMediaPath(),
-                            $sFolderName,
-                            'thumbs',
-                            str_replace($thumbFilename, '*', $aRow['DDTHUMB'])
-                        )
-                    );
-                    foreach ($thumbs as $sThumb) {
-                        unlink($sThumb);
-                    }
-                }
-
-                $sDelete = "DELETE FROM `ddmedia` WHERE `OXID` = '" . $aRow['OXID'] . "'; ";
-                $this->connection->executeQuery($sDelete);
-            }
-        }
-
-        // remove folder
-        foreach ($aFolders as $sOxid => $sFolderName) {
-            @rmdir(Path::join($this->imageResource->getMediaPath(), $sFolderName, 'thumbs'));
-            @rmdir(Path::join($this->imageResource->getMediaPath(), $sFolderName));
-            $sDelete = "DELETE FROM `ddmedia` WHERE `OXID` = '" . $sOxid . "'; ";
-            $this->connection->executeQuery($sDelete);
+        foreach ($ids as $oneId) {
+            $mediaItem = $this->mediaRepository->getMediaById($oneId);
+            $this->deleteMedia($mediaItem);
         }
     }
 
@@ -282,5 +230,17 @@ class Media
     protected function moveUploadedFile($sSourcePath, array|string $sDestPath): bool
     {
         return move_uploaded_file($sSourcePath, $sDestPath);
+    }
+
+    public function deleteMedia(MediaInterface $media): void
+    {
+        $this->fileSystemService->delete($this->imageResourceRefactored->getPathToMediaFile($media));
+
+        $this->fileSystemService->deleteByGlob(
+            inPath: $this->thumbnailResource->getPathToThumbnailFiles($media->getFolderName()),
+            globTargetToDelete: $this->thumbnailResource->getThumbnailsGlob($media->getFileName())
+        );
+
+        $this->mediaRepository->deleteMedia($media->getOxid());
     }
 }

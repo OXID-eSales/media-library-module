@@ -9,6 +9,7 @@ namespace Image\Service;
 
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactored;
+use OxidEsales\MediaLibrary\Media\DataType\Media;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -89,5 +90,24 @@ class ImageResourceRefactoredTest extends TestCase
         $shopConfigStub->method('getSslShopUrl')->willReturn(self::EXAMPLE_SHOP_URL);
 
         $this->assertSame($expectedResult, $sut->getUrlToMedia($folder, $fileName));
+    }
+
+    public function testGetPathToMediaFile(): void
+    {
+        $mediaFileName = uniqid();
+        $directoryName = uniqid();
+        $exampleMedia = new Media(
+            oxid: uniqid(),
+            fileName: $mediaFileName,
+            fileType: uniqid(),
+            folderName: $directoryName
+        );
+
+        $examplePath = 'examplePathWithConcreteDirectory';
+        $sut = $this->createPartialMock(ImageResourceRefactored::class, ['getPathToMediaFiles']);
+        $sut->method('getPathToMediaFiles')->with($directoryName)->willReturn($examplePath);
+
+        $expectedPath = $examplePath . '/' . $mediaFileName;
+        $this->assertSame($expectedPath, $sut->getPathToMediaFile($exampleMedia));
     }
 }

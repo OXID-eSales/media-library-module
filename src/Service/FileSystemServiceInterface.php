@@ -16,4 +16,8 @@ interface FileSystemServiceInterface
     public function ensureDirectory(string $path): bool;
 
     public function getImageSize(string $filePath): ImageSize;
+
+    public function delete(string $targetToDelete): void;
+
+    public function deleteByGlob(string $inPath, string $globTargetToDelete): void;
 }

@@ -8,6 +8,7 @@
 namespace OxidEsales\MediaLibrary\Image\Service;
 
 use OxidEsales\Eshop\Core\Config;
+use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use Symfony\Component\Filesystem\Path;
 
 class ImageResourceRefactored implements ImageResourceRefactoredInterface
@@ -37,5 +38,10 @@ class ImageResourceRefactored implements ImageResourceRefactoredInterface
             $folder,
             $fileName
         );
+    }
+
+    public function getPathToMediaFile(MediaInterface $media): string
+    {
+        return $this->getPathToMediaFiles($media->getFolderName()) . '/' . $media->getFileName();
     }
 }

@@ -14,6 +14,8 @@ interface MediaInterface
 
     public function getFolderId(): string;
 
+    public function getFolderName(): string;
+
     public function getFileSize(): int;
 
     public function getFileName(): string;

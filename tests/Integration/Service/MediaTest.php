@@ -14,6 +14,8 @@ use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProvider;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResource;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
@@ -238,6 +240,8 @@ class MediaTest extends IntegrationTestCase
             fileSystemService: $this->containerFactory->get(FileSystemServiceInterface::class),
             shopAdapter: $shopAdapterStub,
             UIRequest: $this->createStub(UIRequestInterface::class),
+            imageResourceRefactored: $this->createStub(ImageResourceRefactoredInterface::class),
+            thumbnailResource: $this->createStub(ThumbnailResourceInterface::class)
         );
     }
 

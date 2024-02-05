@@ -11,6 +11,8 @@ namespace OxidEsales\MediaLibrary\Service;
 
 use OxidEsales\MediaLibrary\Exception\DirectoryCreationException;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 
 class FileSystemService implements FileSystemServiceInterface
 {
@@ -33,5 +35,20 @@ class FileSystemService implements FileSystemServiceInterface
         }
 
         return $result;
+    }
+
+    public function delete(string $targetToDelete): void
+    {
+        $fileSystem = new Filesystem();
+        $fileSystem->remove($targetToDelete);
+    }
+
+    public function deleteByGlob(string $inPath, string $globTargetToDelete): void
+    {
+        $finder = new Finder();
+        $files = $finder->in($inPath)->files()->name($globTargetToDelete);
+
+        $fileSystem = new Filesystem();
+        $fileSystem->remove($files);
     }
 }

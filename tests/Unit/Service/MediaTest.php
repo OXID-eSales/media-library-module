@@ -16,7 +16,10 @@ use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResource;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
+use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemService;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
@@ -142,63 +145,6 @@ class MediaTest extends TestCase
                 $sThumbName => 'some file',
             ],
         ];
-
-        $this->assertEquals(
-            $structureExpected,
-            vfsStream::inspect(new vfsStreamStructureVisitor(), $directory)->getStructure()
-        );
-    }
-
-    /**
-     * @dataProvider getDeleteDataProvider
-     * @return void
-     */
-    public function testDelete($structure, $structureExpected, $aIds, $aDBData, $startFolder)
-    {
-        $directory = vfsStream::setup('root', 0777, $structure);
-
-        $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam']);
-        $shopConfigMock->expects($this->any())
-            ->method('getConfigParam')
-            ->willReturnMap(
-                [
-                    ['sShopDir', null, $directory->url()],
-                ]
-            );
-
-        $connectionMock = $this->createPartialMock(
-            Connection::class,
-            [
-                'fetchAllAssociative',
-                'executeQuery',
-                'quote',
-            ]
-        );
-        $connectionMock->expects($this->once())
-            ->method('fetchAllAssociative')
-            ->willReturn($aDBData);
-
-        $connectionMock->expects($this->any())
-            ->method('executeQuery');
-
-        $connectionMock->expects($this->any())
-            ->method('quote');
-
-        $connectionProviderStub = $this->createConfiguredMock(
-            ConnectionProviderInterface::class,
-            [
-                'get' => $connectionMock,
-            ]
-        );
-
-        $sut = $this->getSut(
-            shopConfig: $shopConfigMock,
-            connectionProvider: $connectionProviderStub,
-        );
-        if ($startFolder) {
-            $sut->imageResource->setFolderName($startFolder);
-        }
-        $sut->delete($aIds);
 
         $this->assertEquals(
             $structureExpected,
@@ -431,104 +377,6 @@ class MediaTest extends TestCase
         ];
     }
 
-    public static function getDeleteDataProvider()
-    {
-        $sThumbName = self::getImageSizeAsString(
-            '111_thumb_',
-            185
-        );
-
-        // scenario 1 - file in media root
-        $structure['out']['pictures']['ddmedia'][self::FIXTURE_FILE] = 'some file';
-        $structure['out']['pictures']['ddmedia']['thumbs'][$sThumbName] = 'some file';
-        $structureExpected['root']['out']['pictures']['ddmedia']['thumbs'] = [];
-        $aIds = ['111'];
-        $aDBData[] = [
-            'OXID' => '111',
-            'DDFILENAME' => self::FIXTURE_FILE,
-            'DDTHUMB' => $sThumbName,
-            'DDFILETYPE' => 'image/jpeg',
-            'DDFOLDERID' => '',
-        ];
-
-        // scenario 2 - file in a folder
-        $structure1['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER][self::FIXTURE_FILE] = 'some file';
-        $structure1['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'][$sThumbName] = 'some file';
-        $structureExpected1['root']['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'] = [];
-        $aIds1 = ['111'];
-        $aDBData1[] = [
-            'OXID' => '111',
-            'DDFILENAME' => self::FIXTURE_FILE,
-            'DDTHUMB' => $sThumbName,
-            'DDFILETYPE' => 'image/jpeg',
-            'DDFOLDERID' => '2222',
-        ];
-
-        // scenario 3 - empty folder
-        $structure2['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER] = [];
-        $structure2['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'] = [];
-        $structureExpected2['root']['out']['pictures']['ddmedia'] = [];
-        $aIds2 = ['111'];
-        $aDBData2[] = [
-            'OXID' => '111',
-            'DDFILENAME' => self::FIXTURE_FOLDER,
-            'DDTHUMB' => '',
-            'DDFILETYPE' => 'directory',
-            'DDFOLDERID' => '',
-        ];
-
-        // scenario 4 - folder with files
-        $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER][self::FIXTURE_FILE] = 'some file';
-        $structure3['out']['pictures']['ddmedia'][self::FIXTURE_FOLDER]['thumbs'][$sThumbName] = 'some file';
-        $structureExpected3['root']['out']['pictures']['ddmedia'] = [];
-        $aIds3 = ['111'];
-        $aDBData3[] = [
-            'OXID' => '111',
-            'DDFILENAME' => self::FIXTURE_FOLDER,
-            'DDTHUMB' => '',
-            'DDFILETYPE' => 'directory',
-            'DDFOLDERID' => '',
-        ];
-        $aDBData3[] = [
-            'OXID' => '222',
-            'DDFILENAME' => self::FIXTURE_FILE,
-            'DDTHUMB' => $sThumbName,
-            'DDFILETYPE' => 'image/jpeg',
-            'DDFOLDERID' => '111',
-        ];
-
-        return [
-            [
-                'structure' => $structure,
-                'structureExpected' => $structureExpected,
-                'aIds' => $aIds,
-                'aDBData' => $aDBData,
-                'startFolder' => '',
-            ],
-            [
-                'structure' => $structure1,
-                'structureExpected' => $structureExpected1,
-                'aIds' => $aIds1,
-                'aDBData' => $aDBData1,
-                'startFolder' => self::FIXTURE_FOLDER,
-            ],
-            [
-                'structure' => $structure2,
-                'structureExpected' => $structureExpected2,
-                'aIds' => $aIds2,
-                'aDBData' => $aDBData2,
-                'startFolder' => '',
-            ],
-            [
-                'structure' => $structure3,
-                'structureExpected' => $structureExpected3,
-                'aIds' => $aIds3,
-                'aDBData' => $aDBData3,
-                'startFolder' => '',
-            ],
-        ];
-    }
-
     protected function getSut(
         ?ModuleSettings $moduleSettings = null,
         ?Config $shopConfig = null,
@@ -538,6 +386,8 @@ class MediaTest extends TestCase
         ?NamingServiceInterface $namingService = null,
         ?MediaRepositoryInterface $mediaRepository = null,
         ?FileSystemServiceInterface $fileSystemService = null,
+        ?ImageResourceRefactoredInterface $imageResourceRef = null,
+        ?ThumbnailResourceInterface $thumbnailResource = null,
     ) {
         $imageResourceMock = $this->getImageResourceStub(
             $shopConfig,
@@ -553,7 +403,9 @@ class MediaTest extends TestCase
             mediaRepository: $mediaRepository ?? $this->createStub(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemService ?? $this->createPartialMock(FileSystemService::class, []),
             shopAdapter: $this->createStub(ShopAdapterInterface::class),
-            UIRequest: $this->createStub(UIRequestInterface::class)
+            UIRequest: $this->createStub(UIRequestInterface::class),
+            imageResourceRefactored: $imageResourceRef ?? $this->createStub(ImageResourceRefactoredInterface::class),
+            thumbnailResource: $thumbnailResource ?? $this->createStub(ThumbnailResourceInterface::class)
         );
     }
 
@@ -580,5 +432,40 @@ class MediaTest extends TestCase
             $imageSize,
             $suffix
         );
+    }
+
+    public function testDeleteRegularMedia(): void
+    {
+        $sut = $this->getSut(
+            mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
+            fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
+            imageResourceRef: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class),
+            thumbnailResource: $thumbnailResource = $this->createStub(ThumbnailResourceInterface::class)
+        );
+
+        $mediaId = uniqid();
+        $mediaFileName = 'someFileName';
+        $folderName = 'someFolderName';
+
+        $exampleMedia = new Media(
+            oxid: $mediaId,
+            fileName: $mediaFileName,
+            fileType: uniqid(),
+            folderName: $folderName
+        );
+
+        $mediaFilePath = 'exampleMediaFilePath';
+        $imageResource->method('getPathToMediaFile')->with($exampleMedia)->willReturn($mediaFilePath);
+
+        $thumbGlob = 'exampleThumbGlob';
+        $thumbPath = 'exampleThumbPath';
+        $thumbnailResource->method('getThumbnailsGlob')->with($mediaFileName)->willReturn($thumbGlob);
+        $thumbnailResource->method('getPathToThumbnailFiles')->with($folderName)->willReturn($thumbPath);
+
+        $repositorySpy->expects($this->once())->method('deleteMedia')->with($mediaId);
+        $fileSystemSpy->expects($this->once())->method('delete')->with($mediaFilePath);
+        $fileSystemSpy->expects($this->once())->method('deleteByGlob')->with($thumbPath, $thumbGlob);
+
+        $sut->deleteMedia($exampleMedia);
     }
 }
