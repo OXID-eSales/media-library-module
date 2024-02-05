@@ -18,6 +18,7 @@ use OxidEsales\MediaLibrary\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
+use OxidEsales\MediaLibrary\Media\Exception\WrongMediaIdGivenException;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactory;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepository;
@@ -248,5 +249,85 @@ class MediaRepositoryTest extends IntegrationTestCase
 
         $updatedData = $sut->getMediaById($mediaIdToRename);
         $this->assertSame($newName, $updatedData->getFileName());
+    }
+
+    public function testDeleteRegularMedia(): void
+    {
+        $queryBuilder = $this->getAddItemQueryBuilder();
+
+        $idToRemove = 'regularMediaForRemoval';
+        $queryBuilder->setParameters([
+            'OXID' => $idToRemove,
+            'OXSHOPID' => 3,
+            'DDFILENAME' => uniqid(),
+            'DDFILESIZE' => 0,
+            'DDFILETYPE' => 'not directory',
+            'DDIMAGESIZE' => 0,
+            'DDFOLDERID' => '',
+            'OXTIMESTAMP' => date("Y-m-d H:i:59")
+        ])->execute();
+
+        $sut = $this->getSut();
+        $sut->deleteMedia($idToRemove);
+
+        $this->expectException(MediaNotFoundException::class);
+        $sut->getMediaById($idToRemove);
+    }
+
+    public function testDeleteRemovesDirectoryRelatedMediaOnly(): void
+    {
+        $queryBuilder = $this->getAddItemQueryBuilder();
+
+        $idToRemove = 'directoryMediaForRemoval';
+        $queryBuilder->setParameters([
+            'OXID' => $idToRemove,
+            'OXSHOPID' => 3,
+            'DDFILENAME' => uniqid(),
+            'DDFILESIZE' => 0,
+            'DDFILETYPE' => 'directory',
+            'DDIMAGESIZE' => 0,
+            'DDFOLDERID' => '',
+            'OXTIMESTAMP' => date("Y-m-d H:i:59")
+        ])->execute();
+
+        $inDirectoryId = uniqid();
+        $queryBuilder->setParameters([
+            'OXID' => $inDirectoryId,
+            'OXSHOPID' => 3,
+            'DDFILENAME' => uniqid(),
+            'DDFILESIZE' => 0,
+            'DDFILETYPE' => 'in directory',
+            'DDIMAGESIZE' => 0,
+            'DDFOLDERID' => $idToRemove,
+            'OXTIMESTAMP' => date("Y-m-d H:i:59")
+        ])->execute();
+
+        $notInDirectoryId = uniqid();
+        $queryBuilder->setParameters([
+            'OXID' => $notInDirectoryId,
+            'OXSHOPID' => 3,
+            'DDFILENAME' => uniqid(),
+            'DDFILESIZE' => 0,
+            'DDFILETYPE' => 'not in directory',
+            'DDIMAGESIZE' => 0,
+            'DDFOLDERID' => '',
+            'OXTIMESTAMP' => date("Y-m-d H:i:59")
+        ])->execute();
+
+        $sut = $this->getSut();
+        $sut->deleteMedia($idToRemove);
+
+        $this->assertInstanceOf(Media::class, $sut->getMediaById($notInDirectoryId));
+
+        $this->expectException(MediaNotFoundException::class);
+        $sut->getMediaById($inDirectoryId);
+    }
+
+    public function testDeleteArgumentWrongValue(): void
+    {
+        $sut = $this->getSut();
+
+        $this->expectException(WrongMediaIdGivenException::class);
+        $sut->deleteMedia('');
     }
 }

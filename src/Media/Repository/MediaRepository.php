@@ -10,10 +10,12 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Media\Repository;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\MediaLibrary\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
+use OxidEsales\MediaLibrary\Media\Exception\WrongMediaIdGivenException;
 
 class MediaRepository implements MediaRepositoryInterface
 {
@@ -107,6 +109,9 @@ class MediaRepository implements MediaRepositoryInterface
             LEFT JOIN ddmedia j ON j.OXID=m.DDFOLDERID AND m.DDFOLDERID <> ''";
     }
 
+    /**
+     * @throws Exception
+     */
     public function rename(string $mediaIdToRename, string $newName): void
     {
         $this->connection->executeQuery(
@@ -114,6 +119,24 @@ class MediaRepository implements MediaRepositoryInterface
             [
                 'DDFILENAME' => $newName,
                 'OXID' => $mediaIdToRename
+            ]
+        );
+    }
+
+    /**
+     * @throws WrongMediaIdGivenException
+     * @throws Exception
+     */
+    public function deleteMedia(string $idToRemove): void
+    {
+        if (!$idToRemove) {
+            throw new WrongMediaIdGivenException();
+        }
+
+        $this->connection->executeQuery(
+            "DELETE FROM ddmedia WHERE OXID = :OXID OR DDFOLDERID = :OXID",
+            [
+                'OXID' => $idToRemove
             ]
         );
     }

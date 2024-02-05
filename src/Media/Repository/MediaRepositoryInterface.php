@@ -2,8 +2,10 @@
 
 namespace OxidEsales\MediaLibrary\Media\Repository;
 
+use Doctrine\DBAL\Exception;
 use OxidEsales\MediaLibrary\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
+use OxidEsales\MediaLibrary\Media\Exception\WrongMediaIdGivenException;
 
 interface MediaRepositoryInterface
 {
@@ -22,4 +24,9 @@ interface MediaRepositoryInterface
     public function addMedia(MediaInterface $exampleMedia): void;
 
     public function rename(string $mediaIdToRename, string $newName): void;
+
+    /**
+     * @throws WrongMediaIdGivenException
+     */
+    public function deleteMedia(string $idToRemove): void;
 }
