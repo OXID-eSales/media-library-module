@@ -20,4 +20,6 @@ interface MediaRepositoryInterface
     public function getMediaById(string $mediaId): ?MediaInterface;
 
     public function addMedia(MediaInterface $exampleMedia): void;
+
+    public function rename(string $mediaIdToRename, string $newName): void;
 }

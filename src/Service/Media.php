@@ -131,20 +131,8 @@ class Media
             }
 
             $sNewName = basename($sNewPath);
-            $iShopId = $this->shopConfig->getActiveShop()->getShopId();
 
-            $sUpdate = "UPDATE `ddmedia`
-                              SET `DDFILENAME` = ?
-                            WHERE `OXID` = ? AND `OXSHOPID` = ?;";
-
-            $this->connection->executeQuery(
-                $sUpdate,
-                [
-                    $sNewName,
-                    $sId,
-                    $iShopId,
-                ]
-            );
+            $this->mediaRepository->rename($sId, $sNewName);
 
             $aResult = [
                 'success'  => true,

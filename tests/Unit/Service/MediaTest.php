@@ -50,15 +50,12 @@ class MediaTest extends TestCase
                 ]
             );
 
-        $connectionMock = $this->createPartialMock(Connection::class, ['executeQuery']);
-        $connectionMock->expects($this->once())->method('executeQuery');
-        $connectionProviderStub = $this->createConfiguredMock(ConnectionProviderInterface::class, [
-            'get' => $connectionMock,
-        ]);
+        $mediaRepositorySpy = $this->createMock(MediaRepositoryInterface::class);
+        $mediaRepositorySpy->expects($this->once())->method('rename');
 
         $sut = $this->getSut(
             shopConfig: $shopConfigMock,
-            connectionProvider: $connectionProviderStub,
+            mediaRepository: $mediaRepositorySpy,
             namingService: ContainerFactory::getInstance()->getContainer()->get(NamingServiceInterface::class),
         );
         if ($folder) {
