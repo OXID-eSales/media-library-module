@@ -16,8 +16,6 @@ use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\MediaLibrary\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactory;
@@ -69,7 +67,8 @@ class MediaRepositoryTest extends IntegrationTestCase
         }
     }
 
-    public function testGetShopFolderMediaInRootWithFolderPresent(): void {
+    public function testGetShopFolderMediaInRootWithFolderPresent(): void
+    {
         $expectedItems = 4;
         $firstListItemId = 3;
 
@@ -88,7 +87,9 @@ class MediaRepositoryTest extends IntegrationTestCase
         next($result);
 
         foreach ($result as $key => $oneItem) {
-            if (!$key) continue;
+            if (!$key) {
+                continue;
+            }
             $this->assertInstanceOf(Media::class, $oneItem);
             $this->assertSame('example' . ($firstListItemId - $key + 1), $oneItem->getOxid());
         }
@@ -133,8 +134,7 @@ class MediaRepositoryTest extends IntegrationTestCase
                 'DDIMAGESIZE' => 0,
                 'DDFOLDERID' => '',
                 'OXTIMESTAMP' => date("Y-m-d H:i:59")
-            ]);
-            $queryBuilder->execute();
+            ])->execute();
         }
 
         for ($i = 1; $i <= $amount; $i++) {
@@ -147,8 +147,7 @@ class MediaRepositoryTest extends IntegrationTestCase
                 'DDIMAGESIZE' => $i . '00x' . $i . '00.jpg',
                 'DDFOLDERID' => $folderId,
                 'OXTIMESTAMP' => date("Y-m-d H:i:") . $i
-            ]);
-            $queryBuilder->execute();
+            ])->execute();
         }
     }
 
@@ -224,5 +223,30 @@ class MediaRepositoryTest extends IntegrationTestCase
         });
 
         return $mediaFactoryMock;
+    }
+
+    public function testRenameMedia(): void
+    {
+        $mediaIdToRename = 'mediaToRename';
+
+        $queryBuilder = $this->getAddItemQueryBuilder();
+        $queryBuilder->setParameters([
+            'OXID' => $mediaIdToRename,
+            'OXSHOPID' => 1,
+            'DDFILENAME' => 'OriginalName',
+            'DDFILESIZE' => 0,
+            'DDFILETYPE' => 'any',
+            'DDIMAGESIZE' => 0,
+            'DDFOLDERID' => '',
+            'OXTIMESTAMP' => date("Y-m-d H:i:59")
+        ])->execute();
+
+        $newName = 'NewName';
+
+        $sut = $this->getSut();
+        $sut->rename($mediaIdToRename, $newName);
+
+        $updatedData = $sut->getMediaById($mediaIdToRename);
+        $this->assertSame($newName, $updatedData->getFileName());
     }
 }

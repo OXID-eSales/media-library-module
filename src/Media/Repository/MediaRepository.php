@@ -107,4 +107,15 @@ class MediaRepository implements MediaRepositoryInterface
         return "SELECT m.*, j.DDFILENAME as FOLDERNAME FROM ddmedia m
             LEFT JOIN ddmedia j ON j.OXID=m.DDFOLDERID AND m.DDFOLDERID <> ''";
     }
+
+    public function rename(string $mediaIdToRename, string $newName): void
+    {
+        $this->connection->executeQuery(
+            "UPDATE ddmedia SET DDFILENAME = :DDFILENAME WHERE OXID = :OXID",
+            [
+                'DDFILENAME' => $newName,
+                'OXID' => $mediaIdToRename
+            ]
+        );
+    }
 }
