@@ -89,7 +89,7 @@ class Media
         $this->fileSystemService->ensureDirectory($this->imageResource->getThumbnailPath());
     }
 
-    public function renameNew(string $mediaId, string $newMediaName): MediaInterface
+    public function rename(string $mediaId, string $newMediaName): MediaInterface
     {
         $currentMedia = $this->mediaRepository->getMediaById($mediaId);
 

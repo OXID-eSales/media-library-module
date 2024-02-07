@@ -159,7 +159,7 @@ class MediaController extends AdminDetailsController
 
         if ($sId && $sNewName) {
             $blReturn = true;
-            $newMedia = $this->mediaService->renameNew($sId, $sNewName);
+            $newMedia = $this->mediaService->rename($sId, $sNewName);
             $sNewName = $newMedia->getFileName();
         }
 

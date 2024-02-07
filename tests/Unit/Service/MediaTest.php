@@ -295,7 +295,7 @@ class MediaTest extends TestCase
         $sut->deleteMedia($exampleMedia);
     }
 
-    public function testRenameNew(): void
+    public function testRename(): void
     {
         $sut = $this->getSut(
             namingService: $namingMock = $this->createMock(NamingServiceInterface::class),
@@ -343,6 +343,6 @@ class MediaTest extends TestCase
             $mediaFolderPath . '/someSanitizedUniqueFileName.txt'
         );
 
-        $this->assertSame($renameResultStub, $sut->renameNew($mediaId, $newMediaNameInput));
+        $this->assertSame($renameResultStub, $sut->rename($mediaId, $newMediaNameInput));
     }
 }
