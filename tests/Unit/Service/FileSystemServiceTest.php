@@ -12,9 +12,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Service;
 use org\bovigo\vfs\vfsStream;
 use OxidEsales\MediaLibrary\Exception\DirectoryCreationException;
 use OxidEsales\MediaLibrary\Service\FileSystemService;
-use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Filesystem\Filesystem;
 
 class FileSystemServiceTest extends TestCase
 {
@@ -134,7 +132,42 @@ class FileSystemServiceTest extends TestCase
         $this->assertTrue($root->hasChild('file.txt'));
     }
 
-    public function getSut(): FileSystemService {
+    public function testRenameFile(): void
+    {
+        $root = vfsStream::setup('root', 0777, [
+            'file1.txt' => 'content1',
+            'file2.txt' => 'content2',
+        ]);
+
+        $sut = $this->getSut();
+
+        $sut->rename($root->url() . '/' . 'file1.txt', $root->url() . '/' . 'renamedFile1.txt');
+
+        $this->assertFalse($root->hasChild('file1.txt'));
+        $this->assertTrue($root->hasChild('renamedFile1.txt'));
+        $this->assertTrue($root->hasChild('file2.txt'));
+    }
+
+    public function testRenameFolder(): void
+    {
+        $root = vfsStream::setup('root', 0777, [
+            'file1.txt' => 'content1',
+            'someFolder' => [
+                'folderFile1.txt' => 'content',
+            ]
+        ]);
+
+        $sut = $this->getSut();
+
+        $sut->rename($root->url() . '/' . 'someFolder', $root->url() . '/' . 'someOtherFolder');
+
+        $this->assertFalse($root->hasChild('someFolder'));
+        $this->assertTrue($root->hasChild('someOtherFolder'));
+        $this->assertTrue($root->hasChild('someOtherFolder/folderFile1.txt'));
+    }
+
+    public function getSut(): FileSystemService
+    {
         return new FileSystemService();
     }
 }
