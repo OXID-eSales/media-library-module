@@ -67,9 +67,6 @@ class MediaTest extends TestCase
             Connection::class,
             ['fetchOne', 'fetchAllAssociative', 'executeQuery']
         );
-        $connectionMock->expects($this->exactly(1))
-            ->method('fetchOne')
-            ->willReturn($sTargetFolderName);
 
         $connectionMock->expects($this->exactly(1))
             ->method('fetchAllAssociative')
@@ -95,7 +92,14 @@ class MediaTest extends TestCase
         $sut = $this->getSut(
             shopConfig: $shopConfigMock,
             connectionProvider: $connectionProviderStub,
+            mediaRepository: $repositoryStub = $this->createMock(MediaRepositoryInterface::class)
         );
+
+        $targetFolderStub = $this->createStub(MediaInterface::class);
+        $targetFolderStub->method('getFileName')->willReturn($sTargetFolderName);
+        $repositoryStub->method('getMediaById')->willReturnMap([
+            [$sTargetFolderID, $targetFolderStub]
+        ]);
 
         $sut->moveFileToFolder($sSourceFileID, $sTargetFolderID, $sThumbName);
 

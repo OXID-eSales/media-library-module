@@ -124,8 +124,8 @@ class Media
         $blReturn = false;
 
         if ($sTargetFolderID) {
-            $sSelect = "SELECT DDFILENAME FROM ddmedia WHERE OXID = ?";
-            $sTargetFolderName = $this->connection->fetchOne($sSelect, [$sTargetFolderID]);
+            $targetDirectory = $this->mediaRepository->getMediaById($sTargetFolderID);
+            $sTargetFolderName = $targetDirectory->getFileName();
 
             $sSourceFileName = $sThumb = '';
             $sSelect = "SELECT DDFILENAME, DDTHUMB FROM ddmedia WHERE OXID = ?";
