@@ -245,7 +245,8 @@ class MediaRepositoryTest extends IntegrationTestCase
         $newName = 'NewName';
 
         $sut = $this->getSut();
-        $sut->renameMedia($mediaIdToRename, $newName);
+        $renameResult = $sut->renameMedia($mediaIdToRename, $newName);
+        $this->assertSame($newName, $renameResult->getFileName());
 
         $updatedData = $sut->getMediaById($mediaIdToRename);
         $this->assertSame($newName, $updatedData->getFileName());

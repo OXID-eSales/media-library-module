@@ -112,7 +112,7 @@ class MediaRepository implements MediaRepositoryInterface
     /**
      * @throws Exception
      */
-    public function renameMedia(string $mediaIdToRename, string $newName): void
+    public function renameMedia(string $mediaIdToRename, string $newName): MediaInterface
     {
         $this->connection->executeQuery(
             "UPDATE ddmedia SET DDFILENAME = :DDFILENAME WHERE OXID = :OXID",
@@ -121,6 +121,8 @@ class MediaRepository implements MediaRepositoryInterface
                 'OXID' => $mediaIdToRename
             ]
         );
+
+        return $this->getMediaById($mediaIdToRename);
     }
 
     /**

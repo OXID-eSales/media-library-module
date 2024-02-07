@@ -22,7 +22,7 @@ interface MediaRepositoryInterface
 
     public function addMedia(MediaInterface $exampleMedia): void;
 
-    public function renameMedia(string $mediaIdToRename, string $newName): void;
+    public function renameMedia(string $mediaIdToRename, string $newName): MediaInterface;
 
     /**
      * @throws WrongMediaIdGivenException

@@ -89,62 +89,34 @@ class Media
         $this->fileSystemService->ensureDirectory($this->imageResource->getThumbnailPath());
     }
 
-    public function rename($sOldName, $sNewName, $sId, $sType = 'file')
+    public function renameNew(string $mediaId, string $newMediaName): MediaInterface
     {
-        $aResult = [
-            'success' => false,
-            'filename' => '',
-        ];
+        $currentMedia = $this->mediaRepository->getMediaById($mediaId);
 
-        // sanitize filename
-        $sNewName = $this->namingService->sanitizeFilename($sNewName);
+        // TODO: Encapsulate this in ImageResource service?
+        $uniqueFileName = $this->namingService->getUniqueFilename(
+            Path::join(
+                $this->imageResourceRefactored->getPathToMediaFiles($currentMedia->getFolderName()),
+                $this->namingService->sanitizeFilename($newMediaName)
+            ),
+        );
+        $sanitizedName = basename($uniqueFileName);
 
-        $sPath = $this->imageResource->getMediaPath();
+        // TODO: Move this to ThumbnailService?
+        $this->fileSystemService->deleteByGlob(
+            inPath: $this->thumbnailResource->getPathToThumbnailFiles($currentMedia->getFolderName()),
+            globTargetToDelete: $this->thumbnailResource->getThumbnailsGlob($currentMedia->getFileName())
+        );
 
-        $sOldPath = $sPath . $sOldName;
-        $sNewPath = $sPath . $sNewName;
+        $this->fileSystemService->rename(
+            $this->imageResourceRefactored->getPathToMediaFile($currentMedia),
+            Path::join(
+                $this->imageResourceRefactored->getPathToMediaFiles($currentMedia->getFolderName()),
+                $sanitizedName
+            )
+        );
 
-        $blDirectory = $sType == 'directory';
-        $sNewPath = $this->namingService->getUniqueFilename($sNewPath);
-
-        $sOldThumbHash = $sNewThumbHash = $sNewThumbName = '';
-        if (!$blDirectory) {
-            $thumbSize = sprintf(
-                '%1$d*%1$d',
-                $this->imageResource->getDefaultThumbnailSize()
-            );
-            $sOldThumbName = $this->imageResource->getThumbName(basename($sOldPath));
-            $sOldThumbHash = str_replace('_thumb_' . $thumbSize . '.jpg', '', $sOldThumbName);
-            $sNewThumbName = $this->imageResource->getThumbName(basename($sNewPath));
-            $sNewThumbHash = str_replace('_thumb_' . $thumbSize . '.jpg', '', $sNewThumbName);
-        }
-
-        if (rename($sOldPath, $sNewPath)) {
-            if (!$blDirectory) {
-                $thumbs = Glob::glob(
-                    Path::join(
-                        $this->imageResource->getMediaPath(),
-                        'thumbs',
-                        $sOldThumbHash . '*'
-                    )
-                );
-                foreach ($thumbs as $sThumb) {
-                    $sNewName = str_replace($sOldThumbHash, $sNewThumbHash, $sThumb);
-                    rename($sThumb, $sNewName);
-                }
-            }
-
-            $sNewName = basename($sNewPath);
-
-            $this->mediaRepository->renameMedia($sId, $sNewName);
-
-            $aResult = [
-                'success' => true,
-                'filename' => $sNewName,
-            ];
-        }
-
-        return $aResult;
+        return $this->mediaRepository->renameMedia($mediaId, $sanitizedName);
     }
 
     public function moveFileToFolder($sSourceFileID, $sTargetFolderID)
@@ -236,6 +208,7 @@ class Media
     {
         $this->fileSystemService->delete($this->imageResourceRefactored->getPathToMediaFile($media));
 
+        // TODO: Move this to ThumbnailService?
         $this->fileSystemService->deleteByGlob(
             inPath: $this->thumbnailResource->getPathToThumbnailFiles($media->getFolderName()),
             globTargetToDelete: $this->thumbnailResource->getThumbnailsGlob($media->getFileName())

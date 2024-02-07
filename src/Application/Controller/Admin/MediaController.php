@@ -154,20 +154,13 @@ class MediaController extends AdminDetailsController
 
         $oRequest = Registry::getRequest();
 
-        $sNewId = $sId = $oRequest->getRequestEscapedParameter('id');
-        $sOldName = $oRequest->getRequestEscapedParameter('oldname');
+        $sId = $oRequest->getRequestEscapedParameter('id');
         $sNewName = $oRequest->getRequestEscapedParameter('newname');
-        $sFiletype = $oRequest->getRequestEscapedParameter('filetype');
 
-        if ($sId && $sOldName && $sNewName) {
-            $aResult = $this->mediaService->rename(
-                $sOldName,
-                $sNewName,
-                $sId,
-                $sFiletype
-            );
-            $blReturn = $aResult['success'];
-            $sNewName = $aResult['filename'];
+        if ($sId && $sNewName) {
+            $blReturn = true;
+            $newMedia = $this->mediaService->renameNew($sId, $sNewName);
+            $sNewName = $newMedia->getFileName();
         }
 
         $responseService = $this->getService(ResponseInterface::class);
@@ -175,8 +168,7 @@ class MediaController extends AdminDetailsController
             'success' => $blReturn,
             'msg'     => $sMsg,
             'name'    => $sNewName,
-            'id'      => $sNewId,
-            'thumb'   => $this->imageResource->getThumbnailUrl($sNewName),
+            'id'      => $sId
         ]);
     }
 
