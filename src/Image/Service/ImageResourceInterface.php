@@ -11,6 +11,10 @@ namespace OxidEsales\MediaLibrary\Image\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 
+/**
+ * @deprecated Dont use if possible.
+ * If something important left here, try refactoring and extracting it to some other service first
+ */
 interface ImageResourceInterface
 {
     public function getFolderName(): string;

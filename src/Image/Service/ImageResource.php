@@ -16,6 +16,10 @@ use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Service\ModuleSettings;
 use Symfony\Component\Filesystem\Path;
 
+/**
+ * @deprecated Dont use if possible.
+ * If something important left here, try refactoring and extracting it to some other service first
+ */
 class ImageResource implements ImageResourceInterface
 {
     protected int $defaultThumbnailSize = 185;
