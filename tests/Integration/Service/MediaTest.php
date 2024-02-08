@@ -217,7 +217,6 @@ class MediaTest extends IntegrationTestCase
         ?ModuleSettings $moduleSettings = null,
         ?Config $shopConfig = null,
         ?ConnectionProviderInterface $connectionProvider = null,
-        ?UtilsObject $utilsObject = null,
         ?ThumbnailGeneratorInterface $thumbnailGenerator = null,
         ?NamingServiceInterface $namingService = null,
     ) {
@@ -232,7 +231,6 @@ class MediaTest extends IntegrationTestCase
         $shopAdapterStub->method('generateUniqueId')->willReturn(uniqid());
 
         return new MediaMock(
-            shopConfig: $shopConfig ?: Registry::getConfig(),
             imageResource: $imageResourceMock,
             namingService: $namingService ?: $this->containerFactory->get(NamingServiceInterface::class),
             mediaRepository: $this->containerFactory->get(MediaRepositoryInterface::class),

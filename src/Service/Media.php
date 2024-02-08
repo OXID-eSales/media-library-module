@@ -23,7 +23,6 @@ use Symfony\Component\Filesystem\Path;
 class Media
 {
     public function __construct(
-        protected Config $shopConfig,
         public ImageResourceInterface $imageResource,
         protected NamingServiceInterface $namingService,
         protected MediaRepositoryInterface $mediaRepository,
