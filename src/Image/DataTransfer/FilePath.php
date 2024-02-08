@@ -12,7 +12,7 @@ namespace OxidEsales\MediaLibrary\Image\DataTransfer;
 class FilePath implements FilePathInterface
 {
     public function __construct(
-        readonly string $filePath
+        readonly private string $filePath
     ) {
     }
 
