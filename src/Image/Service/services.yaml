@@ -25,3 +25,7 @@ services:
   OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface:
     class: OxidEsales\MediaLibrary\Image\Service\ThumbnailResource
     public: true
+
+  OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface:
+    class: OxidEsales\MediaLibrary\Image\Service\ThumbnailService
+    public: true

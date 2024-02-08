@@ -19,6 +19,7 @@ use OxidEsales\MediaLibrary\Image\Service\ImageResource;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
@@ -131,6 +132,7 @@ class MediaTest extends TestCase
         ?FileSystemServiceInterface $fileSystemService = null,
         ?ImageResourceRefactoredInterface $imageResourceRef = null,
         ?ThumbnailResourceInterface $thumbnailResource = null,
+        ?ThumbnailServiceInterface $thumbnailService = null,
     ) {
         $imageResourceMock = $this->getImageResourceStub(
             $shopConfig,
@@ -146,7 +148,7 @@ class MediaTest extends TestCase
             shopAdapter: $this->createStub(ShopAdapterInterface::class),
             UIRequest: $this->createStub(UIRequestInterface::class),
             imageResourceRefactored: $imageResourceRef ?? $this->createStub(ImageResourceRefactoredInterface::class),
-            thumbnailResource: $thumbnailResource ?? $this->createStub(ThumbnailResourceInterface::class)
+            thumbnailService: $thumbnailService ?? $this->createStub(ThumbnailServiceInterface::class)
         );
     }
 
@@ -182,7 +184,7 @@ class MediaTest extends TestCase
             mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
             imageResourceRef: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class),
-            thumbnailResource: $thumbnailResource = $this->createStub(ThumbnailResourceInterface::class)
+            thumbnailService: $thumbnailServiceSpy = $this->createMock(ThumbnailServiceInterface::class),
         );
 
         $mediaId = uniqid();
@@ -199,14 +201,10 @@ class MediaTest extends TestCase
         $mediaFilePath = 'exampleMediaFilePath';
         $imageResource->method('getPathToMediaFile')->with($exampleMedia)->willReturn($mediaFilePath);
 
-        $thumbGlob = 'exampleThumbGlob';
-        $thumbPath = 'exampleThumbPath';
-        $thumbnailResource->method('getThumbnailsGlob')->with($mediaFileName)->willReturn($thumbGlob);
-        $thumbnailResource->method('getPathToThumbnailFiles')->with($folderName)->willReturn($thumbPath);
+        $thumbnailServiceSpy->expects($this->once())->method('deleteMediaThumbnails')->with($exampleMedia);
 
         $repositorySpy->expects($this->once())->method('deleteMedia')->with($mediaId);
         $fileSystemSpy->expects($this->once())->method('delete')->with($mediaFilePath);
-        $fileSystemSpy->expects($this->once())->method('deleteByGlob')->with($thumbPath, $thumbGlob);
 
         $sut->deleteMedia($exampleMedia);
     }
@@ -218,7 +216,7 @@ class MediaTest extends TestCase
             mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
             imageResourceRef: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class),
-            thumbnailResource: $thumbnailResourceStub = $this->createStub(ThumbnailResourceInterface::class),
+            thumbnailService: $thumbnailServiceSpy = $this->createMock(ThumbnailServiceInterface::class),
         );
 
         $mediaId = uniqid();
@@ -230,11 +228,7 @@ class MediaTest extends TestCase
         $mediaStub->method('getFileName')->willReturn($mediaFileName);
         $repositorySpy->method('getMediaById')->with($mediaId)->willReturn($mediaStub);
 
-        $thumbGlob = 'exampleThumbGlob';
-        $thumbPath = 'exampleThumbPath';
-        $thumbnailResourceStub->method('getThumbnailsGlob')->with($mediaFileName)->willReturn($thumbGlob);
-        $thumbnailResourceStub->method('getPathToThumbnailFiles')->with($mediaFolderName)->willReturn($thumbPath);
-        $fileSystemSpy->expects($this->once())->method('deleteByGlob')->with($thumbPath, $thumbGlob);
+        $thumbnailServiceSpy->expects($this->once())->method('deleteMediaThumbnails')->with($mediaStub);
 
         $oldPath = 'exampleOldFilePath';
         $mediaFolderPath = 'mediaFolderPath';
@@ -269,7 +263,7 @@ class MediaTest extends TestCase
             mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
             imageResourceRef: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class),
-            thumbnailResource: $thumbnailResourceStub = $this->createStub(ThumbnailResourceInterface::class),
+            thumbnailService: $thumbnailServiceSpy = $this->createMock(ThumbnailServiceInterface::class),
         );
 
         $mediaId = uniqid();
@@ -293,11 +287,7 @@ class MediaTest extends TestCase
 
         $repositorySpy->expects($this->once())->method('changeMediaFolderId')->with($mediaId, $newFolderId);
 
-        $thumbGlob = 'exampleThumbGlob';
-        $thumbPath = 'exampleThumbPath';
-        $thumbnailResourceStub->method('getThumbnailsGlob')->with($mediaFileName)->willReturn($thumbGlob);
-        $thumbnailResourceStub->method('getPathToThumbnailFiles')->with($mediaFolderName)->willReturn($thumbPath);
-        $fileSystemSpy->expects($this->once())->method('deleteByGlob')->with($thumbPath, $thumbGlob);
+        $thumbnailServiceSpy->expects($this->once())->method('deleteMediaThumbnails')->with($mediaStub);
 
         $oldPath = 'exampleOldFilePath';
         $mediaFolderPath = 'mediaFolderPath';

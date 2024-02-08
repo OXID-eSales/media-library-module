@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Service;
 
-use OxidEsales\Eshop\Core\Config;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
@@ -30,7 +30,7 @@ class Media
         protected ShopAdapterInterface $shopAdapter,
         protected UIRequestInterface $UIRequest,
         protected ImageResourceRefactoredInterface $imageResourceRefactored,
-        protected ThumbnailResourceInterface $thumbnailResource,
+        protected ThumbnailServiceInterface $thumbnailService,
     ) {
     }
 
@@ -88,11 +88,7 @@ class Media
         );
         $sanitizedName = basename($uniqueFileName);
 
-        // TODO: Move this to ThumbnailService?
-        $this->fileSystemService->deleteByGlob(
-            inPath: $this->thumbnailResource->getPathToThumbnailFiles($currentMedia->getFolderName()),
-            globTargetToDelete: $this->thumbnailResource->getThumbnailsGlob($currentMedia->getFileName())
-        );
+        $this->thumbnailService->deleteMediaThumbnails($currentMedia);
 
         $this->fileSystemService->rename(
             $this->imageResourceRefactored->getPathToMediaFile($currentMedia),
@@ -110,11 +106,7 @@ class Media
         $media = $this->mediaRepository->getMediaById($mediaId);
         $folder = $this->mediaRepository->getMediaById($folderId);
 
-        // TODO: Move this to ThumbnailService?
-        $this->fileSystemService->deleteByGlob(
-            inPath: $this->thumbnailResource->getPathToThumbnailFiles($media->getFolderName()),
-            globTargetToDelete: $this->thumbnailResource->getThumbnailsGlob($media->getFileName())
-        );
+        $this->thumbnailService->deleteMediaThumbnails($media);
 
         // TODO: Encapsulate this in ImageResource service?
         $uniqueFileName = $this->namingService->getUniqueFilename(
@@ -159,13 +151,7 @@ class Media
     public function deleteMedia(MediaInterface $media): void
     {
         $this->fileSystemService->delete($this->imageResourceRefactored->getPathToMediaFile($media));
-
-        // TODO: Move this to ThumbnailService?
-        $this->fileSystemService->deleteByGlob(
-            inPath: $this->thumbnailResource->getPathToThumbnailFiles($media->getFolderName()),
-            globTargetToDelete: $this->thumbnailResource->getThumbnailsGlob($media->getFileName())
-        );
-
+        $this->thumbnailService->deleteMediaThumbnails($media);
         $this->mediaRepository->deleteMedia($media->getOxid());
     }
 }
