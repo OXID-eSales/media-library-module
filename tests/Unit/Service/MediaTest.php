@@ -141,7 +141,6 @@ class MediaTest extends TestCase
         );
         return new MediaMock(
             shopConfig: $shopConfig ?: $this->createStub(Config::class),
-            connectionProvider: $connectionProvider ?: $this->createStub(ConnectionProviderInterface::class),
             imageResource: $imageResourceMock,
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
             mediaRepository: $mediaRepository ?? $this->createStub(MediaRepositoryInterface::class),

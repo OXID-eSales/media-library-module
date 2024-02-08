@@ -233,7 +233,6 @@ class MediaTest extends IntegrationTestCase
 
         return new MediaMock(
             shopConfig: $shopConfig ?: Registry::getConfig(),
-            connectionProvider: $connectionProvider ?: new ConnectionProvider(),
             imageResource: $imageResourceMock,
             namingService: $namingService ?: $this->containerFactory->get(NamingServiceInterface::class),
             mediaRepository: $this->containerFactory->get(MediaRepositoryInterface::class),

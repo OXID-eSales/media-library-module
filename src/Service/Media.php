@@ -9,9 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Service;
 
-use Doctrine\DBAL\Connection;
 use OxidEsales\Eshop\Core\Config;
-use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
@@ -21,15 +19,11 @@ use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use Symfony\Component\Filesystem\Path;
-use Webmozart\Glob\Glob;
 
 class Media
 {
-    protected Connection $connection;
-
     public function __construct(
         protected Config $shopConfig,
-        ConnectionProviderInterface $connectionProvider,
         public ImageResourceInterface $imageResource,
         protected NamingServiceInterface $namingService,
         protected MediaRepositoryInterface $mediaRepository,
@@ -39,14 +33,7 @@ class Media
         protected ImageResourceRefactoredInterface $imageResourceRefactored,
         protected ThumbnailResourceInterface $thumbnailResource,
     ) {
-        $this->connection = $connectionProvider->get();
     }
-
-
-    /**
-     * todo: exception in place of bool response
-     */
-
 
     public function uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType)
     {
