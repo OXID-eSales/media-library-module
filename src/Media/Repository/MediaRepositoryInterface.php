@@ -28,4 +28,6 @@ interface MediaRepositoryInterface
      * @throws WrongMediaIdGivenException
      */
     public function deleteMedia(string $idToRemove): void;
+
+    public function changeMediaFolderId(string $mediaIdToUpdate, string $newFolderId): void;
 }

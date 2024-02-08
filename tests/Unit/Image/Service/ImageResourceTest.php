@@ -14,6 +14,7 @@ use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResource;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
+use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Service\ModuleSettings;
 use PHPUnit\Framework\TestCase;
 
@@ -347,10 +348,11 @@ class ImageResourceTest extends TestCase
         ?ConnectionProviderInterface $connectionProvider = null
     ) {
         return new ImageResource(
-            $shopConfig ?: $this->createStub(Config::class),
-            $moduleSettings ?: $this->createStub(ModuleSettings::class),
-            $thumbnailGenerator ?: $this->createStub(ThumbnailGeneratorInterface::class),
-            $connectionProvider ?: $this->createStub(ConnectionProviderInterface::class)
+            shopConfig: $shopConfig ?: $this->createStub(Config::class),
+            moduleSettings: $moduleSettings ?: $this->createStub(ModuleSettings::class),
+            thumbnailGenerator: $thumbnailGenerator ?: $this->createStub(ThumbnailGeneratorInterface::class),
+            connectionProvider: $connectionProvider ?: $this->createStub(ConnectionProviderInterface::class),
+            fileSystemService: $this->createStub(FileSystemServiceInterface::class)
         );
     }
 }

@@ -37,88 +37,6 @@ class MediaTest extends TestCase
 {
     private const FIXTURE_FILE = 'file.jpg';
 
-    public function testMoveFile()
-    {
-        $sTargetFolderName = 'new_folder';
-        $sTargetFolderID = '9999';
-        $sSourceFileName = self::FIXTURE_FILE;
-        $sSourceFileID = '111';
-        $sThumbName = $this->getImageSizeAsString(
-            '111_thumb_',
-            $this->getSut()->imageResource->getDefaultThumbnailSize()
-        );
-
-        $structure['out']['pictures']['ddmedia'][$sSourceFileName] = 'some file';
-        $structure['out']['pictures']['ddmedia']['thumbs'][$sThumbName] = 'some file';
-        $structure['out']['pictures']['ddmedia'][$sTargetFolderName] = [];
-        $directory = vfsStream::setup('root', 0777, $structure);
-
-        $shopConfigMock = $this->createPartialMock(Config::class, ['getConfigParam']);
-        $shopConfigMock->expects($this->any())
-            ->method('getConfigParam')
-            ->willReturnMap(
-                [
-                    ['sShopDir', null, $directory->url()],
-                ]
-            );
-
-        $sSelect = "SELECT DDFILENAME FROM ddmedia WHERE OXID = ?";
-        $connectionMock = $this->createPartialMock(
-            Connection::class,
-            ['fetchOne', 'fetchAllAssociative', 'executeQuery']
-        );
-
-        $connectionMock->expects($this->exactly(1))
-            ->method('fetchAllAssociative')
-            ->willReturn(
-                [
-                    0 => [
-                        'DDFILENAME' => $sSourceFileName,
-                        'DDTHUMB' => $sThumbName,
-                    ],
-                ]
-            );
-
-        $connectionMock->expects($this->once())
-            ->method('executeQuery');
-
-        $connectionProviderStub = $this->createConfiguredMock(
-            ConnectionProviderInterface::class,
-            [
-                'get' => $connectionMock,
-            ]
-        );
-
-        $sut = $this->getSut(
-            shopConfig: $shopConfigMock,
-            connectionProvider: $connectionProviderStub,
-            mediaRepository: $repositoryStub = $this->createMock(MediaRepositoryInterface::class)
-        );
-
-        $targetFolderStub = $this->createStub(MediaInterface::class);
-        $targetFolderStub->method('getFileName')->willReturn($sTargetFolderName);
-        $repositoryStub->method('getMediaById')->willReturnMap([
-            [$sTargetFolderID, $targetFolderStub]
-        ]);
-
-        $sut->moveFileToFolder($sSourceFileID, $sTargetFolderID, $sThumbName);
-
-        $structureExpected['root'] = $structure;
-        unset($structureExpected['root']['out']['pictures']['ddmedia'][$sSourceFileName]);
-        unset($structureExpected['root']['out']['pictures']['ddmedia']['thumbs'][$sThumbName]);
-        $structureExpected['root']['out']['pictures']['ddmedia'][$sTargetFolderName] = [
-            $sSourceFileName => 'some file',
-            'thumbs' => [
-                $sThumbName => 'some file',
-            ],
-        ];
-
-        $this->assertEquals(
-            $structureExpected,
-            vfsStream::inspect(new vfsStreamStructureVisitor(), $directory)->getStructure()
-        );
-    }
-
     public function testUploadMedia()
     {
         $sThumbName = $this->getImageSizeAsString(
@@ -242,10 +160,11 @@ class MediaTest extends TestCase
         ?ConnectionProviderInterface $connectionProvider = null,
     ) {
         return new ImageResource(
-            $shopConfig ?: $this->createStub(Config::class),
-            $moduleSettings ?: $this->createStub(ModuleSettings::class),
-            $thumbnailGenerator ?: $this->createStub(ThumbnailGeneratorInterface::class),
-            $connectionProvider ?: $this->createStub(ConnectionProviderInterface::class),
+            shopConfig: $shopConfig ?: $this->createStub(Config::class),
+            moduleSettings: $moduleSettings ?: $this->createStub(ModuleSettings::class),
+            thumbnailGenerator: $thumbnailGenerator ?: $this->createStub(ThumbnailGeneratorInterface::class),
+            connectionProvider: $connectionProvider ?: $this->createStub(ConnectionProviderInterface::class),
+            fileSystemService: $this->createStub(FileSystemServiceInterface::class)
         );
     }
 
@@ -344,5 +263,63 @@ class MediaTest extends TestCase
         );
 
         $this->assertSame($renameResultStub, $sut->rename($mediaId, $newMediaNameInput));
+    }
+
+    public function testMoveToFolder(): void
+    {
+        $sut = $this->getSut(
+            namingService: $namingMock = $this->createMock(NamingServiceInterface::class),
+            mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
+            fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
+            imageResourceRef: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class),
+            thumbnailResource: $thumbnailResourceStub = $this->createStub(ThumbnailResourceInterface::class),
+        );
+
+        $mediaId = uniqid();
+        $newFolderId = uniqid();
+
+        $newFolderName = 'someFolderName';
+        $folderStub = $this->createStub(MediaInterface::class);
+        $folderStub->method('getFolderName')->willReturn('');
+        $folderStub->method('getFileName')->willReturn($newFolderName);
+
+        $mediaFolderName = uniqid();
+        $mediaFileName = uniqid();
+        $mediaStub = $this->createStub(MediaInterface::class);
+        $mediaStub->method('getFolderName')->willReturn($mediaFolderName);
+        $mediaStub->method('getFileName')->willReturn($mediaFileName);
+
+        $repositorySpy->method('getMediaById')->willReturnMap([
+            [$newFolderId, $folderStub],
+            [$mediaId, $mediaStub]
+        ]);
+
+        $repositorySpy->expects($this->once())->method('changeMediaFolderId')->with($mediaId, $newFolderId);
+
+        $thumbGlob = 'exampleThumbGlob';
+        $thumbPath = 'exampleThumbPath';
+        $thumbnailResourceStub->method('getThumbnailsGlob')->with($mediaFileName)->willReturn($thumbGlob);
+        $thumbnailResourceStub->method('getPathToThumbnailFiles')->with($mediaFolderName)->willReturn($thumbPath);
+        $fileSystemSpy->expects($this->once())->method('deleteByGlob')->with($thumbPath, $thumbGlob);
+
+        $oldPath = 'exampleOldFilePath';
+        $mediaFolderPath = 'mediaFolderPath';
+
+        $imageResource->method('getPathToMediaFile')->with($mediaStub)->willReturn($oldPath);
+        $imageResource->method('getPathToMediaFiles')->with($newFolderName)->willReturn($mediaFolderPath);
+
+        $newUniquePath = $mediaFolderPath . '/someUniqueFileName.txt';
+        $namingMock->method('getUniqueFilename')
+            ->with($mediaFolderPath . '/' . $mediaFileName)
+            ->willReturn($newUniquePath);
+
+        $repositorySpy->expects($this->once())->method('renameMedia')->with($mediaId, 'someUniqueFileName.txt');
+
+        $fileSystemSpy->expects($this->once())->method('rename')->with(
+            $oldPath,
+            $newUniquePath
+        );
+
+        $sut->moveToFolder($mediaId, $newFolderId);
     }
 }

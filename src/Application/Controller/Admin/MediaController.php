@@ -201,16 +201,11 @@ class MediaController extends AdminDetailsController
         $oRequest = Registry::getRequest();
 
         $sSourceFileID = $oRequest->getRequestEscapedParameter('sourceid');
-        $sFileName = $oRequest->getRequestEscapedParameter('file');
         $sTargetFolderID = $oRequest->getRequestEscapedParameter('targetid');
-        $sTargetFolderName = $oRequest->getRequestEscapedParameter('folder');
 
-        if ($sSourceFileID && $sFileName && $sTargetFolderID && $sTargetFolderName) {
-            if ($this->mediaService->moveFileToFolder($sSourceFileID, $sTargetFolderID)) {
-                $blReturn = true;
-            } else {
-                $sMsg = 'DD_MEDIA_MOVE_FILE_ERR';
-            }
+        if ($sSourceFileID && $sTargetFolderID) {
+            $this->mediaService->moveToFolder($sSourceFileID, $sTargetFolderID);
+            $blReturn = true;
         }
 
         $responseService = $this->getService(ResponseInterface::class);

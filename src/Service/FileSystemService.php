@@ -52,9 +52,11 @@ class FileSystemService implements FileSystemServiceInterface
         $fileSystem->remove($files);
     }
 
-    public function rename(string $oldName, string $newName): void
+    public function rename(string $oldPath, string $newPath): void
     {
+        $this->ensureDirectory(dirname($newPath));
+
         $fileSystem = new Filesystem();
-        $fileSystem->rename($oldName, $newName);
+        $fileSystem->rename($oldPath, $newPath);
     }
 }

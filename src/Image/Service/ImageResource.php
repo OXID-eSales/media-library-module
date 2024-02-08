@@ -12,6 +12,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInte
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\Eshop\Core\Config;
+use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Service\ModuleSettings;
 use Symfony\Component\Filesystem\Path;
 
@@ -29,6 +30,7 @@ class ImageResource implements ImageResourceInterface
         protected ModuleSettings $moduleSettings,
         protected ThumbnailGeneratorInterface $thumbnailGenerator,
         ConnectionProviderInterface $connectionProvider,
+        protected FileSystemServiceInterface $fileSystemService,
     ) {
         $this->connection = $connectionProvider->get();
     }
@@ -160,7 +162,10 @@ class ImageResource implements ImageResourceInterface
         if (is_readable($sFilePath)) {
             $imageSize = $this->getDefaultImageSizeIfNotProvided($imageSize);
             $sThumbName = $this->getThumbName($sFileName, $imageSize, $thumbnailCrop);
+
             $thumbnailPath = $this->getThumbnailPath($sThumbName);
+            $this->fileSystemService->ensureDirectory(dirname($thumbnailPath));
+
             $this->thumbnailGenerator->generateThumbnail($sFilePath, $thumbnailPath, $imageSize, $thumbnailCrop);
 
             return $sThumbName;

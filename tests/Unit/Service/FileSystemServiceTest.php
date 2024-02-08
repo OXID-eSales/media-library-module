@@ -166,6 +166,40 @@ class FileSystemServiceTest extends TestCase
         $this->assertTrue($root->hasChild('someOtherFolder/folderFile1.txt'));
     }
 
+    public function testMoveFileWithRename(): void
+    {
+        $root = vfsStream::setup('root', 0777, [
+            'file1.txt' => 'content1',
+            'file2.txt' => 'content2',
+            'someFolder' => [
+            ]
+        ]);
+
+        $sut = $this->getSut();
+
+        $sut->rename($root->url() . '/' . 'file1.txt', $root->url() . '/someFolder/' . 'movedFile1.txt');
+
+        $this->assertFalse($root->hasChild('file1.txt'));
+        $this->assertTrue($root->hasChild('file2.txt'));
+        $this->assertTrue($root->hasChild('someFolder/movedFile1.txt'));
+    }
+
+    public function testMoveFileToNotExistingDirectory(): void
+    {
+        $root = vfsStream::setup('root', 0777, [
+            'file1.txt' => 'content1',
+            'file2.txt' => 'content2',
+        ]);
+
+        $sut = $this->getSut();
+
+        $sut->rename($root->url() . '/' . 'file1.txt', $root->url() . '/someFolder/' . 'movedFile1.txt');
+
+        $this->assertFalse($root->hasChild('file1.txt'));
+        $this->assertTrue($root->hasChild('file2.txt'));
+        $this->assertTrue($root->hasChild('someFolder/movedFile1.txt'));
+    }
+
     public function getSut(): FileSystemService
     {
         return new FileSystemService();

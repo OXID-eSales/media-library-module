@@ -142,4 +142,15 @@ class MediaRepository implements MediaRepositoryInterface
             ]
         );
     }
+
+    public function changeMediaFolderId(string $mediaIdToUpdate, string $newFolderId): void
+    {
+        $this->connection->executeQuery(
+            "UPDATE ddmedia SET DDFOLDERID = :DDFOLDERID WHERE OXID = :OXID",
+            [
+                'DDFOLDERID' => $newFolderId,
+                'OXID' => $mediaIdToUpdate
+            ]
+        );
+    }
 }

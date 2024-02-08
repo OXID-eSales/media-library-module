@@ -21,5 +21,5 @@ interface FileSystemServiceInterface
 
     public function deleteByGlob(string $inPath, string $globTargetToDelete): void;
 
-    public function rename(string $oldName, string $newName): void;
+    public function rename(string $oldPath, string $newPath): void;
 }

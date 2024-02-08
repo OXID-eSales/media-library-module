@@ -252,6 +252,31 @@ class MediaRepositoryTest extends IntegrationTestCase
         $this->assertSame($newName, $updatedData->getFileName());
     }
 
+    public function testChangeMediaFolder(): void
+    {
+        $mediaIdToUpdate = 'mediaToChangeFolderId';
+
+        $queryBuilder = $this->getAddItemQueryBuilder();
+        $queryBuilder->setParameters([
+            'OXID' => $mediaIdToUpdate,
+            'OXSHOPID' => 2,
+            'DDFILENAME' => 'OriginalName',
+            'DDFILESIZE' => 0,
+            'DDFILETYPE' => 'any',
+            'DDIMAGESIZE' => 0,
+            'DDFOLDERID' => '',
+            'OXTIMESTAMP' => date("Y-m-d H:i:59")
+        ])->execute();
+
+        $newFolderId = uniqid();
+
+        $sut = $this->getSut();
+        $sut->changeMediaFolderId($mediaIdToUpdate, $newFolderId);
+
+        $updatedData = $sut->getMediaById($mediaIdToUpdate);
+        $this->assertSame($newFolderId, $updatedData->getFolderId());
+    }
+
     public function testDeleteRegularMedia(): void
     {
         $queryBuilder = $this->getAddItemQueryBuilder();

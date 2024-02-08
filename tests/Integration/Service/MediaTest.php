@@ -252,10 +252,11 @@ class MediaTest extends IntegrationTestCase
         ?ConnectionProviderInterface $connectionProvider = null,
     ) {
         return new ImageResource(
-            $shopConfig ?: Registry::getConfig(),
-            $moduleSettings ?: $this->containerFactory->get(ModuleSettings::class),
-            $thumbnailGenerator ?: $this->containerFactory->get(ThumbnailGeneratorInterface::class),
-            $connectionProvider ?: new ConnectionProvider(),
+            shopConfig: $shopConfig ?: Registry::getConfig(),
+            moduleSettings: $moduleSettings ?: $this->containerFactory->get(ModuleSettings::class),
+            thumbnailGenerator: $thumbnailGenerator ?: $this->containerFactory->get(ThumbnailGeneratorInterface::class),
+            connectionProvider: $connectionProvider ?: new ConnectionProvider(),
+            fileSystemService: $this->containerFactory->get(FileSystemServiceInterface::class)
         );
     }
 }

@@ -119,70 +119,36 @@ class Media
         return $this->mediaRepository->renameMedia($mediaId, $sanitizedName);
     }
 
-    public function moveFileToFolder($sSourceFileID, $sTargetFolderID)
+    public function moveToFolder(string $mediaId, string $folderId): void
     {
-        $blReturn = false;
+        $media = $this->mediaRepository->getMediaById($mediaId);
+        $folder = $this->mediaRepository->getMediaById($folderId);
 
-        if ($sTargetFolderID) {
-            $targetDirectory = $this->mediaRepository->getMediaById($sTargetFolderID);
-            $sTargetFolderName = $targetDirectory->getFileName();
+        // TODO: Move this to ThumbnailService?
+        $this->fileSystemService->deleteByGlob(
+            inPath: $this->thumbnailResource->getPathToThumbnailFiles($media->getFolderName()),
+            globTargetToDelete: $this->thumbnailResource->getThumbnailsGlob($media->getFileName())
+        );
 
-            $sSourceFileName = $sThumb = '';
-            $sSelect = "SELECT DDFILENAME, DDTHUMB FROM ddmedia WHERE OXID = ?";
-            $aData = $this->connection->fetchAllAssociative($sSelect, [$sSourceFileID]);
-            if (count($aData)) {
-                $sSourceFileName = $aData[0]['DDFILENAME'];
-                $sThumb = $aData[0]['DDTHUMB'];
-            }
+        // TODO: Encapsulate this in ImageResource service?
+        $uniqueFileName = $this->namingService->getUniqueFilename(
+            Path::join(
+                $this->imageResourceRefactored->getPathToMediaFiles($folder->getFileName()),
+                $media->getFileName()
+            ),
+        );
+        $newUniqueName = basename($uniqueFileName);
 
-            if ($sTargetFolderName && $sSourceFileName) {
-                $sOldName = $this->imageResource->getMediaPath() . $sSourceFileName;
-                $sNewName = $this->imageResource->getMediaPath() . $sTargetFolderName . '/' . $sSourceFileName;
-
-                if (rename($sOldName, $sNewName)) {
-                    if ($sThumb) {
-                        $sOldThumbPath = $this->imageResource->getMediaPath() . 'thumbs/';
-                        $sNewThumbPath = $this->imageResource->getMediaPath() . $sTargetFolderName . '/thumbs/';
-
-                        $this->fileSystemService->ensureDirectory($sNewThumbPath);
-
-                        foreach (
-                            Glob::glob(
-                                $sOldThumbPath . str_replace(
-                                    sprintf(
-                                        'thumb_%1$d*%1$d.jpg',
-                                        $this->imageResource->getDefaultThumbnailSize()
-                                    ),
-                                    '*',
-                                    $sThumb
-                                )
-                            ) as $sThumbFile
-                        ) {
-                            rename($sThumbFile, $sNewThumbPath . basename($sThumbFile));
-                        }
-                    }
-
-                    $iShopId = $this->shopConfig->getActiveShop()->getShopId();
-
-                    $sUpdate = "UPDATE `ddmedia`
-                                      SET `DDFOLDERID` = ?  
-                                    WHERE `OXID` = ? AND `OXSHOPID` = ?;";
-
-                    $this->connection->executeQuery(
-                        $sUpdate,
-                        [
-                            $sTargetFolderID,
-                            $sSourceFileID,
-                            $iShopId,
-                        ]
-                    );
-
-                    $blReturn = true;
-                }
-            }
+        if ($newUniqueName !== $media->getFileName()) {
+            $this->mediaRepository->renameMedia($mediaId, $newUniqueName);
         }
 
-        return $blReturn;
+        $this->fileSystemService->rename(
+            $this->imageResourceRefactored->getPathToMediaFile($media),
+            $uniqueFileName
+        );
+
+        $this->mediaRepository->changeMediaFolderId($mediaId, $folderId);
     }
 
     public function delete(array $ids): void
