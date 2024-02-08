@@ -8,7 +8,10 @@
 namespace OxidEsales\MediaLibrary\Image\Service;
 
 use OxidEsales\Eshop\Core\Config;
+use OxidEsales\MediaLibrary\Image\DataTransfer\FilePath;
+use OxidEsales\MediaLibrary\Image\DataTransfer\FilePathInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
+use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use Symfony\Component\Filesystem\Path;
 
 class ImageResourceRefactored implements ImageResourceRefactoredInterface
@@ -17,6 +20,7 @@ class ImageResourceRefactored implements ImageResourceRefactoredInterface
 
     public function __construct(
         protected Config $shopConfig,
+        protected NamingServiceInterface $namingService,
     ) {
     }
 
@@ -43,5 +47,17 @@ class ImageResourceRefactored implements ImageResourceRefactoredInterface
     public function getPathToMediaFile(MediaInterface $media): string
     {
         return $this->getPathToMediaFiles($media->getFolderName()) . '/' . $media->getFileName();
+    }
+
+    public function getPossibleMediaFilePath(string $folderName = '', string $fileName = ''): FilePathInterface
+    {
+        $uniqueFileName = $this->namingService->getUniqueFilename(
+            Path::join(
+                $this->getPathToMediaFiles($folderName),
+                $fileName
+            ),
+        );
+
+        return new FilePath($uniqueFileName);
     }
 }

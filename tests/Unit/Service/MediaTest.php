@@ -15,6 +15,7 @@ use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
+use OxidEsales\MediaLibrary\Image\DataTransfer\FilePath;
 use OxidEsales\MediaLibrary\Image\Service\ImageResource;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
@@ -237,11 +238,12 @@ class MediaTest extends TestCase
 
         $newMediaNameInput = 'someFileName';
         $newSanitizedMediaName = 'someSanitizedFileName.txt';
-        $newSanitizedUniquePath = $mediaFolderPath . '/someSanitizedUniqueFileName.txt';
         $namingMock->method('sanitizeFilename')->with($newMediaNameInput)->willReturn($newSanitizedMediaName);
-        $namingMock->method('getUniqueFilename')
-            ->with($mediaFolderPath . '/' . $newSanitizedMediaName)
-            ->willReturn($newSanitizedUniquePath);
+
+        $newSanitizedUniquePath = $mediaFolderPath . '/someSanitizedUniqueFileName.txt';
+        $imageResource->method('getPossibleMediaFilePath')
+            ->with($mediaFolderName, $newSanitizedMediaName)
+            ->willReturn(new FilePath($newSanitizedUniquePath));
 
         $renameResultStub = $this->createStub(MediaInterface::class);
         $repositorySpy->expects($this->once())->method('renameMedia')
@@ -296,9 +298,9 @@ class MediaTest extends TestCase
         $imageResource->method('getPathToMediaFiles')->with($newFolderName)->willReturn($mediaFolderPath);
 
         $newUniquePath = $mediaFolderPath . '/someUniqueFileName.txt';
-        $namingMock->method('getUniqueFilename')
-            ->with($mediaFolderPath . '/' . $mediaFileName)
-            ->willReturn($newUniquePath);
+        $imageResource->method('getPossibleMediaFilePath')
+            ->with($newFolderName, $mediaFileName)
+            ->willReturn(new FilePath($newUniquePath));
 
         $repositorySpy->expects($this->once())->method('renameMedia')->with($mediaId, 'someUniqueFileName.txt');
 

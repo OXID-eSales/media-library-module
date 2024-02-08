@@ -12,13 +12,11 @@ namespace OxidEsales\MediaLibrary\Service;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
-use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
-use Symfony\Component\Filesystem\Path;
 
 class Media
 {
@@ -79,26 +77,19 @@ class Media
     {
         $currentMedia = $this->mediaRepository->getMediaById($mediaId);
 
-        // TODO: Encapsulate this in ImageResource service?
-        $uniqueFileName = $this->namingService->getUniqueFilename(
-            Path::join(
-                $this->imageResourceRefactored->getPathToMediaFiles($currentMedia->getFolderName()),
-                $this->namingService->sanitizeFilename($newMediaName)
-            ),
+        $uniqueFileName = $this->imageResourceRefactored->getPossibleMediaFilePath(
+            folderName: $currentMedia->getFolderName(),
+            fileName: $this->namingService->sanitizeFilename($newMediaName)
         );
-        $sanitizedName = basename($uniqueFileName);
 
         $this->thumbnailService->deleteMediaThumbnails($currentMedia);
 
         $this->fileSystemService->rename(
             $this->imageResourceRefactored->getPathToMediaFile($currentMedia),
-            Path::join(
-                $this->imageResourceRefactored->getPathToMediaFiles($currentMedia->getFolderName()),
-                $sanitizedName
-            )
+            $uniqueFileName->getPath()
         );
 
-        return $this->mediaRepository->renameMedia($mediaId, $sanitizedName);
+        return $this->mediaRepository->renameMedia($mediaId, $uniqueFileName->getFileName());
     }
 
     public function moveToFolder(string $mediaId, string $folderId): void
@@ -108,22 +99,18 @@ class Media
 
         $this->thumbnailService->deleteMediaThumbnails($media);
 
-        // TODO: Encapsulate this in ImageResource service?
-        $uniqueFileName = $this->namingService->getUniqueFilename(
-            Path::join(
-                $this->imageResourceRefactored->getPathToMediaFiles($folder->getFileName()),
-                $media->getFileName()
-            ),
+        $uniqueFileName = $this->imageResourceRefactored->getPossibleMediaFilePath(
+            folderName: $folder->getFileName(),
+            fileName: $media->getFileName()
         );
-        $newUniqueName = basename($uniqueFileName);
 
-        if ($newUniqueName !== $media->getFileName()) {
-            $this->mediaRepository->renameMedia($mediaId, $newUniqueName);
+        if ($uniqueFileName->getFileName() !== $media->getFileName()) {
+            $this->mediaRepository->renameMedia($mediaId, $uniqueFileName->getFileName());
         }
 
         $this->fileSystemService->rename(
             $this->imageResourceRefactored->getPathToMediaFile($media),
-            $uniqueFileName
+            $uniqueFileName->getPath()
         );
 
         $this->mediaRepository->changeMediaFolderId($mediaId, $folderId);
