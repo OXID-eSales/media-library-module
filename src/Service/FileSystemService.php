@@ -67,4 +67,14 @@ class FileSystemService implements FileSystemServiceInterface
     {
         move_uploaded_file($from, $to);
     }
+
+    public function getFileSize(string $filePath): int
+    {
+        return is_file($filePath) ? (int)filesize($filePath): 0;
+    }
+
+    public function getMimeType(string $filePath): string
+    {
+        return is_file($filePath) ? (string)mime_content_type($filePath) : '';
+    }
 }

@@ -27,4 +27,8 @@ interface FileSystemServiceInterface
      * @codeCoverageIgnore Its a proxy and complicated to test, so precisely checking this one once manually is enough
      */
     public function moveUploadedFile(string $from, string $to): void;
+
+    public function getFileSize(string $filePath): int;
+
+    public function getMimeType(string $filePath): string;
 }

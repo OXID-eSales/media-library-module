@@ -200,6 +200,36 @@ class FileSystemServiceTest extends TestCase
         $this->assertTrue($root->hasChild('someFolder/movedFile1.txt'));
     }
 
+    public function testGetFileSize(): void
+    {
+        $root = vfsStream::setup('root', 0777, [
+            'file1.txt' => 'content1',
+            'someFolder' => [
+            ]
+        ]);
+
+        $sut = $this->getSut();
+
+        $this->assertSame(8, $sut->getFileSize($root->getChild('file1.txt')->url()));
+        $this->assertSame(0, $sut->getFileSize($root->getChild('someFolder')->url()));
+        $this->assertSame(0, $sut->getFileSize('notExisting'));
+    }
+
+    public function testGetMimeType(): void
+    {
+        $root = vfsStream::setup('root', 0777, [
+            'file1.txt' => 'content1',
+            'someFolder' => [
+            ]
+        ]);
+
+        $sut = $this->getSut();
+
+        $this->assertSame('text/plain', $sut->getMimeType($root->getChild('file1.txt')->url()));
+        $this->assertSame('', $sut->getMimeType($root->getChild('someFolder')->url()));
+        $this->assertSame('', $sut->getMimeType('notExisting'));
+    }
+
     public function getSut(): FileSystemService
     {
         return new FileSystemService();
