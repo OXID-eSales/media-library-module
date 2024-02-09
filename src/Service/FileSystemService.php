@@ -72,7 +72,7 @@ class FileSystemService implements FileSystemServiceInterface
 
     public function getFileSize(string $filePath): int
     {
-        return is_file($filePath) ? (int)filesize($filePath): 0;
+        return is_file($filePath) ? (int)filesize($filePath) : 0;
     }
 
     public function getMimeType(string $filePath): string

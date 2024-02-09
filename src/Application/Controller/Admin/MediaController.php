@@ -17,7 +17,6 @@ use OxidEsales\MediaLibrary\Service\Media;
 use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
-use Symfony\Component\Filesystem\Path;
 
 /**
  * Class MediaController
@@ -81,7 +80,7 @@ class MediaController extends AdminDetailsController
 
         try {
             if ($_FILES) {
-                $aAllowedUploadTypes = (array) Registry::getConfig()->getConfigParam('aAllowedUploadTypes');
+                $aAllowedUploadTypes = (array)Registry::getConfig()->getConfigParam('aAllowedUploadTypes');
                 $allowedExtensions = array_map("strtolower", $aAllowedUploadTypes);
 
                 $sSourcePath = $_FILES['file']['name'];
@@ -108,18 +107,18 @@ class MediaController extends AdminDetailsController
             }
 
             $responseService->responseAsJson([
-                'success'   => true,
-                'id'        => $sId,
-                'file'      => $sFileName ?? '',
-                'filetype'  => $sFileType ?? '',
-                'filesize'  => $sFileSize ?? '',
+                'success' => true,
+                'id' => $sId,
+                'file' => $sFileName,
+                'filetype' => $sFileType ?? '',
+                'filesize' => $sFileSize ?? '',
                 'imagesize' => $sImageSize ?? '',
-                'thumb'     => $sThumb ?? '',
+                'thumb' => $sThumb,
             ]);
         } catch (\Exception $e) {
             $responseService->responseAsJson([
-                'success'      => false,
-                'id'           => $sId,
+                'success' => false,
+                'id' => $sId,
                 'errorMessage' => $e->getMessage(),
             ]);
         }
@@ -135,8 +134,8 @@ class MediaController extends AdminDetailsController
             $newDirectoryInformation = $folderService->createCustomDir($folderName);
 
             $responseData = [
-                'id'        => $newDirectoryInformation->getOxid(),
-                'name'      => $newDirectoryInformation->getFileName()
+                'id' => $newDirectoryInformation->getOxid(),
+                'name' => $newDirectoryInformation->getFileName()
             ];
         }
 
@@ -168,9 +167,9 @@ class MediaController extends AdminDetailsController
         $responseService = $this->getService(ResponseInterface::class);
         $responseService->responseAsJson([
             'success' => $blReturn,
-            'msg'     => $sMsg,
-            'name'    => $sNewName,
-            'id'      => $sId
+            'msg' => $sMsg,
+            'name' => $sNewName,
+            'id' => $sId
         ]);
     }
 
