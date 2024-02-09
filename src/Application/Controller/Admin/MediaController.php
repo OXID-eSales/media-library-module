@@ -12,8 +12,8 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
+use OxidEsales\MediaLibrary\Media\Service\MediaServiceInterface;
 use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
-use OxidEsales\MediaLibrary\Service\Media;
 use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
@@ -23,7 +23,7 @@ use OxidEsales\MediaLibrary\Transput\ResponseInterface;
  */
 class MediaController extends AdminDetailsController
 {
-    protected ?Media $mediaService = null;
+    protected ?MediaServiceInterface $mediaService = null;
     protected ?ImageResourceInterface $imageResource = null;
 
     /**
@@ -34,7 +34,7 @@ class MediaController extends AdminDetailsController
         parent::init();
         $this->setTemplateName('@ddoemedialibrary/dialog/ddoemedia');
 
-        $this->mediaService = $this->getService(Media::class);
+        $this->mediaService = $this->getService(MediaServiceInterface::class);
         $this->mediaService->createDirs();
 
         $this->imageResource = $this->getService(ImageResourceInterface::class);

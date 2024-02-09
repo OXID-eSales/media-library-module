@@ -12,7 +12,6 @@ namespace Application\Controller\Admin;
 use OxidEsales\MediaLibrary\Application\Controller\Admin\MediaController;
 use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
 use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
-use OxidEsales\MediaLibrary\Service\Media;
 use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use PHPUnit\Framework\TestCase;

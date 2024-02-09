@@ -1,0 +1,8 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Media\Service\MediaServiceInterface:
+    class: OxidEsales\MediaLibrary\Media\Service\MediaService
+    public: true

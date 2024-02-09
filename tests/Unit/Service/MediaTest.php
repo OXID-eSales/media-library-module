@@ -28,7 +28,7 @@ use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \OxidEsales\MediaLibrary\Service\Media
+ * @covers \OxidEsales\MediaLibrary\Media\Service\MediaService
  */
 class MediaTest extends TestCase
 {
@@ -50,7 +50,7 @@ class MediaTest extends TestCase
             $thumbnailGenerator,
             $connectionProvider
         );
-        return new MediaMock(
+        return new \OxidEsales\MediaLibrary\Media\Service\MediaService(
             imageResource: $imageResourceMock,
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
             mediaRepository: $mediaRepository ?? $this->createStub(MediaRepositoryInterface::class),
