@@ -16,4 +16,6 @@ interface NamingServiceInterface
     public function getUniqueFilename(string $path): string;
 
     public function validateFileName(string $fileName): bool;
+
+    public function getUniqueId(): string;
 }

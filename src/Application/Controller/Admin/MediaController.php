@@ -72,7 +72,7 @@ class MediaController extends AdminDetailsController
      */
     public function upload()
     {
-        $request = Registry::getRequest();
+        $uiRequest = $this->getService(UIRequestInterface::class);
         $responseService = $this->getService(ResponseInterface::class);
 
         $sId = null;
@@ -95,14 +95,16 @@ class MediaController extends AdminDetailsController
                 $sFileSize = $_FILES['file']['size'];
                 $sFileType = $_FILES['file']['type'];
 
-                $sSourcePath = $_FILES['file']['tmp_name'];
-                $sDestPath = Path::join($this->imageResource->getMediaPath(), $_FILES['file']['name']);
+                $uploadResult = $this->mediaService->upload(
+                    uploadedFilePath: $_FILES['file']['tmp_name'],
+                    folderId: $uiRequest->getFolderId(),
+                    fileName: $_FILES['file']['name']
+                );
 
-                $aResult = $this->mediaService->uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType);
-                $sId = $aResult['id'];
-                $sFileName = $aResult['filename'];
-                $sImageSize = $aResult['imagesize'];
-                $sThumb = $aResult['thumb'];
+                $sId = $uploadResult->getOxid();
+                $sFileName = $uploadResult->getFileName();
+                $sImageSize = $uploadResult->getImageSize()->getInFormat('%dx%d', '');
+                $sThumb = $uploadResult->getThumbFileName();
             }
 
             $responseService->responseAsJson([

@@ -11,11 +11,10 @@ use Doctrine\DBAL\Connection;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\visitor\vfsStreamStructureVisitor;
 use OxidEsales\Eshop\Core\Config;
-use OxidEsales\Eshop\Core\UtilsObject;
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Image\DataTransfer\FilePath;
+use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResource;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
@@ -261,7 +260,6 @@ class MediaTest extends TestCase
     public function testMoveToFolder(): void
     {
         $sut = $this->getSut(
-            namingService: $namingMock = $this->createMock(NamingServiceInterface::class),
             mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
             imageResourceRef: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class),
@@ -310,5 +308,66 @@ class MediaTest extends TestCase
         );
 
         $sut->moveToFolder($mediaId, $newFolderId);
+    }
+
+    public function testUploadNew(): void
+    {
+        $sut = $this->getSut(
+            namingService: $namingMock = $this->createMock(NamingServiceInterface::class),
+            mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
+            fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
+            imageResourceRef: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class),
+        );
+
+        $newMediaId = uniqid();
+        $newMediaName = 'someNewMediaName';
+        $namingMock->method('getUniqueId')->willReturn($newMediaId);
+
+        $folderId = 'someFolderId';
+        $folderName = 'someNewFolderName';
+        $folderMediaStub = $this->createStub(MediaInterface::class);
+        $folderMediaStub->method('getFileName')->willReturn($folderName);
+
+        $newMediaStub = $this->createStub(MediaInterface::class);
+
+        $repositorySpy->method('getMediaById')->willReturnMap([
+            [$folderId, $folderMediaStub],
+            [$newMediaId, $newMediaStub]
+        ]);
+
+        $newUniquePath = 'mediapath/' . $folderName . '/' . $newMediaName;
+        $imageResource->method('getPossibleMediaFilePath')
+            ->with($folderName, $newMediaName)
+            ->willReturn(new FilePath($newUniquePath));
+
+        $uploadedFilePath = 'someUploadedFilePath';
+        $fileSystemSpy->expects($this->once())->method('moveUploadedFile')->with(
+            $uploadedFilePath,
+            $newUniquePath
+        );
+
+        $imageSizeStub = $this->createStub(ImageSizeInterface::class);
+        $fileSystemSpy->method('getImageSize')->with($newUniquePath)->willReturn($imageSizeStub);
+        $fileSystemSpy->method('getFileSize')->with($newUniquePath)->willReturn(12345);
+        $fileSystemSpy->method('getMimeType')->with($newUniquePath)->willReturn('someMimeType');
+
+        $repositorySpy->expects($this->once())->method('addMedia')->with(
+            $this->callback(function (MediaInterface $media) use (
+                $folderId,
+                $newMediaId,
+                $newMediaName,
+                $imageSizeStub
+            ) {
+                $this->assertSame($newMediaId, $media->getOxid());
+                $this->assertSame($newMediaName, $media->getFileName());
+                $this->assertSame($folderId, $media->getFolderId());
+                $this->assertSame($imageSizeStub, $media->getImageSize());
+                $this->assertSame('someMimeType', $media->getFileType());
+                $this->assertSame(12345, $media->getFileSize());
+                return true;
+            })
+        );
+
+        $this->assertSame($newMediaStub, $sut->upload($uploadedFilePath, $folderId, $newMediaName));
     }
 }

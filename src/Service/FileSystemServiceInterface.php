@@ -9,13 +9,13 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Service;
 
-use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
+use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 
 interface FileSystemServiceInterface
 {
     public function ensureDirectory(string $path): bool;
 
-    public function getImageSize(string $filePath): ImageSize;
+    public function getImageSize(string $filePath): ImageSizeInterface;
 
     public function delete(string $targetToDelete): void;
 

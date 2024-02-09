@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Service;
 
 use OxidEsales\MediaLibrary\Exception\DirectoryCreationException;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
+use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -25,7 +26,7 @@ class FileSystemService implements FileSystemServiceInterface
         return true;
     }
 
-    public function getImageSize(string $filePath): ImageSize
+    public function getImageSize(string $filePath): ImageSizeInterface
     {
         $result = new ImageSize(0, 0);
 
@@ -65,6 +66,7 @@ class FileSystemService implements FileSystemServiceInterface
      */
     public function moveUploadedFile(string $from, string $to): void
     {
+        $this->ensureDirectory(dirname($to));
         move_uploaded_file($from, $to);
     }
 

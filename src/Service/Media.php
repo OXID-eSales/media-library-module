@@ -32,39 +32,32 @@ class Media
     ) {
     }
 
-    public function uploadMedia($sSourcePath, $sDestPath, $sFileSize, $sFileType)
+    public function upload(string $uploadedFilePath, string $folderId, string $fileName): MediaInterface
     {
-        $this->createDirs();
+        $newMediaId = $this->namingService->getUniqueId();
+        $folderName = '';
 
-        $aResult = [];
-        if ($this->namingService->validateFileName(basename($sDestPath))) {
-            $sDestPath = $this->namingService->getUniqueFilename($sDestPath);
-            $finalFileName = basename($sDestPath);
-
-            $this->moveUploadedFile($sSourcePath, $sDestPath);
-
-            $newMediaId = $this->shopAdapter->generateUniqueId();
-
-            $imageSize = $this->fileSystemService->getImageSize($sDestPath);
-
-            $newMedia = new MediaDataType(
-                oxid: $newMediaId,
-                fileName: $finalFileName,
-                fileSize: (int)$sFileSize,
-                fileType: $sFileType,
-                imageSize: $imageSize,
-                folderId: $this->UIRequest->getFolderId()
-            );
-
-            $this->mediaRepository->addMedia($newMedia);
-
-            $aResult['id'] = $newMediaId;
-            $aResult['filename'] = $finalFileName;
-            $aResult['thumb'] = $this->imageResource->getThumbnailUrl($finalFileName);
-            $aResult['imagesize'] = $imageSize->getInFormat('%dx%d', '');
+        if ($folderId) {
+            $folder = $this->mediaRepository->getMediaById($folderId);
+            $folderName = $folder->getFileName();
         }
 
-        return $aResult;
+        $newMediaPath = $this->imageResourceRefactored->getPossibleMediaFilePath($folderName, $fileName);
+
+        $this->fileSystemService->moveUploadedFile($uploadedFilePath, $newMediaPath->getPath());
+
+        $newMedia = new MediaDataType(
+            oxid: $newMediaId,
+            fileName: $newMediaPath->getFileName(),
+            fileSize: $this->fileSystemService->getFileSize($newMediaPath->getPath()),
+            fileType: $this->fileSystemService->getMimeType($newMediaPath->getPath()),
+            imageSize: $this->fileSystemService->getImageSize($newMediaPath->getPath()),
+            folderId: $folderId,
+        );
+
+        $this->mediaRepository->addMedia($newMedia);
+
+        return $this->mediaRepository->getMediaById($newMediaId);
     }
 
     public function createDirs()
@@ -77,6 +70,7 @@ class Media
     {
         $currentMedia = $this->mediaRepository->getMediaById($mediaId);
 
+        // todo: move sanitize up, as it does not belong here
         $uniqueFileName = $this->imageResourceRefactored->getPossibleMediaFilePath(
             folderName: $currentMedia->getFolderName(),
             fileName: $this->namingService->sanitizeFilename($newMediaName)

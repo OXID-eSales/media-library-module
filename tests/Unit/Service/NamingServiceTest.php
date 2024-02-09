@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Service;
 
 use org\bovigo\vfs\vfsStream;
+use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Exception\WrongFileTypeException;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Service\NamingService;
@@ -151,11 +152,25 @@ class NamingServiceTest extends TestCase
         yield ['fileName' => 'otherTypePhp.phtmp'];
     }
 
+    public function testGetUniqueMediaId(): void
+    {
+        $sut = $this->getSut(
+            shopAdapter: $shopAdapterStub = $this->createStub(ShopAdapterInterface::class)
+        );
+
+        $someNewId = uniqid();
+        $shopAdapterStub->method('generateUniqueId')->willReturn($someNewId);
+
+        $this->assertSame($someNewId, $sut->getUniqueId());
+    }
+
     private function getSut(
-        LanguageInterface $language = null
+        LanguageInterface $language = null,
+        ShopAdapterInterface $shopAdapter = null,
     ): NamingService {
         return new NamingService(
-            language: $language ?? $this->createStub(LanguageInterface::class)
+            language: $language ?? $this->createStub(LanguageInterface::class),
+            shopAdapter: $shopAdapter ?? $this->createStub(ShopAdapterInterface::class),
         );
     }
 }
