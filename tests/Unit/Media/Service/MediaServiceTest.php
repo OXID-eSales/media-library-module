@@ -5,75 +5,40 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\MediaLibrary\Tests\Unit\Service;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Service;
 
-use OxidEsales\Eshop\Core\Config;
-use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
-use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Image\DataTransfer\FilePath;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResource;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
-use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
-use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemService;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
-use OxidEsales\MediaLibrary\Service\ModuleSettings;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
-use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \OxidEsales\MediaLibrary\Media\Service\MediaService
  */
-class MediaTest extends TestCase
+class MediaServiceTest extends TestCase
 {
     protected function getSut(
-        ?ModuleSettings $moduleSettings = null,
-        ?Config $shopConfig = null,
-        ?ConnectionProviderInterface $connectionProvider = null,
-        ?ThumbnailGeneratorInterface $thumbnailGenerator = null,
         ?NamingServiceInterface $namingService = null,
         ?MediaRepositoryInterface $mediaRepository = null,
         ?FileSystemServiceInterface $fileSystemService = null,
         ?ImageResourceRefactoredInterface $imageResourceRef = null,
-        ?ThumbnailResourceInterface $thumbnailResource = null,
         ?ThumbnailServiceInterface $thumbnailService = null,
     ) {
-        $imageResourceMock = $this->getImageResourceStub(
-            $shopConfig,
-            $moduleSettings,
-            $thumbnailGenerator,
-            $connectionProvider
-        );
         return new \OxidEsales\MediaLibrary\Media\Service\MediaService(
-            imageResource: $imageResourceMock,
+            imageResource: $this->createStub(ImageResourceInterface::class),
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
             mediaRepository: $mediaRepository ?? $this->createStub(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemService ?? $this->createPartialMock(FileSystemService::class, []),
-            shopAdapter: $this->createStub(ShopAdapterInterface::class),
-            UIRequest: $this->createStub(UIRequestInterface::class),
             imageResourceRefactored: $imageResourceRef ?? $this->createStub(ImageResourceRefactoredInterface::class),
             thumbnailService: $thumbnailService ?? $this->createStub(ThumbnailServiceInterface::class)
-        );
-    }
-
-    protected function getImageResourceStub(
-        ?Config $shopConfig = null,
-        ?ModuleSettings $moduleSettings = null,
-        ?ThumbnailGeneratorInterface $thumbnailGenerator = null,
-        ?ConnectionProviderInterface $connectionProvider = null,
-    ) {
-        return new ImageResource(
-            shopConfig: $shopConfig ?: $this->createStub(Config::class),
-            moduleSettings: $moduleSettings ?: $this->createStub(ModuleSettings::class),
-            thumbnailGenerator: $thumbnailGenerator ?: $this->createStub(ThumbnailGeneratorInterface::class),
-            connectionProvider: $connectionProvider ?: $this->createStub(ConnectionProviderInterface::class),
-            fileSystemService: $this->createStub(FileSystemServiceInterface::class)
         );
     }
 

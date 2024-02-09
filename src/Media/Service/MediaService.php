@@ -27,8 +27,6 @@ class MediaService implements MediaServiceInterface
         protected NamingServiceInterface $namingService,
         protected MediaRepositoryInterface $mediaRepository,
         private FileSystemServiceInterface $fileSystemService,
-        protected ShopAdapterInterface $shopAdapter,
-        protected UIRequestInterface $UIRequest,
         protected ImageResourceRefactoredInterface $imageResourceRefactored,
         protected ThumbnailServiceInterface $thumbnailService,
     ) {
