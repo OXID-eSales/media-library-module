@@ -22,4 +22,9 @@ interface FileSystemServiceInterface
     public function deleteByGlob(string $inPath, string $globTargetToDelete): void;
 
     public function rename(string $oldPath, string $newPath): void;
+
+    /**
+     * @codeCoverageIgnore Its a proxy and complicated to test, so precisely checking this one once manually is enough
+     */
+    public function moveUploadedFile(string $from, string $to): void;
 }

@@ -59,4 +59,12 @@ class FileSystemService implements FileSystemServiceInterface
         $fileSystem = new Filesystem();
         $fileSystem->rename($oldPath, $newPath);
     }
+
+    /**
+     * @codeCoverageIgnore Its a proxy and complicated to test, so precisely checking this one once manually is enough
+     */
+    public function moveUploadedFile(string $from, string $to): void
+    {
+        move_uploaded_file($from, $to);
+    }
 }
