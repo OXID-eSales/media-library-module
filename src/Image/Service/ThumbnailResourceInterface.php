@@ -14,6 +14,9 @@ use Symfony\Component\Filesystem\Path;
 
 interface ThumbnailResourceInterface
 {
+    /**
+     * @deprecated Do not use.
+     */
     public function calculateMediaThumbnailUrl(string $fileName, string $fileType): string;
 
     public function getThumbnailFileName(
