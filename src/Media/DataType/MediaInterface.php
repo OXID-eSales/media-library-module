@@ -8,8 +8,6 @@ interface MediaInterface
 {
     public function getFileType(): string;
 
-    public function getThumbFileName(): string;
-
     public function getImageSize(): ImageSizeInterface;
 
     public function getFolderId(): string;

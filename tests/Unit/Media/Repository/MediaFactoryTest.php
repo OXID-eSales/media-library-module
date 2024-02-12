@@ -51,7 +51,6 @@ class MediaFactoryTest extends TestCase
         $this->assertSame($fileNameValue, $result->getFileName());
         $this->assertSame(123, $result->getFileSize());
         $this->assertSame($fileTypeValue, $result->getFileType());
-        $this->assertSame($thumbUrlExample, $result->getThumbFileName());
         $this->assertSame('someFolderId', $result->getFolderId());
         $this->assertSame('someFolderName', $result->getFolderName());
 

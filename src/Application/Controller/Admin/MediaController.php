@@ -10,9 +10,9 @@ namespace OxidEsales\MediaLibrary\Application\Controller\Admin;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaServiceInterface;
 use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
@@ -36,12 +36,6 @@ class MediaController extends AdminDetailsController
         $this->setTemplateName('@ddoemedialibrary/dialog/ddoemedia');
 
         $this->mediaService = $this->getService(MediaServiceInterface::class);
-        $this->mediaService->createDirs();
-
-        $imageResource = $this->getService(ImageResourceInterface::class);
-        if (Registry::getRequest()->getRequestEscapedParameter('folderid')) {
-            $imageResource->setFolder(Registry::getRequest()->getRequestEscapedParameter('folderid'));
-        }
     }
 
     /**
@@ -113,7 +107,12 @@ class MediaController extends AdminDetailsController
                 $sId = $uploadResult->getOxid();
                 $sFileName = $uploadResult->getFileName();
                 $sImageSize = $uploadResult->getImageSize()->getInFormat('%dx%d', '');
-                $sThumb = $uploadResult->getThumbFileName();
+
+                $thumbnailService = $this->getService(ThumbnailServiceInterface::class);
+                $sThumb = $thumbnailService->ensureAndGetThumbnailUrl(
+                    folderName: $uploadResult->getFolderName(),
+                    fileName: $uploadResult->getFileName()
+                );
             }
 
             $responseService->responseAsJson([

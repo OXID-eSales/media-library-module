@@ -33,11 +33,6 @@ class Media implements MediaInterface
         return $this->fileType;
     }
 
-    public function getThumbFileName(): string
-    {
-        return $this->thumbFileName;
-    }
-
     public function getImageSize(): ImageSizeInterface
     {
         return $this->imageSize;
@@ -81,7 +76,6 @@ class Media implements MediaInterface
             file: $this->getFileName(),
             filetype: $this->getFileType(),
             filesize: $this->getFileSize(),
-            thumb: $this->getThumbFileName(),
             imageSize: $size->getInFormat("%dx%d", '')
         );
     }

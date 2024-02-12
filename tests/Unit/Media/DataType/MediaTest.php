@@ -28,7 +28,6 @@ class MediaTest extends TestCase
             fileName: 'filename.jpg',
             fileSize: 25,
             fileType: 'image/gif',
-            thumbFileName: 'thumbfilename.jpg',
             imageSize: $imageSize,
             folderId: 'someFolderId',
             folderName: 'someFolderName'
@@ -38,7 +37,6 @@ class MediaTest extends TestCase
         $this->assertSame('filename.jpg', $sut->getFileName());
         $this->assertSame(25, $sut->getFileSize());
         $this->assertSame('image/gif', $sut->getFileType());
-        $this->assertSame('thumbfilename.jpg', $sut->getThumbFileName());
         $this->assertSame($imageSize, $sut->getImageSize());
         $this->assertSame('someFolderId', $sut->getFolderId());
         $this->assertSame('someFolderName', $sut->getFolderName());
@@ -55,7 +53,6 @@ class MediaTest extends TestCase
         $this->assertSame('someFileName.jpg', $sut->getFileName());
         $this->assertSame(0, $sut->getFileSize());
         $this->assertSame('', $sut->getFileType());
-        $this->assertSame('', $sut->getThumbFileName());
         $this->assertEquals(new ImageSize(0, 0), $sut->getImageSize());
         $this->assertSame('', $sut->getFolderId());
         $this->assertSame('', $sut->getFolderName());
@@ -103,7 +100,6 @@ class MediaTest extends TestCase
             file: 'filename.jpg',
             filetype: 'image/gif',
             filesize: 25,
-            thumb: 'thumbfilename.jpg',
             imageSize: '100x100'
         );
 
