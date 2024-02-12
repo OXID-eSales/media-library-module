@@ -169,7 +169,7 @@ class MediaRepositoryTest extends IntegrationTestCase
         $sut = new MediaRepository(
             connectionProvider: $connectionProvider ?? $this->get(ConnectionProviderInterface::class),
             basicContext: $basicContext ?? $this->get(BasicContextInterface::class),
-            mediaFactory: $mediaFactory ?? $this->getMediaFactoryMock(),
+            mediaFactory: $mediaFactory ?? $this->get(MediaFactoryInterface::class),
         );
 
         return $sut;
@@ -201,7 +201,6 @@ class MediaRepositoryTest extends IntegrationTestCase
             fileName: 'someFilename',
             fileSize: 123,
             fileType: 'image/gif',
-            thumbFileName: 'someFilenameThumbUrl',
             imageSize: new ImageSize(111, 222),
             folderId: 'someFolderId'
         );
@@ -211,19 +210,6 @@ class MediaRepositoryTest extends IntegrationTestCase
 
         $resultMedia = $sut->getMediaById($oxid);
         $this->assertEquals($exampleMedia, $resultMedia);
-    }
-
-    private function getMediaFactoryMock(): MediaFactory
-    {
-        $mediaFactoryMock = new MediaFactory(
-            thumbnailResource: $thumbnailResourceStub = $this->createStub(ThumbnailResourceInterface::class)
-        );
-
-        $thumbnailResourceStub->method('calculateMediaThumbnailUrl')->willReturnCallback(function ($value) {
-            return $value . 'ThumbUrl';
-        });
-
-        return $mediaFactoryMock;
     }
 
     public function testRenameMedia(): void

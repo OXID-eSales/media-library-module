@@ -19,21 +19,6 @@ use PHPUnit\Framework\TestCase;
  */
 class ThumbnailResourceTest extends TestCase
 {
-    public static function mediaThumbnailUrlDataProvider(): \Generator
-    {
-        yield 'image' => [
-            'fileName' => 'someFilename.gif',
-            'fileType' => 'notDirectory',
-            'expected' => 'thumbgenerated.gif'
-        ];
-
-        yield 'directory' => [
-            'fileName' => 'someFilename.gif',
-            'fileType' => 'directory',
-            'expected' => ''
-        ];
-    }
-
     public static function getThumbnailFileNameDataProvider(): \Generator
     {
         $fileName = 'filename.gif';
@@ -65,17 +50,6 @@ class ThumbnailResourceTest extends TestCase
             'crop' => false,
             'expectedName' => $fileNameHash . '_thumb_200*50_nocrop.jpg'
         ];
-    }
-
-    /** @dataProvider mediaThumbnailUrlDataProvider */
-    public function testCalculateMediaThumbnailUrl(string $fileName, string $fileType, string $expected): void
-    {
-        $sut = $this->getSut(
-            oldImageResource: $oldImageResource = $this->createMock(ImageResourceInterface::class)
-        );
-        $oldImageResource->method('getThumbnailUrl')->willReturn('thumbgenerated.gif');
-
-        $this->assertSame($expected, $sut->calculateMediaThumbnailUrl(fileName: $fileName, fileType: $fileType));
     }
 
     protected function getSut(

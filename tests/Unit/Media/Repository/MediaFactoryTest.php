@@ -22,16 +22,9 @@ class MediaFactoryTest extends TestCase
 {
     public function testFromDatabaseArray(): void
     {
-        $sut = $this->getSut(
-            thumbnailResource: $thumbnailResource = $this->createStub(ThumbnailResourceInterface::class)
-        );
-        $thumbUrlExample = 'thumbUrlValue';
+        $sut = $this->getSut();
         $fileNameValue = 'filenameValue';
         $fileTypeValue = 'filetypeValue';
-
-        $thumbnailResource->method('calculateMediaThumbnailUrl')
-            ->with($fileNameValue, $fileTypeValue)
-            ->willReturn($thumbUrlExample);
 
         $data = [
             'OXID' => 'oxidValue',

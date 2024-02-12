@@ -22,17 +22,6 @@ class ThumbnailResource implements ThumbnailResourceInterface
     ) {
     }
 
-    public function calculateMediaThumbnailUrl(string $fileName, string $fileType): string
-    {
-        $result = '';
-
-        if ($fileType !== 'directory') {
-            $result = $this->oldImageResource->getThumbnailUrl($fileName);
-        }
-
-        return $result;
-    }
-
     private function getThumbnailFileHash(string $originalFilename): string
     {
         return md5($originalFilename);

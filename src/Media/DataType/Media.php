@@ -21,7 +21,6 @@ class Media implements MediaInterface
         private string $fileName,
         private int $fileSize = 0,
         private string $fileType = '',
-        private string $thumbFileName = '',
         private ImageSizeInterface $imageSize = new ImageSize(0, 0),
         private string $folderId = '',
         private string $folderName = ''

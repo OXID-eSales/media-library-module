@@ -25,17 +25,11 @@ class MediaFactory implements MediaFactoryInterface
         $size = explode("x", $item['DDIMAGESIZE']);
         $mediaSize = new ImageSize(intval($size[0] ?? 0), intval($size[1] ?? 0));
 
-        $thumbnailUrl = $this->thumbnailResource->calculateMediaThumbnailUrl(
-            fileName: (string)$item['DDFILENAME'],
-            fileType: (string)$item['DDFILETYPE']
-        );
-
         return new Media(
             oxid: (string)$item['OXID'],
             fileName: (string)$item['DDFILENAME'],
             fileSize: (int)$item['DDFILESIZE'],
             fileType: (string)$item['DDFILETYPE'],
-            thumbFileName: $thumbnailUrl,
             imageSize: $mediaSize,
             folderId: $item['DDFOLDERID'],
             folderName: $item['FOLDERNAME'] ?? ''

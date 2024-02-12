@@ -66,7 +66,6 @@ class MediaTest extends TestCase
             fileName: 'filename.jpg',
             fileSize: 25,
             fileType: $fileType,
-            thumbFileName: 'thumbfilename.jpg',
             imageSize: $this->createStub(ImageSize::class),
             folderId: 'someFolderId'
         );
@@ -90,7 +89,6 @@ class MediaTest extends TestCase
             fileName: 'filename.jpg',
             fileSize: 25,
             fileType: 'image/gif',
-            thumbFileName: 'thumbfilename.jpg',
             imageSize: $imageSize,
             folderId: 'someFolderId'
         );
