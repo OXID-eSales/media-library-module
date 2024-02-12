@@ -17,7 +17,6 @@ class ThumbnailResource implements ThumbnailResourceInterface
     public const THUMBNAIL_DIRECTORY = 'thumbs';
 
     public function __construct(
-        protected ImageResourceInterface $oldImageResource,
         protected ImageResourceRefactoredInterface $imageResource,
     ) {
     }

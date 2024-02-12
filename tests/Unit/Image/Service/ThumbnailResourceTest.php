@@ -9,7 +9,6 @@ namespace Image\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResource;
 use PHPUnit\Framework\TestCase;
@@ -53,11 +52,9 @@ class ThumbnailResourceTest extends TestCase
     }
 
     protected function getSut(
-        ImageResourceInterface $oldImageResource = null,
         ImageResourceRefactoredInterface $imageResource = null,
     ) {
         return new ThumbnailResource(
-            oldImageResource: $oldImageResource ?: $this->createStub(ImageResourceInterface::class),
             imageResource: $imageResource ?: $this->createStub(ImageResourceRefactoredInterface::class),
         );
     }

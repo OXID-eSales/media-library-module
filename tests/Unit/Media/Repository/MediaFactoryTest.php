@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Repository;
 
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactory;
 use PHPUnit\Framework\TestCase;
