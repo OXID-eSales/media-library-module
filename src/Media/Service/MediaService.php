@@ -135,4 +135,9 @@ class MediaService implements MediaServiceInterface
         $this->thumbnailService->deleteMediaThumbnails($media);
         $this->mediaRepository->deleteMedia($media->getOxid());
     }
+
+    public function getMediaById(string $mediaId): MediaInterface
+    {
+        return $this->mediaRepository->getMediaById($mediaId);
+    }
 }

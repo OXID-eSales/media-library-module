@@ -245,4 +245,17 @@ class MediaServiceTest extends TestCase
 
         $this->assertSame($newMediaStub, $sut->upload($uploadedFilePath, $folderId, $newMediaName));
     }
+
+    public function testGetMediaById(): void
+    {
+        $sut = $this->getSut(
+            mediaRepository: $mediaRepositoryStub = $this->createStub(MediaRepositoryInterface::class)
+        );
+
+        $someId = uniqid();
+        $mediaStub = $this->createStub(MediaInterface::class);
+        $mediaRepositoryStub->method('getMediaById')->with($someId)->willReturn($mediaStub);
+
+        $this->assertSame($mediaStub, $sut->getMediaById($someId));
+    }
 }

@@ -11,6 +11,8 @@ use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaServiceInterface;
 use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
@@ -24,7 +26,6 @@ use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 class MediaController extends AdminDetailsController
 {
     protected ?MediaServiceInterface $mediaService = null;
-    protected ?ImageResourceInterface $imageResource = null;
 
     /**
      * Overrides oxAdminDetails::init()
@@ -37,10 +38,9 @@ class MediaController extends AdminDetailsController
         $this->mediaService = $this->getService(MediaServiceInterface::class);
         $this->mediaService->createDirs();
 
-        $this->imageResource = $this->getService(ImageResourceInterface::class);
-
+        $imageResource = $this->getService(ImageResourceInterface::class);
         if (Registry::getRequest()->getRequestEscapedParameter('folderid')) {
-            $this->imageResource->setFolder(Registry::getRequest()->getRequestEscapedParameter('folderid'));
+            $imageResource->setFolder(Registry::getRequest()->getRequestEscapedParameter('folderid'));
         }
     }
 
@@ -52,16 +52,26 @@ class MediaController extends AdminDetailsController
     public function render()
     {
         $uiRequest = $this->getService(UIRequestInterface::class);
-        $mediaRepository = $this->getService(MediaRepositoryInterface::class);
-        $this->addTplParam('iFileCount', $mediaRepository->getFolderMediaCount($uiRequest->getFolderId()));
+        $imageResource = $this->getService(ImageResourceRefactoredInterface::class);
+        $thumbnailResource = $this->getService(ThumbnailResourceInterface::class);
 
-        $this->addTplParam('sResourceUrl', $this->imageResource->getMediaUrl());
-        $this->addTplParam('sThumbsUrl', $this->imageResource->getThumbnailUrl());
-        $this->addTplParam('sFolderId', $uiRequest->getFolderId());
-        $this->addTplParam('sFoldername', $this->imageResource->getFolderName());
-        $this->addTplParam('sTab', $uiRequest->getTabName());
+        $folderId = $uiRequest->getFolderId();
+        $folderName = '';
+        if ($folderId) {
+            $folder = $this->mediaService->getMediaById($folderId);
+            $folderName = $folder->getFileName();
+        }
+
+        $mediaRepository = $this->getService(MediaRepositoryInterface::class);
+        $this->addTplParam('iFileCount', $mediaRepository->getFolderMediaCount($folderId));
+
+        $this->addTplParam('sResourceUrl', $imageResource->getUrlToMedia($folderName));
+        $this->addTplParam('sThumbsUrl', $thumbnailResource->getUrlToThumbnailFiles($folderName));
+        $this->addTplParam('sFolderId', $folderId);
+        $this->addTplParam('sFoldername', $folderName);
 
         $this->addTplParam('request', $uiRequest);
+        $this->addTplParam('sTab', $uiRequest->getTabName());
 
         return parent::render();
     }

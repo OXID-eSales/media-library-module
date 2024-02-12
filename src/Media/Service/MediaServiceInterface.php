@@ -28,4 +28,6 @@ interface MediaServiceInterface
     public function delete(array $ids): void;
 
     public function deleteMedia(MediaDataType $media): void;
+
+    public function getMediaById(string $mediaId): MediaDataType;
 }
