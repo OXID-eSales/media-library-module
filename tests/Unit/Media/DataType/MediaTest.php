@@ -79,28 +79,4 @@ class MediaTest extends TestCase
         yield "some jpeg image filetype" => ['fileType' => 'image/jpeg', 'expectedResult' => false];
         yield "directory media type" => ['fileType' => Media::FILETYPE_DIRECTORY, 'expectedResult' => true];
     }
-
-    public function testGetFrontendObject(): void
-    {
-        $imageSize = new ImageSize(100, 100);
-
-        $sut = new Media(
-            oxid: 'someOxid',
-            fileName: 'filename.jpg',
-            fileSize: 25,
-            fileType: 'image/gif',
-            imageSize: $imageSize,
-            folderId: 'someFolderId'
-        );
-
-        $expected = new FrontendMedia(
-            id: 'someOxid',
-            file: 'filename.jpg',
-            filetype: 'image/gif',
-            filesize: 25,
-            imageSize: '100x100'
-        );
-
-        $this->assertEquals($expected, $sut->getFrontendData());
-    }
 }

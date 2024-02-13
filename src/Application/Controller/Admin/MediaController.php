@@ -14,6 +14,7 @@ use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
+use OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaServiceInterface;
 use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
@@ -238,10 +239,12 @@ class MediaController extends AdminDetailsController
 
         $isThereMoreToLoad = ($listStartIndex + $pageSize < $folderMediaCount);
 
-        $files = array_map(
-            fn($item) => $item->getFrontendData(),
-            $mediaRepository->getFolderMedia($folderId, $listStartIndex, $pageSize)
-        );
+        $frontendMediaFactory = $this->getService(FrontendMediaFactoryInterface::class);
+
+        $files = [];
+        foreach ($mediaRepository->getFolderMedia($folderId, $listStartIndex, $pageSize) as $oneMediaItem) {
+            $files[] = $frontendMediaFactory->createFromMedia($oneMediaItem);
+        }
 
         $responseService = $this->getService(ResponseInterface::class);
         $responseService->responseAsJson(['files' => $files, 'more' => $isThereMoreToLoad]);

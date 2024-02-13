@@ -66,16 +66,4 @@ class Media implements MediaInterface
     {
         return $this->getFileType() == self::FILETYPE_DIRECTORY;
     }
-
-    public function getFrontendData(): FrontendMedia
-    {
-        $size = $this->getImageSize();
-        return new FrontendMedia(
-            id: $this->getOxid(),
-            file: $this->getFileName(),
-            filetype: $this->getFileType(),
-            filesize: $this->getFileSize(),
-            imageSize: $size->getInFormat("%dx%d", '')
-        );
-    }
 }

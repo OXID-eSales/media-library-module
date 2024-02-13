@@ -6,3 +6,7 @@ services:
   OxidEsales\MediaLibrary\Media\Service\MediaServiceInterface:
     class: OxidEsales\MediaLibrary\Media\Service\MediaService
     public: true
+
+  OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactoryInterface:
+    class: OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactory
+    public: true

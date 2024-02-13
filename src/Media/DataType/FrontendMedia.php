@@ -16,6 +16,7 @@ class FrontendMedia
         public string $file,
         public string $filetype,
         public int $filesize,
+        public string $thumb,
         public string $imageSize
     ) {
     }
