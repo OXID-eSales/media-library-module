@@ -57,7 +57,7 @@ class ThumbnailResource implements ThumbnailResourceInterface
     public function getUrlToThumbnailFiles(string $folderName = ''): string
     {
         return Path::join(
-            $this->imageResource->getUrlToMedia(folder: $folderName),
+            $this->imageResource->getUrlToMediaFiles(folderName: $folderName),
             self::THUMBNAIL_DIRECTORY
         );
     }

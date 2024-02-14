@@ -14,13 +14,15 @@ use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 
 interface ImageResourceRefactoredInterface
 {
-    public function getPathToMediaFiles(string $folder = ''): string;
-
-    public function getPathToMedia(MediaInterface $media): string;
+    public function getPathToMediaFiles(string $folderName = ''): string;
 
     public function getPathToMediaFile(string $folderName = '', string $fileName = ''): string;
 
-    public function getUrlToMedia(string $folder = '', string $fileName = ''): string;
+    public function getPathToMedia(MediaInterface $media): string;
+
+    public function getUrlToMediaFiles(string $folderName = ''): string;
+
+    public function getUrlToMediaFile(string $folderName = '', string $fileName = ''): string;
 
     public function getPossibleMediaFilePath(string $folderName = '', string $fileName = ''): FilePathInterface;
 }

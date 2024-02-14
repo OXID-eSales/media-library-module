@@ -82,7 +82,7 @@ class ImageResourceRefactoredTest extends TestCase
     }
 
     /** @dataProvider getUrlToMediaDataProvider */
-    public function testGetUrlToMedia(
+    public function testGetUrlToMediaFile(
         string $folder,
         string $fileName,
         string $expectedResult
@@ -92,7 +92,30 @@ class ImageResourceRefactoredTest extends TestCase
         );
         $shopConfigStub->method('getSslShopUrl')->willReturn(self::EXAMPLE_SHOP_URL);
 
-        $this->assertSame($expectedResult, $sut->getUrlToMedia($folder, $fileName));
+        $this->assertSame($expectedResult, $sut->getUrlToMediaFile($folder, $fileName));
+    }
+
+    public function testGetUrlToMediaFiles(): void
+    {
+        $sut = $this->getSut(
+            shopConfig: $shopConfigStub = $this->createStub(Config::class)
+        );
+        $shopConfigStub->method('getSslShopUrl')->willReturn('someShopUrl');
+
+        $this->assertSame('someShopUrl/' . ImageResourceRefactored::MEDIA_PATH, $sut->getUrlToMediaFiles());
+    }
+
+    public function testGetUrlToMediaFilesWithFolder(): void
+    {
+        $sut = $this->getSut(
+            shopConfig: $shopConfigStub = $this->createStub(Config::class)
+        );
+        $shopConfigStub->method('getSslShopUrl')->willReturn('someShopUrl');
+
+        $this->assertSame(
+            'someShopUrl/' . ImageResourceRefactored::MEDIA_PATH . '/someFolder',
+            $sut->getUrlToMediaFiles('someFolder')
+        );
     }
 
     public function testGetPathToMedia(): void

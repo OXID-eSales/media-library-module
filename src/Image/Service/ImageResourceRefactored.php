@@ -24,23 +24,31 @@ class ImageResourceRefactored implements ImageResourceRefactoredInterface
     ) {
     }
 
-    public function getPathToMediaFiles(string $folder = ''): string
+    public function getPathToMediaFiles(string $folderName = ''): string
     {
         return Path::join(
             $this->shopConfig->getConfigParam('sShopDir'),
             self::MEDIA_PATH,
-            $folder
+            $folderName
         );
     }
 
     // TODO: Alternative image URL should be handled
-    public function getUrlToMedia(string $folder = '', string $fileName = ''): string
+    public function getUrlToMediaFile(string $folderName = '', string $fileName = ''): string
+    {
+        return Path::join(
+            $this->getUrlToMediaFiles($folderName),
+            $fileName
+        );
+    }
+
+    // TODO: Alternative image URL should be handled
+    public function getUrlToMediaFiles(string $folderName = ''): string
     {
         return Path::join(
             $this->shopConfig->getSslShopUrl(),
             self::MEDIA_PATH,
-            $folder,
-            $fileName
+            $folderName
         );
     }
 

@@ -60,7 +60,7 @@ class MediaController extends AdminDetailsController
         $mediaRepository = $this->getService(MediaRepositoryInterface::class);
         $this->addTplParam('iFileCount', $mediaRepository->getFolderMediaCount($folderId));
 
-        $this->addTplParam('sResourceUrl', $imageResource->getUrlToMedia($folderName));
+        $this->addTplParam('sResourceUrl', $imageResource->getUrlToMediaFiles($folderName));
         $this->addTplParam('sThumbsUrl', $thumbnailResource->getUrlToThumbnailFiles($folderName));
         $this->addTplParam('sFolderId', $folderId);
         $this->addTplParam('sFoldername', $folderName);

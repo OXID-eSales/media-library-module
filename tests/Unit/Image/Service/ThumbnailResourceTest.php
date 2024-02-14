@@ -136,7 +136,7 @@ class ThumbnailResourceTest extends TestCase
         $sut = $this->getSut(
             imageResource: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class)
         );
-        $imageResource->method('getUrlToMedia')->with($this->isEmpty(), $this->isEmpty())->willReturn($mediaFilesUrl);
+        $imageResource->method('getUrlToMediaFiles')->with($this->isEmpty())->willReturn($mediaFilesUrl);
 
         $this->assertSame($mediaFilesUrl . '/thumbs', $sut->getUrlToThumbnailFiles());
     }
@@ -149,7 +149,7 @@ class ThumbnailResourceTest extends TestCase
         $sut = $this->getSut(
             imageResource: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class)
         );
-        $imageResource->method('getUrlToMedia')->with($folder, $this->isEmpty())->willReturn($mediaFilesUrl);
+        $imageResource->method('getUrlToMediaFiles')->with($folder)->willReturn($mediaFilesUrl);
 
         $this->assertSame($mediaFilesUrl . '/thumbs', $sut->getUrlToThumbnailFiles($folder));
     }
