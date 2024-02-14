@@ -60,12 +60,6 @@ class MediaService implements MediaServiceInterface
         return $this->mediaRepository->getMediaById($newMediaId);
     }
 
-    public function createDirs()
-    {
-        $this->fileSystemService->ensureDirectory($this->imageResource->getMediaPath());
-        $this->fileSystemService->ensureDirectory($this->imageResource->getThumbnailPath());
-    }
-
     public function rename(string $mediaId, string $newMediaName): MediaInterface
     {
         $currentMedia = $this->mediaRepository->getMediaById($mediaId);

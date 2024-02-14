@@ -13,12 +13,6 @@ use OxidEsales\MediaLibrary\Media\DataType\MediaInterface as MediaDataType;
 
 interface MediaServiceInterface
 {
-    /**
-     * TODO: Remove this
-     * @deprecated Do not use. Will be removed asap
-     */
-    public function createDirs();
-
     public function upload(string $uploadedFilePath, string $folderId, string $fileName): MediaDataType;
 
     public function rename(string $mediaId, string $newMediaName): MediaDataType;
