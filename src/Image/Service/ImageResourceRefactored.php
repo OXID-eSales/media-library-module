@@ -44,9 +44,17 @@ class ImageResourceRefactored implements ImageResourceRefactoredInterface
         );
     }
 
-    public function getPathToMediaFile(MediaInterface $media): string
+    public function getPathToMedia(MediaInterface $media): string
     {
-        return $this->getPathToMediaFiles($media->getFolderName()) . '/' . $media->getFileName();
+        return $this->getPathToMediaFile($media->getFolderName(), $media->getFileName());
+    }
+
+    public function getPathToMediaFile(string $folderName = '', string $fileName = ''): string
+    {
+        return Path::join(
+            $this->getPathToMediaFiles($folderName),
+            $fileName
+        );
     }
 
     public function getPossibleMediaFilePath(string $folderName = '', string $fileName = ''): FilePathInterface

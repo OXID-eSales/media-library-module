@@ -74,7 +74,7 @@ class MediaServiceTest extends TestCase
         );
 
         $mediaFilePath = 'exampleMediaFilePath';
-        $imageResource->method('getPathToMediaFile')->with($exampleMedia)->willReturn($mediaFilePath);
+        $imageResource->method('getPathToMedia')->with($exampleMedia)->willReturn($mediaFilePath);
 
         $thumbnailServiceSpy->expects($this->once())->method('deleteMediaThumbnails')->with($exampleMedia);
 
@@ -107,7 +107,7 @@ class MediaServiceTest extends TestCase
 
         $oldPath = 'exampleOldFilePath';
         $mediaFolderPath = 'mediaFolderPath';
-        $imageResource->method('getPathToMediaFile')->with($mediaStub)->willReturn($oldPath);
+        $imageResource->method('getPathToMedia')->with($mediaStub)->willReturn($oldPath);
         $imageResource->method('getPathToMediaFiles')->with($mediaFolderName)->willReturn($mediaFolderPath);
 
         $newMediaNameInput = 'someFileName';
@@ -167,7 +167,7 @@ class MediaServiceTest extends TestCase
         $oldPath = 'exampleOldFilePath';
         $mediaFolderPath = 'mediaFolderPath';
 
-        $imageResource->method('getPathToMediaFile')->with($mediaStub)->willReturn($oldPath);
+        $imageResource->method('getPathToMedia')->with($mediaStub)->willReturn($oldPath);
         $imageResource->method('getPathToMediaFiles')->with($newFolderName)->willReturn($mediaFolderPath);
 
         $newUniquePath = $mediaFolderPath . '/someUniqueFileName.txt';

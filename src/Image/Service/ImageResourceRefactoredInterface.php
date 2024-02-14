@@ -16,7 +16,9 @@ interface ImageResourceRefactoredInterface
 {
     public function getPathToMediaFiles(string $folder = ''): string;
 
-    public function getPathToMediaFile(MediaInterface $media): string;
+    public function getPathToMedia(MediaInterface $media): string;
+
+    public function getPathToMediaFile(string $folderName = '', string $fileName = ''): string;
 
     public function getUrlToMedia(string $folder = '', string $fileName = ''): string;
 

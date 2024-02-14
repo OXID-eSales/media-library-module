@@ -79,7 +79,7 @@ class MediaService implements MediaServiceInterface
         $this->thumbnailService->deleteMediaThumbnails($currentMedia);
 
         $this->fileSystemService->rename(
-            $this->imageResourceRefactored->getPathToMediaFile($currentMedia),
+            $this->imageResourceRefactored->getPathToMedia($currentMedia),
             $uniqueFileName->getPath()
         );
 
@@ -103,7 +103,7 @@ class MediaService implements MediaServiceInterface
         }
 
         $this->fileSystemService->rename(
-            $this->imageResourceRefactored->getPathToMediaFile($media),
+            $this->imageResourceRefactored->getPathToMedia($media),
             $uniqueFileName->getPath()
         );
 
@@ -118,20 +118,9 @@ class MediaService implements MediaServiceInterface
         }
     }
 
-    /**
-     * @param              $sSourcePath
-     * @param array|string $sDestPath
-     *
-     * @return bool
-     */
-    protected function moveUploadedFile($sSourcePath, array|string $sDestPath): bool
-    {
-        return move_uploaded_file($sSourcePath, $sDestPath);
-    }
-
     public function deleteMedia(MediaInterface $media): void
     {
-        $this->fileSystemService->delete($this->imageResourceRefactored->getPathToMediaFile($media));
+        $this->fileSystemService->delete($this->imageResourceRefactored->getPathToMedia($media));
         $this->thumbnailService->deleteMediaThumbnails($media);
         $this->mediaRepository->deleteMedia($media->getOxid());
     }

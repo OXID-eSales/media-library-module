@@ -95,7 +95,7 @@ class ImageResourceRefactoredTest extends TestCase
         $this->assertSame($expectedResult, $sut->getUrlToMedia($folder, $fileName));
     }
 
-    public function testGetPathToMediaFile(): void
+    public function testGetPathToMedia(): void
     {
         $mediaFileName = uniqid();
         $directoryName = uniqid();
@@ -111,7 +111,20 @@ class ImageResourceRefactoredTest extends TestCase
         $sut->method('getPathToMediaFiles')->with($directoryName)->willReturn($examplePath);
 
         $expectedPath = $examplePath . '/' . $mediaFileName;
-        $this->assertSame($expectedPath, $sut->getPathToMediaFile($exampleMedia));
+        $this->assertSame($expectedPath, $sut->getPathToMedia($exampleMedia));
+    }
+
+    public function testGetPathToMediaFile(): void
+    {
+        $mediaFileName = uniqid();
+        $directoryName = uniqid();
+
+        $examplePath = 'examplePathWithConcreteDirectory';
+        $sut = $this->createPartialMock(ImageResourceRefactored::class, ['getPathToMediaFiles']);
+        $sut->method('getPathToMediaFiles')->with($directoryName)->willReturn($examplePath);
+
+        $expectedPath = $examplePath . '/' . $mediaFileName;
+        $this->assertSame($expectedPath, $sut->getPathToMediaFile($directoryName, $mediaFileName));
     }
 
     public function testCalculateUniqueFilePath(): void
