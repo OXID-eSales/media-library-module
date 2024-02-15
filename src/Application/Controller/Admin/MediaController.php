@@ -10,7 +10,7 @@ namespace OxidEsales\MediaLibrary\Application\Controller\Admin;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
@@ -47,7 +47,7 @@ class MediaController extends AdminDetailsController
     public function render()
     {
         $uiRequest = $this->getService(UIRequestInterface::class);
-        $imageResource = $this->getService(ImageResourceRefactoredInterface::class);
+        $imageResource = $this->getService(ImageResourceInterface::class);
         $thumbnailResource = $this->getService(ThumbnailResourceInterface::class);
 
         $folderId = $uiRequest->getFolderId();

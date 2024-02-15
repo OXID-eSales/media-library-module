@@ -20,7 +20,7 @@ class ThumbnailService implements ThumbnailServiceInterface
         protected ThumbnailResourceInterface $thumbnailResource,
         protected FileSystemServiceInterface $fileSystemService,
         protected ThumbnailGeneratorInterface $thumbnailGenerator,
-        protected ImageResourceRefactoredInterface $imageResource,
+        protected ImageResourceInterface $imageResource,
     ) {
     }
 

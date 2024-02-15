@@ -9,7 +9,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\FilePath;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
@@ -28,14 +28,14 @@ class MediaServiceTest extends TestCase
         ?NamingServiceInterface $namingService = null,
         ?MediaRepositoryInterface $mediaRepository = null,
         ?FileSystemServiceInterface $fileSystemService = null,
-        ?ImageResourceRefactoredInterface $imageResourceRef = null,
+        ?ImageResourceInterface $imageResource = null,
         ?ThumbnailServiceInterface $thumbnailService = null,
     ) {
         return new \OxidEsales\MediaLibrary\Media\Service\MediaService(
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
             mediaRepository: $mediaRepository ?? $this->createStub(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemService ?? $this->createPartialMock(FileSystemService::class, []),
-            imageResourceRefactored: $imageResourceRef ?? $this->createStub(ImageResourceRefactoredInterface::class),
+            imageResource: $imageResource ?? $this->createStub(ImageResourceInterface::class),
             thumbnailService: $thumbnailService ?? $this->createStub(ThumbnailServiceInterface::class)
         );
     }
@@ -56,7 +56,7 @@ class MediaServiceTest extends TestCase
         $sut = $this->getSut(
             mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
-            imageResourceRef: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class),
+            imageResource: $imageResource = $this->createStub(ImageResourceInterface::class),
             thumbnailService: $thumbnailServiceSpy = $this->createMock(ThumbnailServiceInterface::class),
         );
 
@@ -88,7 +88,7 @@ class MediaServiceTest extends TestCase
             namingService: $namingMock = $this->createMock(NamingServiceInterface::class),
             mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
-            imageResourceRef: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class),
+            imageResource: $imageResource = $this->createStub(ImageResourceInterface::class),
             thumbnailService: $thumbnailServiceSpy = $this->createMock(ThumbnailServiceInterface::class),
         );
 
@@ -135,7 +135,7 @@ class MediaServiceTest extends TestCase
         $sut = $this->getSut(
             mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
-            imageResourceRef: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class),
+            imageResource: $imageResource = $this->createStub(ImageResourceInterface::class),
             thumbnailService: $thumbnailServiceSpy = $this->createMock(ThumbnailServiceInterface::class),
         );
 
@@ -189,7 +189,7 @@ class MediaServiceTest extends TestCase
             namingService: $namingMock = $this->createMock(NamingServiceInterface::class),
             mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
-            imageResourceRef: $imageResource = $this->createStub(ImageResourceRefactoredInterface::class),
+            imageResource: $imageResource = $this->createStub(ImageResourceInterface::class),
         );
 
         $newMediaId = uniqid();

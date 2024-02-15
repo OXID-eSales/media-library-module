@@ -14,7 +14,7 @@ use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use Symfony\Component\Filesystem\Path;
 
-class ImageResourceRefactored implements ImageResourceRefactoredInterface
+class ImageResource implements ImageResourceInterface
 {
     public const MEDIA_PATH = 'out/pictures/ddmedia';
 

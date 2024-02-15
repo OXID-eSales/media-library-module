@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Transition\Core;
 
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
+use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 
 /**
  * Class ViewConfig
@@ -20,7 +20,7 @@ class ViewConfig extends ViewConfig_parent
 {
     public function getMediaUrl()
     {
-        $imageResource = $this->getService(ImageResourceRefactoredInterface::class);
+        $imageResource = $this->getService(ImageResourceInterface::class);
         return $imageResource->getUrlToMediaFiles();
     }
 }
