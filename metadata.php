@@ -50,7 +50,7 @@ $aModule = [
     'settings'    => [
         [
             'group' => 'main',
-            'name'  => ModuleSettings::MEDIALIBRARY_ALTERNATIVE_IMAGE_DIRECTORY,
+            'name'  => ModuleSettings::SETTING_ALTERNATIVE_IMAGE_URL,
             'type'  => 'str',
             'value' => '',
         ],

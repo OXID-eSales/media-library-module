@@ -12,25 +12,22 @@ namespace OxidEsales\MediaLibrary\Service;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 use OxidEsales\MediaLibrary\Module;
 
-class ModuleSettings
+class ModuleSettings implements ModuleSettingsInterface
 {
-    public const MEDIALIBRARY_ALTERNATIVE_IMAGE_DIRECTORY = 'ddoeMediaLibraryAlternativeImageDirectory';
+    public const SETTING_ALTERNATIVE_IMAGE_URL = 'ddoeMediaLibraryAlternativeImageDirectory';
 
     public function __construct(
         private ModuleSettingServiceInterface $moduleSettingService
     ) {
     }
 
-    public function getAlternativeImageDirectory(): string
+    public function getAlternativeImageUrl(): string
     {
-        return $this->getStringSettingValue(self::MEDIALIBRARY_ALTERNATIVE_IMAGE_DIRECTORY);
+        return $this->getStringSettingValue(self::SETTING_ALTERNATIVE_IMAGE_URL);
     }
 
     protected function getStringSettingValue($key): string
     {
-        return $this->moduleSettingService->getString(
-            $key,
-            Module::MODULE_ID
-        )->trim()->toString();
+        return $this->moduleSettingService->getString($key, Module::MODULE_ID)->trim()->toString();
     }
 }
