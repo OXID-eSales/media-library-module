@@ -10,6 +10,7 @@ namespace Image\Service;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\MediaLibrary\Image\Service\ImageResource;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
+use OxidEsales\MediaLibrary\Service\ModuleSettingsInterface;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -33,10 +34,12 @@ class ImageResourceTest extends TestCase
     protected function getSut(
         Config $shopConfig = null,
         NamingServiceInterface $namingService = null,
+        ModuleSettingsInterface $moduleSettings = null,
     ) {
         return new ImageResource(
             shopConfig: $shopConfig ?? $this->createStub(Config::class),
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
+            moduleSettings: $moduleSettings ?? $this->createStub(ModuleSettingsInterface::class),
         );
     }
 
@@ -95,6 +98,52 @@ class ImageResourceTest extends TestCase
         $this->assertSame($expectedResult, $sut->getUrlToMediaFile($folder, $fileName));
     }
 
+    public static function getUrlToMediaWithAlternativeUrlSetDataProvider(): \Generator
+    {
+        yield "no folder no filename" => [
+            'folder' => '',
+            'fileName' => '',
+            'alternativeUrl' => 'someAlternativeUrl1',
+            'expectedResult' => 'someAlternativeUrl1'
+        ];
+
+        yield "some folder no filename" => [
+            'folder' => 'some',
+            'fileName' => '',
+            'alternativeUrl' => 'someAlternativeUrl2',
+            'expectedResult' => 'someAlternativeUrl2/some'
+        ];
+
+        yield "some folder other filename" => [
+            'folder' => 'some',
+            'fileName' => 'other.xx',
+            'alternativeUrl' => 'someAlternativeUrl3',
+            'expectedResult' => 'someAlternativeUrl3/some/other.xx'
+        ];
+
+        yield "no folder other filename" => [
+            'folder' => '',
+            'fileName' => 'other.xx',
+            'alternativeUrl' => 'someAlternativeUrl4',
+            'expectedResult' => 'someAlternativeUrl4/other.xx'
+        ];
+    }
+
+    /** @dataProvider getUrlToMediaWithAlternativeUrlSetDataProvider */
+    public function testGetUrlToMediaFileWithAlternativeUrlSet(
+        string $folder,
+        string $fileName,
+        string $alternativeUrl,
+        string $expectedResult
+    ): void {
+        $sut = $this->getSut(
+            moduleSettings: $moduleSettings = $this->createStub(ModuleSettingsInterface::class),
+        );
+        $moduleSettings->method('getAlternativeImageUrl')->willReturn($alternativeUrl);
+
+        $this->assertSame($expectedResult, $sut->getUrlToMediaFile($folder, $fileName));
+    }
+
     public function testGetUrlToMediaFiles(): void
     {
         $sut = $this->getSut(
@@ -116,6 +165,28 @@ class ImageResourceTest extends TestCase
             'someShopUrl/' . ImageResource::MEDIA_PATH . '/someFolder',
             $sut->getUrlToMediaFiles('someFolder')
         );
+    }
+
+    public function testGetUrlToMediaFilesWithAlternativeUrl(): void
+    {
+        $sut = $this->getSut(
+            moduleSettings: $moduleSettings = $this->createStub(ModuleSettingsInterface::class),
+        );
+        $alternativeUrl = 'someAlternativeUrl';
+        $moduleSettings->method('getAlternativeImageUrl')->willReturn($alternativeUrl);
+
+        $this->assertSame($alternativeUrl, $sut->getUrlToMediaFiles());
+    }
+
+    public function testGetUrlToMediaFilesWithAlternativeUrlAndSpecificFolder(): void
+    {
+        $sut = $this->getSut(
+            moduleSettings: $moduleSettings = $this->createStub(ModuleSettingsInterface::class),
+        );
+        $alternativeUrl = 'someAlternativeUrl';
+        $moduleSettings->method('getAlternativeImageUrl')->willReturn($alternativeUrl);
+
+        $this->assertSame($alternativeUrl . '/someFolder', $sut->getUrlToMediaFiles('someFolder'));
     }
 
     public function testGetPathToMedia(): void
@@ -159,6 +230,7 @@ class ImageResourceTest extends TestCase
             ->setConstructorArgs([
                 'shopConfig' => $this->createStub(Config::class),
                 'namingService' => $namingService = $this->createMock(NamingServiceInterface::class),
+                'moduleSettings' => $this->createStub(ModuleSettingsInterface::class),
             ])
             ->onlyMethods(['getPathToMediaFiles'])
             ->getMock();

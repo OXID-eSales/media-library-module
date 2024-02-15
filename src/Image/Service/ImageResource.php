@@ -11,6 +11,7 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\MediaLibrary\Image\DataTransfer\FilePath;
 use OxidEsales\MediaLibrary\Image\DataTransfer\FilePathInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
+use OxidEsales\MediaLibrary\Service\ModuleSettingsInterface;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use Symfony\Component\Filesystem\Path;
 
@@ -21,6 +22,7 @@ class ImageResource implements ImageResourceInterface
     public function __construct(
         protected Config $shopConfig,
         protected NamingServiceInterface $namingService,
+        protected ModuleSettingsInterface $moduleSettings,
     ) {
     }
 
@@ -33,7 +35,6 @@ class ImageResource implements ImageResourceInterface
         );
     }
 
-    // TODO: Alternative image URL should be handled
     public function getUrlToMediaFile(string $folderName = '', string $fileName = ''): string
     {
         return Path::join(
@@ -42,14 +43,12 @@ class ImageResource implements ImageResourceInterface
         );
     }
 
-    // TODO: Alternative image URL should be handled
     public function getUrlToMediaFiles(string $folderName = ''): string
     {
-        return Path::join(
-            $this->shopConfig->getSslShopUrl(),
-            self::MEDIA_PATH,
-            $folderName
-        );
+        $mediaFolderUrl = $this->moduleSettings->getAlternativeImageUrl()
+            ?: Path::join($this->shopConfig->getSslShopUrl(), self::MEDIA_PATH);
+
+        return Path::join($mediaFolderUrl, $folderName);
     }
 
     public function getPathToMedia(MediaInterface $media): string
