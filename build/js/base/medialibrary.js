@@ -402,6 +402,7 @@
         var actionLink   = this._actionLink;
         var resourceLink = this._resourceLink;
         var filter       = null, multiple = false;
+        var ui = this;
 
         if ( arguments.length === 2 )
         {
@@ -495,6 +496,7 @@
                             {
                                 var blTypeNotAllowed = false;
                                 var files            = [];
+                                var foldername = $( '.dd-media', $dialog ).data( 'foldername' );
 
                                 $item.each( function ()
                                     {
@@ -509,8 +511,8 @@
                                             files.push(
                                                 {
                                                     id: $( this ).data( 'id' ),
-                                                    file: $( this ).data( 'file' ),
-                                                    url: resourceLink + $( this ).data( 'file' ),
+                                                    file: ( foldername ? foldername + '/' : '' ) + $( this ).data( 'file' ),
+                                                    url: ui._resourceLink + $( this ).data( 'file' ),
                                                     type: filetype
                                                 }
                                             );
