@@ -9,7 +9,6 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\FilePath;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
@@ -33,7 +32,6 @@ class MediaServiceTest extends TestCase
         ?ThumbnailServiceInterface $thumbnailService = null,
     ) {
         return new \OxidEsales\MediaLibrary\Media\Service\MediaService(
-            imageResource: $this->createStub(ImageResourceInterface::class),
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
             mediaRepository: $mediaRepository ?? $this->createStub(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemService ?? $this->createPartialMock(FileSystemService::class, []),

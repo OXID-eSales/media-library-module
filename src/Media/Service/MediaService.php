@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Media\Service;
 
-use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ImageResourceRefactoredInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
@@ -18,12 +16,10 @@ use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
-use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 
 class MediaService implements MediaServiceInterface
 {
     public function __construct(
-        public ImageResourceInterface $imageResource,
         protected NamingServiceInterface $namingService,
         protected MediaRepositoryInterface $mediaRepository,
         private FileSystemServiceInterface $fileSystemService,
