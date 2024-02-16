@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Integration\Language\Core;
 
+use OxidEsales\Eshop\Core\Language as ShopLanguage;
 use OxidEsales\MediaLibrary\Language\Core\LanguageExtension;
 use OxidEsales\MediaLibrary\Language\Core\LanguageProxy;
 use PHPUnit\Framework\TestCase;
@@ -22,12 +23,38 @@ class LanguageProxyTest extends TestCase
     {
         $languageStringsList = ['somekey' => 'someValue'];
 
-        /** @var \OxidEsales\Eshop\Core\Language $languageMock */
+        /** @var ShopLanguage $languageMock */
         $languageMock = $this->createPartialMock(LanguageExtension::class, ['getLanguageStrings']);
         $languageMock->method('getLanguageStrings')->willReturn($languageStringsList);
 
-        $sut = new LanguageProxy($languageMock);
+        $sut = $this->getSut(
+            shopLanguage: $languageMock
+        );
 
         $this->assertSame($languageStringsList, $sut->getLanguageStringsArray());
+    }
+
+    public function testGetLanguageStringsArray(): void
+    {
+        $exampleLanguageStrings = [
+            'key1' => 'value1',
+            'key2' => 'value2'
+        ];
+
+        /** @var LanguageExtension&ShopLanguage $shopLanguageMock */
+        $shopLanguageMock = $this->createPartialMock(LanguageExtension::class, ['getLanguageStrings']);
+        $shopLanguageMock->method('getLanguageStrings')->willReturn($exampleLanguageStrings);
+
+        $sut = $this->getSut(shopLanguage: $shopLanguageMock);
+        $this->assertSame($exampleLanguageStrings, $sut->getLanguageStringsArray());
+    }
+
+
+    public function getSut(
+        ShopLanguage $shopLanguage = null
+    ): LanguageProxy {
+        return new LanguageProxy(
+            language: $shopLanguage ?? $this->createStub(ShopLanguage::class)
+        );
     }
 }
