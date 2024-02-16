@@ -83,7 +83,7 @@ class MediaRepository implements MediaRepositoryInterface
     public function addMedia(MediaInterface $exampleMedia): void
     {
         $this->connection->executeQuery(
-            "insert into ddmedia SET 
+            "insert into ddmedia SET
                 OXID = :OXID,
                 OXSHOPID = :OXSHOPID,
                 DDFILENAME = :DDFILENAME,

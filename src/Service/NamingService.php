@@ -59,7 +59,7 @@ class NamingService implements NamingServiceInterface
         $pathInfo = pathinfo($path);
         $newFileName = $pathInfo['filename'] . '_1';
 
-        if (preg_match('/(?P<baseFilename>.+)_(?P<numericPart>[0-9]+)$/', $pathInfo['filename'], $matches)) {
+        if (preg_match('/(?P<baseFilename>.+)_(?P<numericPart>\d+)$/', $pathInfo['filename'], $matches)) {
             $newFileName = $matches['baseFilename'] . '_' . ++$matches['numericPart'];
         }
 
