@@ -14,7 +14,10 @@ Module provides basic media files management.
 
 * b-7.1.x are compatible with shop b-7.1.x branches
 
-
 ## License
 
 OXID Module and Component License, see [LICENSE file](LICENSE).
+
+## Bugs and Issues
+
+If you experience any bugs or issues, please report them in the section **WYSIWYG Editor + Media Gallery** of https://bugs.oxid-esales.com.
