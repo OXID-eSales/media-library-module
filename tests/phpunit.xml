@@ -15,7 +15,7 @@
          displayDetailsOnTestsThatTriggerNotices="true"
          displayDetailsOnTestsThatTriggerErrors="true"
          displayDetailsOnTestsThatTriggerDeprecations="true"
->
+         colors="true">
     <testsuites>
         <testsuite name="Unit">
             <directory>Unit/</directory>
