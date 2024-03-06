@@ -20,34 +20,43 @@ class ThumbnailResourceTest extends TestCase
 {
     public static function getThumbnailFileNameDataProvider(): \Generator
     {
-        $fileName = 'filename.gif';
+        $fileName = 'filename.jpg';
         $fileNameHash = md5($fileName);
-        yield "regular 100x100 nocrop" => [
+        yield "regular jpg 100x100 nocrop" => [
             'originalFileName' => $fileName,
             'thumbnailSize' => new ImageSize(100, 100),
             'crop' => true,
             'expectedName' => $fileNameHash . '_thumb_100*100.jpg'
         ];
 
-        yield "regular 100x100 crop" => [
+        yield "regular jpg 100x100 crop" => [
             'originalFileName' => $fileName,
             'thumbnailSize' => new ImageSize(100, 100),
             'crop' => false,
             'expectedName' => $fileNameHash . '_thumb_100*100_nocrop.jpg'
         ];
 
-        yield "regular 200x50 nocrop" => [
+        yield "regular jpg 200x50 nocrop" => [
             'originalFileName' => $fileName,
             'thumbnailSize' => new ImageSize(200, 50),
             'crop' => true,
             'expectedName' => $fileNameHash . '_thumb_200*50.jpg'
         ];
 
-        yield "regular 200x50 crop" => [
+        yield "regular jpg 200x50 crop" => [
             'originalFileName' => $fileName,
             'thumbnailSize' => new ImageSize(200, 50),
             'crop' => false,
             'expectedName' => $fileNameHash . '_thumb_200*50_nocrop.jpg'
+        ];
+
+        $specialExtensionFileName = 'filename.xxx';
+        $specialExtensionFileNameHash = md5($specialExtensionFileName);
+        yield "extension save check" => [
+            'originalFileName' => $specialExtensionFileName,
+            'thumbnailSize' => new ImageSize(100, 100),
+            'crop' => true,
+            'expectedName' => $specialExtensionFileNameHash . '_thumb_100*100.xxx'
         ];
     }
 

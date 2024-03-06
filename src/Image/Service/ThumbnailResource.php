@@ -33,13 +33,18 @@ class ThumbnailResource implements ThumbnailResourceInterface
         bool $crop
     ): string {
         return sprintf(
-            '%s_thumb_%d*%d%s%s',
+            '%s_thumb_%d*%d%s.%s',
             $this->getThumbnailFileHash($originalFileName),
             $thumbnailSize->getWidth(),
             $thumbnailSize->getHeight(),
             $crop ? '' : '_nocrop',
-            '.jpg'
+            $this->getExtensionFromFileName($originalFileName)
         );
+    }
+
+    protected function getExtensionFromFileName(string $fileName): string
+    {
+        return pathinfo($fileName, PATHINFO_EXTENSION);
     }
 
     public function getDefaultThumbnailSize(): ImageSizeInterface
