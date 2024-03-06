@@ -15,6 +15,9 @@ use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
  */
 class MediaWrapperController extends MediaController
 {
+    /**
+     * @return void
+     */
     public function init()
     {
         $this->addTplParam('oConf', Registry::getConfig());

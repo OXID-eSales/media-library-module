@@ -11,7 +11,7 @@ namespace OxidEsales\MediaLibrary\Media\DataType;
 
 interface FilePathInterface
 {
-    public function getPath();
+    public function getPath(): string;
 
-    public function getFileName();
+    public function getFileName(): string;
 }

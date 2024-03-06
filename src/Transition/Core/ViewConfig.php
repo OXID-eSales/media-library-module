@@ -18,7 +18,7 @@ use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
  */
 class ViewConfig extends ViewConfig_parent
 {
-    public function getMediaUrl()
+    public function getMediaUrl(): string
     {
         $mediaResource = $this->getService(MediaResourceInterface::class);
         return $mediaResource->getUrlToMediaFiles();

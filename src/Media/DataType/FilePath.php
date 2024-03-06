@@ -16,12 +16,12 @@ class FilePath implements FilePathInterface
     ) {
     }
 
-    public function getPath()
+    public function getPath(): string
     {
         return $this->filePath;
     }
 
-    public function getFileName()
+    public function getFileName(): string
     {
         return basename($this->filePath);
     }

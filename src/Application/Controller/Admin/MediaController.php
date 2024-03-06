@@ -30,6 +30,8 @@ class MediaController extends AdminDetailsController
 
     /**
      * Overrides oxAdminDetails::init()
+     *
+     * @return void
      */
     public function init()
     {
@@ -74,7 +76,7 @@ class MediaController extends AdminDetailsController
     /**
      * Upload files
      */
-    public function upload()
+    public function upload(): void
     {
         $uiRequest = $this->getService(UIRequestInterface::class);
         $responseService = $this->getService(ResponseInterface::class);
@@ -154,11 +156,10 @@ class MediaController extends AdminDetailsController
     }
 
     /**
-     * @return void
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseErrorException
      */
-    public function rename()
+    public function rename(): void
     {
         $blReturn = false;
         $sMsg = '';
@@ -186,7 +187,7 @@ class MediaController extends AdminDetailsController
     /**
      * Remove file
      */
-    public function remove()
+    public function remove(): void
     {
         $blReturn = false;
         $sMsg = 'DD_MEDIA_REMOVE_ERR';
@@ -204,7 +205,7 @@ class MediaController extends AdminDetailsController
         $responseService->responseAsJson(['success' => $blReturn, 'msg' => $sMsg]);
     }
 
-    public function movefile()
+    public function movefile(): void
     {
         $blReturn = false;
         $sMsg = '';
@@ -226,7 +227,7 @@ class MediaController extends AdminDetailsController
     /**
      * Load more files
      */
-    public function moreFiles()
+    public function moreFiles(): void
     {
         $uiRequest = $this->getService(UIRequestInterface::class);
 

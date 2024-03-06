@@ -26,7 +26,7 @@ class ModuleSettings implements ModuleSettingsInterface
         return $this->getStringSettingValue(self::SETTING_ALTERNATIVE_IMAGE_URL);
     }
 
-    protected function getStringSettingValue($key): string
+    protected function getStringSettingValue(string $key): string
     {
         return $this->moduleSettingService->getString($key, Module::MODULE_ID)->trim()->toString();
     }

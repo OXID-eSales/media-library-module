@@ -16,5 +16,5 @@ interface ImageSizeInterface
 
     public function isEmpty(): bool;
 
-    public function getInFormat(string $format, string $emptyFormat);
+    public function getInFormat(string $format, string $emptyFormat): string;
 }

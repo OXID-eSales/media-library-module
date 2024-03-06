@@ -19,7 +19,7 @@ class Events
     /**
      * Execute action on activate event
      */
-    public static function onActivate()
+    public static function onActivate(): void
     {
         self::executeMigrations();
     }
@@ -40,7 +40,7 @@ class Events
     /**
      * Execute action on deactivate event
      */
-    public static function onDeactivate()
+    public static function onDeactivate(): void
     {
     }
 }
