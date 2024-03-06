@@ -79,4 +79,10 @@ class FileSystemService implements FileSystemServiceInterface
     {
         return is_file($filePath) ? (string)mime_content_type($filePath) : '';
     }
+
+    public function copy(string $originalFile, string $destinationFile): void
+    {
+        $fileSystem = new Filesystem();
+        $fileSystem->copy($originalFile, $destinationFile);
+    }
 }

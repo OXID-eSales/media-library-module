@@ -200,6 +200,38 @@ class FileSystemServiceTest extends TestCase
         $this->assertTrue($root->hasChild('someFolder/movedFile1.txt'));
     }
 
+    public function testCopyFileWithCopy(): void
+    {
+        $root = vfsStream::setup('root', 0777, [
+            'file1.txt' => 'content1',
+            'file2.txt' => 'content2',
+            'someFolder' => [
+            ]
+        ]);
+
+        $sut = $this->getSut();
+
+        $sut->copy($root->url() . '/' . 'file1.txt', $root->url() . '/someFolder/' . 'copiedFile1.txt');
+
+        $this->assertTrue($root->hasChild('file1.txt'));
+        $this->assertTrue($root->hasChild('file2.txt'));
+        $this->assertTrue($root->hasChild('someFolder/copiedFile1.txt'));
+    }
+
+    public function testCopyToNotExistingFolderCreatesFolder(): void
+    {
+        $root = vfsStream::setup('root', 0777, [
+            'file1.txt' => 'content1',
+        ]);
+
+        $sut = $this->getSut();
+
+        $sut->copy($root->url() . '/' . 'file1.txt', $root->url() . '/someNewFolder/' . 'copiedFile1.txt');
+
+        $this->assertTrue($root->hasChild('file1.txt'));
+        $this->assertTrue($root->hasChild('someNewFolder/copiedFile1.txt'));
+    }
+
     public function testGetFileSize(): void
     {
         $root = vfsStream::setup('root', 0777, [
