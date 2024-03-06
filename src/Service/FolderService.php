@@ -10,14 +10,14 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Service;
 
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
+use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 
 class FolderService implements FolderServiceInterface
 {
     public function __construct(
-        protected ImageResourceInterface $imageResource,
+        protected MediaResourceInterface $mediaResource,
         protected NamingServiceInterface $namingService,
         protected MediaRepositoryInterface $mediaRepository,
         protected FileSystemServiceInterface $fileSystemService,
@@ -29,7 +29,7 @@ class FolderService implements FolderServiceInterface
     {
         $folderName = $this->namingService->sanitizeFilename($folderName);
 
-        $folderPath = $this->imageResource->getPathToMediaFiles($folderName);
+        $folderPath = $this->mediaResource->getPathToMediaFiles($folderName);
         $folderPath = $this->namingService->getUniqueFilename($folderPath);
 
         $this->fileSystemService->ensureDirectory($folderPath);

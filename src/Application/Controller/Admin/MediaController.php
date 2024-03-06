@@ -10,11 +10,11 @@ namespace OxidEsales\MediaLibrary\Application\Controller\Admin;
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactoryInterface;
+use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaServiceInterface;
 use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
@@ -47,7 +47,7 @@ class MediaController extends AdminDetailsController
     public function render()
     {
         $uiRequest = $this->getService(UIRequestInterface::class);
-        $imageResource = $this->getService(ImageResourceInterface::class);
+        $mediaResource = $this->getService(MediaResourceInterface::class);
         $thumbnailResource = $this->getService(ThumbnailResourceInterface::class);
 
         $folderId = $uiRequest->getFolderId();
@@ -60,7 +60,7 @@ class MediaController extends AdminDetailsController
         $mediaRepository = $this->getService(MediaRepositoryInterface::class);
         $this->addTplParam('iFileCount', $mediaRepository->getFolderMediaCount($folderId));
 
-        $this->addTplParam('sResourceUrl', $imageResource->getUrlToMediaFiles($folderName));
+        $this->addTplParam('sResourceUrl', $mediaResource->getUrlToMediaFiles($folderName));
         $this->addTplParam('sThumbsUrl', $thumbnailResource->getUrlToThumbnailFiles($folderName));
         $this->addTplParam('sFolderId', $folderId);
         $this->addTplParam('sFoldername', $folderName);

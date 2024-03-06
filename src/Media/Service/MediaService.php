@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Media\Service;
 
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
@@ -23,7 +22,7 @@ class MediaService implements MediaServiceInterface
         protected NamingServiceInterface $namingService,
         protected MediaRepositoryInterface $mediaRepository,
         private FileSystemServiceInterface $fileSystemService,
-        protected ImageResourceInterface $imageResource,
+        protected MediaResourceInterface $mediaResource,
         protected ThumbnailServiceInterface $thumbnailService,
     ) {
     }
@@ -38,7 +37,7 @@ class MediaService implements MediaServiceInterface
             $folderName = $folder->getFileName();
         }
 
-        $newMediaPath = $this->imageResource->getPossibleMediaFilePath($folderName, $fileName);
+        $newMediaPath = $this->mediaResource->getPossibleMediaFilePath($folderName, $fileName);
 
         $this->fileSystemService->moveUploadedFile($uploadedFilePath, $newMediaPath->getPath());
 
@@ -61,7 +60,7 @@ class MediaService implements MediaServiceInterface
         $currentMedia = $this->mediaRepository->getMediaById($mediaId);
 
         // todo: move sanitize up, as it does not belong here
-        $uniqueFileName = $this->imageResource->getPossibleMediaFilePath(
+        $uniqueFileName = $this->mediaResource->getPossibleMediaFilePath(
             folderName: $currentMedia->getFolderName(),
             fileName: $this->namingService->sanitizeFilename($newMediaName)
         );
@@ -69,7 +68,7 @@ class MediaService implements MediaServiceInterface
         $this->thumbnailService->deleteMediaThumbnails($currentMedia);
 
         $this->fileSystemService->rename(
-            $this->imageResource->getPathToMedia($currentMedia),
+            $this->mediaResource->getPathToMedia($currentMedia),
             $uniqueFileName->getPath()
         );
 
@@ -83,7 +82,7 @@ class MediaService implements MediaServiceInterface
 
         $this->thumbnailService->deleteMediaThumbnails($media);
 
-        $uniqueFileName = $this->imageResource->getPossibleMediaFilePath(
+        $uniqueFileName = $this->mediaResource->getPossibleMediaFilePath(
             folderName: $folder->getFileName(),
             fileName: $media->getFileName()
         );
@@ -93,7 +92,7 @@ class MediaService implements MediaServiceInterface
         }
 
         $this->fileSystemService->rename(
-            $this->imageResource->getPathToMedia($media),
+            $this->mediaResource->getPathToMedia($media),
             $uniqueFileName->getPath()
         );
 
@@ -110,7 +109,7 @@ class MediaService implements MediaServiceInterface
 
     public function deleteMedia(MediaInterface $media): void
     {
-        $this->fileSystemService->delete($this->imageResource->getPathToMedia($media));
+        $this->fileSystemService->delete($this->mediaResource->getPathToMedia($media));
         $this->thumbnailService->deleteMediaThumbnails($media);
         $this->mediaRepository->deleteMedia($media->getOxid());
     }

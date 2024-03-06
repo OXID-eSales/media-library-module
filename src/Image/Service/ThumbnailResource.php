@@ -9,6 +9,7 @@ namespace OxidEsales\MediaLibrary\Image\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
+use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use Symfony\Component\Filesystem\Path;
 
 class ThumbnailResource implements ThumbnailResourceInterface
@@ -17,7 +18,7 @@ class ThumbnailResource implements ThumbnailResourceInterface
     public const THUMBNAIL_DIRECTORY = 'thumbs';
 
     public function __construct(
-        protected ImageResourceInterface $imageResource,
+        protected MediaResourceInterface $mediaResource,
     ) {
     }
 
@@ -49,7 +50,7 @@ class ThumbnailResource implements ThumbnailResourceInterface
     public function getPathToThumbnailFiles(string $folderName = ''): string
     {
         return Path::join(
-            $this->imageResource->getPathToMediaFiles($folderName),
+            $this->mediaResource->getPathToMediaFiles($folderName),
             self::THUMBNAIL_DIRECTORY
         );
     }
@@ -57,7 +58,7 @@ class ThumbnailResource implements ThumbnailResourceInterface
     public function getUrlToThumbnailFiles(string $folderName = ''): string
     {
         return Path::join(
-            $this->imageResource->getUrlToMediaFiles(folderName: $folderName),
+            $this->mediaResource->getUrlToMediaFiles(folderName: $folderName),
             self::THUMBNAIL_DIRECTORY
         );
     }

@@ -2,6 +2,12 @@ services:
   _defaults:
     public: false
     autowire: true
+    bind:
+      OxidEsales\Eshop\Core\Config: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getConfig()'
+
+  OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface:
+    class: OxidEsales\MediaLibrary\Media\Service\MediaResource
+    public: true
 
   OxidEsales\MediaLibrary\Media\Service\MediaServiceInterface:
     class: OxidEsales\MediaLibrary\Media\Service\MediaService

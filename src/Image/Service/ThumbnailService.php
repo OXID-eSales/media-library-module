@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Image\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
+use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use Symfony\Component\Filesystem\Path;
 
@@ -20,7 +21,7 @@ class ThumbnailService implements ThumbnailServiceInterface
         protected ThumbnailResourceInterface $thumbnailResource,
         protected FileSystemServiceInterface $fileSystemService,
         protected ThumbnailGeneratorInterface $thumbnailGenerator,
-        protected ImageResourceInterface $imageResource,
+        protected MediaResourceInterface $mediaResource,
     ) {
     }
 
@@ -49,7 +50,7 @@ class ThumbnailService implements ThumbnailServiceInterface
         if (!is_file($thumbnailPath)) {
             $this->fileSystemService->ensureDirectory($thumbnailDirectoryPath);
             $this->thumbnailGenerator->generateThumbnail(
-                sourcePath: Path::join($this->imageResource->getPathToMediaFiles($folderName), $fileName),
+                sourcePath: Path::join($this->mediaResource->getPathToMediaFiles($folderName), $fileName),
                 thumbnailPath: $thumbnailPath,
                 size: $imageSize ?? $this->thumbnailResource->getDefaultThumbnailSize(),
                 blCrop: $crop

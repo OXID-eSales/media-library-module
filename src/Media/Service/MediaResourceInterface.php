@@ -7,12 +7,12 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Image\Service;
+namespace OxidEsales\MediaLibrary\Media\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\FilePathInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 
-interface ImageResourceInterface
+interface MediaResourceInterface
 {
     public function getPathToMediaFiles(string $folderName = ''): string;
 

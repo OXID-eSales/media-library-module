@@ -9,8 +9,8 @@ namespace Image\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResource;
+use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -52,10 +52,10 @@ class ThumbnailResourceTest extends TestCase
     }
 
     protected function getSut(
-        ImageResourceInterface $imageResource = null,
+        MediaResourceInterface $imageResource = null,
     ) {
         return new ThumbnailResource(
-            imageResource: $imageResource ?: $this->createStub(ImageResourceInterface::class),
+            mediaResource: $imageResource ?: $this->createStub(MediaResourceInterface::class),
         );
     }
 
@@ -109,7 +109,7 @@ class ThumbnailResourceTest extends TestCase
         $mediaFilesPath = 'somePathToMediaFiles';
 
         $sut = $this->getSut(
-            imageResource: $imageResource = $this->createStub(ImageResourceInterface::class)
+            imageResource: $imageResource = $this->createStub(MediaResourceInterface::class)
         );
         $imageResource->method('getPathToMediaFiles')->with('')->willReturn($mediaFilesPath);
 
@@ -122,7 +122,7 @@ class ThumbnailResourceTest extends TestCase
         $folder = uniqid();
 
         $sut = $this->getSut(
-            imageResource: $imageResource = $this->createStub(ImageResourceInterface::class)
+            imageResource: $imageResource = $this->createStub(MediaResourceInterface::class)
         );
         $imageResource->method('getPathToMediaFiles')->with($folder)->willReturn($mediaFilesPath);
 
@@ -134,7 +134,7 @@ class ThumbnailResourceTest extends TestCase
         $mediaFilesUrl = 'someUrlToMediaFiles';
 
         $sut = $this->getSut(
-            imageResource: $imageResource = $this->createStub(ImageResourceInterface::class)
+            imageResource: $imageResource = $this->createStub(MediaResourceInterface::class)
         );
         $imageResource->method('getUrlToMediaFiles')->with($this->isEmpty())->willReturn($mediaFilesUrl);
 
@@ -147,7 +147,7 @@ class ThumbnailResourceTest extends TestCase
         $folder = uniqid();
 
         $sut = $this->getSut(
-            imageResource: $imageResource = $this->createStub(ImageResourceInterface::class)
+            imageResource: $imageResource = $this->createStub(MediaResourceInterface::class)
         );
         $imageResource->method('getUrlToMediaFiles')->with($folder)->willReturn($mediaFilesUrl);
 

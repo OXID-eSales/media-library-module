@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\MediaLibrary\Image\Service;
+namespace OxidEsales\MediaLibrary\Media\Service;
 
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\MediaLibrary\Image\DataTransfer\FilePath;
@@ -15,7 +15,7 @@ use OxidEsales\MediaLibrary\Service\ModuleSettingsInterface;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use Symfony\Component\Filesystem\Path;
 
-class ImageResource implements ImageResourceInterface
+class MediaResource implements MediaResourceInterface
 {
     public const MEDIA_PATH = 'out/pictures/ddmedia';
 

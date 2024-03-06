@@ -2,8 +2,6 @@ services:
   _defaults:
     autowire: true
     public: false
-    bind:
-      OxidEsales\Eshop\Core\Config: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getConfig()'
 
   Intervention\Image\ImageManager:
     class: Intervention\Image\ImageManager
@@ -12,10 +10,6 @@ services:
 
   OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface:
     class: OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorIntervention
-    public: true
-
-  OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface:
-    class: OxidEsales\MediaLibrary\Image\Service\ImageResource
     public: true
 
   OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface:

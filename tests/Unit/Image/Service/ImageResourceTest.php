@@ -8,14 +8,14 @@
 namespace Image\Service;
 
 use OxidEsales\Eshop\Core\Config;
-use OxidEsales\MediaLibrary\Image\Service\ImageResource;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
+use OxidEsales\MediaLibrary\Media\Service\MediaResource;
 use OxidEsales\MediaLibrary\Service\ModuleSettingsInterface;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \OxidEsales\MediaLibrary\Image\Service\ImageResource
+ * @covers \OxidEsales\MediaLibrary\Media\Service\MediaResource
  */
 class ImageResourceTest extends TestCase
 {
@@ -28,7 +28,7 @@ class ImageResourceTest extends TestCase
         );
         $shopConfigStub->method('getConfigParam')->with('sShopDir')->willReturn('someShopDir');
 
-        $this->assertSame('someShopDir/' . ImageResource::MEDIA_PATH, $sut->getPathToMediaFiles());
+        $this->assertSame('someShopDir/' . MediaResource::MEDIA_PATH, $sut->getPathToMediaFiles());
     }
 
     protected function getSut(
@@ -36,7 +36,7 @@ class ImageResourceTest extends TestCase
         NamingServiceInterface $namingService = null,
         ModuleSettingsInterface $moduleSettings = null,
     ) {
-        return new ImageResource(
+        return new MediaResource(
             shopConfig: $shopConfig ?? $this->createStub(Config::class),
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
             moduleSettings: $moduleSettings ?? $this->createStub(ModuleSettingsInterface::class),
@@ -52,7 +52,7 @@ class ImageResourceTest extends TestCase
 
         $subDirectory = '/some/sub/directory';
         $this->assertSame(
-            'someShopDir/' . ImageResource::MEDIA_PATH . $subDirectory,
+            'someShopDir/' . MediaResource::MEDIA_PATH . $subDirectory,
             $sut->getPathToMediaFiles($subDirectory)
         );
     }
@@ -62,25 +62,25 @@ class ImageResourceTest extends TestCase
         yield "no folder no filename" => [
             'folder' => '',
             'fileName' => '',
-            'expectedResult' => self::EXAMPLE_SHOP_URL . '/' . ImageResource::MEDIA_PATH
+            'expectedResult' => self::EXAMPLE_SHOP_URL . '/' . MediaResource::MEDIA_PATH
         ];
 
         yield "some folder no filename" => [
             'folder' => 'some',
             'fileName' => '',
-            'expectedResult' => self::EXAMPLE_SHOP_URL . '/' . ImageResource::MEDIA_PATH . '/some'
+            'expectedResult' => self::EXAMPLE_SHOP_URL . '/' . MediaResource::MEDIA_PATH . '/some'
         ];
 
         yield "some folder other filename" => [
             'folder' => 'some',
             'fileName' => 'other.xx',
-            'expectedResult' => self::EXAMPLE_SHOP_URL . '/' . ImageResource::MEDIA_PATH . '/some/other.xx'
+            'expectedResult' => self::EXAMPLE_SHOP_URL . '/' . MediaResource::MEDIA_PATH . '/some/other.xx'
         ];
 
         yield "no folder other filename" => [
             'folder' => '',
             'fileName' => 'other.xx',
-            'expectedResult' => self::EXAMPLE_SHOP_URL . '/' . ImageResource::MEDIA_PATH . '/other.xx'
+            'expectedResult' => self::EXAMPLE_SHOP_URL . '/' . MediaResource::MEDIA_PATH . '/other.xx'
         ];
     }
 
@@ -151,7 +151,7 @@ class ImageResourceTest extends TestCase
         );
         $shopConfigStub->method('getSslShopUrl')->willReturn('someShopUrl');
 
-        $this->assertSame('someShopUrl/' . ImageResource::MEDIA_PATH, $sut->getUrlToMediaFiles());
+        $this->assertSame('someShopUrl/' . MediaResource::MEDIA_PATH, $sut->getUrlToMediaFiles());
     }
 
     public function testGetUrlToMediaFilesWithFolder(): void
@@ -162,7 +162,7 @@ class ImageResourceTest extends TestCase
         $shopConfigStub->method('getSslShopUrl')->willReturn('someShopUrl');
 
         $this->assertSame(
-            'someShopUrl/' . ImageResource::MEDIA_PATH . '/someFolder',
+            'someShopUrl/' . MediaResource::MEDIA_PATH . '/someFolder',
             $sut->getUrlToMediaFiles('someFolder')
         );
     }
@@ -201,7 +201,7 @@ class ImageResourceTest extends TestCase
         );
 
         $examplePath = 'examplePathWithConcreteDirectory';
-        $sut = $this->createPartialMock(ImageResource::class, ['getPathToMediaFiles']);
+        $sut = $this->createPartialMock(MediaResource::class, ['getPathToMediaFiles']);
         $sut->method('getPathToMediaFiles')->with($directoryName)->willReturn($examplePath);
 
         $expectedPath = $examplePath . '/' . $mediaFileName;
@@ -214,7 +214,7 @@ class ImageResourceTest extends TestCase
         $directoryName = uniqid();
 
         $examplePath = 'examplePathWithConcreteDirectory';
-        $sut = $this->createPartialMock(ImageResource::class, ['getPathToMediaFiles']);
+        $sut = $this->createPartialMock(MediaResource::class, ['getPathToMediaFiles']);
         $sut->method('getPathToMediaFiles')->with($directoryName)->willReturn($examplePath);
 
         $expectedPath = $examplePath . '/' . $mediaFileName;
@@ -226,7 +226,7 @@ class ImageResourceTest extends TestCase
         $fileName = uniqid();
         $folderName = uniqid();
 
-        $sut = $this->getMockBuilder(ImageResource::class)
+        $sut = $this->getMockBuilder(MediaResource::class)
             ->setConstructorArgs([
                 'shopConfig' => $this->createStub(Config::class),
                 'namingService' => $namingService = $this->createMock(NamingServiceInterface::class),

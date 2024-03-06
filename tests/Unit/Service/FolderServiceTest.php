@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Service;
 
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
-use OxidEsales\MediaLibrary\Image\Service\ImageResourceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
+use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Service\FolderService;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
@@ -23,7 +23,7 @@ class FolderServiceTest extends TestCase
     public function testCreateCustomDir(): void
     {
         $sut = new FolderService(
-            $imageResourceStub = $this->createStub(ImageResourceInterface::class),
+            $imageResourceStub = $this->createStub(MediaResourceInterface::class),
             $namingServiceMock = $this->createStub(NamingServiceInterface::class),
             $mediaRepositorySpy = $this->createMock(MediaRepositoryInterface::class),
             $fileSystemServiceSpy = $this->createMock(FileSystemServiceInterface::class),
