@@ -53,8 +53,6 @@ class MediaFactoryTest extends TestCase
     public function getSut(
         ThumbnailResourceInterface $thumbnailResource = null
     ): MediaFactory {
-        return new MediaFactory(
-            thumbnailResource: $thumbnailResource ?? $this->createStub(ThumbnailResourceInterface::class)
-        );
+        return new MediaFactory();
     }
 }

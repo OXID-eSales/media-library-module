@@ -10,14 +10,12 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Media\Repository;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
-use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 
 class MediaFactory implements MediaFactoryInterface
 {
-    public function __construct(
-        protected ThumbnailResourceInterface $thumbnailResource
-    ) {
+    public function __construct()
+    {
     }
 
     public function fromDatabaseArray(array $item): Media
