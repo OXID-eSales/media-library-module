@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Image\DataTransfer;
+namespace OxidEsales\MediaLibrary\Media\DataType;
 
 interface FilePathInterface
 {

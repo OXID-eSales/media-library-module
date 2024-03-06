@@ -7,9 +7,9 @@
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Service;
 
-use OxidEsales\MediaLibrary\Image\DataTransfer\FilePath;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
+use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;

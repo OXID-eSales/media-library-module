@@ -7,11 +7,11 @@
 
 namespace Image\DataTransfer;
 
-use OxidEsales\MediaLibrary\Image\DataTransfer\FilePath;
+use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \OxidEsales\MediaLibrary\Image\DataTransfer\FilePath
+ * @covers \OxidEsales\MediaLibrary\Media\DataType\FilePath
  */
 class FilePathTest extends TestCase
 {
