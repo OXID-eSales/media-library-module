@@ -8,6 +8,7 @@ services:
     public: true
     arguments:
       $thumbnailGenerators:
+        - '@OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Svg'
         - '@OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention'
 
   OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface:

@@ -11,3 +11,5 @@ services:
       $driver: 'Intervention\Image\Drivers\Gd\Driver'
 
   OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention: ~
+
+  OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Svg: ~
