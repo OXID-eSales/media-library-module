@@ -20,7 +20,7 @@ class ThumbnailService implements ThumbnailServiceInterface
     public function __construct(
         protected ThumbnailResourceInterface $thumbnailResource,
         protected FileSystemServiceInterface $fileSystemService,
-        protected ThumbnailGeneratorInterface $thumbnailGenerator,
+        protected ThumbnailGeneratorAggregateInterface $thumbnailGeneratorAggregate,
         protected MediaResourceInterface $mediaResource,
     ) {
     }
@@ -49,11 +49,11 @@ class ThumbnailService implements ThumbnailServiceInterface
         $thumbnailPath = Path::join($thumbnailDirectoryPath, $thumbnailFileName);
         if (!is_file($thumbnailPath)) {
             $this->fileSystemService->ensureDirectory($thumbnailDirectoryPath);
-            $this->thumbnailGenerator->generateThumbnail(
+            $this->thumbnailGeneratorAggregate->generateThumbnail(
                 sourcePath: Path::join($this->mediaResource->getPathToMediaFiles($folderName), $fileName),
                 thumbnailPath: $thumbnailPath,
-                size: $imageSize ?? $this->thumbnailResource->getDefaultThumbnailSize(),
-                blCrop: $crop
+                thumbnailSize: $imageSize ?? $this->thumbnailResource->getDefaultThumbnailSize(),
+                isCropRequired: $crop
             );
         }
 

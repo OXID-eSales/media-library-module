@@ -5,11 +5,11 @@
  * See LICENSE file for license details.
  */
 
-namespace Image\Service;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Service;
 
 use org\bovigo\vfs\vfsStream;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
-use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregateInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailService;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
@@ -52,7 +52,7 @@ class ThumbnailServiceTest extends TestCase
         $sut = $this->getSut(
             thumbnailResource: $thumbnailResourceMock = $this->createMock(ThumbnailResourceInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
-            thumbnailGenerator: $thumbnailGeneratorSpy = $this->createMock(ThumbnailGeneratorInterface::class),
+            thumbnailGeneratorAggregate: $thumbnailGeneratorAggregateSpy = $this->createMock(ThumbnailGeneratorAggregateInterface::class),
             imageResource: $imageResourceMock = $this->createMock(MediaResourceInterface::class),
         );
 
@@ -74,7 +74,7 @@ class ThumbnailServiceTest extends TestCase
         $imageResourceMock->method('getPathToMediaFiles')->with($folderName)->willReturn($originalFolder);
 
         $fileSystemSpy->expects($this->once())->method('ensureDirectory')->with($thumbnailFolder);
-        $thumbnailGeneratorSpy->expects($this->once())->method('generateThumbnail')
+        $thumbnailGeneratorAggregateSpy->expects($this->once())->method('generateThumbnail')
             ->with(
                 $originalFolder . '/' . $fileName,
                 $thumbnailFolder . '/' . $thumbnailFileName,
@@ -89,13 +89,13 @@ class ThumbnailServiceTest extends TestCase
     public function getSut(
         ThumbnailResourceInterface $thumbnailResource = null,
         FileSystemServiceInterface $fileSystemService = null,
-        ThumbnailGeneratorInterface $thumbnailGenerator = null,
+        ThumbnailGeneratorAggregateInterface $thumbnailGeneratorAggregate = null,
         MediaResourceInterface $imageResource = null,
     ): ThumbnailService {
         return new ThumbnailService(
             thumbnailResource: $thumbnailResource ?? $this->createStub(ThumbnailResourceInterface::class),
             fileSystemService: $fileSystemService ?? $this->createStub(FileSystemServiceInterface::class),
-            thumbnailGenerator: $thumbnailGenerator ?? $this->createStub(ThumbnailGeneratorInterface::class),
+            thumbnailGeneratorAggregate: $thumbnailGeneratorAggregate ?? $this->createStub(ThumbnailGeneratorAggregateInterface::class),
             mediaResource: $imageResource ?? $this->createStub(MediaResourceInterface::class),
         );
     }

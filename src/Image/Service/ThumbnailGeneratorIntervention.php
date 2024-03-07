@@ -18,6 +18,11 @@ class ThumbnailGeneratorIntervention implements ThumbnailGeneratorInterface
     {
     }
 
+    public function isOriginSupported(string $sourcePath): bool
+    {
+        return true;
+    }
+
     public function generateThumbnail(
         string $sourcePath,
         string $thumbnailPath,

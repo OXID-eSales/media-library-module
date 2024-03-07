@@ -8,9 +8,15 @@ services:
     arguments:
       $driver: 'Intervention\Image\Drivers\Gd\Driver'
 
-  OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface:
-    class: OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorIntervention
+  OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregateInterface:
+    class: OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregate
     public: true
+    arguments:
+      $thumbnailGenerators:
+        - '@OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorIntervention'
+
+  OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorIntervention:
+    class: OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorIntervention
 
   OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface:
     class: OxidEsales\MediaLibrary\Image\Service\ThumbnailResource

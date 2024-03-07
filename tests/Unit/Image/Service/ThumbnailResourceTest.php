@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace Image\Service;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;

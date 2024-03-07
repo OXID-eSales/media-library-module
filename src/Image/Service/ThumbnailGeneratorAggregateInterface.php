@@ -11,14 +11,12 @@ namespace OxidEsales\MediaLibrary\Image\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 
-interface ThumbnailGeneratorInterface
+interface ThumbnailGeneratorAggregateInterface
 {
-    public function isOriginSupported(string $sourcePath): bool;
-
     public function generateThumbnail(
         string $sourcePath,
         string $thumbnailPath,
-        ImageSizeInterface $size,
-        bool $blCrop,
+        ImageSizeInterface $thumbnailSize,
+        bool $isCropRequired,
     ): void;
 }
