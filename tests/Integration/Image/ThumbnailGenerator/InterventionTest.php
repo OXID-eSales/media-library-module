@@ -5,19 +5,19 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\MediaLibrary\Tests\Integration\Image\Service;
+namespace OxidEsales\MediaLibrary\Tests\Integration\Image\ThumbnailGenerator;
 
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 use org\bovigo\vfs\vfsStream;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
-use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorIntervention;
+use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 
 /**
- * @covers \OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorIntervention
+ * @covers \OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention
  */
-class ThumbnailGeneratorInterventionTest extends IntegrationTestCase
+class InterventionTest extends IntegrationTestCase
 {
     /**
      * @dataProvider getThumbnailDataProvider
@@ -33,7 +33,7 @@ class ThumbnailGeneratorInterventionTest extends IntegrationTestCase
         $rootPath = vfsStream::setup()->url();
 
         $imageManager = new ImageManager(new Driver());
-        $sut = new ThumbnailGeneratorIntervention($imageManager);
+        $sut = new Intervention($imageManager);
 
         $sourcePath = $rootPath . '/source.jpg';
         $img = $imageManager->create($sourceWidth, $sourceHeight);
@@ -111,7 +111,7 @@ class ThumbnailGeneratorInterventionTest extends IntegrationTestCase
     public function testIsOriginSupported(): void
     {
         $imageManager = new ImageManager(new Driver());
-        $sut = new ThumbnailGeneratorIntervention($imageManager);
+        $sut = new Intervention($imageManager);
 
         $this->assertTrue($sut->isOriginSupported('anything'));
     }

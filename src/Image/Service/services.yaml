@@ -13,10 +13,10 @@ services:
     public: true
     arguments:
       $thumbnailGenerators:
-        - '@OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorIntervention'
+        - '@OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention'
 
-  OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorIntervention:
-    class: OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorIntervention
+  OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention:
+    class: OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention
 
   OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface:
     class: OxidEsales\MediaLibrary\Image\Service\ThumbnailResource

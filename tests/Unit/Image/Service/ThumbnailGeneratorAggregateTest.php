@@ -12,7 +12,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Service;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\Exception\AggregatorInputType;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregate;
-use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorInterface;
+use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 use PHPUnit\Framework\TestCase;
 
 /**

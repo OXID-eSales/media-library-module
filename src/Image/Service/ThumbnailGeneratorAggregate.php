@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Image\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\Exception\AggregatorInputType;
+use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 
 class ThumbnailGeneratorAggregate implements ThumbnailGeneratorAggregateInterface
 {
