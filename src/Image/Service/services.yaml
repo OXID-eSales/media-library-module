@@ -3,20 +3,12 @@ services:
     autowire: true
     public: false
 
-  Intervention\Image\ImageManager:
-    class: Intervention\Image\ImageManager
-    arguments:
-      $driver: 'Intervention\Image\Drivers\Gd\Driver'
-
   OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregateInterface:
     class: OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregate
     public: true
     arguments:
       $thumbnailGenerators:
         - '@OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention'
-
-  OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention:
-    class: OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention
 
   OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface:
     class: OxidEsales\MediaLibrary\Image\Service\ThumbnailResource

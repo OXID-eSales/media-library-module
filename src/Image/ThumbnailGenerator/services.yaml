@@ -1,0 +1,13 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+    bind:
+      Intervention\Image\ImageManager: '@OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionImageManager'
+
+  OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionImageManager:
+    class: Intervention\Image\ImageManager
+    arguments:
+      $driver: 'Intervention\Image\Drivers\Gd\Driver'
+
+  OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention: ~

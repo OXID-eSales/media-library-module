@@ -35,7 +35,7 @@ class ThumbnailGeneratorAggregate implements ThumbnailGeneratorAggregateInterfac
         ImageSizeInterface $thumbnailSize,
         bool $isCropRequired,
     ): void {
-        foreach($this->thumbnailGenerators as $oneGenerator) {
+        foreach ($this->thumbnailGenerators as $oneGenerator) {
             if ($oneGenerator->isOriginSupported($sourcePath)) {
                 $oneGenerator->generateThumbnail(
                     sourcePath: $sourcePath,

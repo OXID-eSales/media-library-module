@@ -52,7 +52,7 @@ class ThumbnailServiceTest extends TestCase
         $sut = $this->getSut(
             thumbnailResource: $thumbnailResourceMock = $this->createMock(ThumbnailResourceInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
-            thumbnailGeneratorAggregate: $thumbnailGeneratorAggregateSpy = $this->createMock(ThumbnailGeneratorAggregateInterface::class),
+            tgAgt: $thumbnailGeneratorAggregateSpy = $this->createMock(ThumbnailGeneratorAggregateInterface::class),
             imageResource: $imageResourceMock = $this->createMock(MediaResourceInterface::class),
         );
 
@@ -89,13 +89,13 @@ class ThumbnailServiceTest extends TestCase
     public function getSut(
         ThumbnailResourceInterface $thumbnailResource = null,
         FileSystemServiceInterface $fileSystemService = null,
-        ThumbnailGeneratorAggregateInterface $thumbnailGeneratorAggregate = null,
+        ThumbnailGeneratorAggregateInterface $tgAgt = null,
         MediaResourceInterface $imageResource = null,
     ): ThumbnailService {
         return new ThumbnailService(
             thumbnailResource: $thumbnailResource ?? $this->createStub(ThumbnailResourceInterface::class),
             fileSystemService: $fileSystemService ?? $this->createStub(FileSystemServiceInterface::class),
-            thumbnailGeneratorAggregate: $thumbnailGeneratorAggregate ?? $this->createStub(ThumbnailGeneratorAggregateInterface::class),
+            thumbnailGeneratorAggregate: $tgAgt ?? $this->createStub(ThumbnailGeneratorAggregateInterface::class),
             mediaResource: $imageResource ?? $this->createStub(MediaResourceInterface::class),
         );
     }
