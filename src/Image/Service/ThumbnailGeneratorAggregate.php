@@ -45,7 +45,7 @@ class ThumbnailGeneratorAggregate implements ThumbnailGeneratorAggregateInterfac
         );
     }
 
-    protected function getSupportedGenerator(string $sourcePath): ThumbnailGeneratorInterface
+    public function getSupportedGenerator(string $sourcePath): ThumbnailGeneratorInterface
     {
         foreach($this->thumbnailGenerators as $oneDriver) {
             if ($oneDriver->isOriginSupported($sourcePath)) {

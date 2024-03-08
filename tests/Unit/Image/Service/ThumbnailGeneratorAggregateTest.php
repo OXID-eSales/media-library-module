@@ -27,7 +27,7 @@ class ThumbnailGeneratorAggregateTest extends TestCase
         new ThumbnailGeneratorAggregate([new \stdClass()]);
     }
 
-    public function testConstructorWorks(): void
+    public function testGenerateThumbnailCalledOnCorrectGenerator(): void
     {
         $filePath = uniqid();
         $thumbnailPath = uniqid();
@@ -60,6 +60,28 @@ class ThumbnailGeneratorAggregateTest extends TestCase
             thumbnailSize: $thumbnailSize,
             isCropRequired: $isCropRequired
         );
+    }
+
+    public function testGetSupportedThumbnailGenerator(): void
+    {
+        $filePath = uniqid();
+
+        $wrongGeneratorStub = $this->createMock(ThumbnailGeneratorInterface::class);
+        $wrongGeneratorStub->method('isOriginSupported')->with($filePath)->willReturn(false);
+
+        $expectedGeneratorStub = $this->createMock(ThumbnailGeneratorInterface::class);
+        $expectedGeneratorStub->method('isOriginSupported')->with($filePath)->willReturn(true);
+
+        $supportedButLowerPriorityGeneratorStub = $this->createMock(ThumbnailGeneratorInterface::class);
+        $supportedButLowerPriorityGeneratorStub->method('isOriginSupported')->with($filePath)->willReturn(true);
+
+        $sut = new ThumbnailGeneratorAggregate([
+            $wrongGeneratorStub,
+            $expectedGeneratorStub,
+            $supportedButLowerPriorityGeneratorStub
+        ]);
+
+        $this->assertSame($expectedGeneratorStub, $sut->getSupportedGenerator($filePath));
     }
 
     public function testNoSupportedDriversExceptionCase(): void

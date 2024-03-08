@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Image\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
+use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 
 interface ThumbnailGeneratorAggregateInterface
 {
@@ -19,4 +20,6 @@ interface ThumbnailGeneratorAggregateInterface
         ImageSizeInterface $thumbnailSize,
         bool $isCropRequired,
     ): void;
+
+    public function getSupportedGenerator(string $sourcePath): ThumbnailGeneratorInterface;
 }
