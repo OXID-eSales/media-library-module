@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Image\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\Exception\AggregatorInputType;
+use OxidEsales\MediaLibrary\Image\Exception\NoSupportedDriversForSource;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 
 class ThumbnailGeneratorAggregate implements ThumbnailGeneratorAggregateInterface
@@ -35,16 +36,23 @@ class ThumbnailGeneratorAggregate implements ThumbnailGeneratorAggregateInterfac
         ImageSizeInterface $thumbnailSize,
         bool $isCropRequired,
     ): void {
-        foreach ($this->thumbnailGenerators as $oneGenerator) {
-            if ($oneGenerator->isOriginSupported($sourcePath)) {
-                $oneGenerator->generateThumbnail(
-                    sourcePath: $sourcePath,
-                    thumbnailPath: $thumbnailPath,
-                    size: $thumbnailSize,
-                    blCrop: $isCropRequired
-                );
-                break;
+        $thumbnailGenerator = $this->getSupportedGenerator($sourcePath);
+        $thumbnailGenerator->generateThumbnail(
+            sourcePath: $sourcePath,
+            thumbnailPath: $thumbnailPath,
+            size: $thumbnailSize,
+            blCrop: $isCropRequired
+        );
+    }
+
+    protected function getSupportedGenerator(string $sourcePath): ThumbnailGeneratorInterface
+    {
+        foreach($this->thumbnailGenerators as $oneDriver) {
+            if ($oneDriver->isOriginSupported($sourcePath)) {
+                return $oneDriver;
             }
         }
+
+        throw new NoSupportedDriversForSource();
     }
 }

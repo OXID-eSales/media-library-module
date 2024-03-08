@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\Exception\AggregatorInputType;
+use OxidEsales\MediaLibrary\Image\Exception\NoSupportedDriversForSource;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregate;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 use PHPUnit\Framework\TestCase;
@@ -58,6 +59,19 @@ class ThumbnailGeneratorAggregateTest extends TestCase
             thumbnailPath: $thumbnailPath,
             thumbnailSize: $thumbnailSize,
             isCropRequired: $isCropRequired
+        );
+    }
+
+    public function testNoSupportedDriversExceptionCase(): void
+    {
+        $sut = new ThumbnailGeneratorAggregate([]);
+
+        $this->expectException(NoSupportedDriversForSource::class);
+        $sut->generateThumbnail(
+            sourcePath: uniqid(),
+            thumbnailPath: uniqid(),
+            thumbnailSize: $this->createStub(ImageSize::class),
+            isCropRequired: (bool)random_int(0, 1),
         );
     }
 }

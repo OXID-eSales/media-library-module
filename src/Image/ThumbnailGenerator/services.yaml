@@ -13,3 +13,5 @@ services:
   OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention: ~
 
   OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Svg: ~
+
+  OxidEsales\MediaLibrary\Image\ThumbnailGenerator\DefaultDriver: ~

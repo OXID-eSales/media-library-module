@@ -10,6 +10,7 @@ services:
       $thumbnailGenerators:
         - '@OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Svg'
         - '@OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention'
+        - '@OxidEsales\MediaLibrary\Image\ThumbnailGenerator\DefaultDriver'
 
   OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface:
     class: OxidEsales\MediaLibrary\Image\Service\ThumbnailResource
