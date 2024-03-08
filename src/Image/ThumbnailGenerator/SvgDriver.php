@@ -12,7 +12,7 @@ namespace OxidEsales\MediaLibrary\Image\ThumbnailGenerator;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 
-class Svg implements ThumbnailGeneratorInterface
+class SvgDriver implements ThumbnailGeneratorInterface
 {
     public function __construct(
         protected FileSystemServiceInterface $fileSystemService

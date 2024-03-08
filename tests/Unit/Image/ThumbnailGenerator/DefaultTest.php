@@ -12,6 +12,9 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Image\ThumbnailGenerator;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\DefaultDriver;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \OxidEsales\MediaLibrary\Image\ThumbnailGenerator\DefaultDriver
+ */
 class DefaultTest extends TestCase
 {
     public function testIsOriginSupportedAlwaysReturnTrue(): void

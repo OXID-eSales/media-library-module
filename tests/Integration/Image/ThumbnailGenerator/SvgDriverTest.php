@@ -8,14 +8,14 @@
 namespace Image\ThumbnailGenerator;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
-use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Svg;
+use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\SvgDriver;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 
 /**
- * @covers \OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Svg
+ * @covers \OxidEsales\MediaLibrary\Image\ThumbnailGenerator\SvgDriver
  */
-class SvgTest extends IntegrationTestCase
+class SvgDriverTest extends IntegrationTestCase
 {
     public function testGenerateThumbnail(): void
     {
@@ -48,8 +48,8 @@ class SvgTest extends IntegrationTestCase
 
     public function getSut(
         FileSystemServiceInterface $fileSystemService = null
-    ): Svg {
-        return new Svg(
+    ): SvgDriver {
+        return new SvgDriver(
             fileSystemService: $fileSystemService ?? $this->createStub(FileSystemServiceInterface::class)
         );
     }

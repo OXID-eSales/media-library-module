@@ -11,13 +11,13 @@ use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 use org\bovigo\vfs\vfsStream;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
-use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention;
+use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionDriver;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 
 /**
- * @covers \OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention
+ * @covers \OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionDriver
  */
-class InterventionTest extends IntegrationTestCase
+class InterventionDriverTest extends IntegrationTestCase
 {
     /**
      * @dataProvider getThumbnailDataProvider
@@ -33,7 +33,7 @@ class InterventionTest extends IntegrationTestCase
         $rootPath = vfsStream::setup()->url();
 
         $imageManager = new ImageManager(new Driver());
-        $sut = new Intervention($imageManager);
+        $sut = new InterventionDriver($imageManager);
 
         $sourcePath = $rootPath . '/source.jpg';
         $img = $imageManager->create($sourceWidth, $sourceHeight);
@@ -112,7 +112,7 @@ class InterventionTest extends IntegrationTestCase
     public function testIsOriginSupported(string $filePath, bool $expectedResult): void
     {
         $imageManager = new ImageManager(new Driver());
-        $sut = new Intervention($imageManager);
+        $sut = new InterventionDriver($imageManager);
 
         $this->assertSame($expectedResult, $sut->isOriginSupported($filePath));
         $this->assertSame($expectedResult, $sut->isOriginSupported(strtoupper($filePath)));

@@ -12,7 +12,7 @@ namespace OxidEsales\MediaLibrary\Image\ThumbnailGenerator;
 use Intervention\Image\ImageManager;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 
-class Intervention implements ThumbnailGeneratorInterface
+class InterventionDriver implements ThumbnailGeneratorInterface
 {
     public function __construct(private readonly ImageManager $imageManager)
     {

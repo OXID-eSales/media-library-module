@@ -10,8 +10,8 @@ services:
     arguments:
       $driver: 'Intervention\Image\Drivers\Gd\Driver'
 
-  OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Intervention: ~
+  OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionDriver: ~
 
-  OxidEsales\MediaLibrary\Image\ThumbnailGenerator\Svg: ~
+  OxidEsales\MediaLibrary\Image\ThumbnailGenerator\SvgDriver: ~
 
   OxidEsales\MediaLibrary\Image\ThumbnailGenerator\DefaultDriver: ~
