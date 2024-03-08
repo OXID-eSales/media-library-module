@@ -7,6 +7,7 @@
 
 namespace Image\ThumbnailGenerator;
 
+use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\SvgDriver;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
@@ -44,6 +45,33 @@ class SvgDriverTest extends IntegrationTestCase
         $this->assertFalse($sut->isOriginSupported('yyy/someOther.doc'));
         $this->assertFalse($sut->isOriginSupported('yyy/someOther.gif'));
         $this->assertFalse($sut->isOriginSupported('yyy/someOther.jpg'));
+    }
+
+    /** @dataProvider getThumbnailFileNameDataProvider */
+    public function testGetThumbnailFileName(
+        string $originalFileName,
+        string $expectedName
+    ): void {
+        $sut = $this->getSut();
+
+        $result = $sut->getThumbnailFileName(
+            originalFileName: $originalFileName,
+            thumbnailSize: $this->createStub(ImageSizeInterface::class),
+            isCropRequired: (bool)random_int(0, 1)
+        );
+
+        $this->assertSame($expectedName, $result);
+    }
+
+    public static function getThumbnailFileNameDataProvider(): \Generator
+    {
+        $fileName = 'SomeFileName.SVG';
+        $fileNameHash = md5($fileName);
+
+        yield "regular svg" => [
+            'originalFileName' => $fileName,
+            'expectedName' => $fileNameHash . '.svg'
+        ];
     }
 
     public function getSut(

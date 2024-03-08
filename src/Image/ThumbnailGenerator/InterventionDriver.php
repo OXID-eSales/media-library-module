@@ -47,4 +47,29 @@ class InterventionDriver implements ThumbnailGeneratorInterface
         }
         $image->save($thumbnailPath);
     }
+
+    public function getThumbnailFileName(
+        string $originalFileName,
+        ImageSizeInterface $thumbnailSize,
+        bool $isCropRequired
+    ): string {
+        return sprintf(
+            '%s_thumb_%d*%d%s.%s',
+            $this->getThumbnailFileHash($originalFileName),
+            $thumbnailSize->getWidth(),
+            $thumbnailSize->getHeight(),
+            $isCropRequired ? '' : '_nocrop',
+            $this->getExtensionFromFileName($originalFileName)
+        );
+    }
+
+    private function getThumbnailFileHash(string $originalFilename): string
+    {
+        return md5($originalFilename);
+    }
+
+    protected function getExtensionFromFileName(string $fileName): string
+    {
+        return pathinfo($fileName, PATHINFO_EXTENSION);
+    }
 }

@@ -11,6 +11,8 @@ use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 use org\bovigo\vfs\vfsStream;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
+use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
+use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\DefaultDriver;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionDriver;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 
@@ -178,6 +180,67 @@ class InterventionDriverTest extends IntegrationTestCase
         yield "svg" => [
             'filePath' => 'someFileName.svg',
             'expectedResult' => false,
+        ];
+    }
+
+    /** @dataProvider getThumbnailFileNameDataProvider */
+    public function testGetThumbnailFileName(
+        string $originalFileName,
+        ImageSizeInterface $thumbnailSize,
+        bool $crop,
+        string $expectedName
+    ): void {
+        $imageManager = new ImageManager(new Driver());
+        $sut = new InterventionDriver($imageManager);
+
+        $result = $sut->getThumbnailFileName(
+            originalFileName: $originalFileName,
+            thumbnailSize: $thumbnailSize,
+            isCropRequired: $crop
+        );
+
+        $this->assertSame($expectedName, $result);
+    }
+
+    public static function getThumbnailFileNameDataProvider(): \Generator
+    {
+        $fileName = 'filename.jpg';
+        $fileNameHash = md5($fileName);
+        yield "regular jpg 100x100 nocrop" => [
+            'originalFileName' => $fileName,
+            'thumbnailSize' => new ImageSize(100, 100),
+            'crop' => true,
+            'expectedName' => $fileNameHash . '_thumb_100*100.jpg'
+        ];
+
+        yield "regular jpg 100x100 crop" => [
+            'originalFileName' => $fileName,
+            'thumbnailSize' => new ImageSize(100, 100),
+            'crop' => false,
+            'expectedName' => $fileNameHash . '_thumb_100*100_nocrop.jpg'
+        ];
+
+        yield "regular jpg 200x50 nocrop" => [
+            'originalFileName' => $fileName,
+            'thumbnailSize' => new ImageSize(200, 50),
+            'crop' => true,
+            'expectedName' => $fileNameHash . '_thumb_200*50.jpg'
+        ];
+
+        yield "regular jpg 200x50 crop" => [
+            'originalFileName' => $fileName,
+            'thumbnailSize' => new ImageSize(200, 50),
+            'crop' => false,
+            'expectedName' => $fileNameHash . '_thumb_200*50_nocrop.jpg'
+        ];
+
+        $specialExtensionFileName = 'filename.xxx';
+        $specialExtensionFileNameHash = md5($specialExtensionFileName);
+        yield "extension save check" => [
+            'originalFileName' => $specialExtensionFileName,
+            'thumbnailSize' => new ImageSize(100, 100),
+            'crop' => true,
+            'expectedName' => $specialExtensionFileNameHash . '_thumb_100*100.xxx'
         ];
     }
 }

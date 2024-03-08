@@ -25,4 +25,12 @@ class DefaultDriver implements ThumbnailGeneratorInterface
         bool $blCrop,
     ): void {
     }
+
+    public function getThumbnailFileName(
+        string $originalFileName,
+        ImageSizeInterface $thumbnailSize,
+        bool $isCropRequired
+    ): string {
+        return 'default.jpg';
+    }
 }

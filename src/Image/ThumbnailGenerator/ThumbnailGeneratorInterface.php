@@ -15,6 +15,12 @@ interface ThumbnailGeneratorInterface
 {
     public function isOriginSupported(string $sourcePath): bool;
 
+    public function getThumbnailFileName(
+        string $originalFileName,
+        ImageSizeInterface $thumbnailSize,
+        bool $isCropRequired
+    ): string;
+
     public function generateThumbnail(
         string $sourcePath,
         string $thumbnailPath,

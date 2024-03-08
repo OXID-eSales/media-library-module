@@ -33,4 +33,20 @@ class SvgDriver implements ThumbnailGeneratorInterface
     ): void {
         $this->fileSystemService->copy($sourcePath, $thumbnailPath);
     }
+
+    public function getThumbnailFileName(
+        string $originalFileName,
+        ImageSizeInterface $thumbnailSize,
+        bool $isCropRequired
+    ): string {
+        return sprintf(
+            '%s.svg',
+            $this->getThumbnailFileHash($originalFileName),
+        );
+    }
+
+    private function getThumbnailFileHash(string $originalFilename): string
+    {
+        return md5($originalFilename);
+    }
 }
