@@ -24,6 +24,7 @@ class DefaultDriver implements ThumbnailGeneratorInterface
         ImageSizeInterface $thumbnailSize,
         bool $isCropRequired,
     ): void {
+        copy(__DIR__ . '/../../../assets/out/src/img/default.svg', $thumbnailPath);
     }
 
     public function getThumbnailFileName(
@@ -31,11 +32,11 @@ class DefaultDriver implements ThumbnailGeneratorInterface
         ImageSizeInterface $thumbnailSize,
         bool $isCropRequired
     ): string {
-        return 'default.jpg';
+        return 'default.svg';
     }
 
     public function getThumbnailsGlob(string $originalFilename): string
     {
-        return 'default.jpg';
+        return 'default.svg';
     }
 }

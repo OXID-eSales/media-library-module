@@ -28,7 +28,7 @@ class DefaultDriverTest extends TestCase
     {
         $sut = new DefaultDriver();
         $this->assertSame(
-            'default.jpg',
+            'default.svg',
             $sut->getThumbnailFileName(
                 originalFileName: uniqid(),
                 thumbnailSize: $this->createStub(ImageSizeInterface::class),
@@ -41,7 +41,7 @@ class DefaultDriverTest extends TestCase
     {
         $sut = new DefaultDriver();
         $this->assertSame(
-            'default.jpg',
+            'default.svg',
             $sut->getThumbnailsGlob(uniqid())
         );
     }
