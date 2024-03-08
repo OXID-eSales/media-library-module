@@ -33,8 +33,8 @@ class SvgDriverTest extends IntegrationTestCase
         $sut->generateThumbnail(
             sourcePath: $filePath,
             thumbnailPath: $thumbPath,
-            size: $this->createStub(ImageSizeInterface::class),
-            blCrop: (bool)random_int(0, 1)
+            thumbnailSize: $this->createStub(ImageSizeInterface::class),
+            isCropRequired: (bool)random_int(0, 1)
         );
     }
 

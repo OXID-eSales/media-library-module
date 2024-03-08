@@ -28,8 +28,8 @@ class SvgDriver implements ThumbnailGeneratorInterface
     public function generateThumbnail(
         string $sourcePath,
         string $thumbnailPath,
-        ImageSizeInterface $size,
-        bool $blCrop,
+        ImageSizeInterface $thumbnailSize,
+        bool $isCropRequired,
     ): void {
         $this->fileSystemService->copy($sourcePath, $thumbnailPath);
     }

@@ -24,8 +24,8 @@ interface ThumbnailGeneratorInterface
     public function generateThumbnail(
         string $sourcePath,
         string $thumbnailPath,
-        ImageSizeInterface $size,
-        bool $blCrop,
+        ImageSizeInterface $thumbnailSize,
+        bool $isCropRequired,
     ): void;
 
     public function getThumbnailsGlob(string $originalFilename): string;

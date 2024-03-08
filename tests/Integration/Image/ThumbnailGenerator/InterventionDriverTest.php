@@ -12,7 +12,6 @@ use Intervention\Image\ImageManager;
 use org\bovigo\vfs\vfsStream;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
-use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\DefaultDriver;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionDriver;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 
@@ -43,10 +42,10 @@ class InterventionDriverTest extends IntegrationTestCase
 
         $thumbnailPath = $rootPath . '/thumbnail.jpg';
         $sut->generateThumbnail(
-            $sourcePath,
-            $thumbnailPath,
-            new ImageSize($thumbnailSize, $thumbnailSize),
-            $cropThumbnail
+            sourcePath: $sourcePath,
+            thumbnailPath: $thumbnailPath,
+            thumbnailSize: new ImageSize($thumbnailSize, $thumbnailSize),
+            isCropRequired: $cropThumbnail
         );
 
         self::assertFileExists($thumbnailPath);

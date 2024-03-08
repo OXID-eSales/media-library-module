@@ -27,14 +27,14 @@ class InterventionDriver implements ThumbnailGeneratorInterface
     public function generateThumbnail(
         string $sourcePath,
         string $thumbnailPath,
-        ImageSizeInterface $size,
-        bool $blCrop,
+        ImageSizeInterface $thumbnailSize,
+        bool $isCropRequired,
     ): void {
-        $thumbnailWidth = $size->getWidth();
-        $thumbnailHeight = $size->getHeight();
+        $thumbnailWidth = $thumbnailSize->getWidth();
+        $thumbnailHeight = $thumbnailSize->getHeight();
 
         $image = $this->imageManager->read($sourcePath);
-        if ($blCrop) {
+        if ($isCropRequired) {
             $image->coverDown(
                 width: $thumbnailWidth,
                 height: $thumbnailHeight
