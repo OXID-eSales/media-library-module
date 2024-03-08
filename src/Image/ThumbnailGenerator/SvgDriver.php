@@ -49,4 +49,9 @@ class SvgDriver implements ThumbnailGeneratorInterface
     {
         return md5($originalFilename);
     }
+
+    public function getThumbnailsGlob(string $originalFilename): string
+    {
+        return $this->getThumbnailFileHash($originalFilename) . '.svg';
+    }
 }

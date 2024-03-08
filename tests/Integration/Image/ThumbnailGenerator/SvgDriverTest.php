@@ -9,6 +9,7 @@ namespace Image\ThumbnailGenerator;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
+use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\DefaultDriver;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\SvgDriver;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
@@ -72,6 +73,14 @@ class SvgDriverTest extends IntegrationTestCase
             'originalFileName' => $fileName,
             'expectedName' => $fileNameHash . '.svg'
         ];
+    }
+
+    public function testGetThumbnailsGlob(): void
+    {
+        $sut = $this->getSut();
+
+        $originalFilename = 'someExampleFilename.svg';
+        $this->assertSame('5a1040df467f3ceae2623aa5918f542a.svg', $sut->getThumbnailsGlob($originalFilename));
     }
 
     public function getSut(

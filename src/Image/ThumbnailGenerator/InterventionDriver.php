@@ -72,4 +72,9 @@ class InterventionDriver implements ThumbnailGeneratorInterface
     {
         return pathinfo($fileName, PATHINFO_EXTENSION);
     }
+
+    public function getThumbnailsGlob(string $originalFilename): string
+    {
+        return $this->getThumbnailFileHash($originalFilename) . '*.*';
+    }
 }

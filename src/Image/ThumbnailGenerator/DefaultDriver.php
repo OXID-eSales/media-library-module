@@ -33,4 +33,9 @@ class DefaultDriver implements ThumbnailGeneratorInterface
     ): string {
         return 'default.jpg';
     }
+
+    public function getThumbnailsGlob(string $originalFilename): string
+    {
+        return 'default.jpg';
+    }
 }

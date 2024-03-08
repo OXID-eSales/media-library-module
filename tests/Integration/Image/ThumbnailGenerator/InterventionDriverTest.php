@@ -243,4 +243,13 @@ class InterventionDriverTest extends IntegrationTestCase
             'expectedName' => $specialExtensionFileNameHash . '_thumb_100*100.xxx'
         ];
     }
+
+    public function testGetThumbnailsGlob(): void
+    {
+        $imageManager = new ImageManager(new Driver());
+        $sut = new InterventionDriver($imageManager);
+
+        $originalFilename = 'someExampleFilename.txt';
+        $this->assertSame('8910f1d8c070ff09e13d4977fc339a29*.*', $sut->getThumbnailsGlob($originalFilename));
+    }
 }

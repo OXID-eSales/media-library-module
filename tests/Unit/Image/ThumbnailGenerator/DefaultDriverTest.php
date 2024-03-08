@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \OxidEsales\MediaLibrary\Image\ThumbnailGenerator\DefaultDriver
  */
-class DefaultTest extends TestCase
+class DefaultDriverTest extends TestCase
 {
     public function testIsOriginSupportedAlwaysReturnTrue(): void
     {
@@ -34,6 +34,15 @@ class DefaultTest extends TestCase
                 thumbnailSize: $this->createStub(ImageSizeInterface::class),
                 isCropRequired: (bool)random_int(0, 1)
             )
+        );
+    }
+
+    public function testGetThumbnailsGlob(): void
+    {
+        $sut = new DefaultDriver();
+        $this->assertSame(
+            'default.jpg',
+            $sut->getThumbnailsGlob(uniqid())
         );
     }
 }

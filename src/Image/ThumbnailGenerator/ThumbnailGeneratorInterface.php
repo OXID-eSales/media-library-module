@@ -27,4 +27,6 @@ interface ThumbnailGeneratorInterface
         ImageSizeInterface $size,
         bool $blCrop,
     ): void;
+
+    public function getThumbnailsGlob(string $originalFilename): string;
 }
