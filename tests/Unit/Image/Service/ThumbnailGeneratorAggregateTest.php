@@ -54,11 +54,6 @@ class ThumbnailGeneratorAggregateTest extends TestCase
         $sut = new ThumbnailGeneratorAggregate([]);
 
         $this->expectException(NoSupportedDriversForSource::class);
-        $sut->generateThumbnail(
-            sourcePath: uniqid(),
-            thumbnailPath: uniqid(),
-            thumbnailSize: $this->createStub(ImageSize::class),
-            isCropRequired: (bool)random_int(0, 1),
-        );
+        $sut->getSupportedGenerator(uniqid());
     }
 }

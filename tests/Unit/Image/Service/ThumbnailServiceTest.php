@@ -12,6 +12,7 @@ use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregateInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailService;
+use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
@@ -52,34 +53,39 @@ class ThumbnailServiceTest extends TestCase
         $sut = $this->getSut(
             thumbnailResource: $thumbnailResourceMock = $this->createMock(ThumbnailResourceInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
-            tgAgt: $thumbnailGeneratorAggregateSpy = $this->createMock(ThumbnailGeneratorAggregateInterface::class),
-            imageResource: $imageResourceMock = $this->createMock(MediaResourceInterface::class),
+            tgAgt: $thumbnailGeneratorAggregateStub = $this->createMock(ThumbnailGeneratorAggregateInterface::class),
+            imageResource: $mediaResourceMock = $this->createMock(MediaResourceInterface::class),
         );
 
         $folderName = 'someFolderName';
         $fileName = 'someFileName';
 
         $thumbnailFileName = 'someThumbnailName';
-        $sizeStub = new ImageSize(100, 100);
+        $defaultSizeStub = new ImageSize(100, 100);
         $thumbnailFolder = $vfsRootPath . '/thumbs';
         $thumbnailUrlFolder = 'someUrlToThumbFolder';
+        $defaultCropFlag = true;
+
         $thumbnailResourceMock->method('getUrlToThumbnailFiles')->with($folderName)->willReturn($thumbnailUrlFolder);
         $thumbnailResourceMock->method('getPathToThumbnailFiles')->with($folderName)->willReturn($thumbnailFolder);
-        $thumbnailResourceMock->method('getDefaultThumbnailSize')->willReturn($sizeStub);
-        $thumbnailResourceMock->method('getThumbnailFileName')
-            ->with($fileName, $sizeStub, true)
-            ->willReturn($thumbnailFileName);
+        $thumbnailResourceMock->method('getDefaultThumbnailSize')->willReturn($defaultSizeStub);
 
         $originalFolder = 'originalFolder';
-        $imageResourceMock->method('getPathToMediaFiles')->with($folderName)->willReturn($originalFolder);
+        $mediaResourceMock->method('getPathToMediaFiles')->with($folderName)->willReturn($originalFolder);
 
         $fileSystemSpy->expects($this->once())->method('ensureDirectory')->with($thumbnailFolder);
-        $thumbnailGeneratorAggregateSpy->expects($this->once())->method('generateThumbnail')
+
+        $thumbnailGeneratorSpy = $this->createMock(ThumbnailGeneratorInterface::class);
+        $thumbnailGeneratorAggregateStub->method('getSupportedGenerator')->willReturn($thumbnailGeneratorSpy);
+        $thumbnailGeneratorSpy->method('getThumbnailFileName')
+            ->with($fileName, $defaultSizeStub, $defaultCropFlag)
+            ->willReturn($thumbnailFileName);
+        $thumbnailGeneratorSpy->expects($this->once())->method('generateThumbnail')
             ->with(
                 $originalFolder . '/' . $fileName,
                 $thumbnailFolder . '/' . $thumbnailFileName,
-                $sizeStub,
-                true
+                $defaultSizeStub,
+                $defaultCropFlag
             );
 
         $expectedUrl = $thumbnailUrlFolder . '/' . $thumbnailFileName;

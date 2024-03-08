@@ -39,17 +39,19 @@ class ThumbnailService implements ThumbnailServiceInterface
         ImageSizeInterface $imageSize = null,
         bool $crop = true
     ): string {
-        $thumbnailFileName = $this->thumbnailResource->getThumbnailFileName(
+        $thumbnailGenerator = $this->thumbnailGeneratorAggregate->getSupportedGenerator($fileName);
+
+        $thumbnailFileName = $thumbnailGenerator->getThumbnailFileName(
             originalFileName: $fileName,
             thumbnailSize: $imageSize ?? $this->thumbnailResource->getDefaultThumbnailSize(),
-            crop: $crop
+            isCropRequired: $crop
         );
 
         $thumbnailDirectoryPath = $this->thumbnailResource->getPathToThumbnailFiles($folderName);
         $thumbnailPath = Path::join($thumbnailDirectoryPath, $thumbnailFileName);
         if (!is_file($thumbnailPath)) {
             $this->fileSystemService->ensureDirectory($thumbnailDirectoryPath);
-            $this->thumbnailGeneratorAggregate->generateThumbnail(
+            $thumbnailGenerator->generateThumbnail(
                 sourcePath: Path::join($this->mediaResource->getPathToMediaFiles($folderName), $fileName),
                 thumbnailPath: $thumbnailPath,
                 thumbnailSize: $imageSize ?? $this->thumbnailResource->getDefaultThumbnailSize(),

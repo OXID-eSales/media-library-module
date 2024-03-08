@@ -30,21 +30,6 @@ class ThumbnailGeneratorAggregate implements ThumbnailGeneratorAggregateInterfac
         }
     }
 
-    public function generateThumbnail(
-        string $sourcePath,
-        string $thumbnailPath,
-        ImageSizeInterface $thumbnailSize,
-        bool $isCropRequired,
-    ): void {
-        $thumbnailGenerator = $this->getSupportedGenerator($sourcePath);
-        $thumbnailGenerator->generateThumbnail(
-            sourcePath: $sourcePath,
-            thumbnailPath: $thumbnailPath,
-            size: $thumbnailSize,
-            blCrop: $isCropRequired
-        );
-    }
-
     public function getSupportedGenerator(string $sourcePath): ThumbnailGeneratorInterface
     {
         foreach($this->thumbnailGenerators as $oneDriver) {
