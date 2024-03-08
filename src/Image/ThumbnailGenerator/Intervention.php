@@ -20,7 +20,8 @@ class Intervention implements ThumbnailGeneratorInterface
 
     public function isOriginSupported(string $sourcePath): bool
     {
-        return true;
+        $extension = strtolower(pathinfo($sourcePath, PATHINFO_EXTENSION));
+        return in_array($extension, ['jpg', 'jpeg', 'webp', 'gif', 'png', 'avif', 'bmp']);
     }
 
     public function generateThumbnail(

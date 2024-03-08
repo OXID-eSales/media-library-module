@@ -108,11 +108,76 @@ class InterventionTest extends IntegrationTestCase
         ];
     }
 
-    public function testIsOriginSupported(): void
+    /** @dataProvider fileTypesDataProvider */
+    public function testIsOriginSupported(string $filePath, bool $expectedResult): void
     {
         $imageManager = new ImageManager(new Driver());
         $sut = new Intervention($imageManager);
 
-        $this->assertTrue($sut->isOriginSupported('anything'));
+        $this->assertSame($expectedResult, $sut->isOriginSupported($filePath));
+        $this->assertSame($expectedResult, $sut->isOriginSupported(strtoupper($filePath)));
+    }
+
+    public static function fileTypesDataProvider(): \Generator
+    {
+        yield "jpg" => [
+            'filePath' => 'someFileName.jpg',
+            'expectedResult' => true,
+        ];
+
+        yield "jpeg" => [
+            'filePath' => 'someFileName.jpeg',
+            'expectedResult' => true,
+        ];
+
+        yield "webp" => [
+            'filePath' => 'someFileName.webp',
+            'expectedResult' => true,
+        ];
+
+        yield "gif" => [
+            'filePath' => 'someFileName.gif',
+            'expectedResult' => true,
+        ];
+
+        yield "png" => [
+            'filePath' => 'someFileName.png',
+            'expectedResult' => true,
+        ];
+
+        yield "avif" => [
+            'filePath' => 'someFileName.avif',
+            'expectedResult' => true,
+        ];
+
+        yield "bmp" => [
+            'filePath' => 'someFileName.bmp',
+            'expectedResult' => true,
+        ];
+
+        yield "tiff" => [
+            'filePath' => 'someFileName.tiff',
+            'expectedResult' => false,
+        ];
+
+        yield "heic" => [
+            'filePath' => 'someFileName.heic',
+            'expectedResult' => false,
+        ];
+
+        yield "mp3" => [
+            'filePath' => 'someFileName.mp3',
+            'expectedResult' => false,
+        ];
+
+        yield "doc" => [
+            'filePath' => 'someFileName.doc',
+            'expectedResult' => false,
+        ];
+
+        yield "svg" => [
+            'filePath' => 'someFileName.svg',
+            'expectedResult' => false,
+        ];
     }
 }
