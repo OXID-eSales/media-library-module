@@ -20,16 +20,18 @@ class ThumbnailService implements ThumbnailServiceInterface
     public function __construct(
         protected ThumbnailResourceInterface $thumbnailResource,
         protected FileSystemServiceInterface $fileSystemService,
-        protected ThumbnailGeneratorInterface $thumbnailGenerator,
+        protected ThumbnailGeneratorAggregateInterface $thumbnailGeneratorAggregate,
         protected MediaResourceInterface $mediaResource,
     ) {
     }
 
     public function deleteMediaThumbnails(MediaInterface $media): void
     {
+        $thumbnailGenerator = $this->thumbnailGeneratorAggregate->getSupportedGenerator($media->getFileName());
+
         $this->fileSystemService->deleteByGlob(
             inPath: $this->thumbnailResource->getPathToThumbnailFiles($media->getFolderName()),
-            globTargetToDelete: $this->thumbnailResource->getThumbnailsGlob($media->getFileName())
+            globTargetToDelete: $thumbnailGenerator->getThumbnailsGlob($media->getFileName())
         );
     }
 
@@ -39,21 +41,23 @@ class ThumbnailService implements ThumbnailServiceInterface
         ImageSizeInterface $imageSize = null,
         bool $crop = true
     ): string {
-        $thumbnailFileName = $this->thumbnailResource->getThumbnailFileName(
+        $thumbnailGenerator = $this->thumbnailGeneratorAggregate->getSupportedGenerator($fileName);
+
+        $thumbnailFileName = $thumbnailGenerator->getThumbnailFileName(
             originalFileName: $fileName,
             thumbnailSize: $imageSize ?? $this->thumbnailResource->getDefaultThumbnailSize(),
-            crop: $crop
+            isCropRequired: $crop
         );
 
         $thumbnailDirectoryPath = $this->thumbnailResource->getPathToThumbnailFiles($folderName);
         $thumbnailPath = Path::join($thumbnailDirectoryPath, $thumbnailFileName);
         if (!is_file($thumbnailPath)) {
             $this->fileSystemService->ensureDirectory($thumbnailDirectoryPath);
-            $this->thumbnailGenerator->generateThumbnail(
+            $thumbnailGenerator->generateThumbnail(
                 sourcePath: Path::join($this->mediaResource->getPathToMediaFiles($folderName), $fileName),
                 thumbnailPath: $thumbnailPath,
-                size: $imageSize ?? $this->thumbnailResource->getDefaultThumbnailSize(),
-                blCrop: $crop
+                thumbnailSize: $imageSize ?? $this->thumbnailResource->getDefaultThumbnailSize(),
+                isCropRequired: $crop
             );
         }
 

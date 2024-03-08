@@ -31,4 +31,6 @@ interface FileSystemServiceInterface
     public function getFileSize(string $filePath): int;
 
     public function getMimeType(string $filePath): string;
+
+    public function copy(string $originalFile, string $destinationFile): void;
 }

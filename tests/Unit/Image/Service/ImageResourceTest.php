@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace Image\Service;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Service;
 
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\MediaLibrary\Media\DataType\Media;

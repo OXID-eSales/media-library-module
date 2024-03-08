@@ -1,6 +1,7 @@
 imports:
   - { resource: src/Breadcrumb/services.yaml }
   - { resource: src/Image/Service/services.yaml }
+  - { resource: src/Image/ThumbnailGenerator/services.yaml }
   - { resource: src/Language/Core/services.yaml }
   - { resource: src/Media/services.yaml }
   - { resource: src/Transput/services.yaml }
