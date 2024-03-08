@@ -26,14 +26,6 @@ class ThumbnailResourceTest extends TestCase
         );
     }
 
-    public function testGetThumbnailsGlob(): void
-    {
-        $sut = $this->getSut();
-
-        $originalFilename = 'someExampleFilename.txt';
-        $this->assertSame('8910f1d8c070ff09e13d4977fc339a29*.*', $sut->getThumbnailsGlob($originalFilename));
-    }
-
     public function testGetDefaultThumbnailSize(): void
     {
         $sut = $this->getSut();

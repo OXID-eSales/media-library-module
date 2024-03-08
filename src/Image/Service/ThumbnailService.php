@@ -27,9 +27,11 @@ class ThumbnailService implements ThumbnailServiceInterface
 
     public function deleteMediaThumbnails(MediaInterface $media): void
     {
+        $thumbnailGenerator = $this->thumbnailGeneratorAggregate->getSupportedGenerator($media->getFileName());
+
         $this->fileSystemService->deleteByGlob(
             inPath: $this->thumbnailResource->getPathToThumbnailFiles($media->getFolderName()),
-            globTargetToDelete: $this->thumbnailResource->getThumbnailsGlob($media->getFileName())
+            globTargetToDelete: $thumbnailGenerator->getThumbnailsGlob($media->getFileName())
         );
     }
 

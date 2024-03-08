@@ -28,6 +28,7 @@ class ThumbnailServiceTest extends TestCase
         $sut = $this->getSut(
             thumbnailResource: $thumbnailResourceStub = $this->createStub(ThumbnailResourceInterface::class),
             fileSystemService: $fileSystemServiceSpy = $this->createMock(FileSystemServiceInterface::class),
+            tgAgt: $thumbnailGeneratorAggregateStub = $this->createMock(ThumbnailGeneratorAggregateInterface::class),
         );
 
         $mediaFileName = uniqid();
@@ -38,8 +39,11 @@ class ThumbnailServiceTest extends TestCase
 
         $thumbGlob = 'exampleThumbGlob';
         $thumbPath = 'exampleThumbPath';
-        $thumbnailResourceStub->method('getThumbnailsGlob')->with($mediaFileName)->willReturn($thumbGlob);
         $thumbnailResourceStub->method('getPathToThumbnailFiles')->with($mediaFolderName)->willReturn($thumbPath);
+
+        $thumbnailGeneratorStub = $this->createMock(ThumbnailGeneratorInterface::class);
+        $thumbnailGeneratorAggregateStub->method('getSupportedGenerator')->willReturn($thumbnailGeneratorStub);
+        $thumbnailGeneratorStub->method('getThumbnailsGlob')->with($mediaFileName)->willReturn($thumbGlob);
 
         $fileSystemServiceSpy->expects($this->once())->method('deleteByGlob')->with($thumbPath, $thumbGlob);
 

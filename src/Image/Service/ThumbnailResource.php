@@ -47,9 +47,4 @@ class ThumbnailResource implements ThumbnailResourceInterface
             self::THUMBNAIL_DIRECTORY
         );
     }
-
-    public function getThumbnailsGlob(string $originalFilename): string
-    {
-        return $this->getThumbnailFileHash($originalFilename) . '*.*';
-    }
 }
