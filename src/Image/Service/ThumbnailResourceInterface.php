@@ -14,12 +14,6 @@ use Symfony\Component\Filesystem\Path;
 
 interface ThumbnailResourceInterface
 {
-    public function getThumbnailFileName(
-        string $originalFileName,
-        ImageSizeInterface $thumbnailSize,
-        bool $crop
-    ): string;
-
     public function getDefaultThumbnailSize(): ImageSizeInterface;
 
     public function getPathToThumbnailFiles(string $folderName): string;

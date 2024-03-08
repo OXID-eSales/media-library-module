@@ -27,26 +27,6 @@ class ThumbnailResource implements ThumbnailResourceInterface
         return md5($originalFilename);
     }
 
-    public function getThumbnailFileName(
-        string $originalFileName,
-        ImageSizeInterface $thumbnailSize,
-        bool $crop
-    ): string {
-        return sprintf(
-            '%s_thumb_%d*%d%s.%s',
-            $this->getThumbnailFileHash($originalFileName),
-            $thumbnailSize->getWidth(),
-            $thumbnailSize->getHeight(),
-            $crop ? '' : '_nocrop',
-            $this->getExtensionFromFileName($originalFileName)
-        );
-    }
-
-    protected function getExtensionFromFileName(string $fileName): string
-    {
-        return pathinfo($fileName, PATHINFO_EXTENSION);
-    }
-
     public function getDefaultThumbnailSize(): ImageSizeInterface
     {
         return new ImageSize(width: self::THUMBNAIL_DEFAULT_SIZE, height: self::THUMBNAIL_DEFAULT_SIZE);

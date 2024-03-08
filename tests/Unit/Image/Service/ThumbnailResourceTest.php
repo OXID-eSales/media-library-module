@@ -18,72 +18,12 @@ use PHPUnit\Framework\TestCase;
  */
 class ThumbnailResourceTest extends TestCase
 {
-    public static function getThumbnailFileNameDataProvider(): \Generator
-    {
-        $fileName = 'filename.jpg';
-        $fileNameHash = md5($fileName);
-        yield "regular jpg 100x100 nocrop" => [
-            'originalFileName' => $fileName,
-            'thumbnailSize' => new ImageSize(100, 100),
-            'crop' => true,
-            'expectedName' => $fileNameHash . '_thumb_100*100.jpg'
-        ];
-
-        yield "regular jpg 100x100 crop" => [
-            'originalFileName' => $fileName,
-            'thumbnailSize' => new ImageSize(100, 100),
-            'crop' => false,
-            'expectedName' => $fileNameHash . '_thumb_100*100_nocrop.jpg'
-        ];
-
-        yield "regular jpg 200x50 nocrop" => [
-            'originalFileName' => $fileName,
-            'thumbnailSize' => new ImageSize(200, 50),
-            'crop' => true,
-            'expectedName' => $fileNameHash . '_thumb_200*50.jpg'
-        ];
-
-        yield "regular jpg 200x50 crop" => [
-            'originalFileName' => $fileName,
-            'thumbnailSize' => new ImageSize(200, 50),
-            'crop' => false,
-            'expectedName' => $fileNameHash . '_thumb_200*50_nocrop.jpg'
-        ];
-
-        $specialExtensionFileName = 'filename.xxx';
-        $specialExtensionFileNameHash = md5($specialExtensionFileName);
-        yield "extension save check" => [
-            'originalFileName' => $specialExtensionFileName,
-            'thumbnailSize' => new ImageSize(100, 100),
-            'crop' => true,
-            'expectedName' => $specialExtensionFileNameHash . '_thumb_100*100.xxx'
-        ];
-    }
-
     protected function getSut(
         MediaResourceInterface $imageResource = null,
     ) {
         return new ThumbnailResource(
             mediaResource: $imageResource ?: $this->createStub(MediaResourceInterface::class),
         );
-    }
-
-    /** @dataProvider getThumbnailFileNameDataProvider */
-    public function testGetThumbnailFileName(
-        string $originalFileName,
-        ImageSizeInterface $thumbnailSize,
-        bool $crop,
-        string $expectedName
-    ): void {
-        $sut = $this->getSut();
-
-        $result = $sut->getThumbnailFileName(
-            originalFileName: $originalFileName,
-            thumbnailSize: $thumbnailSize,
-            crop: $crop
-        );
-
-        $this->assertSame($expectedName, $result);
     }
 
     public function testGetThumbnailsGlob(): void
