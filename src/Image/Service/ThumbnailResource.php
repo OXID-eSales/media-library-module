@@ -22,11 +22,6 @@ class ThumbnailResource implements ThumbnailResourceInterface
     ) {
     }
 
-    private function getThumbnailFileHash(string $originalFilename): string
-    {
-        return md5($originalFilename);
-    }
-
     public function getDefaultThumbnailSize(): ImageSizeInterface
     {
         return new ImageSize(width: self::THUMBNAIL_DEFAULT_SIZE, height: self::THUMBNAIL_DEFAULT_SIZE);
