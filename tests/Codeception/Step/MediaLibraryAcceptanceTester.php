@@ -107,7 +107,7 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
         $I->waitForElement($this->uploadTab);
         $I->retryClick($this->uploadTab);
 
-        $I->see(Translator::translate('DD_MEDIA_UPLOAD_INFO'));
+        $I->see(strip_tags(Translator::translate('DD_MEDIA_DRAG_INFO')));
         $I->waitForElement($this->uploadGrid);
 
         return $this;
