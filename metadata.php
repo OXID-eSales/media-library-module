@@ -24,7 +24,7 @@ $aModule = [
     'thumbnail'   => 'logo.png',
     'version'     => '1.0.0',
     'author'      => 'OXID eSales AG & digidesk - media solutions',
-    'url'         => 'http://www.oxid-esales.com',
+    'url'         => 'https://www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
     'extend'      => [
         // Core
