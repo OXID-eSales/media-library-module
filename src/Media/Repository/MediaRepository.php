@@ -12,7 +12,7 @@ namespace OxidEsales\MediaLibrary\Media\Repository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
-use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Exception\WrongMediaIdGivenException;
@@ -23,7 +23,7 @@ class MediaRepository implements MediaRepositoryInterface
 
     public function __construct(
         private ConnectionProviderInterface $connectionProvider,
-        private BasicContextInterface $basicContext,
+        private ContextInterface $context,
         private MediaFactoryInterface $mediaFactory,
     ) {
         $this->connection = $this->connectionProvider->get();
@@ -34,7 +34,7 @@ class MediaRepository implements MediaRepositoryInterface
         $result = $this->connection->executeQuery(
             "SELECT count(*) FROM ddmedia WHERE OXSHOPID = :OXSHOPID AND DDFOLDERID = :DDFOLDERID",
             [
-                'OXSHOPID' => $this->basicContext->getCurrentShopId(),
+                'OXSHOPID' => $this->context->getCurrentShopId(),
                 'DDFOLDERID' => $folderId
             ]
         );
@@ -49,7 +49,7 @@ class MediaRepository implements MediaRepositoryInterface
             . "WHERE m.OXSHOPID = :OXSHOPID AND m.DDFOLDERID = :DDFOLDERID
             ORDER BY m.OXTIMESTAMP DESC LIMIT $start, $limit",
             [
-                'OXSHOPID' => $this->basicContext->getCurrentShopId(),
+                'OXSHOPID' => $this->context->getCurrentShopId(),
                 'DDFOLDERID' => $folderId
             ]
         );
@@ -92,7 +92,7 @@ class MediaRepository implements MediaRepositoryInterface
                 DDIMAGESIZE = :DDIMAGESIZE,
                 DDFOLDERID = :DDFOLDERID",
             [
-                'OXSHOPID' => $this->basicContext->getCurrentShopId(),
+                'OXSHOPID' => $this->context->getCurrentShopId(),
                 'OXID' => $exampleMedia->getOxid(),
                 'DDFILENAME' => $exampleMedia->getFileName(),
                 'DDFILESIZE' => $exampleMedia->getFileSize(),

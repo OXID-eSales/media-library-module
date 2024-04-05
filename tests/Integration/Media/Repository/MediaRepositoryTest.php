@@ -13,13 +13,12 @@ use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
-use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Exception\WrongMediaIdGivenException;
-use OxidEsales\MediaLibrary\Media\Repository\MediaFactory;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepository;
 
@@ -35,10 +34,10 @@ class MediaRepositoryTest extends IntegrationTestCase
         $this->createTestItems(3, 'someFolder');
         $this->createTestItems(2, '');
 
-        $basicContextStub = $this->createMock(BasicContextInterface::class);
-        $basicContextStub->method('getCurrentShopId')->willReturn(2);
+        $contextStub = $this->createMock(ContextInterface::class);
+        $contextStub->method('getCurrentShopId')->willReturn(2);
         $sut = $this->getSut(
-            basicContext: $basicContextStub
+            context: $contextStub
         );
 
         $this->assertSame(3, $sut->getFolderMediaCount('someFolder'));
@@ -154,21 +153,21 @@ class MediaRepositoryTest extends IntegrationTestCase
 
     private function getSutForShop(int $shopId): MediaRepository
     {
-        $basicContextStub = $this->createMock(BasicContextInterface::class);
-        $basicContextStub->method('getCurrentShopId')->willReturn($shopId);
+        $contextStub = $this->createMock(ContextInterface::class);
+        $contextStub->method('getCurrentShopId')->willReturn($shopId);
         return $this->getSut(
-            basicContext: $basicContextStub
+            context: $contextStub
         );
     }
 
     private function getSut(
-        ?BasicContextInterface $basicContext = null,
+        ?ContextInterface $context = null,
         ?ConnectionProviderInterface $connectionProvider = null,
         ?MediaFactoryInterface $mediaFactory = null,
     ): MediaRepository {
         $sut = new MediaRepository(
             connectionProvider: $connectionProvider ?? $this->get(ConnectionProviderInterface::class),
-            basicContext: $basicContext ?? $this->get(BasicContextInterface::class),
+            context: $context ?? $this->get(ContextInterface::class),
             mediaFactory: $mediaFactory ?? $this->get(MediaFactoryInterface::class),
         );
 
