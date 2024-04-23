@@ -122,10 +122,10 @@ class NamingServiceTest extends TestCase
     }
 
     /** @dataProvider validationGoodFileNamesDataProvider */
-    public function testValidateGoodFilename(string $goodFilename): void
+    public function testValidateGoodFilename(string $fileName): void
     {
         $sut = $this->getSut();
-        $this->assertTrue($sut->validateFileName($goodFilename));
+        $this->assertTrue($sut->validateFileName($fileName));
     }
 
     public static function validationGoodFileNamesDataProvider(): \Generator
@@ -134,12 +134,12 @@ class NamingServiceTest extends TestCase
     }
 
     /** @dataProvider validationBadFileNamesDataProvider */
-    public function testValidateBadFilename(string $badFilename): void
+    public function testValidateBadFilename(string $fileName): void
     {
         $sut = $this->getSut();
 
         $this->expectException(WrongFileTypeException::class);
-        $sut->validateFileName($badFilename);
+        $sut->validateFileName($fileName);
     }
 
     public static function validationBadFileNamesDataProvider(): \Generator
