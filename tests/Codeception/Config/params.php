@@ -11,6 +11,10 @@ use OxidEsales\Codeception\Module\Database\DatabaseDefaultsFileGenerator;
 use OxidEsales\Facts\Config\ConfigFile;
 use OxidEsales\Facts\Facts;
 
+if ($shopRootPath = getenv('SHOP_ROOT_PATH')){
+    require_once($shopRootPath . '/source/bootstrap.php');
+}
+
 $facts = new Facts();
 return [
     'SHOP_URL' => $facts->getShopUrl(),
@@ -30,7 +34,7 @@ return [
     'BROWSER_NAME' => getenv('BROWSER_NAME') ?: 'chrome',
     'PHP_BIN' => getenv('PHPBIN') ?: 'php',
     'SCREEN_SHOT_URL' => getenv('CC_SCREEN_SHOTS_PATH') ?: '',
-    'THEME_ID' => getenv('THEME_ID') ?: 'twig'
+    'THEME_ID' => getenv('THEME_ID') ?: 'apex'
 ];
 
 function getTestDataDumpFilePath(): string

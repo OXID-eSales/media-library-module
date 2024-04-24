@@ -31,7 +31,14 @@
     "phpunit/phpunit": "^10.4",
     "oxid-esales/oxideshop-ce": "dev-b-7.1.x",
     "mikey179/vfsstream": "~1.6.8",
-    "phpmd/phpmd": "^2.15"
+    "phpmd/phpmd": "^2.15",
+    "codeception/codeception": "^5.0",
+    "codeception/module-asserts": "^3.0",
+    "codeception/module-db": "^3.0",
+    "codeception/module-filesystem": "^3.0",
+    "codeception/module-webdriver": "^4.0",
+    "oxid-esales/codeception-modules": "dev-b-7.1.x",
+    "oxid-esales/codeception-page-objects": "dev-b-7.1.x"
   },
   "autoload": {
     "psr-4": {
@@ -61,7 +68,10 @@
     "tests-integration": "vendor/bin/phpunit --bootstrap=/var/www/source/bootstrap.php --config=tests/ --testsuite=Integration",
     "tests-coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --bootstrap=/var/www/source/bootstrap.php --config=tests/ --coverage-html=tests/result/coverage",
 
-    "tests-codeception": "THEME_ID=apex MODULE_IDS=ddoemedialibrary /var/www/vendor/bin/codecept run Acceptance -c /var/www/vendor/oxid-esales/media-library-module/tests/codeception.yml",
+    "tests-codeception": [
+      "Composer\\Config::disableProcessTimeout",
+      "MODULE_IDS=ddoemedialibrary SHOP_ROOT_PATH=/var/www/ vendor/bin/codecept run Acceptance -c tests/codeception.yml"
+    ],
 
     "tests-all": [
       "@tests-unit",
