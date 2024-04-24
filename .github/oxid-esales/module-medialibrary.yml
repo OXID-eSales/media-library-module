@@ -1,0 +1,69 @@
+# {{ $ids := "ddoemedialibrary" }}ids: {{ $ids }}
+# {{ $org := "oxid-esales" }}organisation: {{ $org }}
+# {{ $name := "media-library-module" }}name: {{ $name }}
+# {{ $repo := "OXID-eSales/media-library-module" }}repo: {{ $repo }}
+
+install_shop_with_modules:
+  cache:
+    prepared_shop: false
+  composer:
+    transform: |
+      {
+          "require": {
+              "oxid-esales/oxideshop-ce": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/twig-component": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/twig-admin-theme": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/apex-theme": "{{ .Data.global.composer.dev_ref }}",
+              "oxid-esales/developer-tools": "{{ .Data.global.composer.dev_ref }}",
+              "{{ $org }}/{{ $name }}": "dev-{{ .Github.RefName }}"
+          },
+          "repositories": {
+            "{{ $org }}/{{ $name }}": {
+              "type": "git",
+              "url": "https://github.com/{{ $repo }}.git"
+            },
+            "oxid-esales/developer-tools": {
+              "type": "git",
+              "url": "https://github.com/OXID-eSales/developer-tools.git"
+            }
+          }
+      }
+  custom_script_container: |
+    vendor/bin/oe-console oe:database:reset --db-host=mysql --db-port=3306 --db-name=example --db-user=root --db-password=root --force
+    vendor/bin/oe-console oe:module:activate "{{ $ids }}"
+    vendor/bin/oe-console oe:theme:activate apex
+
+runscript: &runscript
+  matrix:
+    script: |
+      [
+        "medialibrary:tests-unit",
+        "medialibrary:tests-integration"
+      ]
+  medialibrary:
+    path: 'vendor/{{ $org}}/{{ $name }}'
+
+runslim:
+  <<: *runscript
+  matrix:
+    script: |
+      [
+        "medialibrary:phpstan",
+        "medialibrary:phpcs",
+      ]
+
+sonarcloud:
+  matrix:
+    testplan: '["-"]'
+  strip_path: '/var/www/vendor/{{ print $org }}/{{ print $name}}/'
+  project_key: 'OXID-eSales_{{ print $name }}'
+  project_name: '{{ $org}}/{{ $name }}'
+  parameters: |
+    -Dsonar.language=php
+    -Dsonar.scm.provider=git
+    -Dsonar.sources=src
+    -Dsonar.tests=tests
+    -Donar.php.phpstan.reportPaths=coverage-reports/phpstan.report.json
+
+finish:
+  slack_title: '{{ print $name }} ({{ .Data.global.git.shop_ref }}) by {{ .Github.Actor }}'

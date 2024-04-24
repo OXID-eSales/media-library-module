@@ -82,7 +82,6 @@ class MediaController extends AdminDetailsController
         $responseService = $this->getService(ResponseInterface::class);
 
         $sId = null;
-        $sFileName = '';
         $sThumb = '';
 
         try {
@@ -121,7 +120,7 @@ class MediaController extends AdminDetailsController
             $responseService->responseAsJson([
                 'success' => true,
                 'id' => $sId,
-                'file' => $sFileName,
+                'file' => $sFileName ?? '',
                 'filetype' => $sFileType ?? '',
                 'filesize' => $sFileSize ?? '',
                 'imagesize' => $sImageSize ?? '',

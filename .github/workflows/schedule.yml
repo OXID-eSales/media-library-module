@@ -1,17 +1,20 @@
-name: Auto trigger on Push to 7.1.x*
+name: Schedule for full matrix run
 
 on:
-  push:
-    branches:
-      - 'b-7.1.x**'
+  schedule:
+    - cron: '0 0 */7 * *'
 
 jobs:
-  push_module:
-    uses: oxid-eSales/github-actions/.github/workflows/call-universal_test_workflow.yml@v3
+  schedule_matrix:
+    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yml@v4
     with:
-      testplan: 'tests/github_actions/defaults/7.1.x.yml,tests/github_actions/module-medialibrary.yml'
+      testplan: '~/defaults/7.1.x.yml,~/module-medialibrary.yml,~/_custom.yml'
       runs_on: '"ubuntu-latest"'
-      defaults: 'v3'
+      defaults: 'v4'
+      plan_folder: '.github/oxid-esales'
+      custom_testplan_yaml: |
+        global:
+          title: 'php81_mysql80-{{ .Github.EventName }}-{{ .Github.RefName }}'
     secrets:
       DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
       DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
