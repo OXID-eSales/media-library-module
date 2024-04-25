@@ -1,6 +1,6 @@
 # Media Library Module for OXID eShop
 
-[![Development](https://github.com/OXID-eSales/media-library-module/actions/workflows/push_module_71x.yml/badge.svg?branch=b-7.1.x)](https://github.com/OXID-eSales/media-library-module/actions/workflows/push_module_71x.yml)
+[![Development](https://github.com/OXID-eSales/media-library-module/actions/workflows/trigger.yml/badge.svg?branch=b-7.1.x)](https://github.com/OXID-eSales/media-library-module/actions/workflows/trigger.yml)
 [![Latest Version](https://img.shields.io/packagist/v/OXID-eSales/media-library-module?logo=composer&label=latest&include_prereleases&color=orange)](https://packagist.org/packages/oxid-esales/media-library-module)
 [![PHP Version](https://img.shields.io/packagist/php-v/oxid-esales/media-library-module)](https://github.com/oxid-esales/media-library-module)
 
