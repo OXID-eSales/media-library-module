@@ -65,7 +65,6 @@ modules:
           - Application/views/admin_twig
           - Application/views/apex
           - ../vendor/oxid-esales/media-library-module/views/admin_twig
-    - \OxidEsales\Codeception\Module\OxideshopModules
 
 step_decorators:
   - \Codeception\Step\Retry

@@ -68,7 +68,7 @@
 
     "tests-codeception": [
       "Composer\\Config::disableProcessTimeout",
-      "MODULE_IDS=ddoemedialibrary SHOP_ROOT_PATH=/var/www/ vendor/bin/codecept run Acceptance -c tests/codeception.yml"
+      "SHOP_ROOT_PATH=/var/www/ vendor/bin/codecept run Acceptance -c tests/codeception.yml"
     ],
 
     "tests-all": [
