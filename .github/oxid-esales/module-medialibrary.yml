@@ -29,7 +29,7 @@ runscript: &runscript
     script: |
       [
         "medialibrary:tests-unit",
-        "medialibrary:tests-integration"
+        "medialibrary:tests-integration",
         "medialibrary:tests-codeception"
       ]
   medialibrary:
