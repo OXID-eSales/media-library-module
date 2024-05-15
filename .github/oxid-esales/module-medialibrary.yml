@@ -30,6 +30,7 @@ runscript: &runscript
       [
         "medialibrary:tests-unit",
         "medialibrary:tests-integration"
+        "medialibrary:tests-codeception"
       ]
   medialibrary:
     path: 'vendor/oxid-esales/media-library-module'
