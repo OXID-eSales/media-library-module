@@ -118,6 +118,7 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
         $I = $this;
         $I->attachFile($this->uploadHolder, $uploadImage);
         $I->waitForElement($this->uploadHolder);
+        $I->waitForAjax();
         $I->waitForElementVisible($this->mediaDetails);
 
         return $this;
@@ -126,7 +127,7 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
     public function switchToMediaListTab(): self
     {
         $I = $this;
-        $I->waitForElementVisible($this->listTab);
+        $I->waitForElementClickable($this->listTab);
         $I->click($this->listTab);
 
         return $this;
@@ -166,7 +167,7 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
         $I->waitForElementVisible($this->mediaDetails);
 
         $I->click($this->removeImageButton);
-        $I->waitForElementVisible($this->removeImageConfirmButton);
+        $I->waitForElementClickable($this->removeImageConfirmButton);
         $I->click($this->removeImageConfirmButton);
         $I->waitForElementNotVisible($this->mediaDetails);
 
