@@ -6,8 +6,8 @@
 module.exports = {
 
     development: {
-        files: [ "build/**/*.js", "build/**/*.less", "build/**/*.scss" ],
-        tasks: [ "development" ]
+        files: ["build/**/*.js", "build/**/*.less", "build/**/*.scss"],
+        tasks: ["development"]
     }
 
 };

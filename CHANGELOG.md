@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Use correct interface for shop id calculation
+- Reformat js and styles for better readability
 
 ## [1.0.0] - 2024-03-12
 

@@ -8,7 +8,7 @@ module.exports = {
     options: {
         compress: true,
         plugins: [
-            new ( require( 'less-plugin-autoprefix') )( { browsers: [ "last 2 versions" ] } )
+            new (require('less-plugin-autoprefix'))({browsers: ["last 2 versions"]})
         ]
     },
 
