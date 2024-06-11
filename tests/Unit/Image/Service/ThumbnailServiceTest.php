@@ -57,7 +57,7 @@ class ThumbnailServiceTest extends TestCase
         $sut = $this->getSut(
             thumbnailResource: $thumbnailResourceMock = $this->createMock(ThumbnailResourceInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
-            tgAgt: $thumbnailGeneratorAggregateStub = $this->createMock(ThumbnailGeneratorAggregateInterface::class),
+            tgAgt: $thumbnailGeneratorAggregateMock = $this->createMock(ThumbnailGeneratorAggregateInterface::class),
             imageResource: $mediaResourceMock = $this->createMock(MediaResourceInterface::class),
         );
 
@@ -69,30 +69,38 @@ class ThumbnailServiceTest extends TestCase
         $thumbnailFolder = $vfsRootPath . '/thumbs';
         $thumbnailUrlFolder = 'someUrlToThumbFolder';
         $defaultCropFlag = true;
+        $expectedUrl = $thumbnailUrlFolder . '/' . $thumbnailFileName;
 
-        $thumbnailResourceMock->method('getUrlToThumbnailFiles')->with($folderName)->willReturn($thumbnailUrlFolder);
+        $thumbnailResourceMock->method('getUrlToThumbnailFile')
+            ->with($thumbnailFileName, $folderName)
+            ->willReturn($expectedUrl);
         $thumbnailResourceMock->method('getPathToThumbnailFiles')->with($folderName)->willReturn($thumbnailFolder);
+        $thumbnailResourceMock->method('getPathToThumbnailFile')
+            ->with($thumbnailFileName, $folderName)
+            ->willReturn($thumbnailFolder . '/' . $thumbnailFileName);
         $thumbnailResourceMock->method('getDefaultThumbnailSize')->willReturn($defaultSizeStub);
 
         $originalFolder = 'originalFolder';
-        $mediaResourceMock->method('getPathToMediaFiles')->with($folderName)->willReturn($originalFolder);
+        $originalFilePath = $originalFolder . '/' . $fileName;
+        $mediaResourceMock->method('getPathToMediaFile')->with($folderName, $fileName)->willReturn($originalFilePath);
 
         $fileSystemSpy->expects($this->once())->method('ensureDirectory')->with($thumbnailFolder);
 
         $thumbnailGeneratorSpy = $this->createMock(ThumbnailGeneratorInterface::class);
-        $thumbnailGeneratorAggregateStub->method('getSupportedGenerator')->willReturn($thumbnailGeneratorSpy);
+        $thumbnailGeneratorAggregateMock->method('getSupportedGenerator')
+            ->with($originalFilePath)
+            ->willReturn($thumbnailGeneratorSpy);
         $thumbnailGeneratorSpy->method('getThumbnailFileName')
             ->with($fileName, $defaultSizeStub, $defaultCropFlag)
             ->willReturn($thumbnailFileName);
         $thumbnailGeneratorSpy->expects($this->once())->method('generateThumbnail')
             ->with(
-                $originalFolder . '/' . $fileName,
+                $originalFilePath,
                 $thumbnailFolder . '/' . $thumbnailFileName,
                 $defaultSizeStub,
                 $defaultCropFlag
             );
 
-        $expectedUrl = $thumbnailUrlFolder . '/' . $thumbnailFileName;
         $this->assertSame($expectedUrl, $sut->ensureAndGetThumbnailUrl($folderName, $fileName));
     }
 

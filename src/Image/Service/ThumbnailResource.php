@@ -35,11 +35,27 @@ class ThumbnailResource implements ThumbnailResourceInterface
         );
     }
 
+    public function getPathToThumbnailFile(string $fileName, ?string $folderName = null): string
+    {
+        return Path::join(
+            $this->getPathToThumbnailFiles($folderName ?? ''),
+            $fileName
+        );
+    }
+
     public function getUrlToThumbnailFiles(string $folderName = ''): string
     {
         return Path::join(
             $this->mediaResource->getUrlToMediaFiles(folderName: $folderName),
             self::THUMBNAIL_DIRECTORY
+        );
+    }
+
+    public function getUrlToThumbnailFile(string $fileName, ?string $folderName = null): string
+    {
+        return Path::join(
+            $this->getUrlToThumbnailFiles($folderName ?? ''),
+            $fileName
         );
     }
 }

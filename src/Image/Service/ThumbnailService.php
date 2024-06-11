@@ -41,7 +41,8 @@ class ThumbnailService implements ThumbnailServiceInterface
         ImageSizeInterface $imageSize = null,
         bool $crop = true
     ): string {
-        $thumbnailGenerator = $this->thumbnailGeneratorAggregate->getSupportedGenerator($fileName);
+        $sourcePath = $this->mediaResource->getPathToMediaFile($folderName, $fileName);
+        $thumbnailGenerator = $this->thumbnailGeneratorAggregate->getSupportedGenerator($sourcePath);
 
         $thumbnailFileName = $thumbnailGenerator->getThumbnailFileName(
             originalFileName: $fileName,
@@ -49,18 +50,23 @@ class ThumbnailService implements ThumbnailServiceInterface
             isCropRequired: $crop
         );
 
-        $thumbnailDirectoryPath = $this->thumbnailResource->getPathToThumbnailFiles($folderName);
-        $thumbnailPath = Path::join($thumbnailDirectoryPath, $thumbnailFileName);
+        $thumbnailPath = $this->thumbnailResource->getPathToThumbnailFile($thumbnailFileName, $folderName);
         if (!is_file($thumbnailPath)) {
-            $this->fileSystemService->ensureDirectory($thumbnailDirectoryPath);
+            $this->ensureThumbnailDirectoryExist($folderName);
             $thumbnailGenerator->generateThumbnail(
-                sourcePath: Path::join($this->mediaResource->getPathToMediaFiles($folderName), $fileName),
+                sourcePath: $sourcePath,
                 thumbnailPath: $thumbnailPath,
                 thumbnailSize: $imageSize ?? $this->thumbnailResource->getDefaultThumbnailSize(),
                 isCropRequired: $crop
             );
         }
 
-        return Path::join($this->thumbnailResource->getUrlToThumbnailFiles($folderName), $thumbnailFileName);
+        return $this->thumbnailResource->getUrlToThumbnailFile($thumbnailFileName, $folderName);
+    }
+
+    private function ensureThumbnailDirectoryExist(string $folderName): void
+    {
+        $thumbnailDirectoryPath = $this->thumbnailResource->getPathToThumbnailFiles($folderName);
+        $this->fileSystemService->ensureDirectory($thumbnailDirectoryPath);
     }
 }

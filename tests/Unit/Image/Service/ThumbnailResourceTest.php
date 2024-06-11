@@ -50,7 +50,7 @@ class ThumbnailResourceTest extends TestCase
         $mediaFilesPath = 'somePathToMediaFiles';
 
         $sut = $this->getSut(
-            imageResource: $imageResource = $this->createStub(MediaResourceInterface::class)
+            imageResource: $imageResource = $this->createMock(MediaResourceInterface::class)
         );
         $imageResource->method('getPathToMediaFiles')->with('')->willReturn($mediaFilesPath);
 
@@ -63,7 +63,7 @@ class ThumbnailResourceTest extends TestCase
         $folder = uniqid();
 
         $sut = $this->getSut(
-            imageResource: $imageResource = $this->createStub(MediaResourceInterface::class)
+            imageResource: $imageResource = $this->createMock(MediaResourceInterface::class)
         );
         $imageResource->method('getPathToMediaFiles')->with($folder)->willReturn($mediaFilesPath);
 
@@ -75,7 +75,7 @@ class ThumbnailResourceTest extends TestCase
         $mediaFilesUrl = 'someUrlToMediaFiles';
 
         $sut = $this->getSut(
-            imageResource: $imageResource = $this->createStub(MediaResourceInterface::class)
+            imageResource: $imageResource = $this->createMock(MediaResourceInterface::class)
         );
         $imageResource->method('getUrlToMediaFiles')->with($this->isEmpty())->willReturn($mediaFilesUrl);
 
@@ -84,14 +84,60 @@ class ThumbnailResourceTest extends TestCase
 
     public function testGetUrlToThumbnailFilesWithFolder(): void
     {
-        $mediaFilesUrl = 'someUrlToMediaFiles';
+        $mediaFilesUrlWithFolder = 'someUrlToMediaFiles';
         $folder = uniqid();
 
         $sut = $this->getSut(
-            imageResource: $imageResource = $this->createStub(MediaResourceInterface::class)
+            imageResource: $imageResourceMock = $this->createMock(MediaResourceInterface::class)
         );
-        $imageResource->method('getUrlToMediaFiles')->with($folder)->willReturn($mediaFilesUrl);
+        $imageResourceMock->method('getUrlToMediaFiles')->with($folder)->willReturn($mediaFilesUrlWithFolder);
 
-        $this->assertSame($mediaFilesUrl . '/thumbs', $sut->getUrlToThumbnailFiles($folder));
+        $this->assertSame($mediaFilesUrlWithFolder . '/thumbs', $sut->getUrlToThumbnailFiles($folder));
+    }
+
+    public function testGetPathToThumbnailFile(): void
+    {
+        $thumbFilesPath = 'somePathToThumbnailFile';
+        $fileName = uniqid();
+        $folder = uniqid();
+
+        $sut = $this->createPartialMock(ThumbnailResource::class, ['getPathToThumbnailFiles']);
+        $sut->method('getPathToThumbnailFiles')->with($folder)->willReturn($thumbFilesPath);
+
+        $this->assertSame($thumbFilesPath . '/' . $fileName, $sut->getPathToThumbnailFile($fileName, $folder));
+    }
+
+    public function testGetPathToThumbnailFileWithoutFolder(): void
+    {
+        $thumbFilesPath = 'somePathToThumbnailFile';
+        $fileName = uniqid();
+
+        $sut = $this->createPartialMock(ThumbnailResource::class, ['getPathToThumbnailFiles']);
+        $sut->method('getPathToThumbnailFiles')->with('')->willReturn($thumbFilesPath);
+
+        $this->assertSame($thumbFilesPath . '/' . $fileName, $sut->getPathToThumbnailFile($fileName));
+    }
+
+    public function testGetUrlToThumbnailFile(): void
+    {
+        $mediaFilesUrlWithoutFolder = 'someUrlToThumbnailFiles';
+        $fileName = uniqid();
+        $folder = uniqid();
+
+        $sut = $this->createPartialMock(ThumbnailResource::class, ['getUrlToThumbnailFiles']);
+        $sut->method('getUrlToThumbnailFiles')->with($folder)->willReturn($mediaFilesUrlWithoutFolder);
+
+        $this->assertSame($mediaFilesUrlWithoutFolder . '/' . $fileName, $sut->getUrlToThumbnailFile($fileName, $folder));
+    }
+
+    public function testGetUrlToThumbnailFileWithoutFolder(): void
+    {
+        $mediaFilesUrlWithoutFolder = 'someUrlToThumbnailFiles';
+        $thumbnailFileName = uniqid();
+
+        $sut = $this->createPartialMock(ThumbnailResource::class, ['getUrlToThumbnailFiles']);
+        $sut->method('getUrlToThumbnailFiles')->with('')->willReturn($mediaFilesUrlWithoutFolder);
+
+        $this->assertSame($mediaFilesUrlWithoutFolder . '/' . $thumbnailFileName, $sut->getUrlToThumbnailFile($thumbnailFileName));
     }
 }
