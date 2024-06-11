@@ -14,6 +14,7 @@ use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionDriver;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * @covers \OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionDriver
@@ -34,7 +35,7 @@ class InterventionDriverTest extends IntegrationTestCase
         $rootPath = vfsStream::setup()->url();
 
         $imageManager = new ImageManager(new Driver());
-        $sut = new InterventionDriver($imageManager);
+        $sut = $this->getSut(imageManager: $imageManager);
 
         $sourcePath = $rootPath . '/source.jpg';
         $img = $imageManager->create($sourceWidth, $sourceHeight);
@@ -53,6 +54,25 @@ class InterventionDriverTest extends IntegrationTestCase
         $resultThumbnailImage = $imageManager->read($thumbnailPath);
         self::assertSame($expectedThumbnailWidth, $resultThumbnailImage->width());
         self::assertSame($expectedThumbnailHeight, $resultThumbnailImage->height());
+    }
+
+    public function testInterventionExceptionDoesntExplodeButLogsError(): void {
+        $rootPath = vfsStream::setup()->url();
+
+        $loggerSpy = $this->createMock(LoggerInterface::class);
+        $loggerSpy->expects($this->once())->method('error');
+
+        $sut = $this->getSut(logger: $loggerSpy);
+
+        $sourcePath = 'notExisting';
+        $thumbnailPath = $rootPath . '/thumbnail.jpg';
+
+        $sut->generateThumbnail(
+            sourcePath: $sourcePath,
+            thumbnailPath: $thumbnailPath,
+            thumbnailSize: new ImageSize(100, 100),
+            isCropRequired: true
+        );
     }
 
     public static function getThumbnailDataProvider(): array
@@ -112,8 +132,7 @@ class InterventionDriverTest extends IntegrationTestCase
     /** @dataProvider fileTypesDataProvider */
     public function testIsOriginSupported(string $filePath, bool $expectedResult): void
     {
-        $imageManager = new ImageManager(new Driver());
-        $sut = new InterventionDriver($imageManager);
+        $sut = $this->getSut();
 
         $this->assertSame($expectedResult, $sut->isOriginSupported($filePath));
         $this->assertSame($expectedResult, $sut->isOriginSupported(strtoupper($filePath)));
@@ -189,8 +208,7 @@ class InterventionDriverTest extends IntegrationTestCase
         bool $crop,
         string $expectedName
     ): void {
-        $imageManager = new ImageManager(new Driver());
-        $sut = new InterventionDriver($imageManager);
+        $sut = $this->getSut();
 
         $result = $sut->getThumbnailFileName(
             originalFileName: $originalFileName,
@@ -245,10 +263,20 @@ class InterventionDriverTest extends IntegrationTestCase
 
     public function testGetThumbnailsGlob(): void
     {
-        $imageManager = new ImageManager(new Driver());
-        $sut = new InterventionDriver($imageManager);
+        $sut = $this->getSut();
 
         $originalFilename = 'someExampleFilename.txt';
         $this->assertSame('8910f1d8c070ff09e13d4977fc339a29*.*', $sut->getThumbnailsGlob($originalFilename));
+    }
+
+    public function getSut(
+        ImageManager $imageManager = null,
+        LoggerInterface $logger = null,
+    ): InterventionDriver
+    {
+        return new InterventionDriver(
+            imageManager: $imageManager ?? new ImageManager(new Driver()),
+            logger: $logger ?? $this->createStub(LoggerInterface::class)
+        );
     }
 }

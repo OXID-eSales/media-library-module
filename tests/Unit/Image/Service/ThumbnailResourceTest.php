@@ -7,8 +7,6 @@
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Service;
 
-use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
-use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResource;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use PHPUnit\Framework\TestCase;
@@ -127,7 +125,10 @@ class ThumbnailResourceTest extends TestCase
         $sut = $this->createPartialMock(ThumbnailResource::class, ['getUrlToThumbnailFiles']);
         $sut->method('getUrlToThumbnailFiles')->with($folder)->willReturn($mediaFilesUrlWithoutFolder);
 
-        $this->assertSame($mediaFilesUrlWithoutFolder . '/' . $fileName, $sut->getUrlToThumbnailFile($fileName, $folder));
+        $this->assertSame(
+            $mediaFilesUrlWithoutFolder . '/' . $fileName,
+            $sut->getUrlToThumbnailFile($fileName, $folder)
+        );
     }
 
     public function testGetUrlToThumbnailFileWithoutFolder(): void
@@ -138,6 +139,9 @@ class ThumbnailResourceTest extends TestCase
         $sut = $this->createPartialMock(ThumbnailResource::class, ['getUrlToThumbnailFiles']);
         $sut->method('getUrlToThumbnailFiles')->with('')->willReturn($mediaFilesUrlWithoutFolder);
 
-        $this->assertSame($mediaFilesUrlWithoutFolder . '/' . $thumbnailFileName, $sut->getUrlToThumbnailFile($thumbnailFileName));
+        $this->assertSame(
+            $mediaFilesUrlWithoutFolder . '/' . $thumbnailFileName,
+            $sut->getUrlToThumbnailFile($thumbnailFileName)
+        );
     }
 }

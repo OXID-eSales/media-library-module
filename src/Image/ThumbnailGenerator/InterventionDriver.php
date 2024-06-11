@@ -9,13 +9,17 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Image\ThumbnailGenerator;
 
+use Intervention\Image\Exceptions\RuntimeException;
 use Intervention\Image\ImageManager;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
+use Psr\Log\LoggerInterface;
 
 class InterventionDriver implements ThumbnailGeneratorInterface
 {
-    public function __construct(private readonly ImageManager $imageManager)
-    {
+    public function __construct(
+        private readonly ImageManager $imageManager,
+        private readonly LoggerInterface $logger,
+    ) {
     }
 
     public function isOriginSupported(string $sourcePath): bool
@@ -33,19 +37,23 @@ class InterventionDriver implements ThumbnailGeneratorInterface
         $thumbnailWidth = $thumbnailSize->getWidth();
         $thumbnailHeight = $thumbnailSize->getHeight();
 
-        $image = $this->imageManager->read($sourcePath);
-        if ($isCropRequired) {
-            $image->coverDown(
-                width: $thumbnailWidth,
-                height: $thumbnailHeight
-            );
-        } else {
-            $image->scaleDown(
-                width: $thumbnailWidth,
-                height: $thumbnailHeight
-            );
+        try {
+            $image = $this->imageManager->read($sourcePath);
+            if ($isCropRequired) {
+                $image->coverDown(
+                    width: $thumbnailWidth,
+                    height: $thumbnailHeight
+                );
+            } else {
+                $image->scaleDown(
+                    width: $thumbnailWidth,
+                    height: $thumbnailHeight
+                );
+            }
+            $image->save($thumbnailPath);
+        } catch (RuntimeException $exception) {
+            $this->logger->error('Media Library: Cannot create thumbnail from ' . $sourcePath);
         }
-        $image->save($thumbnailPath);
     }
 
     public function getThumbnailFileName(
