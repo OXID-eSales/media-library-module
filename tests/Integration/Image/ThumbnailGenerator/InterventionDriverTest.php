@@ -56,7 +56,8 @@ class InterventionDriverTest extends IntegrationTestCase
         self::assertSame($expectedThumbnailHeight, $resultThumbnailImage->height());
     }
 
-    public function testInterventionExceptionDoesntExplodeButLogsError(): void {
+    public function testInterventionExceptionDoesntExplodeButLogsError(): void
+    {
         $rootPath = vfsStream::setup()->url();
 
         $loggerSpy = $this->createMock(LoggerInterface::class);
@@ -272,8 +273,7 @@ class InterventionDriverTest extends IntegrationTestCase
     public function getSut(
         ImageManager $imageManager = null,
         LoggerInterface $logger = null,
-    ): InterventionDriver
-    {
+    ): InterventionDriver {
         return new InterventionDriver(
             imageManager: $imageManager ?? new ImageManager(new Driver()),
             logger: $logger ?? $this->createStub(LoggerInterface::class)

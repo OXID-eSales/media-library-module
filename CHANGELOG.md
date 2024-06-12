@@ -4,11 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.0.1] - Unreleased
+## [1.1.0] - Unreleased
+
+### Added
+- New methods in `ThumbnailResourceInterface` for building the paths to the File easier:
+  - `getPathToThumbnailFile`
+  - `getUrlToThumbnailFile`
 
 ### Fixed
 - Use correct interface for shop id calculation
 - Reformat js and styles for better readability
+- The thumbnail generation process doesn't explode anymore if something goes wrong, like - the origin is missing [#0006785](https://bugs.oxid-esales.com/view.php?id=6785)
 
 ## [1.0.0] - 2024-03-12
 
