@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.1.0] - Unreleased
 
 ### Added
-- New methods in `ThumbnailResourceInterface` for building the paths to the File easier:
-  - `getPathToThumbnailFile`
-  - `getUrlToThumbnailFile`
+- New methods for building the paths to the thumbnail easier: `ThumbnailResourceInterface`: `getPathToThumbnailFile`, `getUrlToThumbnailFile`
+- New response strategy `ResponseInterface::errorResponseAsJson`
 
 ### Fixed
 - Use correct interface for shop id calculation

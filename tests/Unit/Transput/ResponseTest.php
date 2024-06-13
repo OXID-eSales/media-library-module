@@ -23,7 +23,7 @@ class ResponseTest extends TestCase
         $exampleData = ['somekey' => 'someValue'];
         $jsonValue = json_encode($exampleData);
 
-        $utilsMock = $this->createPartialMock(Utils::class, ['setHeader', 'showMessageAndExit']);
+        $utilsMock = $this->createMock(Utils::class);
         $utilsMock->expects($this->once())
             ->method('showMessageAndExit')
             ->with($jsonValue);
@@ -41,11 +41,40 @@ class ResponseTest extends TestCase
         $this->assertTrue($correctHeaderSet);
     }
 
+    public function testErrorRespondAsJson(): void
+    {
+        $exampleData = ['somekey' => 'someValue'];
+        $jsonValue = json_encode($exampleData);
+        $code = 123;
+        $message = uniqid();
+
+        $utilsMock = $this->createMock(Utils::class);
+        $utilsMock->expects($this->once())
+            ->method('showMessageAndExit')
+            ->with($jsonValue);
+
+        $correctHeaderSet = 0b00;
+        $utilsMock->method('setHeader')
+            ->willReturnCallback(function ($value) use (&$correctHeaderSet, $code, $message) {
+                if (preg_match("@Content-Type:\s?application/json;\s?charset=UTF-8@i", $value)) {
+                    $correctHeaderSet |= 0b01;
+                }
+                if (preg_match("@^HTTP/1.1 $code $message$@i", $value)) {
+                    $correctHeaderSet |= 0b10;
+                }
+            });
+
+        $sut = new Response($utilsMock);
+        $sut->errorResponseAsJson($code, $message, $exampleData);
+
+        $this->assertSame(0b11, $correctHeaderSet);
+    }
+
     public function testRespondAsJavaScript(): void
     {
         $exampleData = 'someJavaScriptCodeExample';
 
-        $utilsMock = $this->createPartialMock(Utils::class, ['setHeader', 'showMessageAndExit']);
+        $utilsMock = $this->createMock(Utils::class);
         $utilsMock->expects($this->once())
             ->method('showMessageAndExit')
             ->with($exampleData);
@@ -67,7 +96,7 @@ class ResponseTest extends TestCase
     {
         $exampleData = 'someTextExample';
 
-        $utilsMock = $this->createPartialMock(Utils::class, ['setHeader', 'showMessageAndExit']);
+        $utilsMock = $this->createMock(Utils::class);
         $utilsMock->expects($this->once())
             ->method('showMessageAndExit')
             ->with($exampleData);

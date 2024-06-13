@@ -13,6 +13,8 @@ interface ResponseInterface
 {
     public function responseAsJson(array $valueArray): void;
 
+    public function errorResponseAsJson(int $code, string $message, array $valueArray): void;
+
     public function responseAsJavaScript(string $value): void;
 
     public function responseAsTextHtml(string $value): void;

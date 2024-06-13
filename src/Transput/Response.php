@@ -24,6 +24,12 @@ class Response implements ResponseInterface
         $this->utils->showMessageAndExit(json_encode($valueArray));
     }
 
+    public function errorResponseAsJson(int $code, string $message, array $valueArray): void
+    {
+        $this->utils->setHeader("HTTP/1.1 $code $message");
+        $this->responseAsJson($valueArray);
+    }
+
     public function responseAsJavaScript(string $value): void
     {
         $this->utils->setHeader('Content-Type: application/javascript; charset=UTF-8');

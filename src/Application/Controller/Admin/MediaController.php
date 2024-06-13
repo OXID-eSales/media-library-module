@@ -93,8 +93,11 @@ class MediaController extends AdminDetailsController
                 $path_parts = pathinfo($sSourcePath);
                 $extension = strtolower($path_parts['extension']);
                 if (!in_array($extension, $allowedExtensions)) {
-                    header('HTTP/1.1 415 Invalid File Type Upload');
-                    $responseService->responseAsJson(['error' => "Invalid file type"]);
+                    $responseService->errorResponseAsJson(
+                        code: 415,
+                        message: 'Invalid File Type Upload',
+                        valueArray: ['error' => "Invalid file type"]
+                    );
                 }
 
                 $sFileSize = $_FILES['file']['size'];

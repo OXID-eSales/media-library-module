@@ -690,14 +690,6 @@
 
                 clickable: $('.dd-media-upload', $dialog)[0],
 
-                accept: function (file, done) {
-                    if (!file.type || file.type.match(/php|javascript|x\-msdownload|js|jsp|cgi|cmf|phtml|pht|phar/)) {
-                        done(ddh.translate('DD_MEDIA_FILETYPE_NOT_ALLOWED'));
-                    } else {
-                        done();
-                    }
-                },
-
                 init: function () {
                     this.on('addedfile', function () {
                         $('.dd-media-list', $dialog).removeClass('empty');
@@ -730,10 +722,6 @@
                             $('.dd-media-item-label', file.previewElement).show();
                             $('.dd-media-item', file.previewElement).addClass('no-thumb');
                         }
-                    });
-
-                    this.on('error', function (file, errorMessage, xhr) {
-                        console.error(file);
                     });
                 }
             });
