@@ -448,17 +448,18 @@
             if (filetype == 'directory') {
                 $('.dd-media-icon-file', $item).hide();
                 $('.dd-media-icon-folder', $item).show();
-                $('.dd-media-item-label span', $item).text(file);
             } else {
                 $('.dd-media-icon-file', $item).show();
                 $('.dd-media-icon-folder', $item).hide();
             }
-            $('.dd-media-item-label', $item).show();
             $('.dd-media-item', $item).addClass('no-thumb');
         } else {
             $('.dd-media-thumb', $item).attr('src', thumb);
             $('.dd-media-item', $item).removeClass('no-thumb');
         }
+
+        $('.dd-media-item-label', $item).show()
+            .find('span').text(file);
 
         $('.dd-media-list-items > .row').append($item);
 
@@ -719,10 +720,15 @@
                             $('.dd-media-thumb', file.previewElement).hide();
                             $('.dd-media-icon-file', file.previewElement).show();
                             $('.dd-media-icon-folder', file.previewElement).hide();
-                            $('.dd-media-item-label', file.previewElement).show();
                             $('.dd-media-item', file.previewElement).addClass('no-thumb');
                         }
+                        $('.dd-media-item-label', file.previewElement).show();
                     });
+                },
+
+                error: function (file, responseJson, xhr) {
+                    $(file.previewElement).addClass("dz-error")
+                        .find('.dd-media-item-error').show().text(responseJson.error);
                 }
             });
 
