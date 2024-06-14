@@ -12,6 +12,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
+use OxidEsales\MediaLibrary\Media\DataType\UploadedFile;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
@@ -20,6 +21,7 @@ use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
+use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface;
 
 /**
  * Class MediaController
@@ -80,6 +82,7 @@ class MediaController extends AdminDetailsController
     {
         $uiRequest = $this->getService(UIRequestInterface::class);
         $responseService = $this->getService(ResponseInterface::class);
+        $fileValidatorChain = $this->getService(UploadedFileValidatorChainInterface::class);
 
         $sId = null;
         $sThumb = '';
@@ -99,6 +102,9 @@ class MediaController extends AdminDetailsController
                         valueArray: ['error' => "Invalid file type"]
                     );
                 }
+
+                $uploadedFile = new UploadedFile($_FILES['file']);
+                $fileValidatorChain->validateFile($uploadedFile);
 
                 $sFileSize = $_FILES['file']['size'];
                 $sFileType = $_FILES['file']['type'];
@@ -130,11 +136,11 @@ class MediaController extends AdminDetailsController
                 'thumb' => $sThumb,
             ]);
         } catch (\Exception $e) {
-            $responseService->responseAsJson([
-                'success' => false,
-                'id' => $sId,
-                'errorMessage' => $e->getMessage(),
-            ]);
+            $responseService->errorResponseAsJson(
+                code: 415,
+                message: $e->getMessage(),
+                valueArray: ['error' => $e->getMessage()]
+            );
         }
     }
 

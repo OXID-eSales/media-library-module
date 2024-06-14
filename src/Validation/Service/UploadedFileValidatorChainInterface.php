@@ -5,14 +5,15 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\MediaLibrary\Validation\Validator;
+namespace OxidEsales\MediaLibrary\Validation\Service;
 
+use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 
-interface FileValidatorInterface
+interface UploadedFileValidatorChainInterface
 {
     /**
      * @throws ValidationFailedException
      */
-    public function validateFile(string $filePath): void;
+    public function validateFile(UploadedFileInterface $uploadedFile): void;
 }

@@ -9,28 +9,30 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Validation\Service;
 
+use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ChainInputTypeException;
-use OxidEsales\MediaLibrary\Validation\Validator\FileValidatorInterface;
+use OxidEsales\MediaLibrary\Validation\Validator\UploadedFileValidatorInterface;
 
-class FileValidatorChain implements FileValidatorChainInterface
+class UploadedFileValidatorChain implements UploadedFileValidatorChainInterface
 {
     /**
-     * @param iterable<FileValidatorInterface> $fileValidators
+     * @param iterable<UploadedFileValidatorInterface> $fileValidators
+     * @throws ChainInputTypeException
      */
     public function __construct(
         private iterable $fileValidators
     ) {
         foreach ($this->fileValidators as $oneValidator) {
-            if (!$oneValidator instanceof FileValidatorInterface) {
+            if (!$oneValidator instanceof UploadedFileValidatorInterface) {
                 throw new ChainInputTypeException();
             }
         }
     }
 
-    public function validateFile(string $filePath): void
+    public function validateFile(UploadedFileInterface $uploadedFile): void
     {
         foreach ($this->fileValidators as $oneValidator) {
-            $oneValidator->validateFile($filePath);
+            $oneValidator->validateFile($uploadedFile);
         }
     }
 }

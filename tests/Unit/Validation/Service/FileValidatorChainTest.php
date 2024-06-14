@@ -9,43 +9,45 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Service;
 
+use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ChainInputTypeException;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
-use OxidEsales\MediaLibrary\Validation\Service\FileValidatorChain;
-use OxidEsales\MediaLibrary\Validation\Validator\FileValidatorInterface;
+use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain;
+use OxidEsales\MediaLibrary\Validation\Validator\UploadedFileValidatorInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \OxidEsales\MediaLibrary\Validation\Service\FileValidatorChain
+ * @covers \OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain
  */
 class FileValidatorChainTest extends TestCase
 {
     public function testConstructorDoesNotAcceptWrongType(): void
     {
         $this->expectException(ChainInputTypeException::class);
-        new FileValidatorChain([new \stdClass()]);
+        new UploadedFileValidatorChain([new \stdClass()]);
     }
 
     public function testValidateFileWorksIfNoExceptionsThrown(): void
     {
-        $validatorStub = $this->createStub(FileValidatorInterface::class);
-        $exampleFilePath = uniqid();
+        $fileStub = $this->createStub(UploadedFileInterface::class);
+        $validatorStub = $this->createStub(UploadedFileValidatorInterface::class);
 
-        $sut = new FileValidatorChain([$validatorStub]);
-        $sut->validateFile($exampleFilePath);
+        $sut = new UploadedFileValidatorChain([$validatorStub]);
+        $sut->validateFile($fileStub);
 
         $this->addToAssertionCount(1);
     }
 
     public function testExceptionOnValidatorException(): void
     {
-        $validatorStub = $this->createMock(FileValidatorInterface::class);
+        $fileStub = $this->createStub(UploadedFileInterface::class);
+
+        $validatorStub = $this->createMock(UploadedFileValidatorInterface::class);
         $validatorStub->method('validateFile')->willThrowException(new ValidationFailedException());
-        $exampleFilePath = uniqid();
 
         $this->expectException(ValidationFailedException::class);
 
-        $sut = new FileValidatorChain([$validatorStub]);
-        $sut->validateFile($exampleFilePath);
+        $sut = new UploadedFileValidatorChain([$validatorStub]);
+        $sut->validateFile($fileStub);
     }
 }
