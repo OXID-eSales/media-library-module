@@ -4,8 +4,9 @@ imports:
   - { resource: src/Image/ThumbnailGenerator/services.yaml }
   - { resource: src/Language/Core/services.yaml }
   - { resource: src/Media/services.yaml }
-  - { resource: src/Transput/services.yaml }
   - { resource: src/Service/services.yaml }
+  - { resource: src/Transput/services.yaml }
+  - { resource: src/Validation/services.yaml }
 
 services:
 

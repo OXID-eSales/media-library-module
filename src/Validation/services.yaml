@@ -1,0 +1,11 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Validation\Service\FileValidatorChainInterface:
+    class: OxidEsales\MediaLibrary\Validation\Service\FileValidatorChain
+    public: true
+    arguments:
+      $fileValidators: []
+#        - '@OxidEsales\MediaLibrary\Validation\Validator\ExampleValidator'
