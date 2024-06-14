@@ -84,54 +84,33 @@ class MediaController extends AdminDetailsController
         $responseService = $this->getService(ResponseInterface::class);
         $fileValidatorChain = $this->getService(UploadedFileValidatorChainInterface::class);
 
-        $sId = null;
-        $sThumb = '';
-
         try {
-            if ($_FILES) {
-                $aAllowedUploadTypes = (array)Registry::getConfig()->getConfigParam('aAllowedUploadTypes');
-                $allowedExtensions = array_map("strtolower", $aAllowedUploadTypes);
+            $uploadedFile = new UploadedFile($_FILES['file'] ?? []);
+            $fileValidatorChain->validateFile($uploadedFile);
 
-                $sSourcePath = $_FILES['file']['name'];
-                $path_parts = pathinfo($sSourcePath);
-                $extension = strtolower($path_parts['extension']);
-                if (!in_array($extension, $allowedExtensions)) {
-                    $responseService->errorResponseAsJson(
-                        code: 415,
-                        message: 'Invalid File Type Upload',
-                        valueArray: ['error' => "Invalid file type"]
-                    );
-                }
+            $sFileType = $_FILES['file']['type'];
 
-                $uploadedFile = new UploadedFile($_FILES['file']);
-                $fileValidatorChain->validateFile($uploadedFile);
+            $uploadResult = $this->mediaService->upload(
+                uploadedFilePath: $uploadedFile->getFilePath(),
+                folderId: $uiRequest->getFolderId(),
+                fileName: $uploadedFile->getFileName()
+            );
 
-                $sFileSize = $_FILES['file']['size'];
-                $sFileType = $_FILES['file']['type'];
+            $sFileName = $uploadResult->getFileName();
+            $sImageSize = $uploadResult->getImageSize()->getInFormat('%dx%d', '');
 
-                $uploadResult = $this->mediaService->upload(
-                    uploadedFilePath: $_FILES['file']['tmp_name'],
-                    folderId: $uiRequest->getFolderId(),
-                    fileName: $_FILES['file']['name']
-                );
-
-                $sId = $uploadResult->getOxid();
-                $sFileName = $uploadResult->getFileName();
-                $sImageSize = $uploadResult->getImageSize()->getInFormat('%dx%d', '');
-
-                $thumbnailService = $this->getService(ThumbnailServiceInterface::class);
-                $sThumb = $thumbnailService->ensureAndGetThumbnailUrl(
-                    folderName: $uploadResult->getFolderName(),
-                    fileName: $uploadResult->getFileName()
-                );
-            }
+            $thumbnailService = $this->getService(ThumbnailServiceInterface::class);
+            $sThumb = $thumbnailService->ensureAndGetThumbnailUrl(
+                folderName: $uploadResult->getFolderName(),
+                fileName: $uploadResult->getFileName()
+            );
 
             $responseService->responseAsJson([
                 'success' => true,
-                'id' => $sId,
+                'id' => $uploadResult->getOxid(),
                 'file' => $sFileName ?? '',
                 'filetype' => $sFileType ?? '',
-                'filesize' => $sFileSize ?? '',
+                'filesize' => $uploadedFile->getSize(),
                 'imagesize' => $sImageSize ?? '',
                 'thumb' => $sThumb,
             ]);
