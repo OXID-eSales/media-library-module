@@ -35,4 +35,9 @@ class UploadedFile implements UploadedFileInterface
     {
         return $this->fileData['size'] ?? 0;
     }
+
+    public function getFileType(): string
+    {
+        return $this->fileData['type'] ?? '';
+    }
 }

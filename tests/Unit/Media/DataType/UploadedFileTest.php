@@ -32,6 +32,7 @@ class UploadedFileTest extends TestCase
         $sut = new UploadedFile($fileExample);
 
         $this->assertSame($fileName, $sut->getFileName());
+        $this->assertSame($fileType, $sut->getFileType());
         $this->assertSame($filePath, $sut->getFilePath());
         $this->assertFalse($sut->isError());
         $this->assertSame($fileSize, $sut->getSize());
@@ -44,6 +45,7 @@ class UploadedFileTest extends TestCase
         $sut = new UploadedFile($fileExample);
 
         $this->assertSame('', $sut->getFileName());
+        $this->assertSame('', $sut->getFileType());
         $this->assertSame('', $sut->getFilePath());
         $this->assertTrue($sut->isError());
         $this->assertSame(0, $sut->getSize());

@@ -9,9 +9,11 @@ namespace OxidEsales\MediaLibrary\Media\DataType;
 
 interface UploadedFileInterface
 {
-    public function getFilePath(): string;
-
     public function getFileName(): string;
+
+    public function getFileType(): string;
+
+    public function getFilePath(): string;
 
     public function isError(): bool;
 

@@ -83,12 +83,11 @@ class MediaController extends AdminDetailsController
         $uiRequest = $this->getService(UIRequestInterface::class);
         $responseService = $this->getService(ResponseInterface::class);
         $fileValidatorChain = $this->getService(UploadedFileValidatorChainInterface::class);
+        $thumbnailService = $this->getService(ThumbnailServiceInterface::class);
 
         try {
             $uploadedFile = new UploadedFile($_FILES['file'] ?? []);
             $fileValidatorChain->validateFile($uploadedFile);
-
-            $sFileType = $_FILES['file']['type'];
 
             $uploadResult = $this->mediaService->upload(
                 uploadedFilePath: $uploadedFile->getFilePath(),
@@ -96,23 +95,17 @@ class MediaController extends AdminDetailsController
                 fileName: $uploadedFile->getFileName()
             );
 
-            $sFileName = $uploadResult->getFileName();
-            $sImageSize = $uploadResult->getImageSize()->getInFormat('%dx%d', '');
-
-            $thumbnailService = $this->getService(ThumbnailServiceInterface::class);
-            $sThumb = $thumbnailService->ensureAndGetThumbnailUrl(
-                folderName: $uploadResult->getFolderName(),
-                fileName: $uploadResult->getFileName()
-            );
-
             $responseService->responseAsJson([
                 'success' => true,
                 'id' => $uploadResult->getOxid(),
-                'file' => $sFileName ?? '',
-                'filetype' => $sFileType ?? '',
+                'file' => $uploadResult->getFileName(),
+                'filetype' => $uploadedFile->getFileType(),
                 'filesize' => $uploadedFile->getSize(),
-                'imagesize' => $sImageSize ?? '',
-                'thumb' => $sThumb,
+                'imagesize' => $uploadResult->getImageSize()->getInFormat('%dx%d', ''),
+                'thumb' => $thumbnailService->ensureAndGetThumbnailUrl(
+                    folderName: $uploadResult->getFolderName(),
+                    fileName: $uploadResult->getFileName()
+                ),
             ]);
         } catch (\Exception $e) {
             $responseService->errorResponseAsJson(
