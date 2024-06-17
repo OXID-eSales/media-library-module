@@ -82,4 +82,21 @@ class UIRequestTest extends TestCase
         $sut = new UIRequest($requestMock);
         $this->assertSame($requestExampleValue, $sut->getMediaListStartIndex());
     }
+
+    public function testGetUploadedFile(): void
+    {
+        $fileName = uniqid();
+
+        $_FILES['file'] = [
+            'name' => $fileName
+        ];
+
+        $sut = new UIRequest(
+            request: $this->createStub(RequestInterface::class)
+        );
+
+        $uploadedFile = $sut->getUploadedFile();
+
+        $this->assertEquals($fileName, $uploadedFile->getFileName());
+    }
 }

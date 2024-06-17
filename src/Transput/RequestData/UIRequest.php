@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Transput\RequestData;
 
+use OxidEsales\MediaLibrary\Media\DataType\UploadedFile;
+use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Transput\RequestInterface;
 
 class UIRequest implements UIRequestInterface
@@ -18,6 +20,8 @@ class UIRequest implements UIRequestInterface
     public const REQUEST_PARAM_POPUP = 'popout';
     public const REQUEST_PARAM_MEDIA_LIST_START_INDEX = 'start';
     public const REQUEST_PARAM_TAB = 'tab';
+
+    public const REQUEST_PARAM_FILE_KEY = 'file';
 
     public function __construct(protected RequestInterface $request)
     {
@@ -46,5 +50,10 @@ class UIRequest implements UIRequestInterface
     public function getTabName(): string
     {
         return $this->request->getStringRequestParameter(self::REQUEST_PARAM_TAB);
+    }
+
+    public function getUploadedFile(): UploadedFileInterface
+    {
+        return new UploadedFile($_FILES[self::REQUEST_PARAM_FILE_KEY] ?? []);
     }
 }

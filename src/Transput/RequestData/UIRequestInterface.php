@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Transput\RequestData;
 
+use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
+
 interface UIRequestInterface
 {
     public function isOverlay(): bool;
@@ -20,4 +22,6 @@ interface UIRequestInterface
     public function getMediaListStartIndex(): int;
 
     public function getTabName(): string;
+
+    public function getUploadedFile(): UploadedFileInterface;
 }
