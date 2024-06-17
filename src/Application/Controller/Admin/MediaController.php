@@ -12,7 +12,6 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
-use OxidEsales\MediaLibrary\Media\DataType\UploadedFile;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
@@ -21,6 +20,7 @@ use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
+use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface;
 
 /**
@@ -39,8 +39,6 @@ class MediaController extends AdminDetailsController
     {
         parent::init();
         $this->setTemplateName('@ddoemedialibrary/dialog/ddoemedia');
-
-        $this->mediaService = $this->getService(MediaServiceInterface::class);
     }
 
     /**
@@ -53,11 +51,12 @@ class MediaController extends AdminDetailsController
         $uiRequest = $this->getService(UIRequestInterface::class);
         $mediaResource = $this->getService(MediaResourceInterface::class);
         $thumbnailResource = $this->getService(ThumbnailResourceInterface::class);
+        $mediaService = $this->getService(MediaServiceInterface::class);
 
         $folderId = $uiRequest->getFolderId();
         $folderName = '';
         if ($folderId) {
-            $folder = $this->mediaService->getMediaById($folderId);
+            $folder = $mediaService->getMediaById($folderId);
             $folderName = $folder->getFileName();
         }
 
@@ -84,12 +83,13 @@ class MediaController extends AdminDetailsController
         $responseService = $this->getService(ResponseInterface::class);
         $fileValidatorChain = $this->getService(UploadedFileValidatorChainInterface::class);
         $thumbnailService = $this->getService(ThumbnailServiceInterface::class);
+        $mediaService = $this->getService(MediaServiceInterface::class);
 
         try {
-            $uploadedFile = new UploadedFile($_FILES['file'] ?? []);
+            $uploadedFile = $uiRequest->getUploadedFile();
             $fileValidatorChain->validateFile($uploadedFile);
 
-            $uploadResult = $this->mediaService->upload(
+            $uploadResult = $mediaService->upload(
                 uploadedFilePath: $uploadedFile->getFilePath(),
                 folderId: $uiRequest->getFolderId(),
                 fileName: $uploadedFile->getFileName()
@@ -107,7 +107,7 @@ class MediaController extends AdminDetailsController
                     fileName: $uploadResult->getFileName()
                 ),
             ]);
-        } catch (\Exception $e) {
+        } catch (ValidationFailedException $e) {
             $responseService->errorResponseAsJson(
                 code: 415,
                 message: $e->getMessage(),
@@ -145,13 +145,14 @@ class MediaController extends AdminDetailsController
         $sMsg = '';
 
         $oRequest = Registry::getRequest();
+        $mediaService = $this->getService(MediaServiceInterface::class);
 
         $sId = $oRequest->getRequestEscapedParameter('id');
         $sNewName = $oRequest->getRequestEscapedParameter('newname');
 
         if ($sId && $sNewName) {
             $blReturn = true;
-            $newMedia = $this->mediaService->rename($sId, $sNewName);
+            $newMedia = $mediaService->rename($sId, $sNewName);
             $sNewName = $newMedia->getFileName();
         }
 
@@ -173,10 +174,11 @@ class MediaController extends AdminDetailsController
         $sMsg = 'DD_MEDIA_REMOVE_ERR';
 
         $request = Registry::getRequest();
+        $mediaService = $this->getService(MediaServiceInterface::class);
 
         $aIDs = $request->getRequestParameter('ids');
         if ($aIDs && count($aIDs)) {
-            $this->mediaService->delete($aIDs);
+            $mediaService->delete($aIDs);
             $blReturn = true;
             $sMsg = '';
         }
@@ -191,12 +193,13 @@ class MediaController extends AdminDetailsController
         $sMsg = '';
 
         $oRequest = Registry::getRequest();
+        $mediaService = $this->getService(MediaServiceInterface::class);
 
         $sSourceFileID = $oRequest->getRequestEscapedParameter('sourceid');
         $sTargetFolderID = $oRequest->getRequestEscapedParameter('targetid');
 
         if ($sSourceFileID && $sTargetFolderID) {
-            $this->mediaService->moveToFolder($sSourceFileID, $sTargetFolderID);
+            $mediaService->moveToFolder($sSourceFileID, $sTargetFolderID);
             $blReturn = true;
         }
 
