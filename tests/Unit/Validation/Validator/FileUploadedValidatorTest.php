@@ -24,7 +24,7 @@ class FileUploadedValidatorTest extends TestCase
         ]);
 
         $file = $this->createConfiguredStub(UploadedFileInterface::class, [
-            'getFilePath' => $root->url() . '/file1.txt',
+            'getPath' => $root->url() . '/file1.txt',
         ]);
 
         $sut = new FileUploadStatusValidator();
@@ -36,7 +36,7 @@ class FileUploadedValidatorTest extends TestCase
     public function testValidationThrowsExceptionIfFileDoesNotExist(): void
     {
         $file = $this->createConfiguredStub(UploadedFileInterface::class, [
-            'getFilePath' => 'notExistingFilePath',
+            'getPath' => 'notExistingFilePath',
         ]);
 
         $this->expectException(ValidationFailedException::class);

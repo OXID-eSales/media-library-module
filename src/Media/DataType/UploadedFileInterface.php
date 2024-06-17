@@ -7,13 +7,9 @@
 
 namespace OxidEsales\MediaLibrary\Media\DataType;
 
-interface UploadedFileInterface
+interface UploadedFileInterface extends FilePathInterface
 {
-    public function getFileName(): string;
-
     public function getFileType(): string;
-
-    public function getFilePath(): string;
 
     public function isError(): bool;
 

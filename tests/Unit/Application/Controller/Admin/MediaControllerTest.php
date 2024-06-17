@@ -43,7 +43,7 @@ class MediaControllerTest extends TestCase
             $this->createConfiguredStub(UploadedFileInterface::class, [
                 'getFileName' => $fileName = uniqid(),
                 'getFileType' => $fileType = uniqid(),
-                'getFilePath' => $filePath = uniqid(),
+                'getPath' => $filePath = uniqid(),
                 'getSize' => $fileSize = rand(10, 10000),
             ])
         );

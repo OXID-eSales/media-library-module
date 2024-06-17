@@ -90,7 +90,7 @@ class MediaController extends AdminDetailsController
             $fileValidatorChain->validateFile($uploadedFile);
 
             $uploadResult = $mediaService->upload(
-                uploadedFilePath: $uploadedFile->getFilePath(),
+                uploadedFilePath: $uploadedFile->getPath(),
                 folderId: $uiRequest->getFolderId(),
                 fileName: $uploadedFile->getFileName()
             );

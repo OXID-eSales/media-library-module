@@ -16,7 +16,7 @@ class FileUploadStatusValidator implements UploadedFileValidatorInterface
 {
     public function validateFile(UploadedFileInterface $uploadedFile): void
     {
-        if (!file_exists($uploadedFile->getFilePath())) {
+        if (!file_exists($uploadedFile->getPath())) {
             throw new ValidationFailedException('File was not uploaded');
         }
     }

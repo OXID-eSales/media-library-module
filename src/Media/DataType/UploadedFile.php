@@ -21,7 +21,7 @@ class UploadedFile implements UploadedFileInterface
         return $this->fileData['name'] ?? '';
     }
 
-    public function getFilePath(): string
+    public function getPath(): string
     {
         return $this->fileData['tmp_name'] ?? '';
     }
