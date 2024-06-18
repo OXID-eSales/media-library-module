@@ -40,6 +40,7 @@ class NamingService implements NamingServiceInterface
         $seoCharacters = $this->language->getSeoReplaceChars();
         $fileName = str_replace(array_keys($seoCharacters), array_values($seoCharacters), $fileName);
 
+        //todo: allow dot?
         $fileName = preg_replace('/[^a-zA-Z0-9-_]+/', '-', $fileName);
 
         return $fileName . ($fileExtension ? '.' . $fileExtension : '');

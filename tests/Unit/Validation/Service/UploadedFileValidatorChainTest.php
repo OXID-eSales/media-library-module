@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain
  */
-class FileValidatorChainTest extends TestCase
+class UploadedFileValidatorChainTest extends TestCase
 {
     public function testConstructorDoesNotAcceptWrongType(): void
     {

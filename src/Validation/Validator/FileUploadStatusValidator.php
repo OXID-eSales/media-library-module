@@ -9,14 +9,14 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Validation\Validator;
 
-use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
+use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 
 class FileUploadStatusValidator implements UploadedFileValidatorInterface
 {
-    public function validateFile(UploadedFileInterface $uploadedFile): void
+    public function validateFile(FilePathInterface $filePath): void
     {
-        if (!file_exists($uploadedFile->getPath())) {
+        if (!file_exists($filePath->getPath())) {
             throw new ValidationFailedException('File was not uploaded');
         }
     }

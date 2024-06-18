@@ -10,22 +10,22 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Validation\Validator;
 
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
+use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 
-class UploadedFileExtensionValidator implements UploadedFileValidatorInterface
+class FileExtensionValidator implements UploadedFileValidatorInterface
 {
-    public function validateFile(UploadedFileInterface $uploadedFile): void
+    public function validateFile(FilePathInterface $filePath): void
     {
         //TODO: refactor, as this part just extracted with copy/paste
         $aAllowedUploadTypes = (array)Registry::getConfig()->getConfigParam('aAllowedUploadTypes');
         $allowedExtensions = array_map("strtolower", $aAllowedUploadTypes);
 
-        $sSourcePath = $uploadedFile->getFileName();
+        $sSourcePath = $filePath->getFileName();
         $path_parts = pathinfo($sSourcePath);
         $extension = strtolower($path_parts['extension']);
         if (!in_array($extension, $allowedExtensions)) {
-            throw new ValidationFailedException("Invalid file type");
+            throw new ValidationFailedException("Invalid file extension");
         }
     }
 }

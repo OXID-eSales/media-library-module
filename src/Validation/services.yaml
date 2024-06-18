@@ -9,7 +9,7 @@ services:
     arguments:
       $fileValidators:
         - '@OxidEsales\MediaLibrary\Validation\Validator\FileUploadStatusValidator'
-        - '@OxidEsales\MediaLibrary\Validation\Validator\UploadedFileExtensionValidator'
+        - '@OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator'
 
   OxidEsales\MediaLibrary\Validation\Validator\FileUploadStatusValidator: ~
-  OxidEsales\MediaLibrary\Validation\Validator\UploadedFileExtensionValidator: ~
+  OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator: ~

@@ -7,7 +7,7 @@
 
 namespace OxidEsales\MediaLibrary\Validation\Validator;
 
-use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
+use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 
 interface UploadedFileValidatorInterface
@@ -15,5 +15,5 @@ interface UploadedFileValidatorInterface
     /**
      * @throws ValidationFailedException
      */
-    public function validateFile(UploadedFileInterface $uploadedFile): void;
+    public function validateFile(FilePathInterface $filePath): void;
 }
