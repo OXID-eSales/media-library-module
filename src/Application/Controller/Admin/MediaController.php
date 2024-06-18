@@ -12,6 +12,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
+use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
@@ -22,6 +23,7 @@ use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface;
+use OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator;
 
 /**
  * Class MediaController
@@ -141,28 +143,34 @@ class MediaController extends AdminDetailsController
      */
     public function rename(): void
     {
-        $blReturn = false;
-        $sMsg = '';
-
         $oRequest = Registry::getRequest();
         $mediaService = $this->getService(MediaServiceInterface::class);
-
-        $sId = $oRequest->getRequestEscapedParameter('id');
-        $sNewName = $oRequest->getRequestEscapedParameter('newname');
-
-        if ($sId && $sNewName) {
-            $blReturn = true;
-            $newMedia = $mediaService->rename($sId, $sNewName);
-            $sNewName = $newMedia->getFileName();
-        }
-
         $responseService = $this->getService(ResponseInterface::class);
-        $responseService->responseAsJson([
-            'success' => $blReturn,
-            'msg' => $sMsg,
-            'name' => $sNewName,
-            'id' => $sId
-        ]);
+
+        try {
+            $sId = $oRequest->getRequestEscapedParameter('id');
+            $sNewName = $oRequest->getRequestEscapedParameter('newname');
+
+            $validator = new FileExtensionValidator();
+            $validator->validateFile(new FilePath($sNewName));
+
+            //todo: empty name check through validation
+            if ($sId && $sNewName) {
+                $newMedia = $mediaService->rename($sId, $sNewName);
+                $sNewName = $newMedia->getFileName();
+            }
+
+            $responseService->responseAsJson([
+                'name' => $sNewName,
+                'id' => $sId
+            ]);
+        } catch (ValidationFailedException $exception) {
+            $responseService->errorResponseAsJson(
+                code: 400,
+                message: $exception->getMessage(),
+                valueArray: ['error' => $exception->getMessage()]
+            );
+        }
     }
 
     /**

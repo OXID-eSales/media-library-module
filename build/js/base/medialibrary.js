@@ -584,33 +584,26 @@
 
                 if (!$($btn).prop('disabled') && $item.length == 1) {
                     ddh.prompt(ddh.translate('DD_MEDIA_RENAME_FILE_FOLDER'), function (val) {
-                        var $_item = $('.dd-media-item.active', $dialog);
+                        var activeItem = $('.dd-media-item.active', $dialog);
 
-                        if (val && val != $_item.data('file')) {
-                            $.post(actionLink + 'cl=ddoemedia_view&fnc=rename', {
-                                oldname: $_item.data('file'),
-                                newname: val,
-                                id: $_item.data('id'),
-                                filetype: $_item.data('filetype'),
-                                folderid: $('.dd-media', $dialog).data('folderid')
-                            }, function (_res) {
-                                if (_res.success && _res.name) {
-                                    _res.thumb = (_res.thumb === 'false' || _res.thumb === false) ? false : _res.thumb;
+                        if (val && val != activeItem.data('file')) {
+                            $.ajax({
+                                type: "POST",
+                                url: actionLink + 'cl=ddoemedia_view&fnc=rename',
+                                data: {
+                                    newname: val,
+                                    id: activeItem.data('id'),
+                                },
+                                success: function (resultJson) {
+                                    activeItem.data('file', resultJson.name);
+                                    activeItem.data('id', resultJson.id);
+                                    activeItem.data('url', resourceLink + resultJson.name);
 
-                                    $_item.data('file', _res.name);
-                                    $_item.data('id', _res.id);
-                                    $_item.data('url', resourceLink + _res.name);
-                                    $_item.data('thumb', _res.thumb);
-                                    $_item.data('preview', _res.thumb);
-                                    if ($('.dd-media-thumb', $_item).length && _res.thumb) {
-                                        $('.dd-media-thumb', $_item).attr('src', _res.thumb);
-                                    }
-                                    $('.dd-media-item-label span', $_item).text(_res.name);
-                                    ui._loadItemDetails($_item.data(), $dialog);
-                                } else {
-                                    if (_res.msg) {
-                                        ddh.alert(ddh.translate(_res.msg));
-                                    }
+                                    $('.dd-media-item-label span', activeItem).text(resultJson.name);
+                                    ui._loadItemDetails(activeItem.data(), $dialog);
+                                },
+                                error: function (result, status, errorThrown) {
+                                    ddh.alert(ddh.translate(errorThrown));
                                 }
                             });
                         }
