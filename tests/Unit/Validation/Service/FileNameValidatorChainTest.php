@@ -12,6 +12,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Service;
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ChainInputTypeException;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
+use OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChain;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use PHPUnit\Framework\TestCase;
@@ -19,35 +20,34 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain
  */
-class UploadedFileValidatorChainTest extends TestCase
+class FileNameValidatorChainTest extends TestCase
 {
     public function testConstructorDoesNotAcceptWrongType(): void
     {
         $this->expectException(ChainInputTypeException::class);
-        new UploadedFileValidatorChain([new \stdClass()]);
+        new FileNameValidatorChain([new \stdClass()]);
     }
 
     public function testValidateFileWorksIfNoExceptionsThrown(): void
     {
-        $fileStub = $this->createStub(UploadedFileInterface::class);
         $validatorStub = $this->createStub(FilePathValidatorInterface::class);
 
-        $sut = new UploadedFileValidatorChain([$validatorStub]);
-        $sut->validateFile($fileStub);
+        $sut = new FileNameValidatorChain([$validatorStub]);
+        $sut->validateFileName(uniqid());
 
         $this->addToAssertionCount(1);
     }
 
     public function testExceptionOnValidatorException(): void
     {
-        $fileStub = $this->createStub(UploadedFileInterface::class);
+        $fileName = uniqid();
 
         $validatorStub = $this->createMock(FilePathValidatorInterface::class);
         $validatorStub->method('validateFile')->willThrowException(new ValidationFailedException());
 
         $this->expectException(ValidationFailedException::class);
 
-        $sut = new UploadedFileValidatorChain([$validatorStub]);
-        $sut->validateFile($fileStub);
+        $sut = new FileNameValidatorChain([$validatorStub]);
+        $sut->validateFileName($fileName);
     }
 }

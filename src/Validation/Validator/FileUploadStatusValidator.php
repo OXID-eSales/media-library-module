@@ -12,7 +12,7 @@ namespace OxidEsales\MediaLibrary\Validation\Validator;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 
-class FileUploadStatusValidator implements UploadedFileValidatorInterface
+class FileUploadStatusValidator implements FilePathValidatorInterface
 {
     public function validateFile(FilePathInterface $filePath): void
     {

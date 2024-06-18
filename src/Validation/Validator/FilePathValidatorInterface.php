@@ -10,7 +10,7 @@ namespace OxidEsales\MediaLibrary\Validation\Validator;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 
-interface UploadedFileValidatorInterface
+interface FilePathValidatorInterface
 {
     /**
      * @throws ValidationFailedException

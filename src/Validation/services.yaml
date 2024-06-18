@@ -3,6 +3,13 @@ services:
     public: false
     autowire: true
 
+  OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChainInterface:
+    class: OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChain
+    public: true
+    arguments:
+      $fileValidators:
+        - '@OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator'
+
   OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface:
     class: OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain
     public: true

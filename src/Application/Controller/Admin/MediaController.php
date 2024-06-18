@@ -22,6 +22,7 @@ use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
+use OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChainInterface;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator;
 
@@ -146,13 +147,13 @@ class MediaController extends AdminDetailsController
         $oRequest = Registry::getRequest();
         $mediaService = $this->getService(MediaServiceInterface::class);
         $responseService = $this->getService(ResponseInterface::class);
+        $validator = $this->getService(FileNameValidatorChainInterface::class);
 
         try {
             $sId = $oRequest->getRequestEscapedParameter('id');
             $sNewName = $oRequest->getRequestEscapedParameter('newname');
 
-            $validator = new FileExtensionValidator();
-            $validator->validateFile(new FilePath($sNewName));
+            $validator->validateFileName($sNewName);
 
             //todo: empty name check through validation
             if ($sId && $sNewName) {

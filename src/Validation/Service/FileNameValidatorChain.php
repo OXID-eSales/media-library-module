@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Validation\Service;
 
-use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
+use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Validation\Exception\ChainInputTypeException;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 
-class UploadedFileValidatorChain implements UploadedFileValidatorChainInterface
+class FileNameValidatorChain implements FileNameValidatorChainInterface
 {
     /**
      * @param iterable<FilePathValidatorInterface> $fileValidators
@@ -29,10 +29,12 @@ class UploadedFileValidatorChain implements UploadedFileValidatorChainInterface
         }
     }
 
-    public function validateFile(UploadedFileInterface $uploadedFile): void
+    public function validateFileName(string $fileName): void
     {
+        $filePath = new FilePath($fileName);
+
         foreach ($this->fileValidators as $oneValidator) {
-            $oneValidator->validateFile($uploadedFile);
+            $oneValidator->validateFile($filePath);
         }
     }
 }
