@@ -15,6 +15,7 @@ use OxidEsales\MediaLibrary\Module;
 class ModuleSettings implements ModuleSettingsInterface
 {
     public const SETTING_ALTERNATIVE_IMAGE_URL = 'ddoeMediaLibraryAlternativeImageDirectory';
+    public const SETTING_LIMITATIONS_ALLOWED_EXTENSIONS = 'oeMediaLibraryAllowedExtensions';
 
     public function __construct(
         private ModuleSettingServiceInterface $moduleSettingService
@@ -33,7 +34,9 @@ class ModuleSettings implements ModuleSettingsInterface
 
     public function getAllowedExtensions(): array
     {
-        //@todo: get those from ui setting. Add more possible cases
-        return ['jpg', 'gif', 'png', 'pdf', 'mp3', 'avi', 'mpg', 'mpeg', 'doc', 'xls', 'ppt'];
+        $extensionsString = $this->getStringSettingValue(self::SETTING_LIMITATIONS_ALLOWED_EXTENSIONS);
+        return array_map(function ($item) {
+            return trim(strtolower($item));
+        }, explode(",", $extensionsString));
     }
 }

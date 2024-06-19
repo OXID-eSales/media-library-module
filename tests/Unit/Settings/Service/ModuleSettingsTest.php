@@ -34,12 +34,17 @@ class ModuleSettingsTest extends TestCase
 
     public function testGetAllowedExtensions(): void
     {
-        $sut = $this->getSut();
+        $sut = $this->getSut(
+            moduleSettingService: $settingService = $this->createMock(ModuleSettingServiceInterface::class)
+        );
+
+        $settingService->method('getString')
+            ->with(ModuleSettings::SETTING_LIMITATIONS_ALLOWED_EXTENSIONS, Module::MODULE_ID)
+            ->willReturn(new UnicodeString(" jpg, gif, tar.gz "));
+
         $extensions = $sut->getAllowedExtensions();
 
-        $this->assertNotEmpty($extensions);
-        $this->assertTrue(in_array('jpg', $extensions));
-        $this->assertTrue(in_array('gif', $extensions));
+        $this->assertSame(['jpg', 'gif', 'tar.gz'], $extensions);
     }
 
     public function getSut(

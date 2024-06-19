@@ -54,5 +54,11 @@ $aModule = [
             'type'  => 'str',
             'value' => '',
         ],
+        [
+            'group' => 'limitations',
+            'name'  => ModuleSettings::SETTING_LIMITATIONS_ALLOWED_EXTENSIONS,
+            'type'  => 'str',
+            'value' => 'jpg, gif, png, pdf, mp3, avi, mpg, mpeg, doc, xls, ppt, avif',
+        ],
     ],
 ];

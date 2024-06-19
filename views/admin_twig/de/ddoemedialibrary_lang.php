@@ -16,6 +16,9 @@ $aLang = array(
     'SHOP_MODULE_GROUP_main'                                => 'Allgemein',
     'SHOP_MODULE_ddoeMediaLibraryAlternativeImageDirectory' => 'Alternatives Bild-URL',
 
+    'SHOP_MODULE_GROUP_limitations' => 'Einschränkungen',
+    'SHOP_MODULE_oeMediaLibraryAllowedExtensions' => 'Erlaubte Dateierweiterungen(Kommagetrennt, Groß- und Kleinschreibung wird nicht beachtet)',
+
     // Base Module
 
     'DD_CLOSE'          => 'Schlie&szlig;en',
