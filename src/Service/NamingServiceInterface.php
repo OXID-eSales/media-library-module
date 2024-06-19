@@ -11,7 +11,7 @@ namespace OxidEsales\MediaLibrary\Service;
 
 interface NamingServiceInterface
 {
-    public function sanitizeFilename(string $fileNameInput): string;
+    public function sanitizeFilename(string $fileName): string;
 
     public function getUniqueFilename(string $path): string;
 

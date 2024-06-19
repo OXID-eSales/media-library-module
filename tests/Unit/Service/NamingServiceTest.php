@@ -55,9 +55,8 @@ class NamingServiceTest extends TestCase
 
     public static function sanitizeFilenameDataProvider(): \Generator
     {
-        yield "no extension" => ['filename' => 'somexc', 'expectedResult' => 'someyb'];
-        yield "extension should not be changed" => ['filename' => 'somexc.xcabc', 'expectedResult' => 'someyb.xcabc'];
-        yield "multiple dots replaced" => ['filename' => 'somexc.!^xc.xcabc', 'expectedResult' => 'someyb-yb.xcabc'];
+        yield "no extension" => ['filename' => 'soMexc', 'expectedResult' => 'soMeyb'];
+        yield "multiple dots replaced" => ['filename' => 'somExc.!^xc.giF', 'expectedResult' => 'somEyb.-yb.giF'];
         yield "not affected" => ['filename' => 'some1-_', 'expectedResult' => 'some1-_'];
     }
 

@@ -21,18 +21,13 @@ class NamingService implements NamingServiceInterface
     ) {
     }
 
-    public function sanitizeFilename(string $fileNameInput): string
+    public function sanitizeFilename(string $fileName): string
     {
-        $fileName = pathinfo($fileNameInput, PATHINFO_FILENAME);
-        $fileExtension = pathinfo($fileNameInput, PATHINFO_EXTENSION);
-
         $seoCharacters = $this->language->getSeoReplaceChars();
         $fileName = str_replace(array_keys($seoCharacters), array_values($seoCharacters), $fileName);
+        $fileName = preg_replace('/[^a-z0-9-_\.]+/i', '-', $fileName);
 
-        //todo: allow dot?
-        $fileName = preg_replace('/[^a-zA-Z0-9-_]+/', '-', $fileName);
-
-        return $fileName . ($fileExtension ? '.' . $fileExtension : '');
+        return $fileName;
     }
 
     public function getUniqueFilename(string $path): string
