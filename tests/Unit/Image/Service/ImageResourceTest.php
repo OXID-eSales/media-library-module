@@ -11,6 +11,7 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\Service\MediaResource;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
+use OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -33,13 +34,14 @@ class ImageResourceTest extends TestCase
     protected function getSut(
         Config $shopConfig = null,
         NamingServiceInterface $namingService = null,
-        \OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface $moduleSettings = null,
+        ModuleSettingsInterface $moduleSettings = null,
     ) {
         return new MediaResource(
             shopConfig: $shopConfig ?? $this->createStub(Config::class),
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
             moduleSettings: $moduleSettings ?? $this->createStub(
-            \OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface::class),
+                ModuleSettingsInterface::class
+            ),
         );
     }
 
@@ -138,7 +140,8 @@ class ImageResourceTest extends TestCase
     ): void {
         $sut = $this->getSut(
             moduleSettings: $moduleSettings = $this->createStub(
-                \OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface::class),
+                ModuleSettingsInterface::class
+            ),
         );
         $moduleSettings->method('getAlternativeImageUrl')->willReturn($alternativeUrl);
 
@@ -172,7 +175,8 @@ class ImageResourceTest extends TestCase
     {
         $sut = $this->getSut(
             moduleSettings: $moduleSettings = $this->createStub(
-                \OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface::class),
+                ModuleSettingsInterface::class
+            ),
         );
         $alternativeUrl = 'someAlternativeUrl';
         $moduleSettings->method('getAlternativeImageUrl')->willReturn($alternativeUrl);
@@ -184,7 +188,8 @@ class ImageResourceTest extends TestCase
     {
         $sut = $this->getSut(
             moduleSettings: $moduleSettings = $this->createStub(
-                \OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface::class),
+                ModuleSettingsInterface::class
+            ),
         );
         $alternativeUrl = 'someAlternativeUrl';
         $moduleSettings->method('getAlternativeImageUrl')->willReturn($alternativeUrl);
@@ -233,7 +238,7 @@ class ImageResourceTest extends TestCase
             ->setConstructorArgs([
                 'shopConfig' => $this->createStub(Config::class),
                 'namingService' => $namingService = $this->createMock(NamingServiceInterface::class),
-                'moduleSettings' => $this->createStub(\OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface::class),
+                'moduleSettings' => $this->createStub(ModuleSettingsInterface::class),
             ])
             ->onlyMethods(['getPathToMediaFiles'])
             ->getMock();
