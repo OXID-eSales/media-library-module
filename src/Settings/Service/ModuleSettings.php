@@ -30,4 +30,10 @@ class ModuleSettings implements ModuleSettingsInterface
     {
         return $this->moduleSettingService->getString($key, Module::MODULE_ID)->trim()->toString();
     }
+
+    public function getAllowedExtensions(): array
+    {
+        //@todo: get those from ui setting. Add more possible cases
+        return ['jpg', 'gif', 'png', 'pdf', 'mp3', 'avi', 'mpg', 'mpeg', 'doc', 'xls', 'ppt'];
+    }
 }

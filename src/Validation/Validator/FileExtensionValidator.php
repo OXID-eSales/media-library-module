@@ -9,24 +9,31 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Validation\Validator;
 
-use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
+use OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 
 class FileExtensionValidator implements FilePathValidatorInterface
 {
+    public function __construct(
+        private ModuleSettingsInterface $moduleSettings,
+    ) {
+    }
+
     public function validateFile(FilePathInterface $filePath): void
     {
-        //TODO: refactor, as this part just extracted with copy/paste
-        $aAllowedUploadTypes = (array)Registry::getConfig()->getConfigParam('aAllowedUploadTypes');
-        $allowedExtensions = array_map("strtolower", $aAllowedUploadTypes);
+        $fileName = $filePath->getFileName();
+        $allowedExtensions = $this->moduleSettings->getAllowedExtensions();
 
-        $sSourcePath = $filePath->getFileName();
-        $path_parts = pathinfo($sSourcePath);
+        $isSupported = false;
+        foreach ($allowedExtensions as $oneExtension) {
+            if (preg_match("#\.$oneExtension$#i", $fileName)) {
+                $isSupported = true;
+                break;
+            }
+        }
 
-        //todo: empty extension is a problem! fix
-        $extension = strtolower($path_parts['extension']);
-        if (!in_array($extension, $allowedExtensions)) {
+        if (!$isSupported) {
             throw new ValidationFailedException("Invalid file extension");
         }
     }

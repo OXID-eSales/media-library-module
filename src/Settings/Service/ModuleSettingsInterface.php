@@ -12,4 +12,9 @@ namespace OxidEsales\MediaLibrary\Settings\Service;
 interface ModuleSettingsInterface
 {
     public function getAlternativeImageUrl(): string;
+
+    /**
+     * @return array<string>
+     */
+    public function getAllowedExtensions(): array;
 }
