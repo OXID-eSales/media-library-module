@@ -31,7 +31,7 @@ class FileNameValidator implements FilePathValidatorInterface
         $forbiddenCharacters = str_split(self::FORBIDDEN_CHARACTERS);
         foreach ($forbiddenCharacters as $oneForbiddenCharacter) {
             if (strpos($fileName, $oneForbiddenCharacter) !== false) {
-                throw new ValidationFailedException("Forbidden character found: " . $oneForbiddenCharacter);
+                throw new ValidationFailedException("OE_MEDIA_LIBRARY_EXCEPTION_FORBIDDEN_CHARACTER");
             }
         }
     }
@@ -39,14 +39,14 @@ class FileNameValidator implements FilePathValidatorInterface
     public function checkFilenameNotEmpty(string $fileName): void
     {
         if (!$fileName) {
-            throw new ValidationFailedException("Filename cannot be empty");
+            throw new ValidationFailedException("OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_EMPTY");
         }
     }
 
     public function checkFilenameDoesNotStartWithDot(string $fileName): void
     {
         if ($fileName[0] === '.') {
-            throw new ValidationFailedException("Filename cannot start with .");
+            throw new ValidationFailedException("OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_STARTS_DOT");
         }
     }
 }

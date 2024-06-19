@@ -54,6 +54,9 @@ $aLang = array(
     'DD_MEDIA_RENAME_FILE_ERR'        => 'Bild oder Ordner kann nicht umbenannt werden, weil es in Verwendung ist!',
     'DD_MEDIA_IMG_URL'                => 'Bild-URL',
 
-    'DD_MEDIA_EXCEPTION_INVALID_FILEEXT' => 'Der Upload von Dateien mit dieser Dateiendung ist nicht erlaubt!',
-
+    'OE_MEDIA_LIBRARY_EXCEPTION_INVALID_FILE_EXTENTION' => 'Ungültige Dateierweiterung',
+    'OE_MEDIA_LIBRARY_EXCEPTION_FORBIDDEN_CHARACTER' => 'Der Dateiname enthält nicht unterstützte Zeichen',
+    'OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_EMPTY' => 'Dateiname darf nicht leer sein',
+    'OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_STARTS_DOT' => 'Dateiname darf nicht mit "." beginnen',
+    'OE_MEDIA_LIBRARY_EXCEPTION_FILE_NOT_UPLOADED' => 'Datei wurde nicht hochgeladen',
 );

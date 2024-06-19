@@ -721,7 +721,7 @@
 
                 error: function (file, responseJson, xhr) {
                     $(file.previewElement).addClass("dz-error")
-                        .find('.dd-media-item-error').show().text(responseJson.error);
+                        .find('.dd-media-item-error').show().text(ddh.translate(responseJson.error));
                 }
             });
 

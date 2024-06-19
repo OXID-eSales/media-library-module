@@ -34,7 +34,7 @@ class FileExtensionValidator implements FilePathValidatorInterface
         }
 
         if (!$isSupported) {
-            throw new ValidationFailedException("Invalid file extension");
+            throw new ValidationFailedException("OE_MEDIA_LIBRARY_EXCEPTION_INVALID_FILE_EXTENTION");
         }
     }
 }
