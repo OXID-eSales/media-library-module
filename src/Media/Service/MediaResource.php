@@ -11,7 +11,6 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
-use OxidEsales\MediaLibrary\Service\ModuleSettingsInterface;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use Symfony\Component\Filesystem\Path;
 
@@ -22,7 +21,7 @@ class MediaResource implements MediaResourceInterface
     public function __construct(
         protected Config $shopConfig,
         protected NamingServiceInterface $namingService,
-        protected ModuleSettingsInterface $moduleSettings,
+        protected \OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface $moduleSettings,
     ) {
     }
 

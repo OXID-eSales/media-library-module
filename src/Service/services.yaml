@@ -11,10 +11,6 @@ services:
     class: OxidEsales\MediaLibrary\Service\FolderService
     public: true
 
-  OxidEsales\MediaLibrary\Service\ModuleSettingsInterface:
-    class: OxidEsales\MediaLibrary\Service\ModuleSettings
-    public: true
-
   OxidEsales\MediaLibrary\Service\NamingServiceInterface:
     class: OxidEsales\MediaLibrary\Service\NamingService
     public: true

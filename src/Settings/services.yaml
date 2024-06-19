@@ -1,0 +1,8 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface:
+    class: OxidEsales\MediaLibrary\Settings\Service\ModuleSettings
+    public: true

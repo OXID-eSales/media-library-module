@@ -11,7 +11,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Service;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 use OxidEsales\MediaLibrary\Module;
-use OxidEsales\MediaLibrary\Service\ModuleSettings;
+use OxidEsales\MediaLibrary\Settings\Service\ModuleSettings;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\String\UnicodeString;
 

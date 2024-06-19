@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Service;
+namespace OxidEsales\MediaLibrary\Settings\Service;
 
 interface ModuleSettingsInterface
 {

@@ -4,7 +4,7 @@
  * See LICENSE file for license details.
  */
 
-use OxidEsales\MediaLibrary\Service\ModuleSettings;
+use OxidEsales\MediaLibrary\Settings\Service\ModuleSettings;
 
 /**
  * Metadata version
