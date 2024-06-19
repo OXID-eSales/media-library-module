@@ -121,37 +121,6 @@ class NamingServiceTest extends TestCase
         ];
     }
 
-    /** @dataProvider validationGoodFileNamesDataProvider */
-    public function testValidateGoodFilename(string $fileName): void
-    {
-        $sut = $this->getSut();
-        $this->assertTrue($sut->validateFileName($fileName));
-    }
-
-    public static function validationGoodFileNamesDataProvider(): \Generator
-    {
-        yield ['fileName' => 'example.txt'];
-    }
-
-    /** @dataProvider validationBadFileNamesDataProvider */
-    public function testValidateBadFilename(string $fileName): void
-    {
-        $sut = $this->getSut();
-
-        $this->expectException(WrongFileTypeException::class);
-        $sut->validateFileName($fileName);
-    }
-
-    public static function validationBadFileNamesDataProvider(): \Generator
-    {
-        yield ['fileName' => 'someFileNameWithoutExtension'];
-        yield ['fileName' => ''];
-        yield ['fileName' => 'example.exe'];
-        yield ['fileName' => 'someJs.js'];
-        yield ['fileName' => 'somePhp.php'];
-        yield ['fileName' => 'otherTypePhp.phtmp'];
-    }
-
     public function testGetUniqueMediaId(): void
     {
         $sut = $this->getSut(

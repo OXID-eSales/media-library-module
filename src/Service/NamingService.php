@@ -15,17 +15,6 @@ use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 
 class NamingService implements NamingServiceInterface
 {
-    protected array $extensionBlacklist = [
-        'php.*',
-        'exe',
-        'js',
-        'jsp',
-        'cgi',
-        'cmf',
-        'pht.*',
-        'phar',
-    ];
-
     public function __construct(
         private LanguageInterface $language,
         private ShopAdapterInterface $shopAdapter,
@@ -67,29 +56,6 @@ class NamingService implements NamingServiceInterface
         return $pathInfo['dirname']
             . DIRECTORY_SEPARATOR . $newFileName
             . (isset($pathInfo['extension']) && $pathInfo['extension'] ? '.' . $pathInfo['extension'] : '');
-    }
-
-    public function validateFileName(string $fileName): bool
-    {
-        $extension = $this->getFileNameExtension($fileName);
-
-        foreach ($this->extensionBlacklist as $oneExpression) {
-            if (preg_match("/{$oneExpression}/si", $extension)) {
-                throw new WrongFileTypeException();
-            }
-        }
-
-        return true;
-    }
-
-    public function getFileNameExtension(string $fileName): string
-    {
-        $fileNameParts = explode(".", $fileName);
-        if (count($fileNameParts) < 2) {
-            throw new WrongFileTypeException();
-        }
-
-        return end($fileNameParts);
     }
 
     public function getUniqueId(): string
