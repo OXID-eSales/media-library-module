@@ -55,7 +55,6 @@ $aLang = array(
     'DD_MEDIA_IMG_URL'                => 'Image URL',
 
     'OE_MEDIA_LIBRARY_EXCEPTION_INVALID_FILE_EXTENTION' => 'Invalid file extension',
-    'OE_MEDIA_LIBRARY_EXCEPTION_FORBIDDEN_CHARACTER' => 'The filename contains not supported characters',
     'OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_EMPTY' => 'Filename cannot be empty',
     'OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_STARTS_DOT' => 'Filename cannot start with "."',
     'OE_MEDIA_LIBRARY_EXCEPTION_FILE_NOT_UPLOADED' => 'File was not uploaded',

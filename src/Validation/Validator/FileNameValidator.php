@@ -14,26 +14,12 @@ use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 
 class FileNameValidator implements FilePathValidatorInterface
 {
-    //@todo: setting
-    public const FORBIDDEN_CHARACTERS = '/<>:"|?*\\';
-
     public function validateFile(FilePathInterface $filePath): void
     {
         $fileName = $filePath->getFileName();
 
         $this->checkFilenameNotEmpty($fileName);
         $this->checkFilenameDoesNotStartWithDot($fileName);
-        $this->checkForbiddenCharacters($fileName);
-    }
-
-    private function checkForbiddenCharacters(string $fileName): void
-    {
-        $forbiddenCharacters = str_split(self::FORBIDDEN_CHARACTERS);
-        foreach ($forbiddenCharacters as $oneForbiddenCharacter) {
-            if (strpos($fileName, $oneForbiddenCharacter) !== false) {
-                throw new ValidationFailedException("OE_MEDIA_LIBRARY_EXCEPTION_FORBIDDEN_CHARACTER");
-            }
-        }
     }
 
     public function checkFilenameNotEmpty(string $fileName): void

@@ -47,18 +47,8 @@ class FileNameValidatorTest extends TestCase
         ];
     }
 
-    public static function forbiddenCharactersDataProvider(): \Generator
-    {
-        $characters = str_split(FileNameValidator::FORBIDDEN_CHARACTERS);
-
-        foreach ($characters as $character) {
-            yield ['fileName' => uniqid() . $character . uniqid()];
-        }
-    }
-
     /**
      * @dataProvider badFileNamesDataProvider
-     * @dataProvider forbiddenCharactersDataProvider
      */
     public function testFileNameEmptyThrowsException(string $fileName): void
     {
