@@ -8,6 +8,7 @@ services:
     public: true
     arguments:
       $fileValidators:
+        - '@OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator'
         - '@OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator'
 
   OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface:
@@ -15,8 +16,10 @@ services:
     public: true
     arguments:
       $fileValidators:
+        - '@OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator'
         - '@OxidEsales\MediaLibrary\Validation\Validator\FileUploadStatusValidator'
         - '@OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator'
 
-  OxidEsales\MediaLibrary\Validation\Validator\FileUploadStatusValidator: ~
   OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator: ~
+  OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator: ~
+  OxidEsales\MediaLibrary\Validation\Validator\FileUploadStatusValidator: ~

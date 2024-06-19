@@ -18,7 +18,7 @@ use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain
+ * @covers \OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChain
  */
 class FileNameValidatorChainTest extends TestCase
 {
@@ -42,12 +42,12 @@ class FileNameValidatorChainTest extends TestCase
     {
         $fileName = uniqid();
 
-        $validatorStub = $this->createMock(FilePathValidatorInterface::class);
-        $validatorStub->method('validateFile')->willThrowException(new ValidationFailedException());
+        $validatorMock = $this->createMock(FilePathValidatorInterface::class);
+        $validatorMock->method('validateFile')->willThrowException(new ValidationFailedException());
 
         $this->expectException(ValidationFailedException::class);
 
-        $sut = new FileNameValidatorChain([$validatorStub]);
+        $sut = new FileNameValidatorChain([$validatorMock]);
         $sut->validateFileName($fileName);
     }
 }
