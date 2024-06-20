@@ -17,8 +17,7 @@ class ValidatorStrategyService implements ValidatorStrategyServiceInterface
         private MediaServiceInterface $mediaService,
         private DocumentNameValidatorChainInterface $fileNameValidatorChain,
         private DocumentNameValidatorChainInterface $directoryNameValidatorChain
-    )
-    {
+    ) {
     }
 
     public function getValidatorChainByMediaId(string $exampleMediaId): DocumentNameValidatorChainInterface
