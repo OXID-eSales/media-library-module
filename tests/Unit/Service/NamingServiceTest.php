@@ -11,7 +11,6 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Service;
 
 use org\bovigo\vfs\vfsStream;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
-use OxidEsales\MediaLibrary\Exception\WrongFileTypeException;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Service\NamingService;
 use PHPUnit\Framework\TestCase;

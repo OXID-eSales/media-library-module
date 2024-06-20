@@ -16,3 +16,10 @@ services:
   OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactoryInterface:
     class: OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactory
     public: true
+
+  OxidEsales\MediaLibrary\Media\Service\ValidatorStrategyServiceInterface:
+    class: OxidEsales\MediaLibrary\Media\Service\ValidatorStrategyService
+    public: true
+    arguments:
+      $fileNameValidatorChain: '@OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChainInterface'
+      $directoryNameValidatorChain: '@OxidEsales\MediaLibrary\Validation\Service\DirectoryNameValidatorChainInterface'

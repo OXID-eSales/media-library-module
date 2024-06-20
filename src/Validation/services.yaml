@@ -3,8 +3,15 @@ services:
     public: false
     autowire: true
 
+  OxidEsales\MediaLibrary\Validation\Service\DirectoryNameValidatorChainInterface:
+    class: OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChain
+    public: true
+    arguments:
+      $fileValidators:
+        - '@OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator'
+
   OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChainInterface:
-    class: OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChain
+    class: OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChain
     public: true
     arguments:
       $fileValidators:

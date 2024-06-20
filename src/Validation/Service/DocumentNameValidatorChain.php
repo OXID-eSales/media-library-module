@@ -13,7 +13,7 @@ use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Validation\Exception\ChainInputTypeException;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 
-class FileNameValidatorChain implements FileNameValidatorChainInterface
+class DocumentNameValidatorChain implements DocumentNameValidatorChainInterface
 {
     /**
      * @param iterable<FilePathValidatorInterface> $fileValidators
@@ -29,9 +29,9 @@ class FileNameValidatorChain implements FileNameValidatorChainInterface
         }
     }
 
-    public function validateFileName(string $fileName): void
+    public function validateDocumentName(string $documentName): void
     {
-        $filePath = new FilePath($fileName);
+        $filePath = new FilePath($documentName);
 
         foreach ($this->fileValidators as $oneValidator) {
             $oneValidator->validateFile($filePath);

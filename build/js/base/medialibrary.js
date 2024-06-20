@@ -505,11 +505,19 @@
 
             $('.dd-media-folder-action', $dialog).on('click', function () {
                 ddh.prompt(ddh.translate('DD_MEDIA_ADD_FOLDER'), function (val) {
-                    $.post(actionLink + 'cl=ddoemedia_view&fnc=addFolder', {name: val}, function (addFolderResult) {
-                        if (addFolderResult.id) {
-                            ui.addMediaItem(addFolderResult.id, addFolderResult.name, 'directory', 0, null, '');
-                            $('.dd-media-list', $dialog).removeClass('empty');
-                            $('.dd-media-file-count', $dialog).text(parseInt($('.dd-media-file-count', $dialog).text()) + 1);
+                    $.ajax({
+                        type: "POST",
+                        url: actionLink + 'cl=ddoemedia_view&fnc=addFolder',
+                        data: {name: val},
+                        success: function (addFolderResult) {
+                            if (addFolderResult.id) {
+                                ui.addMediaItem(addFolderResult.id, addFolderResult.name, 'directory', 0, null, '');
+                                $('.dd-media-list', $dialog).removeClass('empty');
+                                $('.dd-media-file-count', $dialog).text(parseInt($('.dd-media-file-count', $dialog).text()) + 1);
+                            }
+                        },
+                        error: function (result, status, errorThrown) {
+                            ddh.alert(ddh.translate(errorThrown));
                         }
                     });
                 });
@@ -586,7 +594,7 @@
                     ddh.prompt(ddh.translate('DD_MEDIA_RENAME_FILE_FOLDER'), function (val) {
                         var activeItem = $('.dd-media-item.active', $dialog);
 
-                        if (val && val != activeItem.data('file')) {
+                        if (val != activeItem.data('file')) {
                             $.ajax({
                                 type: "POST",
                                 url: actionLink + 'cl=ddoemedia_view&fnc=rename',

@@ -16,11 +16,14 @@ use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaServiceInterface;
+use OxidEsales\MediaLibrary\Media\Service\ValidatorStrategyServiceInterface;
 use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
+use OxidEsales\MediaLibrary\Validation\Service\DirectoryNameValidatorChainInterface;
+use OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChainInterface;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -101,8 +104,9 @@ class MediaControllerTest extends TestCase
     {
         $folderName = uniqid();
 
-        $requestStub = $this->createStub(AddFolderRequestInterface::class);
-        $requestStub->method('getName')->willReturn($folderName);
+        $requestStub = $this->createConfiguredStub(AddFolderRequestInterface::class, [
+            'getName' => $folderName
+        ]);
 
         $newMediaItem = new MediaDataType(
             oxid: 'fid',
@@ -110,8 +114,8 @@ class MediaControllerTest extends TestCase
             fileType: 'directory'
         );
 
-        $folderServiceStub = $this->createStub(FolderServiceInterface::class);
-        $folderServiceStub->method('createCustomDir')->with($folderName)->willReturn($newMediaItem);
+        $folderServiceMock = $this->createMock(FolderServiceInterface::class);
+        $folderServiceMock->method('createCustomDir')->with($folderName)->willReturn($newMediaItem);
 
         $responseSpy = $this->createMock(ResponseInterface::class);
         $responseSpy->expects($this->once())->method('responseAsJson')->with([
@@ -119,11 +123,15 @@ class MediaControllerTest extends TestCase
             'name' => 'someDirName'
         ]);
 
+        $validatorSpy = $this->createMock(DocumentNameValidatorChainInterface::class);
+        $validatorSpy->expects($this->once())->method('validateDocumentName')->with($folderName);
+
         $sut = $this->createPartialMock(MediaController::class, ['getService']);
         $sut->method('getService')->willReturnMap([
             [AddFolderRequestInterface::class, $requestStub],
-            [FolderServiceInterface::class, $folderServiceStub],
+            [FolderServiceInterface::class, $folderServiceMock],
             [ResponseInterface::class, $responseSpy],
+            [DirectoryNameValidatorChainInterface::class, $validatorSpy],
         ]);
 
         $sut->addFolder();

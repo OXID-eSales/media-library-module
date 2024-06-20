@@ -12,28 +12,28 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Service;
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ChainInputTypeException;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
-use OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChain;
+use OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChain;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChain
+ * @covers \OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChain
  */
 class FileNameValidatorChainTest extends TestCase
 {
     public function testConstructorDoesNotAcceptWrongType(): void
     {
         $this->expectException(ChainInputTypeException::class);
-        new FileNameValidatorChain([new \stdClass()]);
+        new DocumentNameValidatorChain([new \stdClass()]);
     }
 
     public function testValidateFileWorksIfNoExceptionsThrown(): void
     {
         $validatorStub = $this->createStub(FilePathValidatorInterface::class);
 
-        $sut = new FileNameValidatorChain([$validatorStub]);
-        $sut->validateFileName(uniqid());
+        $sut = new DocumentNameValidatorChain([$validatorStub]);
+        $sut->validateDocumentName(uniqid());
 
         $this->addToAssertionCount(1);
     }
@@ -47,7 +47,7 @@ class FileNameValidatorChainTest extends TestCase
 
         $this->expectException(ValidationFailedException::class);
 
-        $sut = new FileNameValidatorChain([$validatorMock]);
-        $sut->validateFileName($fileName);
+        $sut = new DocumentNameValidatorChain([$validatorMock]);
+        $sut->validateDocumentName($fileName);
     }
 }

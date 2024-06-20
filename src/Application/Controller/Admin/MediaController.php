@@ -17,12 +17,14 @@ use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaServiceInterface;
+use OxidEsales\MediaLibrary\Media\Service\ValidatorStrategyServiceInterface;
 use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
-use OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChainInterface;
+use OxidEsales\MediaLibrary\Validation\Service\DirectoryNameValidatorChainInterface;
+use OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChainInterface;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator;
 
@@ -122,9 +124,13 @@ class MediaController extends AdminDetailsController
     public function addFolder(): void
     {
         $addFolderRequest = $this->getService(AddFolderRequestInterface::class);
+        $directoryNameValidator = $this->getService(DirectoryNameValidatorChainInterface::class);
+        $responseService = $this->getService(ResponseInterface::class);
 
-        $responseData = [];
-        if ($folderName = $addFolderRequest->getName()) {
+        try {
+            $folderName = $addFolderRequest->getName();
+            $directoryNameValidator->validateDocumentName($folderName);
+
             $folderService = $this->getService(FolderServiceInterface::class);
             $newDirectoryInformation = $folderService->createCustomDir($folderName);
 
@@ -132,10 +138,15 @@ class MediaController extends AdminDetailsController
                 'id' => $newDirectoryInformation->getOxid(),
                 'name' => $newDirectoryInformation->getFileName()
             ];
-        }
 
-        $responseService = $this->getService(ResponseInterface::class);
-        $responseService->responseAsJson($responseData);
+            $responseService->responseAsJson($responseData);
+        } catch (ValidationFailedException $exception) {
+            $responseService->errorResponseAsJson(
+                code: 400,
+                message: $exception->getMessage(),
+                valueArray: ['error' => $exception->getMessage()]
+            );
+        }
     }
 
     /**
@@ -147,16 +158,16 @@ class MediaController extends AdminDetailsController
         $oRequest = Registry::getRequest();
         $mediaService = $this->getService(MediaServiceInterface::class);
         $responseService = $this->getService(ResponseInterface::class);
-        $validator = $this->getService(FileNameValidatorChainInterface::class);
+        $validatorSelector = $this->getService(ValidatorStrategyServiceInterface::class);
 
         try {
             $sId = $oRequest->getRequestEscapedParameter('id');
             $sNewName = $oRequest->getRequestEscapedParameter('newname');
 
-            $validator->validateFileName($sNewName);
+            $validator = $validatorSelector->getValidatorChainByMediaId($sId);
+            $validator->validateDocumentName($sNewName);
 
-            //todo: empty name check through validation
-            if ($sId && $sNewName) {
+            if ($sId) {
                 $newMedia = $mediaService->rename($sId, $sNewName);
                 $sNewName = $newMedia->getFileName();
             }

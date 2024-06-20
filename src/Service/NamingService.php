@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Service;
 
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
-use OxidEsales\MediaLibrary\Exception\WrongFileTypeException;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 
 class NamingService implements NamingServiceInterface
