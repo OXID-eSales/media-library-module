@@ -83,11 +83,11 @@ class MediaControllerTest extends TestCase
         $sut->upload();
     }
 
-    public function testValidationExceptionTriggersErrorResponse(): void
+    public function testValidationExceptionTriggersErrorResponseDuringUpload(): void
     {
         $sut = $this->getSut(
             response: $responseSpy = $this->createMock(ResponseInterface::class),
-            validatorChain: $validationMock = $this->createMock(UploadedFileValidatorChainInterface::class),
+            uploadValidatorChain: $validationMock = $this->createMock(UploadedFileValidatorChainInterface::class),
         );
 
         $exception = new ValidationFailedException($exceptionMessage = uniqid());
@@ -137,10 +137,30 @@ class MediaControllerTest extends TestCase
         $sut->addFolder();
     }
 
+    public function testValidationExceptionTriggersErrorResponseDuringAddFolder(): void
+    {
+        $validationMock = $this->createMock(DirectoryNameValidatorChainInterface::class);
+        $sut = $this->getSut(
+            response: $responseSpy = $this->createMock(ResponseInterface::class),
+            directoryNameValidatorChain: $validationMock,
+        );
+
+        $exception = new ValidationFailedException($exceptionMessage = uniqid());
+        $validationMock->method('validateDocumentName')->willThrowException($exception);
+
+        $responseSpy->expects($this->once())
+            ->method('errorResponseAsJson')
+            ->with(400, $exceptionMessage, ['error' => $exceptionMessage]);
+
+        $sut->addFolder();
+    }
+
     private function getSut(
         ResponseInterface $response = null,
-        UploadedFileValidatorChainInterface $validatorChain = null,
+        UploadedFileValidatorChainInterface $uploadValidatorChain = null,
+        DirectoryNameValidatorChainInterface $directoryNameValidatorChain = null,
         UIRequestInterface $uiRequest = null,
+        AddFolderRequestInterface $addFolderRequest = null,
         ThumbnailServiceInterface $thumbnailService = null,
         MediaServiceInterface $mediaService = null,
     ): MediaController {
@@ -149,9 +169,14 @@ class MediaControllerTest extends TestCase
             [ResponseInterface::class, $response ?? $this->createStub(ResponseInterface::class)],
             [
                 UploadedFileValidatorChainInterface::class,
-                $validatorChain ?? $this->createStub(UploadedFileValidatorChainInterface::class)
+                $uploadValidatorChain ?? $this->createStub(UploadedFileValidatorChainInterface::class)
+            ],
+            [
+                DirectoryNameValidatorChainInterface::class,
+                $directoryNameValidatorChain ?? $this->createStub(DirectoryNameValidatorChainInterface::class)
             ],
             [UIRequestInterface::class, $uiRequest ?? $this->createStub(UIRequestInterface::class)],
+            [AddFolderRequestInterface::class, $addFolderRequest ?? $this->createStub(AddFolderRequestInterface::class)],
             [
                 ThumbnailServiceInterface::class,
                 $thumbnailService ?? $this->createStub(ThumbnailServiceInterface::class)
