@@ -10,9 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - New methods for building the paths to the thumbnail easier: `ThumbnailResourceInterface`: `getPathToThumbnailFile`, `getUrlToThumbnailFile`
 - New response strategy `ResponseInterface::errorResponseAsJson`
 - New module setting added to handle allowed file extensions `ModuleSettingsInterface::getAllowedExtensions`
-- Validations for File: Cannot start from dot, Cannot be empty string. Extensions checked to be from the allowed list.
+- Validations for File: Cannot start from dot, Cannot be empty string. Extensions checked to be from the allowed list. [#0007025](https://bugs.oxid-esales.com/view.php?id=7025)
 - Validations for Directory: Cannot start from dot, cannot be empty string.
-- Validations for Uploaded file: All regular file validations + Checking if file was successfully uploaded at all.
+- Validations for Uploaded file: All regular file validations + Checking if file was successfully uploaded at all. [#0006785](https://bugs.oxid-esales.com/view.php?id=6785)
 - New method to get uploaded file data `UIRequestInterface::getUploadedFile`, also `UploadedFileInterface` data type.
 
 ### Changed
