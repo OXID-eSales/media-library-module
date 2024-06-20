@@ -34,6 +34,8 @@ runscript: &runscript
       ]
   medialibrary:
     path: 'vendor/oxid-esales/media-library-module'
+  composer:
+    early: true
 
 runslim:
   <<: *runscript
