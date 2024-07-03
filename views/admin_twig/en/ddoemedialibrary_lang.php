@@ -17,7 +17,7 @@ $aLang = array(
     'SHOP_MODULE_ddoeMediaLibraryAlternativeImageDirectory' => 'Alternative image URL',
 
     'SHOP_MODULE_GROUP_limitations' => 'Limitations',
-    'SHOP_MODULE_oeMediaLibraryAllowedExtensions' => 'Allowed file extensions(Comma separated, Case insensitive)',
+    'SHOP_MODULE_oeMediaLibraryAllowedExtensions' => 'Allowed file extensions (comma separated, case insensitive)',
 
     // Base Module
 
