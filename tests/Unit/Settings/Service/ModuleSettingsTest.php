@@ -13,9 +13,11 @@ use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServ
 use OxidEsales\MediaLibrary\Module;
 use OxidEsales\MediaLibrary\Settings\Service\ModuleSettings;
 use OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\String\UnicodeString;
 
+#[CoversClass(ModuleSettings::class)]
 class ModuleSettingsTest extends TestCase
 {
     public function testGetAlternativeImageUrl(): void

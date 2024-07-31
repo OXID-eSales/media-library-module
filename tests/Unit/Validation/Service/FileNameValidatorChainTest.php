@@ -15,11 +15,10 @@ use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChain;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChain
- */
+#[CoversClass(DocumentNameValidatorChain::class)]
 class FileNameValidatorChainTest extends TestCase
 {
     public function testConstructorDoesNotAcceptWrongType(): void

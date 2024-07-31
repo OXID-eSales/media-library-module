@@ -12,11 +12,11 @@ use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\Service\MediaResource;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Media\Service\MediaResource
- */
+#[CoversClass(MediaResource::class)]
 class ImageResourceTest extends TestCase
 {
     protected const EXAMPLE_SHOP_URL = 'someShopUrl';
@@ -86,7 +86,7 @@ class ImageResourceTest extends TestCase
         ];
     }
 
-    /** @dataProvider getUrlToMediaDataProvider */
+    #[DataProvider('getUrlToMediaDataProvider')]
     public function testGetUrlToMediaFile(
         string $folder,
         string $fileName,
@@ -131,7 +131,7 @@ class ImageResourceTest extends TestCase
         ];
     }
 
-    /** @dataProvider getUrlToMediaWithAlternativeUrlSetDataProvider */
+    #[DataProvider('getUrlToMediaWithAlternativeUrlSetDataProvider')]
     public function testGetUrlToMediaFileWithAlternativeUrlSet(
         string $folder,
         string $fileName,

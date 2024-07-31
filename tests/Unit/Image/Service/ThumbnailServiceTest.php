@@ -16,11 +16,10 @@ use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Image\Service\ThumbnailService
- */
+#[CoversClass(ThumbnailService::class)]
 class ThumbnailServiceTest extends TestCase
 {
     public function testDeleteMediaThumbnailsTriggersFilesystemDeleteByGlob(): void

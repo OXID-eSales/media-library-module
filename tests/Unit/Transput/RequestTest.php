@@ -11,16 +11,14 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Transput;
 
 use OxidEsales\Eshop\Core\Request as ShopRequest;
 use OxidEsales\MediaLibrary\Transput\Request;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Transput\Request
- */
+#[CoversClass(Request::class)]
 class RequestTest extends TestCase
 {
-    /**
-     * @dataProvider requestOnlyStringDataProvider
-     */
+    #[DataProvider('requestOnlyStringDataProvider')]
     public function testGetStringRequestParameter(
         mixed $requestValue,
         ?string $defaultValue,
@@ -55,9 +53,7 @@ class RequestTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider requestBoolDataProvider
-     */
+    #[DataProvider('requestBoolDataProvider')]
     public function testGetBoolRequestParameter($requestValue, $expectedValue): void
     {
         $paramName = uniqid();
@@ -83,9 +79,7 @@ class RequestTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getIntDataProvider
-     */
+    #[DataProvider('getIntDataProvider')]
     public function testGetIntRequestParameter($requestValue, $expectedValue): void
     {
         $paramName = uniqid();

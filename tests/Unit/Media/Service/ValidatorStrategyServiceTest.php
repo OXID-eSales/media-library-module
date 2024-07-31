@@ -14,8 +14,10 @@ use OxidEsales\MediaLibrary\Media\Service\MediaServiceInterface;
 use OxidEsales\MediaLibrary\Media\Service\ValidatorStrategyService;
 use OxidEsales\MediaLibrary\Validation\Service\DirectoryNameValidatorChainInterface;
 use OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChainInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(ValidatorStrategyService::class)]
 class ValidatorStrategyServiceTest extends TestCase
 {
     public function testGetMediaValidatorReturnsDirectoryValidatorIfMediaIsDirectory(): void

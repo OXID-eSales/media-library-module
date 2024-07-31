@@ -11,11 +11,10 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Transput\RequestData;
 
 use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequest;
 use OxidEsales\MediaLibrary\Transput\RequestInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequest
- */
+#[CoversClass(AddFolderRequest::class)]
 class AddFolderRequestTest extends TestCase
 {
     public function testGetName(): void

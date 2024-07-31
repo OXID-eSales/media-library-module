@@ -14,14 +14,14 @@ use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
+use OxidEsales\MediaLibrary\Media\Service\MediaService;
 use OxidEsales\MediaLibrary\Service\FileSystemService;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Media\Service\MediaService
- */
+#[CoversClass(MediaService::class)]
 class MediaServiceTest extends TestCase
 {
     protected function getSut(

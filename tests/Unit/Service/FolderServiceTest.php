@@ -16,8 +16,10 @@ use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Service\FolderService;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(FolderService::class)]
 class FolderServiceTest extends TestCase
 {
     public function testCreateCustomDir(): void

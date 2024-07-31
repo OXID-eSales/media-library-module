@@ -12,8 +12,11 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator;
 use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(FileNameValidator::class)]
 class FileNameValidatorTest extends TestCase
 {
     public function testRegularFileNameDoesntThrowExceptions(): void
@@ -47,9 +50,7 @@ class FileNameValidatorTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider badFileNamesDataProvider
-     */
+    #[DataProvider('badFileNamesDataProvider')]
     public function testFileNameEmptyThrowsException(string $fileName): void
     {
         $filePathStub = $this->createConfiguredStub(FilePath::class, [

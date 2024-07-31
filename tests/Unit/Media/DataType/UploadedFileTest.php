@@ -10,8 +10,10 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Media\DataType;
 
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFile;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(UploadedFile::class)]
 class UploadedFileTest extends TestCase
 {
     public function testRegularCaseWorks(): void

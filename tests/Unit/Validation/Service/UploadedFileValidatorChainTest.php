@@ -14,11 +14,10 @@ use OxidEsales\MediaLibrary\Validation\Exception\ChainInputTypeException;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain
- */
+#[CoversClass(UploadedFileValidatorChain::class)]
 class UploadedFileValidatorChainTest extends TestCase
 {
     public function testConstructorDoesNotAcceptWrongType(): void

@@ -10,10 +10,9 @@ namespace OxidEsales\MediaLibrary\Tests\Integration\Transition\Core;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 use OxidEsales\MediaLibrary\Transition\Core\ViewConfig;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Transition\Core\ViewConfig
- */
+#[CoversClass(ViewConfig::class)]
 class ViewConfigTest extends IntegrationTestCase
 {
     public function testGetMediaUrl(): void

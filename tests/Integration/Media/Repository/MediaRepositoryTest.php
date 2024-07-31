@@ -12,7 +12,6 @@ namespace OxidEsales\MediaLibrary\Tests\Integration\Media\Repository;
 use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
@@ -21,10 +20,10 @@ use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Exception\WrongMediaIdGivenException;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepository;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Media\Repository\MediaRepository
- */
+#[CoversClass(MediaRepository::class)]
 class MediaRepositoryTest extends IntegrationTestCase
 {
     protected QueryBuilderFactoryInterface $queryBuilderFactory;
@@ -44,9 +43,7 @@ class MediaRepositoryTest extends IntegrationTestCase
         $this->assertSame(3, $sut->getFolderMediaCount(''));
     }
 
-    /**
-     * @dataProvider getFolderMediaDataProvider
-     */
+    #[DataProvider('getFolderMediaDataProvider')]
     public function testGetShopFolderMediaInFolder(
         string $folder,
         int $start,

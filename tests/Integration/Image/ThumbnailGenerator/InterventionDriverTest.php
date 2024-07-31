@@ -14,16 +14,14 @@ use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionDriver;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LoggerInterface;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionDriver
- */
+#[CoversClass(InterventionDriver::class)]
 class InterventionDriverTest extends IntegrationTestCase
 {
-    /**
-     * @dataProvider getThumbnailDataProvider
-     */
+    #[DataProvider('getThumbnailDataProvider')]
     public function testGenerateThumbnail(
         $sourceWidth,
         $sourceHeight,
@@ -130,7 +128,7 @@ class InterventionDriverTest extends IntegrationTestCase
         ];
     }
 
-    /** @dataProvider fileTypesDataProvider */
+    #[DataProvider('fileTypesDataProvider')]
     public function testIsOriginSupported(string $filePath, bool $expectedResult): void
     {
         $sut = $this->getSut();
@@ -202,7 +200,7 @@ class InterventionDriverTest extends IntegrationTestCase
         ];
     }
 
-    /** @dataProvider getThumbnailFileNameDataProvider */
+    #[DataProvider('getThumbnailFileNameDataProvider')]
     public function testGetThumbnailFileName(
         string $originalFileName,
         ImageSizeInterface $thumbnailSize,

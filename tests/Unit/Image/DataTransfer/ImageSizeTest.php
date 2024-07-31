@@ -8,11 +8,11 @@
 namespace OxidEsales\MediaLibrary\Tests\Unit\Image\DataTransfer;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize
- */
+#[CoversClass(ImageSize::class)]
 class ImageSizeTest extends TestCase
 {
     public function testGetWidth(): void
@@ -27,7 +27,7 @@ class ImageSizeTest extends TestCase
         self::assertEquals(600, $size->getHeight());
     }
 
-    /** @dataProvider isEmptyDataProvider */
+    #[DataProvider('isEmptyDataProvider')]
     public function testIsEmpty(int $width, int $height, bool $expected): void
     {
         $sut = new ImageSize($width, $height);
@@ -44,7 +44,7 @@ class ImageSizeTest extends TestCase
         ];
     }
 
-    /** @dataProvider getInFormatDataProvider */
+    #[DataProvider('getInFormatDataProvider')]
     public function testGetInFormat(
         int $width,
         int $height,

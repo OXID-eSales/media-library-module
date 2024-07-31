@@ -13,11 +13,12 @@ use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class FileExtensionValidatorTest extends TestCase
 {
-    /** @dataProvider goodFileNamesDataProvider */
+    #[DataProvider('goodFileNamesDataProvider')]
     public function testAllowedExtensionDoesNotThrowExceptions(string $fileName): void
     {
         $sut = $this->getSut();
@@ -42,7 +43,7 @@ class FileExtensionValidatorTest extends TestCase
         ];
     }
 
-    /** @dataProvider wrongFileNamesDataProvider */
+    #[DataProvider('wrongFileNamesDataProvider')]
     public function testWrongFileNameCasesThrowsExceptions(string $fileName): void
     {
         $sut = $this->getSut();

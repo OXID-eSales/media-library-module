@@ -8,11 +8,10 @@
 namespace Image\DataTransfer;
 
 use OxidEsales\MediaLibrary\Media\DataType\FilePath;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Media\DataType\FilePath
- */
+#[CoversClass(FilePath::class)]
 class FilePathTest extends TestCase
 {
     public function testGetPath(): void

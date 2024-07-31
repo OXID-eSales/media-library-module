@@ -12,11 +12,14 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Service;
 use org\bovigo\vfs\vfsStream;
 use OxidEsales\MediaLibrary\Exception\DirectoryCreationException;
 use OxidEsales\MediaLibrary\Service\FileSystemService;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(FileSystemService::class)]
 class FileSystemServiceTest extends TestCase
 {
-    /** @dataProvider ensureDirectorySuccessCasesDataProvider */
+    #[DataProvider('ensureDirectorySuccessCasesDataProvider')]
     public function testEnsureDirectorySuccessful(string $pathExample): void
     {
         $root = vfsStream::setup('root', 0777, [])->url();

@@ -11,11 +11,10 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Transput;
 
 use OxidEsales\Eshop\Core\Utils;
 use OxidEsales\MediaLibrary\Transput\Response;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Transput\Response
- */
+#[CoversClass(Response::class)]
 class ResponseTest extends TestCase
 {
     public function testRespondAsJson(): void

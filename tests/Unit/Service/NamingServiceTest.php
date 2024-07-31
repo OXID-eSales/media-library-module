@@ -13,11 +13,11 @@ use org\bovigo\vfs\vfsStream;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Service\NamingService;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Service\NamingService
- */
+#[CoversClass(NamingService::class)]
 class NamingServiceTest extends TestCase
 {
     public static function setUpBeforeClass(): void
@@ -34,7 +34,7 @@ class NamingServiceTest extends TestCase
         vfsStream::setup('root', 0777, $structure);
     }
 
-    /** @dataProvider sanitizeFilenameDataProvider */
+    #[DataProvider('sanitizeFilenameDataProvider')]
     public function testSanitizeFilename($filename, $expectedResult): void
     {
         $exampleTranslation = [
@@ -59,7 +59,7 @@ class NamingServiceTest extends TestCase
         yield "not affected" => ['filename' => 'some1-_', 'expectedResult' => 'some1-_'];
     }
 
-    /** @dataProvider getUniqueFilenameDataProvider */
+    #[DataProvider('getUniqueFilenameDataProvider')]
     public function testGetUniqueFilename(string $filename, string $expectation): void
     {
         $sut = $this->getSut();

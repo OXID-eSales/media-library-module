@@ -13,8 +13,10 @@ use org\bovigo\vfs\vfsStream;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Validator\FileUploadStatusValidator;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(FileUploadStatusValidator::class)]
 class FileUploadStatusValidatorTest extends TestCase
 {
     public function testValidationPassesIfFileExist(): void

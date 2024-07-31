@@ -9,11 +9,10 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Language\Core;
 
 use OxidEsales\Eshop\Core\Language as ShopLanguage;
 use OxidEsales\MediaLibrary\Language\Core\LanguageProxy;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Language\Core\LanguageProxy
- */
+#[CoversClass(LanguageProxy::class)]
 class LanguageProxyTest extends TestCase
 {
     public function testGetSeoReplaceChars(): void

@@ -13,11 +13,10 @@ use OxidEsales\MediaLibrary\Media\DataType\FrontendMedia;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactory
- */
+#[CoversClass(FrontendMediaFactory::class)]
 class FrontendMediaFactoryTest extends TestCase
 {
     public function testFactory(): void

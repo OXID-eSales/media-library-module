@@ -12,11 +12,10 @@ namespace OxidEsales\MediaLibrary\Tests\Integration\Language\Core;
 use OxidEsales\Eshop\Core\Language as ShopLanguage;
 use OxidEsales\MediaLibrary\Language\Core\LanguageExtension;
 use OxidEsales\MediaLibrary\Language\Core\LanguageProxy;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Language\Core\LanguageExtension
- */
+#[CoversClass(LanguageExtension::class)]
 class LanguageProxyTest extends TestCase
 {
     public function testGetLanguageStrings(): void

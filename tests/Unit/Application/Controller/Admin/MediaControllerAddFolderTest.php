@@ -16,11 +16,10 @@ use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Service\DirectoryNameValidatorChainInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Application\Controller\Admin\MediaController
- */
+#[CoversClass(MediaController::class)]
 class MediaControllerAddFolderTest extends TestCase
 {
     public function testAddFolderSuccess(): void

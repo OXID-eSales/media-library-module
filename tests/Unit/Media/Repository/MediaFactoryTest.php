@@ -11,11 +11,10 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Repository;
 
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Media\Repository\MediaFactory
- */
+#[CoversClass(MediaFactory::class)]
 class MediaFactoryTest extends TestCase
 {
     public function testFromDatabaseArray(): void

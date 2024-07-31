@@ -7,12 +7,13 @@
 
 namespace Image\Service;
 
+use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregate;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregateInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregate
- */
-class ThumbnailGeneratorAggregateTest extends \OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase
+#[CoversClass(ThumbnailGeneratorAggregate::class)]
+class ThumbnailGeneratorAggregateTest extends IntegrationTestCase
 {
     public function testInitialization(): void
     {

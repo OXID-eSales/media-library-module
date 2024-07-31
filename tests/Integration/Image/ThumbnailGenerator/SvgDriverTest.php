@@ -13,10 +13,10 @@ use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\DefaultDriver;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\SvgDriver;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Image\ThumbnailGenerator\SvgDriver
- */
+#[CoversClass(SvgDriver::class)]
 class SvgDriverTest extends IntegrationTestCase
 {
     public function testGenerateThumbnail(): void
@@ -48,7 +48,7 @@ class SvgDriverTest extends IntegrationTestCase
         $this->assertFalse($sut->isOriginSupported('yyy/someOther.jpg'));
     }
 
-    /** @dataProvider getThumbnailFileNameDataProvider */
+    #[DataProvider('getThumbnailFileNameDataProvider')]
     public function testGetThumbnailFileName(
         string $originalFileName,
         string $expectedName

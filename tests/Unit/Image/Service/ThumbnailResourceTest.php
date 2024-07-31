@@ -9,11 +9,10 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Service;
 
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResource;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Image\Service\ThumbnailResource
- */
+#[CoversClass(ThumbnailResource::class)]
 class ThumbnailResourceTest extends TestCase
 {
     protected function getSut(

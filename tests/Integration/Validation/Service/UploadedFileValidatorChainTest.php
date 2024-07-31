@@ -7,11 +7,11 @@
 
 namespace OxidEsales\MediaLibrary\Tests\Integration\Validation\Service;
 
+use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain
- */
+#[CoversClass(UploadedFileValidatorChain::class)]
 class UploadedFileValidatorChainTest extends \OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase
 {
     public function testInitialization(): void

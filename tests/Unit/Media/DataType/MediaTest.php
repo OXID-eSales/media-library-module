@@ -12,11 +12,11 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Media\DataType;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Media\DataType\FrontendMedia;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Media\DataType\Media
- */
+#[CoversClass(Media::class)]
 class MediaTest extends TestCase
 {
     public function testGetters(): void
@@ -58,7 +58,7 @@ class MediaTest extends TestCase
         $this->assertSame('', $sut->getFolderName());
     }
 
-    /** @dataProvider isDirectoryDataProvider */
+    #[DataProvider('isDirectoryDataProvider')]
     public function testIsDirectory(string $fileType, bool $expectedResult): void
     {
         $sut = new Media(

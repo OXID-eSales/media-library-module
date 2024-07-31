@@ -11,11 +11,10 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Transput\RequestData;
 
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequest;
 use OxidEsales\MediaLibrary\Transput\RequestInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Transput\RequestData\UIRequest
- */
+#[CoversClass(UIRequest::class)]
 class UIRequestTest extends TestCase
 {
     public function testIsOverlay(): void

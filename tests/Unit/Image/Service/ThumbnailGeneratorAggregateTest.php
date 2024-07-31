@@ -14,11 +14,10 @@ use OxidEsales\MediaLibrary\Image\Exception\AggregatorInputType;
 use OxidEsales\MediaLibrary\Image\Exception\NoSupportedDriversForSource;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregate;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregate
- */
+#[CoversClass(ThumbnailGeneratorAggregate::class)]
 class ThumbnailGeneratorAggregateTest extends TestCase
 {
     public function testConstructorDoesNotAcceptWrongType(): void

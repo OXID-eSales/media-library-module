@@ -14,11 +14,10 @@ use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbService;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbService
- */
+#[CoversClass(BreadcrumbService::class)]
 class BreadcrumbServiceTest extends TestCase
 {
     public function testNoFolderId(): void
