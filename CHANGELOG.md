@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.1.0] - Unreleased
+
+### Removed
+- Support of PHP 8.1
+
 ## [2.0.0] - Unreleased
 
 ### Added
@@ -43,5 +48,6 @@ Module extracted from wysiwyg module, and used by it now
 - Thumbnails are generated on demand and the type of thumbnail file is matching the original image type
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
+[2.1.0]: https://github.com/OXID-eSales/media-library-module/compare/b-7.1.x..b-7.2.x
 [1.0.1]: https://github.com/OXID-eSales/media-library-module/compare/v1.0.0..v1.0.1
 [1.0.0]: https://github.com/OXID-eSales/media-library-module/compare/f18ab07..v1.0.0

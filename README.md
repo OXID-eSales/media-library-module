@@ -13,6 +13,7 @@ Module provides basic media files management.
 ## Compatibility
 
 ### Branches
+* b-7.2.x is compatible with shop b-7.2.x branches
 * b-7.1.x is compatible with shop b-7.1.x branches
 
 ### Versions
