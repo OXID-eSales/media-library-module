@@ -6,16 +6,16 @@ on:
   push: {}
 
 jobs:
-  php81_mysql80:
+  php82_mysql80:
     uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yml@v4
     with:
-      testplan: '~/defaults/7.1.x.yml,~/defaults/php8.1_mysql5.7_only.yml,~/module-medialibrary.yml'
+      testplan: '~/defaults/7.2.x.yml,~/defaults/php8.2_mysql5.7_only.yml,~/module-medialibrary.yml'
       runs_on: '"ubuntu-latest"'
       defaults: 'v4'
       plan_folder: '.github/oxid-esales'
       custom_testplan_yaml: |
         global:
-          title: 'php81_mysql80-{{ .Github.EventName }}-{{ .Github.RefName }}'
+          title: 'php82_mysql80-{{ .Github.EventName }}-{{ .Github.RefName }}'
     secrets:
       DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
       DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
