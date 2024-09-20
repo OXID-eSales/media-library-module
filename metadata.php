@@ -32,13 +32,6 @@ $aModule = [
         \OxidEsales\Eshop\Core\Language::class   => \OxidEsales\MediaLibrary\Language\Core\LanguageExtension::class,
     ],
     'controllers' => [
-        // Lang
-        'ddoelangjs'        => \OxidEsales\MediaLibrary\Language\Controller\MediaLangJs::class,
-
-        // Admin Controller
-        'ddoemedia_view'    => \OxidEsales\MediaLibrary\Application\Controller\Admin\MediaController::class,
-        'ddoemedia_wrapper' => \OxidEsales\MediaLibrary\Application\Controller\Admin\MediaWrapperController::class,
-
     ],
     'templates'   => [
     ],

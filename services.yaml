@@ -18,3 +18,18 @@ services:
   OxidEsales\MediaLibrary\Core\Registry:
     class: 'OxidEsales\Eshop\Core\Registry'
     public: true
+
+  OxidEsales\MediaLibrary\Language\Controller\MediaLangJs:
+    tags:
+      - { name: 'oxid.controller', controller_key: 'ddoelangjs' }
+    public: true
+
+  OxidEsales\MediaLibrary\Application\Controller\Admin\MediaController:
+    tags:
+      - { name: 'oxid.controller', controller_key: 'ddoemedia_view' }
+    public: true
+
+  OxidEsales\MediaLibrary\Application\Controller\Admin\MediaWrapperController:
+    tags:
+      - { name: 'oxid.controller', controller_key: 'ddoemedia_wrapper' }
+    public: true
