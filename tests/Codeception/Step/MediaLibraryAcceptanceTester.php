@@ -46,6 +46,7 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
         $I->retryClick(Translator::translate('DD_MEDIA_DIALOG'));
 
         $I->selectBaseFrame();
+        $I->waitForAjax();
 
         $I->see(Translator::translate('DD_MEDIA_DIALOG'));
         $I->see(Translator::translate('DD_MEDIA_LIST'));
