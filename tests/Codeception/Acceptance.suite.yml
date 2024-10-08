@@ -63,7 +63,6 @@ modules:
         shop_path: '%SHOP_SOURCE_PATH%'
         paths:
           - 'Application/views/apex'
-        paths_admin:
           - 'Application/views/admin_twig'
           - '%SOURCE_RELATIVE_PACKAGE_PATH%/views/admin_twig'
 
