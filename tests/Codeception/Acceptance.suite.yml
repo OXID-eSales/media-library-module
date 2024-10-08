@@ -40,7 +40,7 @@ modules:
         populate: true # run populator before all tests
         cleanup: false # run populator before each test
         populator: >
-          mysql --defaults-file=$mysql_config --default-character-set=utf8 $dbname < $dump && 
+          mysql --defaults-file=$mysql_config --default-character-set=utf8 $dbname < $dump &&
           mysql --defaults-file=$mysql_config --default-character-set=utf8 $dbname < $module_dump
     - \OxidEsales\Codeception\Module\Oxideshop:
         screen_shot_url: '%SCREEN_SHOT_URL%'
@@ -62,9 +62,10 @@ modules:
     - \OxidEsales\Codeception\Module\Translation\TranslationsModule:
         shop_path: '%SHOP_SOURCE_PATH%'
         paths:
-          - Application/views/admin_twig
-          - Application/views/apex
-          - ../vendor/oxid-esales/media-library-module/views/admin_twig
+          - 'Application/views/apex'
+        paths_admin:
+          - 'Application/views/admin_twig'
+          - '%SOURCE_RELATIVE_PACKAGE_PATH%/views/admin_twig'
 
 step_decorators:
   - \Codeception\Step\Retry

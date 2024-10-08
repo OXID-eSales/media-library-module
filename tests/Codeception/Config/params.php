@@ -19,6 +19,7 @@ $facts = new Facts();
 return [
     'SHOP_URL' => $facts->getShopUrl(),
     'SHOP_SOURCE_PATH' => $facts->getSourcePath(),
+    'SOURCE_RELATIVE_PACKAGE_PATH' => getSourceRelativePackagePath($facts),
     'VENDOR_PATH' => $facts->getVendorPath(),
     'DB_NAME' => $facts->getDatabaseName(),
     'DB_USERNAME' => $facts->getDatabaseUserName(),
@@ -36,6 +37,11 @@ return [
     'SCREEN_SHOT_URL' => getenv('CC_SCREEN_SHOTS_PATH') ?: '',
     'THEME_ID' => getenv('THEME_ID') ?: 'apex'
 ];
+
+function getSourceRelativePackagePath(Facts $facts): string
+{
+    return str_replace($facts->getShopRootPath(), '..', __DIR__) . '/../../../';
+}
 
 function getTestDataDumpFilePath(): string
 {
