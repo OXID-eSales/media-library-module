@@ -1,14 +1,15 @@
 name: Schedule for full matrix run
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 0 */7 * *'
 
 jobs:
   schedule_matrix:
-    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yml@v4
+    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
     with:
-      testplan: '~/defaults/7.2.x.yml,~/module-medialibrary.yml'
+      testplan: '~/defaults/7.2.x.yaml,~/module-medialibrary.yaml'
       runs_on: '"ubuntu-latest"'
       defaults: 'v4'
       plan_folder: '.github/oxid-esales'

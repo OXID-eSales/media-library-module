@@ -7,9 +7,9 @@ on:
 
 jobs:
   php82_mysql80:
-    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yml@v4
+    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
     with:
-      testplan: '~/defaults/7.2.x.yml,~/defaults/php8.2_mysql5.7_only.yml,~/module-medialibrary.yml'
+      testplan: '~/defaults/7.2.x.yaml,~/defaults/php8.2_mysql5.7_only.yaml,~/module-medialibrary.yaml'
       runs_on: '"ubuntu-latest"'
       defaults: 'v4'
       plan_folder: '.github/oxid-esales'
