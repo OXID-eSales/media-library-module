@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - Support of PHP 8.1
 
-## [2.0.0] - Unreleased
+## [2.0.0] - 2024-10-10
 
 ### Added
 - New methods for building the paths to the thumbnail easier: `ThumbnailResourceInterface`: `getPathToThumbnailFile`, `getUrlToThumbnailFile`
@@ -52,5 +52,5 @@ Module extracted from wysiwyg module, and used by it now
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
 [2.1.0]: https://github.com/OXID-eSales/media-library-module/compare/b-7.1.x..b-7.2.x
-[1.0.1]: https://github.com/OXID-eSales/media-library-module/compare/v1.0.0..v1.0.1
+[2.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v1.0.0..v2.0.0
 [1.0.0]: https://github.com/OXID-eSales/media-library-module/compare/f18ab07..v1.0.0
