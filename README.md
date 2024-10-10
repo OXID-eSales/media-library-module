@@ -17,8 +17,8 @@ Module provides basic media files management.
 * v1.0.x is compatible with eShop compilation 7.1.x and higher
 
 ### Branches
-* b-7.1.x is compatible with shop b-7.1.x branches
 * b-7.2.x is compatible with shop b-7.2.x branches
+* b-7.1.x is compatible with shop b-7.1.x branches
 
 ## License
 
