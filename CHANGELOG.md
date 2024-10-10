@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.0.0] - Unreleased
+## [2.0.0] - 2024-10-10
 
 ### Added
 - New methods for building the paths to the thumbnail easier: `ThumbnailResourceInterface`: `getPathToThumbnailFile`, `getUrlToThumbnailFile`
@@ -43,5 +43,5 @@ Module extracted from wysiwyg module, and used by it now
 - Thumbnails are generated on demand and the type of thumbnail file is matching the original image type
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
-[1.0.1]: https://github.com/OXID-eSales/media-library-module/compare/v1.0.0..v1.0.1
+[2.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v1.0.0..v2.0.0
 [1.0.0]: https://github.com/OXID-eSales/media-library-module/compare/f18ab07..v1.0.0

@@ -1,6 +1,6 @@
 # Media Library Module for OXID eShop
 
-[![Development](https://github.com/OXID-eSales/media-library-module/actions/workflows/trigger.yml/badge.svg?branch=b-7.1.x)](https://github.com/OXID-eSales/media-library-module/actions/workflows/trigger.yml)
+[![Development](https://github.com/OXID-eSales/media-library-module/actions/workflows/trigger.yaml/badge.svg?branch=b-7.1.x)](https://github.com/OXID-eSales/media-library-module/actions/workflows/trigger.yaml)
 [![Latest Version](https://img.shields.io/packagist/v/OXID-eSales/media-library-module?logo=composer&label=latest&include_prereleases&color=orange)](https://packagist.org/packages/oxid-esales/media-library-module)
 [![PHP Version](https://img.shields.io/packagist/php-v/oxid-esales/media-library-module)](https://github.com/oxid-esales/media-library-module)
 
@@ -12,11 +12,13 @@ Module provides basic media files management.
 
 ## Compatibility
 
+### Versions
+* v2.0.x is compatible with eShop compilation 7.1.x and higher
+* v1.0.x is compatible with eShop compilation 7.1.x and higher
+
 ### Branches
 * b-7.1.x is compatible with shop b-7.1.x branches
-
-### Versions
-* v1.0.0 is compatible with eShop compilation 7.1.x
+* b-7.2.x is compatible with shop b-7.2.x branches
 
 ## License
 
