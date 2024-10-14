@@ -46,6 +46,9 @@
       "OxidEsales\\MediaLibrary\\Tests\\": "./tests"
     }
   },
+  "conflict": {
+    "oxid-esales/oxideshop-ce": "<7.2"
+  },
   "scripts": {
     "phpcs": "phpcs --standard=tests/phpcs.xml  --report=full",
     "phpcs-report": "phpcs --standard=tests/phpcs.xml --report=json --report-file=phpcs.report.json",
