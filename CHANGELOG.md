@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - Support of PHP 8.1
 
+## [2.0.1] - Unreleased
+
+### Fixed
+- Fixed empty error box for errorous add folder and rename folder actions
+
 ## [2.0.0] - 2024-10-10
 
 ### Added
@@ -52,5 +57,6 @@ Module extracted from wysiwyg module, and used by it now
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
 [2.1.0]: https://github.com/OXID-eSales/media-library-module/compare/v2.0.0..v2.1.0
+[2.0.1]: https://github.com/OXID-eSales/media-library-module/compare/v2.0.0..v2.0.1
 [2.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v1.0.0..v2.0.0
 [1.0.0]: https://github.com/OXID-eSales/media-library-module/compare/f18ab07..v1.0.0
