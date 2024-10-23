@@ -611,7 +611,7 @@
                                     ui._loadItemDetails(activeItem.data(), $dialog);
                                 },
                                 error: function (result, status, errorThrown) {
-                                    ddh.alert(ddh.translate(errorThrown));
+                                    ddh.alert(ddh.translate(result.responseJSON.error));
                                 }
                             });
                         }

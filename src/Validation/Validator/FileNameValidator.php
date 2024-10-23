@@ -27,6 +27,11 @@ class FileNameValidator implements FilePathValidatorInterface
         if (!$fileName) {
             throw new ValidationFailedException("OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_EMPTY");
         }
+
+        $fileName = str_replace(' ', '', $fileName);
+        if (strlen($fileName) < 1) {
+            throw new ValidationFailedException("OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_EMPTY");
+        }
     }
 
     public function checkFilenameDoesNotStartWithDot(string $fileName): void

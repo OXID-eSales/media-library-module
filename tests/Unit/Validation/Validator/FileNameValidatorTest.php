@@ -19,10 +19,18 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(FileNameValidator::class)]
 class FileNameValidatorTest extends TestCase
 {
-    public function testRegularFileNameDoesntThrowExceptions(): void
+    public static function goodFileNamesDataProvider(): \Generator
+    {
+        yield "regular file name" => [
+            'fileName' => uniqid(),
+        ];
+    }
+
+    #[DataProvider('goodFileNamesDataProvider')]
+    public function testRegularFileNameDoesntThrowExceptions(string $fileName): void
     {
         $filePathStub = $this->createConfiguredStub(FilePath::class, [
-            'getFileName' => uniqid()
+            'getFileName' => $fileName
         ]);
 
         $sut = new FileNameValidator();
@@ -31,18 +39,14 @@ class FileNameValidatorTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    public static function goodFileNamesDataProvider(): \Generator
-    {
-        yield "regular file name" => [
-            'baseName' => uniqid(),
-            'extension' => uniqid()
-        ];
-    }
-
     public static function badFileNamesDataProvider(): \Generator
     {
         yield "empty" => [
             'fileName' => ''
+        ];
+
+        yield "empty with spaces" => [
+            'fileName' => ' '
         ];
 
         yield "starts with dot" => [
