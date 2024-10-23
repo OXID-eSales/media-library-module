@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.1] - Unreleased
+
+### Fixed
+- Fixed empty error box for errorous add folder and rename folder actions
+
 ## [2.0.0] - 2024-10-10
 
 ### Added
@@ -43,5 +48,6 @@ Module extracted from wysiwyg module, and used by it now
 - Thumbnails are generated on demand and the type of thumbnail file is matching the original image type
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
+[2.0.1]: https://github.com/OXID-eSales/media-library-module/compare/v2.0.0..v2.0.1
 [2.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v1.0.0..v2.0.0
 [1.0.0]: https://github.com/OXID-eSales/media-library-module/compare/f18ab07..v1.0.0

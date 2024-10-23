@@ -516,8 +516,8 @@
                                 $('.dd-media-file-count', $dialog).text(parseInt($('.dd-media-file-count', $dialog).text()) + 1);
                             }
                         },
-                        error: function (result, status, errorThrown) {
-                            ddh.alert(ddh.translate(errorThrown));
+                        error: function (result) {
+                            ddh.alert(ddh.translate(result.responseJSON.error));
                         }
                     });
                 });
@@ -610,8 +610,8 @@
                                     $('.dd-media-item-label span', activeItem).text(resultJson.name);
                                     ui._loadItemDetails(activeItem.data(), $dialog);
                                 },
-                                error: function (result, status, errorThrown) {
-                                    ddh.alert(ddh.translate(errorThrown));
+                                error: function (result) {
+                                    ddh.alert(ddh.translate(result.responseJSON.error));
                                 }
                             });
                         }
