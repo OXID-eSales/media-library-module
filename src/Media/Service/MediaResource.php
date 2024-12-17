@@ -8,6 +8,8 @@
 namespace OxidEsales\MediaLibrary\Media\Service;
 
 use OxidEsales\Eshop\Core\Config;
+use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
@@ -28,7 +30,7 @@ class MediaResource implements MediaResourceInterface
     public function getPathToMediaFiles(string $folderName = ''): string
     {
         return Path::join(
-            $this->shopConfig->getConfigParam('sShopDir'),
+            ContainerFacade::get(BasicContextInterface::class)->getSourcePath(),
             self::MEDIA_PATH,
             $folderName
         );
@@ -45,7 +47,7 @@ class MediaResource implements MediaResourceInterface
     public function getUrlToMediaFiles(string $folderName = ''): string
     {
         $mediaFolderUrl = $this->moduleSettings->getAlternativeImageUrl()
-            ?: Path::join($this->shopConfig->getSslShopUrl(), self::MEDIA_PATH);
+            ?: Path::join($this->shopConfig->getShopUrl(), self::MEDIA_PATH);
 
         return Path::join($mediaFolderUrl, $folderName);
     }

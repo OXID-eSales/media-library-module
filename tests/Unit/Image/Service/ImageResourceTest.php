@@ -95,7 +95,7 @@ class ImageResourceTest extends TestCase
         $sut = $this->getSut(
             shopConfig: $shopConfigStub = $this->createStub(Config::class)
         );
-        $shopConfigStub->method('getSslShopUrl')->willReturn(self::EXAMPLE_SHOP_URL);
+        $shopConfigStub->method('getShopUrl')->willReturn(self::EXAMPLE_SHOP_URL);
 
         $this->assertSame($expectedResult, $sut->getUrlToMediaFile($folder, $fileName));
     }
@@ -153,7 +153,7 @@ class ImageResourceTest extends TestCase
         $sut = $this->getSut(
             shopConfig: $shopConfigStub = $this->createStub(Config::class)
         );
-        $shopConfigStub->method('getSslShopUrl')->willReturn('someShopUrl');
+        $shopConfigStub->method('getShopUrl')->willReturn('someShopUrl');
 
         $this->assertSame('someShopUrl/' . MediaResource::MEDIA_PATH, $sut->getUrlToMediaFiles());
     }
@@ -163,7 +163,7 @@ class ImageResourceTest extends TestCase
         $sut = $this->getSut(
             shopConfig: $shopConfigStub = $this->createStub(Config::class)
         );
-        $shopConfigStub->method('getSslShopUrl')->willReturn('someShopUrl');
+        $shopConfigStub->method('getShopUrl')->willReturn('someShopUrl');
 
         $this->assertSame(
             'someShopUrl/' . MediaResource::MEDIA_PATH . '/someFolder',

@@ -11,7 +11,7 @@ namespace OxidEsales\MediaLibrary\Media\Repository;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
-use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
@@ -22,11 +22,11 @@ class MediaRepository implements MediaRepositoryInterface
     private Connection $connection;
 
     public function __construct(
-        private ConnectionProviderInterface $connectionProvider,
+        private ConnectionFactoryInterface $connectionFactory,
         private ContextInterface $context,
         private MediaFactoryInterface $mediaFactory,
     ) {
-        $this->connection = $this->connectionProvider->get();
+        $this->connection = $this->connectionFactory->create();
     }
 
     public function getFolderMediaCount(string $folderId): int

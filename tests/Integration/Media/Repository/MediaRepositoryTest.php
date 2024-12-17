@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Integration\Media\Repository;
 
 use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
-use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
@@ -159,11 +159,11 @@ class MediaRepositoryTest extends IntegrationTestCase
 
     private function getSut(
         ?ContextInterface $context = null,
-        ?ConnectionProviderInterface $connectionProvider = null,
+        ?ConnectionFactoryInterface $connectionFactory = null,
         ?MediaFactoryInterface $mediaFactory = null,
     ): MediaRepository {
         $sut = new MediaRepository(
-            connectionProvider: $connectionProvider ?? $this->get(ConnectionProviderInterface::class),
+            connectionFactory: $connectionFactory ?? $this->get(ConnectionFactoryInterface::class),
             context: $context ?? $this->get(ContextInterface::class),
             mediaFactory: $mediaFactory ?? $this->get(MediaFactoryInterface::class),
         );
