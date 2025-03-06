@@ -38,7 +38,7 @@ class ThumbnailService implements ThumbnailServiceInterface
     public function ensureAndGetThumbnailUrl(
         string $folderName,
         string $fileName,
-        ImageSizeInterface $imageSize = null,
+        ?ImageSizeInterface $imageSize = null,
         bool $crop = true
     ): string {
         $sourcePath = $this->mediaResource->getPathToMediaFile($folderName, $fileName);
