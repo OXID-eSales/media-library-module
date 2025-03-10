@@ -3,10 +3,10 @@
  * See LICENSE file for license details.
  */
 
-@import '../vendor/bootstrap/less/variables';
-@import '../vendor/bootstrap/less/mixins';
-@import '../vendor/font-awesome/less/variables';
-@import '../vendor/font-awesome/less/mixins';
+@import 'bootstrap/less/variables';
+@import 'bootstrap/less/mixins';
+@import 'font-awesome/less/variables';
+@import 'font-awesome/less/mixins';
 
 // MediaLibrary
 
@@ -108,13 +108,13 @@
     }
 
     .dd-media-list-items > .row {
-        margin-left: floor( @items-gutter-width / 2 ) * -1;
-        margin-right: floor( @items-gutter-width / 2 ) * -1;
+        margin-left: (floor(@items-gutter-width / 2) * -1) + 0px;
+        margin-right: (floor(@items-gutter-width / 2) * -1) + 0px;
     }
 
     .dd-media-col {
-        padding-left: floor(@items-gutter-width / 2);
-        padding-right: floor(@items-gutter-width / 2);
+        padding-left: (floor(@items-gutter-width / 2)) + 0px;
+        padding-right: (floor(@items-gutter-width / 2)) + 0px;
     }
 
     .dd-media-list-toolbar {
@@ -130,7 +130,6 @@
         display: block;
         overflow: hidden;
         width: 100%;
-        height: 100%;
         color: @text-muted;
         //transition: all 0.2s;
         padding: 3px;
@@ -433,6 +432,8 @@
         }
 
         .dd-media-tabs {
+            height: auto;
+
             .tab-content {
                 max-height: 460px;
                 position: relative;

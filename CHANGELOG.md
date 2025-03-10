@@ -4,10 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.1.2] - unreleased
+## [undecided] - unreleased
 
 ### Added
 - Support of PHP 8.4
+
+### Changed
+- Removed Grunt entirely and migrated all build tasks to Vite
+- Migrated all JavaScript files to ES Modules
+
+### Removed
+- External libraries from vendor directory. They are installed using Node.js now
+- Completely removed Grunt and its dependencies from the project
 
 ## [2.1.1] - 2024-10-23
 

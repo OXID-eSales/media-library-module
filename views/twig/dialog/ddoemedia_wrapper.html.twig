@@ -42,21 +42,27 @@
         {% include "@ddoemedialibrary/dialog/ddoemedia.html.twig" %}
     </div>
 
-{{ script({ include: oViewConf.getSelfLink()|cat('cl=ddoelangjs'), priority: 1, dynamic: __oxid_include_dynamic }) }}
+    {% set sActionLink = oViewConf.getSelfLink()|replace({'&amp;':'&'})|cat('overlay=' ~ request.isOverlay() ~ '&') %}
+    {% set sMediaLink = oConf.getCurrentShopUrl(true)|regex_replace('/([^\/])(\/admin)/', '$1')|regex_replace('/http(s)?\, /', '')|trim('/', 'right')|cat('/out/pictures/ddmedia/') %}
+    <script type="module">
+        (async () => {
+            try {
+                await import("{{ oViewConf.getSelfLink()|replace({'&amp;':'&'})|cat('cl=ddoelangjs')|raw }}");
+                await import("{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/jquery.min.js') }}");
+                await import("{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/jquery-ui.min.js') }}");
+                await import("{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/bootstrap.min.js') }}");
 
-{{ script({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/jquery.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
-{{ script({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/jquery-ui.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
-{{ script({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/bootstrap.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
-{{ script({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/base.min.js'), priority: 1, dynamic: __oxid_include_dynamic }) }}
+                const { MediaLibrary } = await import("{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/base.min.js') }}");
 
-{% set sActionLink = oViewConf.getSelfLink()|replace({'&amp;':'&'})|cat('overlay=' ~ request.isOverlay() ~ '&') %}
-{% set sMediaLink = oConf.getCurrentShopUrl(true)|regex_replace('/([^\/])(\/admin)/', '$1')|regex_replace('/http(s)?\, /', '')|trim('/', 'right')|cat('/out/pictures/ddmedia/') %}
-
-{{ script({ add: "MediaLibrary.setActionLink('" ~ sActionLink ~ "');", priority: 10, dynamic: __oxid_include_dynamic }) }}
-{{ script({ add: "MediaLibrary.setResourceLink('" ~ sMediaLink ~ "');", priority: 10, dynamic: __oxid_include_dynamic }) }}
-{{ script({ add: 'MediaLibrary.init(/image\\/.*/i, null );', priority: 10, dynamic: __oxid_include_dynamic }) }}
-
-{{ script({ dynamic: __oxid_include_dynamic }) }}
+                MediaLibrary.setActionLink("{{ sActionLink|raw }}");
+                MediaLibrary.setResourceLink("{{ sMediaLink }}");
+                const regexPattern = new RegExp("image/.*", "i");
+                MediaLibrary.init(regexPattern, null);
+            } catch (error) {
+                console.error("Failed to load Media Library script:", error);
+            }
+        })();
+    </script>
 
 </body>
 </html>

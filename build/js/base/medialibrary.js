@@ -3,67 +3,43 @@
  * See LICENSE file for license details.
  */
 
-+function ($) {
-    'use strict';
+import '../../less/base.less'
 
-    // MEDIA LIBRARY CLASS DEFINITION
-    // ==============================
+import { ddh, areaselect } from './helper.js';
+import Dropzone from "dropzone";
 
-    var MediaLibrary = function () {
-        var self = this;
+class MediaLibraryClass {
+    static VERSION = '1.0.0';
 
-        $(document).on('keydown', function (e) {
+    ctrlKeyPressed = false;
+    currentPath = '';
+    currentFolderId = '';
+    _actionLink = '';
+    _resourceLink = '';
+
+    constructor() {
+        document.addEventListener('keydown', (e) => {
             if (e.ctrlKey || e.keyCode === 224 || e.keyCode === 91 || e.keyCode === 93) {
-                self.ctrlKeyPressed = true;
-            }
-        }).on('keyup', function (e) {
-            if (e.ctrlKey || e.keyCode === 224 || e.keyCode === 91 || e.keyCode === 93) {
-                self.ctrlKeyPressed = false;
+                this.ctrlKeyPressed = true;
             }
         });
 
-        // Create pseudo helper if not exists
-        if (typeof ddh == 'undefined') {
-            window.ddh = {
-                translate: function (string) {
-                    if (string && typeof i18n === 'object') {
-                        if (i18n[string]) {
-                            return i18n[string];
-                        }
-                    }
-
-                    return string;
-                }
+        document.addEventListener('keyup', (e) => {
+            if (e.ctrlKey || e.keyCode === 224 || e.keyCode === 91 || e.keyCode === 93) {
+                this.ctrlKeyPressed = false;
             }
-        }
-    };
+        });
+    }
 
-
-    // MEDIA LIBRARY MAIN PROPERTIES
-    // =============================
-
-    MediaLibrary.VERSION = '1.0.0';
-
-    MediaLibrary.prototype.ctrlKeyPressed = false;
-    MediaLibrary.prototype.currentPath = '';
-    MediaLibrary.prototype.currentFolderId = '';
-
-    MediaLibrary.prototype._actionLink = '';
-    MediaLibrary.prototype._resourceLink = '';
-
-
-    // MEDIA LIBRARY METHODS
-    // =====================
-
-    MediaLibrary.prototype.setActionLink = function (url) {
+    setActionLink(url) {
         this._actionLink = decodeURI(url);
-    };
+    }
 
-    MediaLibrary.prototype.setResourceLink = function (url) {
+    setResourceLink(url) {
         this._resourceLink = decodeURI(url);
-    };
+    }
 
-    MediaLibrary.prototype._loadItemDetails = function (file, $dialog) {
+    _loadItemDetails(file, $dialog) {
         var ui = this;
 
         if (typeof file === 'undefined') {
@@ -110,7 +86,7 @@
     };
 
 
-    MediaLibrary.prototype._formatFileSize = function (size) {
+    _formatFileSize(size) {
         size = parseInt(size);
 
         var names = ['tb', 'gb', 'mb', 'kb', 'b'];
@@ -123,7 +99,7 @@
         return size + ' ' + names.pop();
     };
 
-    MediaLibrary.prototype._makeItemMovable = function ($item) {
+    _makeItemMovable($item) {
         var actionLink = this._actionLink;
 
         //TODO: moving file to parent folder
@@ -178,7 +154,7 @@
      *
      * @param callback
      */
-    MediaLibrary.prototype.open = function (callback) {
+    open(callback) {
         var actionLink = this._actionLink;
         var filter = null, multiple = false;
         var ui = this;
@@ -291,7 +267,7 @@
      *
      * @param callback
      */
-    MediaLibrary.prototype.init = function (callback) {
+    init(callback) {
         var actionLink = this._actionLink;
         var resourceLink = this._resourceLink;
         var filter = null, multiple = false;
@@ -326,7 +302,8 @@
         var $dialog = $('.dd-media-wrapper');
 
         $dialog.data('media-options', {
-            multiple: multiple, filter: filter
+            multiple: multiple,
+            filter: filter
         });
 
         // Communicate with Overlay
@@ -407,10 +384,9 @@
         }
 
         this._loadMediaContent($dialog);
-
     };
 
-    MediaLibrary.prototype.refreshMedia = function (id) {
+    refreshMedia(id) {
         var $media = $('.dd-media');
 
         if ($media.length) {
@@ -434,7 +410,7 @@
         }
     };
 
-    MediaLibrary.prototype.addMediaItem = function (id, file, filetype, filesize, thumb, imagesize) {
+    addMediaItem(id, file, filetype, filesize, thumb, imagesize) {
         var resourceLink = this._resourceLink;
         var ui = this;
         var $item = $('.dd-media-list-items .dd-media-dz-helper > div').clone();
@@ -468,7 +444,7 @@
 
     };
 
-    MediaLibrary.prototype._loadMediaContent = function ($dialog, folderId, tab) {
+    _loadMediaContent($dialog, folderId, tab) {
         var actionLink = this._actionLink;
         var resourceLink = this._resourceLink;
         var ui = this;
@@ -683,6 +659,7 @@
                 }
             });
 
+            Dropzone.autoDiscover = false;
             $('.dd-media', $dialog).dropzone({
                 url: actionLink + 'cl=ddoemedia_view&fnc=upload&folderid=' + $('.dd-media', $dialog).data('folderid'),
                 parallelUploads: 10,
@@ -762,7 +739,7 @@
         });
     };
 
-    MediaLibrary.prototype._loadMoreMediaContent = function (page) {
+    _loadMoreMediaContent(page) {
         var actionLink = this._actionLink;
         var start = page * 18;
         var ui = this;
@@ -779,8 +756,8 @@
             }
         });
     };
+}
 
-    // Make MediaLibrary public
-    window.MediaLibrary = new MediaLibrary();
-
-}(jQuery);
+export const MediaLibrary = new MediaLibraryClass();
+window.MediaLibrary = MediaLibrary;
+export { ddh, areaselect };

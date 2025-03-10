@@ -64,6 +64,26 @@ Commands can be also triggered directly on the container with docker compose, ex
 ```shell
 docker compose exec -T php composer tests-coverage
 ```
+## Rebuilding the assets
+To rebuild the assets, latest node docker container can be used. The one is pulled automatically if you are using the
+installation method from the previous section. What is left - connect to the container, install the npm dependencies
+and run the assets building process
+
+```shell
+make node
+```
+
+Navigate to the module directory and run:
+
+```shell
+npm install
+npm run build
+```
+Alternatively, if you're actively developing and want changes to be applied automatically, you can enable watch mode:
+
+```shell
+npm run watch
+```
 
 ## License
 
