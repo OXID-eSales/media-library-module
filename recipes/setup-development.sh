@@ -2,7 +2,7 @@
 # Flags possible:
 # -e for shop edition. Possible values: CE/EE
 
-edition='EE'
+edition='CE'
 while getopts e: flag; do
   case "${flag}" in
   e) edition=${OPTARG} ;;
