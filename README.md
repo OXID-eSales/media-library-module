@@ -22,6 +22,49 @@ Module provides basic media files management.
 * b-7.2.x is compatible with shop b-7.2.x branches
 * b-7.1.x is compatible with shop b-7.1.x branches
 
+# Development installation on OXID eShop SDK
+
+The installation instructions below are shown for the current [SDK](https://github.com/OXID-eSales/docker-eshop-sdk)
+for shop 7.3. Make sure your system meets the requirements of the SDK.
+
+0. Ensure all docker containers are down to avoid port conflicts
+
+1. Clone the SDK for the new project
+```shell
+echo MyProject && git clone https://github.com/OXID-eSales/docker-eshop-sdk.git $_ && cd $_
+```
+
+2. Clone the repository to the source directory
+```shell
+git clone --recurse-submodules https://github.com/OXID-eSales/media-library-module.git --branch=b-7.3.x ./source
+```
+
+3. Run the recipe to setup the development environment
+```shell
+./source/recipes/setup-development.sh
+```
+
+You should be able to access the shop via
+- Frontend http://localhost.local
+- Admin Panel: http://localhost.local/admin
+    - (credentials: noreply@oxid-esales.com / admin)
+
+### Running the tests and quality tools
+
+Check the "scripts" section in the `composer.json` file for the available commands. Those commands can be executed
+by connecting to the php container and running the command from there, example:
+
+```shell
+make php
+composer tests-coverage
+```
+
+Commands can be also triggered directly on the container with docker compose, example:
+
+```shell
+docker compose exec -T php composer tests-coverage
+```
+
 ## License
 
 OXID Module and Component License, see [LICENSE file](LICENSE).
