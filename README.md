@@ -71,14 +71,10 @@ and run the assets building process
 
 ```shell
 make node
-```
-
-Navigate to the module directory and run:
-
-```shell
 npm install
 npm run build
 ```
+
 Alternatively, if you're actively developing and want changes to be applied automatically, you can enable watch mode:
 
 ```shell
