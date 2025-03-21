@@ -22,7 +22,7 @@
   "dependencies": {
     "bootstrap": "^3.3.6",
     "font-awesome": "^4.7.0",
-    "jquery": "^1.12.4",
+    "jquery": "^3.7.1",
     "jquery-ui": "^1.14.1",
     "dropzone": "^6.0.0-beta.1"
   }
