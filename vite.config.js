@@ -12,7 +12,7 @@ export default defineConfig({
                 { src: path.resolve(__dirname, 'node_modules/bootstrap/dist/css/bootstrap.min.css*'), dest: 'css' },
                 { src: path.resolve(__dirname, 'node_modules/font-awesome/css/font-awesome.min.css'), dest: 'css' },
                 { src: path.resolve(__dirname, 'node_modules/font-awesome/fonts'), dest: '' },
-                { src: path.resolve(__dirname, 'build/img/*'), dest: 'img' },
+                { src: path.resolve(__dirname, 'node_build/img/*'), dest: 'img' },
             ],
         })
     ],
@@ -23,9 +23,9 @@ export default defineConfig({
         rollupOptions: {
             preserveEntrySignatures: 'strict',
             input: {
-                base: path.resolve(__dirname, 'build/js/base/medialibrary.js'),
-                overlay: path.resolve(__dirname, 'build/js/overlay.js'),
-                medialibrary: path.resolve(__dirname, 'build/less/medialibrary.less'),
+                base: path.resolve(__dirname, 'node_build/js/base/medialibrary.js'),
+                overlay: path.resolve(__dirname, 'node_build/js/overlay.js'),
+                medialibrary: path.resolve(__dirname, 'node_build/less/medialibrary.less'),
             },
             output: {
                 entryFileNames: 'js/[name].min.js',
