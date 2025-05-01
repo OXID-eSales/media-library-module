@@ -20,6 +20,7 @@ class DocumentNameValidatorChain implements DocumentNameValidatorChainInterface
      * @throws ChainInputTypeException
      */
     public function __construct(
+        /** @var iterable<FilePathValidatorInterface|object> */
         private iterable $fileValidators
     ) {
         foreach ($this->fileValidators as $oneValidator) {

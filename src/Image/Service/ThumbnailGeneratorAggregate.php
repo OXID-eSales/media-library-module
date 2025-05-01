@@ -21,6 +21,7 @@ class ThumbnailGeneratorAggregate implements ThumbnailGeneratorAggregateInterfac
      * @throws AggregatorInputType
      */
     public function __construct(
+        /** @var iterable<ThumbnailGeneratorInterface|object> */
         protected iterable $thumbnailGenerators
     ) {
         foreach ($this->thumbnailGenerators as $oneGenerator) {

@@ -21,7 +21,7 @@ class MediaFactory implements MediaFactoryInterface
     public function fromDatabaseArray(array $item): Media
     {
         $size = explode("x", $item['DDIMAGESIZE']);
-        $mediaSize = new ImageSize(intval($size[0] ?? 0), intval($size[1] ?? 0));
+        $mediaSize = new ImageSize(intval($size[0] ?: 0), intval($size[1] ?? 0));
 
         return new Media(
             oxid: (string)$item['OXID'],
