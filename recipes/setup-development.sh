@@ -44,8 +44,6 @@ $SCRIPT_PATH/parts/shared/require.sh -n"oxid-esales/developer-tools" -v"dev-b-7.
 $SCRIPT_PATH/parts/shared/require_theme_dev.sh -t"apex" -b"b-7.3.x"
 $SCRIPT_PATH/parts/shared/require_demodata_package.sh -e"${edition}" -b"b-7.3.x"
 
-$SCRIPT_PATH/parts/shared/require.sh -n"oxid-esales/media-library-module" -g"https://github.com/OXID-eSales/media-library-module.git" -v"dev-b-7.3.x"
-
 docker compose exec php composer update --no-interaction
 
 make up

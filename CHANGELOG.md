@@ -21,6 +21,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - MediaRepositoryInterface::getMediaById return should not be null possible, as exception is thrown in this case
 - Issues reported by phpstan level increase
 
+## [3.0.1] - Unreleased
+
+### Fixed
+- Development recipe to not require the media library module twice
+
 ## [3.0.0] - 2025-04-10
 
 ### Added
