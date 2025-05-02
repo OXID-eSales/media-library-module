@@ -19,6 +19,7 @@ Module provides basic media files management.
 * v1.0.x is compatible with eShop compilation 7.1.x and higher
 
 ### Branches
+* b-7.4.x is compatible with shop b-7.4.x branches
 * b-7.3.x is compatible with shop b-7.3.x branches
 * b-7.2.x is compatible with shop b-7.2.x branches
 * b-7.1.x is compatible with shop b-7.1.x branches
@@ -37,7 +38,7 @@ echo MyProject && git clone https://github.com/OXID-eSales/docker-eshop-sdk.git 
 
 2. Clone the repository to the source directory
 ```shell
-git clone --recurse-submodules https://github.com/OXID-eSales/media-library-module.git --branch=b-7.3.x ./source
+git clone --recurse-submodules https://github.com/OXID-eSales/media-library-module.git --branch=b-7.4.x ./source
 ```
 
 3. Run the recipe to setup the development environment
