@@ -10,8 +10,10 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Transput;
 
 use OxidEsales\Eshop\Core\Utils;
+use OxidEsales\MediaLibrary\Exception\ResponseCreationException;
 use OxidEsales\MediaLibrary\Transput\Response;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Response::class)]
@@ -38,6 +40,18 @@ class ResponseTest extends TestCase
         $sut->responseAsJson($exampleData);
 
         $this->assertTrue($correctHeaderSet);
+    }
+
+    #[Test]
+    public function responseAsJsonExplodesWithExceptionIfJsonEncodeHadAProblem(): void
+    {
+        $data = ["text" => "\xB1\x31"]; // Invalid UTF-8 bytes
+
+        $utilsStub = $this->createStub(Utils::class);
+        $sut = new Response($utilsStub);
+
+        $this->expectException(ResponseCreationException::class);
+        $sut->responseAsJson($data);
     }
 
     public function testErrorRespondAsJson(): void

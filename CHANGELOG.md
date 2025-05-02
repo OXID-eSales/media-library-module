@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.1.0] - Unreleased
+
+### Added
+- Exception thrown on JsonResponse creation if the json encoding fails, instead of returning an empty string
+- Supported PHP range added to PHPStan configuration for better compatibility ensurance
+- Update phpstan level 6 -> 8
+
+### Changed
+- Constructors with "iterator" promoted properties where the type is important now using regular properties
+  - `ThumbnailGeneratorAggregate`
+  - `DocumentNameValidatorChain`
+  - `UploadedFileValidatorChain`
+
+### Fixed
+- MediaRepositoryInterface::getMediaById return should not be null possible, as exception is thrown in this case
+- Issues reported by phpstan level increase
+
 ## [3.0.0] - 2025-04-10
 
 ### Added

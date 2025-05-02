@@ -13,21 +13,29 @@ use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Validation\Exception\ChainInputTypeException;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 
+/**
+ * @todo: constructor can be reused with UploadedFileValidatorChain
+ */
 class DocumentNameValidatorChain implements DocumentNameValidatorChainInterface
 {
+    /** @var iterable<FilePathValidatorInterface> */
+    private iterable $fileValidators;
+
     /**
-     * @param iterable<FilePathValidatorInterface> $fileValidators
+     * @param iterable<FilePathValidatorInterface|object> $fileValidators
      * @throws ChainInputTypeException
      */
     public function __construct(
-        /** @var iterable<FilePathValidatorInterface|object> */
-        private iterable $fileValidators
+        iterable $fileValidators
     ) {
-        foreach ($this->fileValidators as $oneValidator) {
+        foreach ($fileValidators as $oneValidator) {
             if (!$oneValidator instanceof FilePathValidatorInterface) {
                 throw new ChainInputTypeException();
             }
         }
+
+        /** @var iterable<FilePathValidatorInterface> $fileValidators */
+        $this->fileValidators = $fileValidators;
     }
 
     public function validateDocumentName(string $documentName): void

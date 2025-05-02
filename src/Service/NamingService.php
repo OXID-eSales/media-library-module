@@ -24,7 +24,7 @@ class NamingService implements NamingServiceInterface
     {
         $seoCharacters = $this->language->getSeoReplaceChars();
         $fileName = str_replace(array_keys($seoCharacters), array_values($seoCharacters), $fileName);
-        $fileName = preg_replace('/[^a-z0-9-_\.]+/i', '-', $fileName);
+        $fileName = (string)preg_replace('/[^a-z0-9-_\.]+/i', '-', $fileName);
 
         return $fileName;
     }
@@ -47,8 +47,8 @@ class NamingService implements NamingServiceInterface
             $newFileName = $matches['baseFilename'] . '_' . ++$matches['numericPart'];
         }
 
-        return $pathInfo['dirname']
-            . DIRECTORY_SEPARATOR . $newFileName
+        return (isset($pathInfo['dirname']) ? $pathInfo['dirname'] . DIRECTORY_SEPARATOR : '')
+             . $newFileName
             . (isset($pathInfo['extension']) && $pathInfo['extension'] ? '.' . $pathInfo['extension'] : '');
     }
 

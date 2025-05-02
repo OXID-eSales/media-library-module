@@ -9,26 +9,30 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Image\Service;
 
-use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\Exception\AggregatorInputType;
 use OxidEsales\MediaLibrary\Image\Exception\NoSupportedDriversForSource;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 
 class ThumbnailGeneratorAggregate implements ThumbnailGeneratorAggregateInterface
 {
+    /** @var iterable<ThumbnailGeneratorInterface> */
+    protected iterable $thumbnailGenerators;
+
     /**
-     * @param iterable<ThumbnailGeneratorInterface> $thumbnailGenerators
+     * @param iterable<ThumbnailGeneratorInterface|object> $thumbnailGenerators
      * @throws AggregatorInputType
      */
     public function __construct(
-        /** @var iterable<ThumbnailGeneratorInterface|object> */
-        protected iterable $thumbnailGenerators
+        iterable $thumbnailGenerators
     ) {
-        foreach ($this->thumbnailGenerators as $oneGenerator) {
+        foreach ($thumbnailGenerators as $oneGenerator) {
             if (!$oneGenerator instanceof ThumbnailGeneratorInterface) {
                 throw new AggregatorInputType();
             }
         }
+
+        /** @var iterable<ThumbnailGeneratorInterface> $thumbnailGenerators */
+        $this->thumbnailGenerators = $thumbnailGenerators;
     }
 
     public function getSupportedGenerator(string $sourcePath): ThumbnailGeneratorInterface

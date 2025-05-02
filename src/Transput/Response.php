@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Transput;
 
 use OxidEsales\Eshop\Core\Utils;
+use OxidEsales\MediaLibrary\Exception\ResponseCreationException;
 
 class Response implements ResponseInterface
 {
@@ -21,7 +22,13 @@ class Response implements ResponseInterface
     public function responseAsJson(array $valueArray): void
     {
         $this->utils->setHeader('Content-Type: application/json; charset=UTF-8');
-        $this->utils->showMessageAndExit(json_encode($valueArray));
+
+        $responseJson = json_encode($valueArray);
+        if ($responseJson === false) {
+            throw new ResponseCreationException('Failed to encode response as JSON: ' . json_last_error_msg());
+        }
+
+        $this->utils->showMessageAndExit($responseJson);
     }
 
     public function errorResponseAsJson(int $code, string $message, array $valueArray): void

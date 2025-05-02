@@ -15,19 +15,24 @@ use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 
 class UploadedFileValidatorChain implements UploadedFileValidatorChainInterface
 {
+    /** @var iterable<FilePathValidatorInterface> */
+    private iterable $fileValidators;
+
     /**
-     * @param iterable<FilePathValidatorInterface> $fileValidators
+     * @param iterable<FilePathValidatorInterface|object> $fileValidators
      * @throws ChainInputTypeException
      */
     public function __construct(
-        /** @var iterable<FilePathValidatorInterface|object> */
-        private iterable $fileValidators
+        iterable $fileValidators
     ) {
-        foreach ($this->fileValidators as $oneValidator) {
+        foreach ($fileValidators as $oneValidator) {
             if (!$oneValidator instanceof FilePathValidatorInterface) {
                 throw new ChainInputTypeException();
             }
         }
+
+        /** @var iterable<FilePathValidatorInterface> $fileValidators */
+        $this->fileValidators = $fileValidators;
     }
 
     public function validateFile(UploadedFileInterface $uploadedFile): void

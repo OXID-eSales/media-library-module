@@ -21,6 +21,7 @@ class LanguageExtension extends LanguageExtension_parent
     public function getLanguageStrings($iLang = null, $blAdminMode = null): array
     {
         $aLang = [];
+        $iLang = (int)$iLang;
 
         foreach ($this->getLangTranslationArray($iLang, $blAdminMode) as $sLangKey => $sLangValue) {
             $aLang[$sLangKey] = $sLangValue;
