@@ -9,13 +9,13 @@ jobs:
   schedule_matrix:
     uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
     with:
-      testplan: '~/defaults/7.3.x.yaml,~/module-medialibrary.yaml'
+      testplan: '~/defaults/7.4.x.yaml,~/module-medialibrary.yaml'
       runs_on: '"ubuntu-latest"'
       defaults: 'v4'
       plan_folder: '.github/oxid-esales'
       custom_testplan_yaml: |
         global:
-          title: 'php82_mysql80-{{ .Github.EventName }}-{{ .Github.RefName }}'
+          title: 'full-{{ .Github.EventName }}-{{ .Github.RefName }}'
       use_scheduled_slack_channel: true
     secrets:
       DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
