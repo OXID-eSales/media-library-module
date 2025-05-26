@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - MediaRepositoryInterface::getMediaById return should not be null possible, as exception is thrown in this case
 - Issues reported by phpstan level increase
+- Wrong language calculated by default in `MediaLangJs` controller, now it uses active template language
 
 ## [3.0.1] - Unreleased
 

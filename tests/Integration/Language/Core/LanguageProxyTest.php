@@ -18,21 +18,6 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(LanguageExtension::class)]
 class LanguageProxyTest extends TestCase
 {
-    public function testGetLanguageStrings(): void
-    {
-        $languageStringsList = ['somekey' => 'someValue'];
-
-        /** @var ShopLanguage $languageMock */
-        $languageMock = $this->createPartialMock(LanguageExtension::class, ['getLanguageStrings']);
-        $languageMock->method('getLanguageStrings')->willReturn($languageStringsList);
-
-        $sut = $this->getSut(
-            shopLanguage: $languageMock
-        );
-
-        $this->assertSame($languageStringsList, $sut->getLanguageStringsArray());
-    }
-
     public function testGetLanguageStringsArray(): void
     {
         $exampleLanguageStrings = [
@@ -41,8 +26,12 @@ class LanguageProxyTest extends TestCase
         ];
 
         /** @var LanguageExtension&ShopLanguage $shopLanguageMock */
-        $shopLanguageMock = $this->createPartialMock(LanguageExtension::class, ['getLanguageStrings']);
-        $shopLanguageMock->method('getLanguageStrings')->willReturn($exampleLanguageStrings);
+        $shopLanguageMock = $this->createMock(LanguageExtension::class);
+        $shopLanguageMock->method('getTplLanguage')
+            ->willReturn($exampleTplLanguage = rand(0, 100));
+        $shopLanguageMock->method('getLanguageStrings')
+            ->with($exampleTplLanguage)
+            ->willReturn($exampleLanguageStrings);
 
         $sut = $this->getSut(shopLanguage: $shopLanguageMock);
         $this->assertSame($exampleLanguageStrings, $sut->getLanguageStringsArray());

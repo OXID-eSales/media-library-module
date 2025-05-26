@@ -22,7 +22,8 @@ class LanguageProxy implements LanguageInterface
 
     public function getLanguageStringsArray(): array
     {
-        return $this->language->getLanguageStrings();
+        $tplLanguage = (int)$this->language->getTplLanguage();
+        return $this->language->getLanguageStrings($tplLanguage);
     }
 
     public function getSeoReplaceChars(): array
