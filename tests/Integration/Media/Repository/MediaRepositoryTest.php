@@ -9,11 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Integration\Media\Repository;
 
-use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
-use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
-use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
@@ -22,13 +19,13 @@ use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepository;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(MediaRepository::class)]
-class MediaRepositoryTest extends IntegrationTestCase
+class MediaRepositoryTest extends RepositoryIntegrationTestCase
 {
-    protected QueryBuilderFactoryInterface $queryBuilderFactory;
-
-    public function testGetShopFolderMediaCount(): void
+    #[Test]
+    public function getShopFolderMediaCount(): void
     {
         $this->createTestItems(3, 'someFolder');
         $this->createTestItems(2, '');
@@ -44,7 +41,8 @@ class MediaRepositoryTest extends IntegrationTestCase
     }
 
     #[DataProvider('getFolderMediaDataProvider')]
-    public function testGetShopFolderMediaInFolder(
+    #[Test]
+    public function getShopFolderMediaInFolder(
         string $folder,
         int $start,
         int $expectedItems,
@@ -64,7 +62,8 @@ class MediaRepositoryTest extends IntegrationTestCase
         }
     }
 
-    public function testGetShopFolderMediaInRootWithFolderPresent(): void
+    #[Test]
+    public function getShopFolderMediaInRootWithFolderPresent(): void
     {
         $expectedItems = 4;
         $firstListItemId = 3;
@@ -92,7 +91,8 @@ class MediaRepositoryTest extends IntegrationTestCase
         }
     }
 
-    public function testGetMediaByIdNotFound(): void
+    #[Test]
+    public function getMediaByIdNotFound(): void
     {
         $sut = $this->getSut();
 
@@ -171,25 +171,8 @@ class MediaRepositoryTest extends IntegrationTestCase
         return $sut;
     }
 
-    private function getAddItemQueryBuilder(): \Doctrine\DBAL\Query\QueryBuilder
-    {
-        $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
-        $queryBuilder = $queryBuilderFactory->create();
-        $queryBuilder->insert("ddmedia")->values([
-            'OXID' => ':OXID',
-            'OXSHOPID' => ':OXSHOPID',
-            'DDFILENAME' => ':DDFILENAME',
-            'DDFILESIZE' => ':DDFILESIZE',
-            'DDFILETYPE' => ':DDFILETYPE',
-            'DDIMAGESIZE' => ':DDIMAGESIZE',
-            'DDFOLDERID' => ':DDFOLDERID',
-            'OXTIMESTAMP' => ':OXTIMESTAMP'
-        ]);
-
-        return $queryBuilder;
-    }
-
-    public function testAddMedia(): void
+    #[Test]
+    public function addMedia(): void
     {
         $oxid = 'someExampleMediaId';
         $exampleMedia = new Media(
@@ -208,7 +191,8 @@ class MediaRepositoryTest extends IntegrationTestCase
         $this->assertEquals($exampleMedia, $resultMedia);
     }
 
-    public function testRenameMedia(): void
+    #[Test]
+    public function renameMedia(): void
     {
         $mediaIdToRename = 'mediaToRename';
 
@@ -234,7 +218,8 @@ class MediaRepositoryTest extends IntegrationTestCase
         $this->assertSame($newName, $updatedData->getFileName());
     }
 
-    public function testChangeMediaFolder(): void
+    #[Test]
+    public function changeMediaFolder(): void
     {
         $mediaIdToUpdate = 'mediaToChangeFolderId';
 
@@ -259,7 +244,8 @@ class MediaRepositoryTest extends IntegrationTestCase
         $this->assertSame($newFolderId, $updatedData->getFolderId());
     }
 
-    public function testDeleteRegularMedia(): void
+    #[Test]
+    public function deleteRegularMedia(): void
     {
         $queryBuilder = $this->getAddItemQueryBuilder();
 
@@ -282,7 +268,8 @@ class MediaRepositoryTest extends IntegrationTestCase
         $sut->getMediaById($idToRemove);
     }
 
-    public function testDeleteRemovesDirectoryRelatedMediaOnly(): void
+    #[Test]
+    public function deleteRemovesDirectoryRelatedMediaOnly(): void
     {
         $queryBuilder = $this->getAddItemQueryBuilder();
 
@@ -331,7 +318,8 @@ class MediaRepositoryTest extends IntegrationTestCase
         $sut->getMediaById($inDirectoryId);
     }
 
-    public function testDeleteArgumentWrongValue(): void
+    #[Test]
+    public function deleteArgumentWrongValueExplodes(): void
     {
         $sut = $this->getSut();
 
