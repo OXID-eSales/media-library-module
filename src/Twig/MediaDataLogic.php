@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
+declare(strict_types=1);
+
+namespace OxidEsales\MediaLibrary\Twig;
+
+use OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepositoryInterface;
+use OxidEsales\MediaLibrary\Media\Service\MediaObjectResourceInterface;
+
+class MediaDataLogic implements MediaDataLogicInterface
+{
+    public function __construct(
+        private readonly PreloadMediaRepositoryInterface $mediaRepository,
+        private readonly MediaObjectResourceInterface $mediaObjectResource
+    ) {
+    }
+
+    public function getMediaUrl(string $mediaId): string
+    {
+        $media = $this->mediaRepository->getMediaById($mediaId);
+
+        return $this->mediaObjectResource->getUrlToMedia($media);
+    }
+}
