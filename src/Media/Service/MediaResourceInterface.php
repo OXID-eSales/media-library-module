@@ -12,20 +12,15 @@ namespace OxidEsales\MediaLibrary\Media\Service;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 
-// todo: split to multiple interfaces
 interface MediaResourceInterface
 {
     public function getPathToMediaFiles(string $folderName = ''): string;
 
     public function getPathToMediaFile(string $folderName = '', string $fileName = ''): string;
 
-    public function getPathToMedia(MediaInterface $media): string;
-
     public function getUrlToMediaFiles(string $folderName = ''): string;
 
     public function getUrlToMediaFile(string $folderName = '', string $fileName = ''): string;
-
-    public function getUrlToMedia(MediaInterface $media): string;
 
     public function getPossibleMediaFilePath(string $folderName = '', string $fileName = ''): FilePathInterface;
 }

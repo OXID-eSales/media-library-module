@@ -17,7 +17,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(MediaResource::class)]
-class ImageResourceTest extends TestCase
+class MediaResourceTest extends TestCase
 {
     protected const EXAMPLE_SHOP_URL = 'someShopUrl';
 
@@ -195,25 +195,6 @@ class ImageResourceTest extends TestCase
         $moduleSettings->method('getAlternativeImageUrl')->willReturn($alternativeUrl);
 
         $this->assertSame($alternativeUrl . '/someFolder', $sut->getUrlToMediaFiles('someFolder'));
-    }
-
-    public function testGetPathToMedia(): void
-    {
-        $mediaFileName = uniqid();
-        $directoryName = uniqid();
-        $exampleMedia = new Media(
-            oxid: uniqid(),
-            fileName: $mediaFileName,
-            fileType: uniqid(),
-            folderName: $directoryName
-        );
-
-        $examplePath = 'examplePathWithConcreteDirectory';
-        $sut = $this->createPartialMock(MediaResource::class, ['getPathToMediaFiles']);
-        $sut->method('getPathToMediaFiles')->with($directoryName)->willReturn($examplePath);
-
-        $expectedPath = $examplePath . '/' . $mediaFileName;
-        $this->assertSame($expectedPath, $sut->getPathToMedia($exampleMedia));
     }
 
     public function testGetPathToMediaFile(): void
