@@ -7,10 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Unit\Twig;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Twig;
 
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
-use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaObjectResourceInterface;
 use OxidEsales\MediaLibrary\Twig\MediaDataLogic;
