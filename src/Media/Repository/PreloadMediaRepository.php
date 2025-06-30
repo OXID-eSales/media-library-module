@@ -33,6 +33,9 @@ class PreloadMediaRepository implements PreloadMediaRepositoryInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getMediaById(string $mediaId): MediaInterface
     {
         $this->registerForPreload($mediaId);
