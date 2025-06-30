@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Twig;
+namespace OxidEsales\MediaLibrary\Media\Twig;
 
 use Psr\Container\ContainerInterface;
 use Twig\Extension\AbstractExtension;

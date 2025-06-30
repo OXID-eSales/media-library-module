@@ -7,12 +7,12 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Tests\Unit\Twig;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Twig;
 
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaObjectResourceInterface;
-use OxidEsales\MediaLibrary\Twig\MediaDataLogic;
+use OxidEsales\MediaLibrary\Media\Twig\MediaDataLogic;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

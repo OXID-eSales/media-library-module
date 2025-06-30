@@ -1,0 +1,13 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Media\Twig\MediaDataLogicInterface:
+    class: OxidEsales\MediaLibrary\Media\Twig\MediaDataLogic
+    public: true
+
+  OxidEsales\MediaLibrary\Media\Twig\MediaDataExtension:
+    tags: [ 'twig.extension' ]
+    arguments:
+      $container: '@service_container'

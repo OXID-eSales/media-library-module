@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\MediaLibrary\Twig;
+namespace OxidEsales\MediaLibrary\Media\Twig;
 
 interface MediaDataLogicInterface
 {
