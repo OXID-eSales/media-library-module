@@ -16,7 +16,7 @@ use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
  */
 interface PreloadMediaRepositoryInterface
 {
-    public function registerForPreload(string $mediaId): void;
+    public function registerForPreload(string ...$mediaIds): void;
 
     /**
      * @throws MediaNotFoundException

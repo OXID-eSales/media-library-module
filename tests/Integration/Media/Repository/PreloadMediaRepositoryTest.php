@@ -47,13 +47,26 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
             ->setParameter('OXID', $id)
             ->execute();
 
+        $media = $sut->getMediaById($id);
+        $this->assertSame($id, $media->getOxid());
+    }
+
+    #[Test]
+    public function getMediaByIdIsFastForMultipleCalls()
+    {
+        $id = $this->createRandomMedia();
+
+        $sut = $this->getSut();
+
+        // load the media object for the first time
+        $sut->getMediaById($id);
+
         $startTime = microtime(true);
         for ($i = 0; $i < 10000; $i++) {
-            $media = $sut->getMediaById($id);
+            $sut->getMediaById($id);
         }
         $totalTime = microtime(true) - $startTime;
 
-        $this->assertSame($id, $media->getOxid());
         $this->assertLessThan(0.1, $totalTime);
     }
 
@@ -64,7 +77,7 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
 
         $sut = $this->getSut();
 
-        // load the media object for the first time
+        // register the media object for preload, but do not load it
         $sut->registerForPreload($id);
 
         $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
@@ -88,9 +101,7 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
         $sut = $this->getSut();
 
         // load the media object for the first time
-        $sut->registerForPreload($id1);
-        $sut->registerForPreload($id2);
-        $sut->registerForPreload($id3);
+        $sut->registerForPreload($id1, $id2, $id3);
 
         $media1 = $sut->getMediaById($id1);
         $this->assertSame($id1, $media1->getOxid());

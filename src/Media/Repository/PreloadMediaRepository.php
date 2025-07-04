@@ -26,10 +26,17 @@ class PreloadMediaRepository implements PreloadMediaRepositoryInterface
     ) {
     }
 
-    public function registerForPreload(string $mediaId): void
+    public function registerForPreload(string ...$mediaIds): void
     {
-        if (!in_array($mediaId, $this->idsToPreload) && !isset($this->preloadedMedia[$mediaId])) {
-            $this->idsToPreload[] = $mediaId;
+        foreach ($mediaIds as $oneMediaId) {
+            $this->registerOneMediaIdForPreload($oneMediaId);
+        }
+    }
+
+    private function registerOneMediaIdForPreload(string $oneMediaId): void
+    {
+        if (!in_array($oneMediaId, $this->idsToPreload) && !isset($this->preloadedMedia[$oneMediaId])) {
+            $this->idsToPreload[] = $oneMediaId;
         }
     }
 
