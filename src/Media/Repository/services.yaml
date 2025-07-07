@@ -18,3 +18,4 @@ services:
     class: OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepository
     arguments:
       $connection: '@OxidEsales\MediaLibrary\Media\Repository\Connection'
+    public: true
