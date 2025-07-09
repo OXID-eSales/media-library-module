@@ -5,7 +5,7 @@
 
 import '../../less/base.less'
 
-import { ddh, areaselect } from './helper.js';
+import { ddh } from './helper.js';
 import Dropzone from "dropzone";
 
 class MediaLibraryClass {
@@ -761,4 +761,4 @@ class MediaLibraryClass {
 
 export const MediaLibrary = new MediaLibraryClass();
 window.MediaLibrary = MediaLibrary;
-export { ddh, areaselect };
+export { ddh };
