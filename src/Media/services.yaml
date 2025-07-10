@@ -2,3 +2,12 @@ imports:
   - { resource: Repository/services.yaml }
   - { resource: Service/services.yaml }
   - { resource: Twig/services.yaml }
+
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface:
+    class: OxidEsales\MediaLibrary\Media\Facade\MediaFacade
+    public: true

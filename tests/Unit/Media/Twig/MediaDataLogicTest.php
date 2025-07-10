@@ -9,10 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Twig;
 
-use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
-use OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepositoryInterface;
-use OxidEsales\MediaLibrary\Media\Service\MediaObjectResourceInterface;
+use OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface;
 use OxidEsales\MediaLibrary\Media\Twig\MediaDataLogic;
 use OxidEsales\MediaLibrary\Media\Twig\MediaDataLogicInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -25,25 +23,13 @@ class MediaDataLogicTest extends TestCase
     {
         $mediaId = uniqid();
 
-        $mediaStub = $this->createStub(MediaInterface::class);
-        $mediaRepositoryMock = $this->createMock(PreloadMediaRepositoryInterface::class);
-        $mediaRepositoryMock->method('getMediaById')
+        $mediaFacadeMock = $this->createMock(MediaFacadeInterface::class);
+        $mediaFacadeMock->method('getMediaUrl')
             ->with($mediaId)
-            ->willReturn($mediaStub);
-
-        $mediaObjectResourceMock = $this->createMock(MediaObjectResourceInterface::class);
-        $mediaObjectResourceMock->method('getUrlToMedia')
-            ->with($mediaStub)
             ->willReturn($expectedUrl = uniqid());
 
-        $sut = new MediaDataLogic(
-            mediaRepository: $mediaRepositoryMock,
-            mediaObjectResource: $mediaObjectResourceMock
-        );
-
         $sut = $this->getSut(
-            preloadMediaRepository: $mediaRepositoryMock,
-            mediaObjectResource: $mediaObjectResourceMock,
+            mediaFacade: $mediaFacadeMock,
         );
 
         $result = $sut->getMediaUrl($mediaId);
@@ -55,13 +41,13 @@ class MediaDataLogicTest extends TestCase
     {
         $mediaId = uniqid();
 
-        $mediaRepositoryMock = $this->createMock(PreloadMediaRepositoryInterface::class);
-        $mediaRepositoryMock->method('getMediaById')
+        $mediaFacadeMock = $this->createMock(MediaFacadeInterface::class);
+        $mediaFacadeMock->method('getMediaUrl')
             ->with($mediaId)
             ->willThrowException(new MediaNotFoundException());
 
         $sut = $this->getSut(
-            preloadMediaRepository: $mediaRepositoryMock,
+            mediaFacade: $mediaFacadeMock,
         );
 
         $result = $sut->getMediaUrl($mediaId);
@@ -69,12 +55,10 @@ class MediaDataLogicTest extends TestCase
     }
 
     private function getSut(
-        PreloadMediaRepositoryInterface $preloadMediaRepository = null,
-        MediaObjectResourceInterface $mediaObjectResource = null,
+        MediaFacadeInterface $mediaFacade = null,
     ): MediaDataLogicInterface {
         return new MediaDataLogic(
-            mediaRepository: $preloadMediaRepository ?? $this->createStub(PreloadMediaRepositoryInterface::class),
-            mediaObjectResource: $mediaObjectResource ?? $this->createStub(MediaObjectResourceInterface::class),
+            mediaFacade: $mediaFacade ?? $this->createStub(MediaFacadeInterface::class),
         );
     }
 }

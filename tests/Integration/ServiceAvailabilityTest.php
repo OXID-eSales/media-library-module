@@ -59,6 +59,8 @@ class ServiceAvailabilityTest extends IntegrationTestCase
     {
         return [
             // Media
+            [\OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface::class],
+
             [\OxidEsales\MediaLibrary\Media\Twig\MediaDataExtension::class],
             [\OxidEsales\MediaLibrary\Media\Twig\MediaDataLogicInterface::class],
         ];

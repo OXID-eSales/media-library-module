@@ -10,22 +10,19 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Media\Twig;
 
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
-use OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepositoryInterface;
-use OxidEsales\MediaLibrary\Media\Service\MediaObjectResourceInterface;
+use OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface;
 
 class MediaDataLogic implements MediaDataLogicInterface
 {
     public function __construct(
-        private readonly PreloadMediaRepositoryInterface $mediaRepository,
-        private readonly MediaObjectResourceInterface $mediaObjectResource
+        private readonly MediaFacadeInterface $mediaFacade,
     ) {
     }
 
     public function getMediaUrl(string $mediaId): string
     {
         try {
-            $media = $this->mediaRepository->getMediaById($mediaId);
-            $url = $this->mediaObjectResource->getUrlToMedia($media);
+            $url = $this->mediaFacade->getMediaUrl($mediaId);
         } catch (MediaNotFoundException $e) {
             // todo: log this case
             $url = '';
