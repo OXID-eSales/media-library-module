@@ -135,7 +135,7 @@ export function areaselect() {
                 if (typeof $().selectize === 'function' && this.selectize) {
                     this.selectize.refreshOptions(false);
                     if (this.selectize.getValue()) {
-                        area = this.selectize.options[this.selectize.getValue()].area;
+                        area = this.selectize.options[this.selectize.getValue()].data.area;
                     }
                 } else {
                     area = $(this).val();
