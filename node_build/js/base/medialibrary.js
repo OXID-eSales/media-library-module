@@ -3,7 +3,7 @@
  * See LICENSE file for license details.
  */
 
-import '../../less/base.less'
+import '../../scss/base.scss'
 
 import { ddh, areaselect } from './helper.js';
 import Dropzone from "dropzone";
@@ -187,7 +187,7 @@ class MediaLibraryClass {
 
         var actions = [{
             label: ddh.translate('DD_CANCEL'), attributes: {
-                'data-dismiss': 'modal'
+                'data-bs-dismiss': 'modal'
             }
         }, {
             label: ddh.translate('DD_APPLY'), css: ['btn btn-primary dd-media-submit'], action: function ($dialog) {
@@ -672,7 +672,7 @@ class MediaLibraryClass {
                 init: function () {
                     this.on('addedfile', function () {
                         $('.dd-media-list', $dialog).removeClass('empty');
-                        $('.dd-media-tabs .nav-tabs a[href="#mediaList"]', $dialog).tab('show');
+                        $('.dd-media-tabs .nav-tabs button[data-bs-target="#mediaList"]', $dialog).tab('show');
 
                         $('.dd-media-list-items', $dialog).scrollTop($('.dd-media-list-items > .row', $dialog).height());
                     });

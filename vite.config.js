@@ -25,7 +25,7 @@ export default defineConfig({
             input: {
                 base: path.resolve(__dirname, 'node_build/js/base/medialibrary.js'),
                 overlay: path.resolve(__dirname, 'node_build/js/overlay.js'),
-                medialibrary: path.resolve(__dirname, 'node_build/less/medialibrary.less'),
+                medialibrary: path.resolve(__dirname, 'node_build/scss/medialibrary.scss'),
             },
             output: {
                 entryFileNames: 'js/[name].min.js',

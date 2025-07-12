@@ -3,20 +3,79 @@
  * See LICENSE file for license details.
  */
 
-@import 'bootstrap/less/variables';
-@import 'bootstrap/less/mixins';
-@import 'font-awesome/less/variables';
-@import 'font-awesome/less/mixins';
+@import 'custom-variables';
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
 
-// MediaLibrary
+$custom-colors: (
+    "custom-color": $primary
+);
+$theme-colors: map-merge($theme-colors, $custom-colors);
 
-@items-gutter-width: 12px;
+@import 'bootstrap/scss/maps';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/utilities';
+
+@import 'bootstrap/scss/root';
+@import 'bootstrap/scss/reboot';
+@import 'bootstrap/scss/buttons';
+@import 'bootstrap/scss/forms';
+@import 'bootstrap/scss/type';
+
+:root {
+    --bs-border-radius: 0;
+    --bs-border-radius-sm: 0;
+    --bs-border-radius-lg: 0;
+    --bs-border-radius-xl: 0;
+    --bs-border-radius-xxl: 0;
+    --bs-border-radius-2xl: 0;
+}
+
+.btn {
+    --bs-btn-disabled-border-color: transparent;
+}
+
+.btn-primary {
+    --bs-btn-bg: #{$dd-primary-btn};
+    --bs-btn-border-color: #{$dd-primary-btn-border};
+}
+
+.btn-outline-primary {
+    --bs-btn-color: #{$dd-primary-btn};
+    --bs-btn-border-color: #{$dd-primary-btn};
+    --bs-btn-hover-bg: #{$dd-primary-btn};
+    --bs-btn-hover-border-color: #{$dd-primary-btn};
+    --bs-btn-disabled-border-color: lightness(#{$dd-primary-btn});
+    --bs-btn-disabled-color: lightness(#{$dd-primary-btn});
+}
+
+.btn-success, .btn-info {
+    --bs-btn-color: #fff;
+    --bs-btn-hover-color: #fff;
+}
+
+.dd-media-list {
+    .btn {
+        --bs-btn-font-size: 0.8rem;
+    }
+}
+
+@import 'font-awesome/scss/variables';
+@import 'font-awesome/scss/mixins';
+
+$items-gutter-width: 12px;
 
 .dd-dialog-loader {
     width: 100%;
     height: 200px;
     background: transparent url('../img/loading.svg') center center no-repeat;
     background-size: 100px 100px;
+}
+
+.dd-navbar {
+    .navbar-brand, .dd-admin-popout-action {
+        color: var(--bs-light-text-emphasis);
+    }
 }
 
 .dd-media {
@@ -26,11 +85,11 @@
         padding: 10px 15px;
         font-size: 0.8em;
         line-height: 1.8;
-        color: @text-muted;
+        color: $text-muted;
     }
 
     .dd-media-search-form {
-        padding: 5px 15px 5px 0;
+        padding: 1px 12px 0px 0;
     }
 
     .dd-media-list {
@@ -43,36 +102,33 @@
     }
 
     .dd-media-list-toolbar {
-        width: percentage(( 8 / @grid-columns )); // ~ 8 Columns width
+        width: percentage(8 / $grid-columns); // ~ 8 Columns width
         position: absolute;
         top: 0;
         left: 0;
-        height: 40px;
+        height: 52px;
         border-bottom: 1px solid #eee;
         padding: 9px 15px;
     }
 
     .dd-media-list-breadcrumb, .dd-media-upload-breadcrumb {
-        width: percentage(( 8 / @grid-columns )); // ~ 8 Columns width
+        width: percentage(8 / $grid-columns); // ~ 8 Columns width
         position: absolute;
-        top: 40px;
+        top: 52px;
         left: 0;
         font-size: 75%;
         height: 31px;
         border-bottom: 1px solid #eee;
         overflow: hidden;
+        background-color: rgba(var(--bs-tertiary-bg-rgb),1);
+        padding-left: 12px;
+        padding-right: 12px;
 
         .breadcrumb {
             margin: 0;
         }
 
         .dd-media-list-folder-up {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            padding: 6px 15px;
-
             > .btn {
                 font-size: inherit;
             }
@@ -86,35 +142,35 @@
     }
 
     .dd-media-list-items {
-        width: percentage(( 8 / @grid-columns )); // ~ 8 Columns width
+        width: percentage(8 / $grid-columns); // ~ 8 Columns width
         position: absolute;
-        top: 70px;
+        top: 83px;
         left: 0;
         bottom: 0;
-        padding: @items-gutter-width;
+        padding: $items-gutter-width;
         overflow: auto;
-        margin-bottom: @items-gutter-width * -1;
+        margin-bottom: $items-gutter-width * -1;
     }
 
     .dd-media-list-details {
-        width: percentage(( 4 / @grid-columns )); // ~ 4 Columns width
+        width: percentage(4 / $grid-columns); // ~ 4 Columns width
         position: absolute;
         top: 0;
         right: 0;
         bottom: 0;
-        padding: @grid-gutter-width;
+        padding: $grid-gutter-width;
         border-left: 1px solid #eee;
         background: #fafafa;
     }
 
     .dd-media-list-items > .row {
-        margin-left: (floor(@items-gutter-width / 2) * -1) + 0px;
-        margin-right: (floor(@items-gutter-width / 2) * -1) + 0px;
+        margin-left: (floor($items-gutter-width / 2) * -1) + 0px;
+        margin-right: (floor($items-gutter-width / 2) * -1) + 0px;
     }
 
     .dd-media-col {
-        padding-left: (floor(@items-gutter-width / 2)) + 0px;
-        padding-right: (floor(@items-gutter-width / 2)) + 0px;
+        padding-left: (floor($items-gutter-width / 2)) + 0px;
+        padding-right: (floor($items-gutter-width / 2)) + 0px;
     }
 
     .dd-media-list-toolbar {
@@ -130,12 +186,12 @@
         display: block;
         overflow: hidden;
         width: 100%;
-        color: @text-muted;
+        color: $text-muted;
         //transition: all 0.2s;
         padding: 3px;
         box-shadow: 0 0 0 3px #fff inset, 0 0 0 4px rgba(0, 0, 0, 0);
         outline: 0;
-        margin-bottom: @items-gutter-width;
+        margin-bottom: $items-gutter-width;
 
         &:before {
             content: '';
@@ -183,7 +239,7 @@
                 float: left;
                 height: 100%;
                 width: 0%;
-                background: @brand-success;
+                background: $success;
             }
         }
 
@@ -229,7 +285,7 @@
         }
 
         &.active, &.ui-state-hover {
-            box-shadow: 0 0 0 3px #fff inset, 0 0 0 4px @brand-primary;
+            box-shadow: 0 0 0 3px #fff inset, 0 0 0 4px $primary;
         }
 
         &.no-thumb {
@@ -245,7 +301,7 @@
     .dz-error {
 
         .dd-media-item {
-            box-shadow: 0 0 0 3px #fff inset, 0 0 0 4px @brand-danger;
+            box-shadow: 0 0 0 3px #fff inset, 0 0 0 4px $danger;
         }
 
     }
@@ -301,7 +357,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: fade(@brand-info, 80%);
+        background: rgba($info, 0.8);
         z-index: 5;
         opacity: 0;
         transition: all 0.2s;
@@ -333,7 +389,7 @@
         .tab-content {
             background: #fff;
             position: absolute;
-            top: 41px;
+            top: 40px;
             left: 0;
             right: 0;
             bottom: 0;
@@ -355,6 +411,7 @@
             width: 100%;
             height: 41px;
             z-index: 1;
+            border-bottom: 0;
 
             li {
                 > a {
@@ -374,30 +431,47 @@
     &.dd-media-overview {
 
         .dd-media-list-items, .dd-media-list-toolbar, .dd-media-list-breadcrumb {
-            width: percentage(( 9 / @grid-columns )); // ~ 8 Columns width
+            width: percentage(9 / $grid-columns); // ~ 9 Columns width
         }
 
         .dd-media-list-details {
-            width: percentage(( 3 / @grid-columns )); // ~ 4 Columns width
+            width: percentage(3 / $grid-columns); // ~ 3 Columns width
         }
 
     }
 
 }
 
+.modal-header {
+    background: #{$primary};
+
+    h4 {
+        color: #fff;
+    }
+}
+
+.modal {
+    .btn-close {
+        --bs-btn-close-color: #{$white};
+        --bs-btn-close-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414'/%3e%3c/svg%3e");
+        --bs-btn-close-opacity: .8;
+        --bs-btn-close-hover-opacity: 1;
+    }
+}
+
 .dd-modal-confirm {
     &.dd-warn {
         .modal-header {
-            color: @brand-danger;
+            color: $danger;
         }
 
         .modal-body {
-            color: @brand-danger;
+            color: $danger;
         }
 
         .modal-footer {
             .btn-primary {
-                .button-variant(@btn-primary-color; @brand-danger; darken(@brand-danger, 5%));
+                @include button-variant($primary, $danger, darken($danger, 5%));
             }
         }
     }
@@ -407,8 +481,8 @@
 
     .modal-header {
         color: #fff;
-        background: @brand-primary;
-        border-color: @brand-primary;
+        background: $primary;
+        border-color: $primary;
 
         .close {
             color: #ddd;
@@ -425,7 +499,7 @@
 
     .dd-media {
         height: auto;
-        margin: ((@grid-gutter-width/2) * -1);
+        margin: -1rem;
 
         .dd-media-list {
             height: 460px;
