@@ -25,8 +25,8 @@ export const ddh = {
                 <div class="modal-dialog ${modalSize}">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
                             <h4 class="modal-title"></h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body"></div>
                         <div class="modal-footer"></div>
@@ -72,13 +72,15 @@ export const ddh = {
             $('.modal-body input[type="text"]', this).length ? $('.modal-body input[type="text"]', this).focus() : $('.modal-footer .btn-primary', this).focus();
         });
 
+        $modal.modal('show');
+
         return $modal;
     },
     confirm(msg, callback, title = ddh.translate('DD_CONFIRM'), warn = false) {
         const cssWarn = warn ? ' dd-warn' : '';
         const buttons = [
             {
-                html: `<button type="button" class="btn btn-default" data-dismiss="modal">${ddh.translate('DD_CANCEL')}</button>`
+                html: `<button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">${ddh.translate('DD_CANCEL')}</button>`
             },
             {
                 html: `<button type="button" class="btn btn-primary" autofocus>${ddh.translate('DD_OK')}</button>`,
@@ -95,7 +97,7 @@ export const ddh = {
         msg += `<div class="clearfix" style="margin-top: 10px;"><input type="text" name="prompt" class="form-control" value="${value}" /></div>`;
         const buttons = [
             {
-                html: `<button type="button" class="btn btn-default" data-dismiss="modal">${ddh.translate('DD_CANCEL')}</button>`
+                html: `<button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">${ddh.translate('DD_CANCEL')}</button>`
             },
             {
                 html: `<button type="button" class="btn btn-primary" autofocus>${ddh.translate('DD_OK')}</button>`,
@@ -114,7 +116,7 @@ export const ddh = {
         });
     },
     alert(msg, title = 'Information') {
-        const buttons = [{ html: `<button type="button" class="btn btn-primary" data-dismiss="modal">${ddh.translate('DD_OK')}</button>` }];
+        const buttons = [{ html: `<button type="button" class="btn btn-primary" data-bs-dismiss="modal">${ddh.translate('DD_OK')}</button>` }];
         this._dialog(msg, title, buttons, 'sm', 'dd-modal-confirm');
     },
     translate(string) {
