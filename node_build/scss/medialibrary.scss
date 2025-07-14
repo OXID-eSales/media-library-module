@@ -6,11 +6,62 @@
 @import 'custom-variables';
 @import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
+
+$custom-colors: (
+    "custom-color": $primary
+);
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+@import 'bootstrap/scss/maps';
 @import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/utilities';
+
+@import 'bootstrap/scss/root';
+@import 'bootstrap/scss/reboot';
+@import 'bootstrap/scss/buttons';
+@import 'bootstrap/scss/forms';
+@import 'bootstrap/scss/type';
+
+:root {
+    --bs-border-radius: 0;
+    --bs-border-radius-sm: 0;
+    --bs-border-radius-lg: 0;
+    --bs-border-radius-xl: 0;
+    --bs-border-radius-xxl: 0;
+    --bs-border-radius-2xl: 0;
+}
+
+.btn {
+    --bs-btn-disabled-border-color: transparent;
+}
+
+.btn-primary {
+    --bs-btn-bg: #{$dd-primary-btn};
+    --bs-btn-border-color: #{$dd-primary-btn-border};
+}
+
+.btn-outline-primary {
+    --bs-btn-color: #{$dd-primary-btn};
+    --bs-btn-border-color: #{$dd-primary-btn};
+    --bs-btn-hover-bg: #{$dd-primary-btn};
+    --bs-btn-hover-border-color: #{$dd-primary-btn};
+    --bs-btn-disabled-border-color: lightness(#{$dd-primary-btn});
+    --bs-btn-disabled-color: lightness(#{$dd-primary-btn});
+}
+
+.btn-success, .btn-info {
+    --bs-btn-color: #fff;
+    --bs-btn-hover-color: #fff;
+}
+
+.dd-media-list {
+    .btn {
+        --bs-btn-font-size: 0.8rem;
+    }
+}
+
 @import 'font-awesome/scss/variables';
 @import 'font-awesome/scss/mixins';
-
-// MediaLibrary
 
 $items-gutter-width: 12px;
 
@@ -19,6 +70,12 @@ $items-gutter-width: 12px;
     height: 200px;
     background: transparent url('../img/loading.svg') center center no-repeat;
     background-size: 100px 100px;
+}
+
+.dd-navbar {
+    .navbar-brand, .dd-admin-popout-action {
+        color: var(--bs-light-text-emphasis);
+    }
 }
 
 .dd-media {
@@ -32,7 +89,7 @@ $items-gutter-width: 12px;
     }
 
     .dd-media-search-form {
-        padding: 5px 15px 5px 0;
+        padding: 1px 12px 0px 0;
     }
 
     .dd-media-list {
@@ -49,7 +106,7 @@ $items-gutter-width: 12px;
         position: absolute;
         top: 0;
         left: 0;
-        height: 40px;
+        height: 52px;
         border-bottom: 1px solid #eee;
         padding: 9px 15px;
     }
@@ -57,24 +114,21 @@ $items-gutter-width: 12px;
     .dd-media-list-breadcrumb, .dd-media-upload-breadcrumb {
         width: percentage(8 / $grid-columns); // ~ 8 Columns width
         position: absolute;
-        top: 40px;
+        top: 52px;
         left: 0;
         font-size: 75%;
         height: 31px;
         border-bottom: 1px solid #eee;
         overflow: hidden;
+        background-color: rgba(var(--bs-tertiary-bg-rgb),1);
+        padding-left: 12px;
+        padding-right: 12px;
 
         .breadcrumb {
             margin: 0;
         }
 
         .dd-media-list-folder-up {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            padding: 6px 15px;
-
             > .btn {
                 font-size: inherit;
             }
@@ -90,7 +144,7 @@ $items-gutter-width: 12px;
     .dd-media-list-items {
         width: percentage(8 / $grid-columns); // ~ 8 Columns width
         position: absolute;
-        top: 70px;
+        top: 83px;
         left: 0;
         bottom: 0;
         padding: $items-gutter-width;
@@ -335,7 +389,7 @@ $items-gutter-width: 12px;
         .tab-content {
             background: #fff;
             position: absolute;
-            top: 41px;
+            top: 39px;
             left: 0;
             right: 0;
             bottom: 0;
@@ -385,6 +439,23 @@ $items-gutter-width: 12px;
 
     }
 
+}
+
+.modal-header {
+    background: #{$primary};
+
+    h4 {
+        color: #fff;
+    }
+}
+
+.modal {
+    .btn-close {
+        --bs-btn-close-color: #{$white};
+        --bs-btn-close-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414'/%3e%3c/svg%3e");
+        --bs-btn-close-opacity: .8;
+        --bs-btn-close-hover-opacity: 1;
+    }
 }
 
 .dd-modal-confirm {

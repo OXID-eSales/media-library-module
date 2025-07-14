@@ -15,38 +15,36 @@
             {% set sActiveTab = sTab %}
         {% endif %}
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation"{% if sActiveTab == "mediaList" %} class="active"{% endif %}>
-                <a href="#mediaList" role="tab" data-toggle="tab">{{ translate({ ident: "DD_MEDIA_LIST" }) }}</a>
+            <li role="presentation" class="nav-item">
+                <button class="nav-link {% if sActiveTab == "mediaList" %}active{% endif %}" data-bs-target="#mediaList" role="tab" data-bs-toggle="tab">{{ translate({ ident: "DD_MEDIA_LIST" }) }}</button>
             </li>
-            <li role="presentation"{% if sActiveTab == "mediaUpload" %} class="active"{% endif %}>
-                <a href="#mediaUpload" role="tab" data-toggle="tab">{{ translate({ ident: "DD_MEDIA_UPLOAD" }) }}</a>
+            <li role="presentation" class="nav-item"{% if sActiveTab == "mediaUpload" %} class="active"{% endif %}>
+                <button class="nav-link {% if sActiveTab == "mediaUpload" %}active{% endif %}" data-bs-target="#mediaUpload" role="tab" data-bs-toggle="tab">{{ translate({ ident: "DD_MEDIA_UPLOAD" }) }}</button>
             </li>
-            <li class="pull-right">
-                <form class="dd-media-search-form">
-                    <input type="text" class="form-control input-sm" name="msearch" id="mediaSearchField" placeholder="Suche" />
-                </form>
-            </li>
-
-            {% if iFileCount %}
-                <li class="pull-right">
+            <li class="ms-auto d-flex">
+                {% if iFileCount %}
                     <div class="dd-media-header-info">
                         <span class="dd-media-file-count">{{ iFileCount }}</span>
                         <span>{{ translate({ ident: "DD_MEDIA_FILES_FOUND" }) }}</span>
                     </div>
-                </li>
-            {% endif %}
+                {% endif %}
+
+                <form class="dd-media-search-form">
+                    <input type="text" class="form-control input-sm" name="msearch" id="mediaSearchField" placeholder="Suche" />
+                </form>
+            </li>
         </ul>
 
         {% set breadcrumb %}
             <ol class="breadcrumb">
-                <li>{{ translate({ ident: "DD_MEDIA_BREADCRUMB_PATH" }) }}:</li>
+                <li class="breadcrumb-item">{{ translate({ ident: "DD_MEDIA_BREADCRUMB_PATH" }) }}:</li>
 
                 {% for oneBreadcrumb in oView.getBreadcrumb() %}
-                    <li {% if oneBreadcrumb.isActive %}class="active"{% endif %}>{{ oneBreadcrumb.getName }}</li>
+                    <li class="breadcrumb-item {% if oneBreadcrumb.isActive %}active{% endif %}">{{ oneBreadcrumb.getName }}</li>
                 {% endfor %}
             </ol>
 
-            <div class="dd-media-list-folder-up">
+            <div class="dd-media-list-folder-up ms-auto">
                 <button type="button" class="btn btn-link btn-xs dd-media-folder-up-action">{{ translate({ ident: "DD_MEDIA_LEVEL_UP" }) }} <i class="fa fa-level-up"></i></button>
             </div>
         {% endset %}
@@ -60,7 +58,7 @@
                         <div class="dd-media-list-toolbar">
 
                             <div class="btn-group btn-group-xs pull-left">
-                                <button type="button" class="btn btn-outline-primary dd-media-folder-action"><i class="fa fa-folder text-muted"></i> {{ translate({ ident: "DD_MEDIA_NEW_FOLDER" }) }}</button>
+                                <button type="button" class="btn btn-outline-primary dd-media-folder-action"><i class="fa fa-folder"></i> {{ translate({ ident: "DD_MEDIA_NEW_FOLDER" }) }}</button>
                             </div>
 
                             <div class="btn-group btn-group-xs pull-right">
@@ -70,7 +68,7 @@
 
                         </div>
 
-                        <div class="dd-media-list-breadcrumb">
+                        <div class="dd-media-list-breadcrumb d-flex align-items-center">
                             {{ breadcrumb }}
                         </div>
 
@@ -149,7 +147,7 @@
             </div>
             <div role="tabpanel" class="tab-pane{% if sActiveTab == "mediaUpload" %} active{% endif %}" id="mediaUpload">
 
-                <div class="dd-media-upload-breadcrumb">
+                <div class="dd-media-upload-breadcrumb d-flex align-items-center">
                     {{ breadcrumb }}
                 </div>
 
