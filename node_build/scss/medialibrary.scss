@@ -389,7 +389,7 @@ $items-gutter-width: 12px;
         .tab-content {
             background: #fff;
             position: absolute;
-            top: 39px;
+            top: 40px;
             left: 0;
             right: 0;
             bottom: 0;
@@ -411,6 +411,7 @@ $items-gutter-width: 12px;
             width: 100%;
             height: 41px;
             z-index: 1;
+            border-bottom: 0;
 
             li {
                 > a {
@@ -498,7 +499,7 @@ $items-gutter-width: 12px;
 
     .dd-media {
         height: auto;
-        margin: (($grid-gutter-width/2) * -1);
+        margin: -1rem;
 
         .dd-media-list {
             height: 460px;

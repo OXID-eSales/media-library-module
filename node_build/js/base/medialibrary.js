@@ -187,7 +187,7 @@ class MediaLibraryClass {
 
         var actions = [{
             label: ddh.translate('DD_CANCEL'), attributes: {
-                'data-dismiss': 'modal'
+                'data-bs-dismiss': 'modal'
             }
         }, {
             label: ddh.translate('DD_APPLY'), css: ['btn btn-primary dd-media-submit'], action: function ($dialog) {

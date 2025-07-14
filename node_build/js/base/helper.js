@@ -52,7 +52,7 @@ export const ddh = {
 
         if (opt.buttons.length) {
             opt.buttons.forEach(btn => {
-                const $btn = $(btn.html || `<button type="${btn.type || 'button'}" class="${(btn.css || ['btn btn-default']).join(' ')}">${btn.label}</button>`);
+                const $btn = $(btn.html || `<button type="${btn.type || 'button'}" class="${(btn.css || ['btn btn-outline-primary']).join(' ')}">${btn.label}</button>`);
                 if (btn.attributes) {
                     $btn.attr(btn.attributes);
                 }
