@@ -121,32 +121,3 @@ export const ddh = {
         return typeof i18n === 'object' && i18n[string] ? i18n[string] : string;
     }
 };
-
-// todo: This method is used only in VE and should be moved to vcms
-export function areaselect() {
-    $.fn.areaselect = function () {
-        return this.each(function () {
-            $(this).on('change', function () {
-                const group = $(this).data('area-group-value');
-                let area = null;
-
-                if (typeof $().selectize === 'function' && this.selectize) {
-                    this.selectize.refreshOptions(false);
-                    if (this.selectize.getValue()) {
-                        area = this.selectize.options[this.selectize.getValue()].area;
-                    }
-                } else {
-                    area = $(this).val();
-                }
-
-                if (group) {
-                    $('*[data-area]' + (group ? `[data-area-group="${group}"]` : '')).hide();
-                }
-
-                if (area) {
-                    $('*[data-area="' + area + '"]').show();
-                }
-            }).trigger('change');
-        });
-    };
-}

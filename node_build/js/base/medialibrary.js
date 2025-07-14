@@ -5,7 +5,7 @@
 
 import '../../less/base.less'
 
-import { ddh, areaselect } from './helper.js';
+import { ddh } from './helper.js';
 import Dropzone from "dropzone";
 
 class MediaLibraryClass {
@@ -208,6 +208,7 @@ class MediaLibraryClass {
                         if (filter !== null && ((typeof filter === 'string' && filter !== filetype) || (filter instanceof RegExp && !filetype.match(filter)))) {
                             blTypeNotAllowed = true;
                         } else {
+                            //todo: rework every param besides id here, as those should Probably not be used as it is, but through twig placeholders instead.
                             files.push({
                                 id: $(this).data('id'),
                                 file: (foldername ? foldername + '/' : '') + $(this).data('file'),
@@ -761,4 +762,4 @@ class MediaLibraryClass {
 
 export const MediaLibrary = new MediaLibraryClass();
 window.MediaLibrary = MediaLibrary;
-export { ddh, areaselect };
+export { ddh };
