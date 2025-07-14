@@ -3,8 +3,10 @@
  * See LICENSE file for license details.
  */
 
-@import 'bootstrap/less/mixins';
-@import 'bootstrap/less/variables';
+@import 'custom-variables';
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/variables';
 
 .dd-backend-overlay * {
     box-sizing: border-box;
@@ -55,9 +57,9 @@
         .dd-overlay-dialog-header {
             top: 0;
             padding: 15px;
-            border-bottom: 1px solid @brand-primary;
+            border-bottom: 1px solid $primary;
             color: #fff;
-            background: @brand-primary;
+            background: $primary;
 
             img {
                 float: left;
@@ -123,14 +125,14 @@
         .dd-overlay-dialog-apply {
             float: right;
 
-            .button-variant(#fff, #25A685, darken(#25A685, 5%));
+            @include button-variant(#fff, #25A685, darken(#25A685, 5%));
         }
 
         .dd-overlay-dialog-cancel {
             float: right;
             margin-right: 10px;
 
-            .button-variant(#333, #fff, #ccc);
+            @include button-variant(#333, #fff, #ccc);
         }
     }
 }

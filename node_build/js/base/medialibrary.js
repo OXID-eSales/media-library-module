@@ -3,7 +3,7 @@
  * See LICENSE file for license details.
  */
 
-import '../../less/base.less'
+import '../../scss/base.scss'
 
 import { ddh, areaselect } from './helper.js';
 import Dropzone from "dropzone";
