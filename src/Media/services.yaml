@@ -12,3 +12,6 @@ services:
   OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface:
     class: OxidEsales\MediaLibrary\Media\Facade\MediaFacade
     public: true
+
+  OxidEsales\MediaLibrary\Media\Facade\FallbackMediaFacadeDecorator:
+    decorates: OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface

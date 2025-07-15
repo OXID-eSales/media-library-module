@@ -41,7 +41,7 @@ class ServiceAvailabilityTest extends IntegrationTestCase
     }
 
     #[DataProvider('serviceDecorationProvider')]
-//    #[Test]
+    #[Test]
     public function servicesDecorated(string $serviceName, array $expectedDecorations): void
     {
         $decorations = self::$decorations[$serviceName];
@@ -52,6 +52,9 @@ class ServiceAvailabilityTest extends IntegrationTestCase
 
     public static function serviceDecorationProvider(): \Generator
     {
+        yield [\OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface::class, [
+            \OxidEsales\MediaLibrary\Media\Facade\FallbackMediaFacadeDecorator::class,
+        ]];
     }
 
     //todo: list all services here
