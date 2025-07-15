@@ -672,7 +672,7 @@ class MediaLibraryClass {
                 init: function () {
                     this.on('addedfile', function () {
                         $('.dd-media-list', $dialog).removeClass('empty');
-                        $('.dd-media-tabs .nav-tabs a[href="#mediaList"]', $dialog).tab('show');
+                        $('.dd-media-tabs .nav-tabs button[data-bs-target="#mediaList"]', $dialog).tab('show');
 
                         $('.dd-media-list-items', $dialog).scrollTop($('.dd-media-list-items > .row', $dialog).height());
                     });
