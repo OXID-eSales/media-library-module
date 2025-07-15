@@ -15,6 +15,8 @@ $aLang = array(
     // Lang-Strings
     'SHOP_MODULE_GROUP_main'                                => 'General',
     'SHOP_MODULE_ddoeMediaLibraryAlternativeImageDirectory' => 'Alternative image URL',
+    'SHOP_MODULE_ddoeMediaLibraryDefaultMediaId' => '"Fallback" media ID',
+    'HELP_SHOP_MODULE_ddoeMediaLibraryDefaultMediaId' => 'This media file will be shown if a referenced media item was removed from the Media gallery. You can find the media ID in the Media gallery list under "Media information".',
 
     'SHOP_MODULE_GROUP_limitations' => 'Limitations',
     'SHOP_MODULE_oeMediaLibraryAllowedExtensions' => 'Allowed file extensions (comma separated, case insensitive)',

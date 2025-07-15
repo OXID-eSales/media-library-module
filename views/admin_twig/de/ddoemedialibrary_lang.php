@@ -15,6 +15,8 @@ $aLang = array(
     // Lang-Strings
     'SHOP_MODULE_GROUP_main'                                => 'Allgemein',
     'SHOP_MODULE_ddoeMediaLibraryAlternativeImageDirectory' => 'Alternatives Bild-URL',
+    'SHOP_MODULE_ddoeMediaLibraryDefaultMediaId' => 'Standard-Medien-ID (Ersatzanzeige)',
+    'HELP_SHOP_MODULE_ddoeMediaLibraryDefaultMediaId' => 'Dieses Medium wird angezeigt, wenn ein eigentlich eingebundenes Medium in der Mediathek nicht mehr vorhanden ist. Die Medien-ID findest du in der Liste der Mediathek unter "Medien-Informationen".',
 
     'SHOP_MODULE_GROUP_limitations' => 'Einschränkungen',
     'SHOP_MODULE_oeMediaLibraryAllowedExtensions' => 'Erlaubte Dateierweiterungen (kommagetrennt, Groß- und Kleinschreibung wird nicht beachtet)',

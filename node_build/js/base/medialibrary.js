@@ -77,6 +77,7 @@ class MediaLibraryClass {
 
             $('.dd-media-details-name', $detailForm).text(file.file);
             $('.dd-media-details-infos', $detailForm).text(fileInfo);
+            $('.dd-media-details-id', $detailForm).text(file.id);
 
             $('.dd-media-details-input-url', $detailForm).val(file.url);
             $('.dd-media-details-link-url', $detailForm).attr('href', file.url);

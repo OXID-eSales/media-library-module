@@ -1,0 +1,7 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Media\Settings\FallbackMediaSettingsInterface:
+    class: OxidEsales\MediaLibrary\Media\Settings\FallbackMediaSettings
