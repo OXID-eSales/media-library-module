@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Compatibility\Repository\PathMappingRepositoryInterface:
+    class: OxidEsales\MediaLibrary\Compatibility\Repository\PathMappingRepository
+
+  OxidEsales\MediaLibrary\Compatibility\Service\MediaPathServiceInterface:
+    class: OxidEsales\MediaLibrary\Compatibility\Service\MediaPathService

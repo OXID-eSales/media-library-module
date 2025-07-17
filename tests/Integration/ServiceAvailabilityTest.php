@@ -61,6 +61,10 @@ class ServiceAvailabilityTest extends IntegrationTestCase
     public static function serviceAvailabilityDataProvider(): array
     {
         return [
+            // Compatibility
+            [\OxidEsales\MediaLibrary\Compatibility\Repository\PathMappingRepositoryInterface::class],
+            [\OxidEsales\MediaLibrary\Compatibility\Service\MediaPathServiceInterface::class],
+
             // Media
             [\OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface::class],
             [\OxidEsales\MediaLibrary\Media\Settings\FallbackMediaSettingsInterface::class],
