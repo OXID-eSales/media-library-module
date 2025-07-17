@@ -5,11 +5,11 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\MediaLibrary\Compatibility\Service;
+namespace OxidEsales\MediaLibrary\Compatibility\Factory;
 
 use OxidEsales\MediaLibrary\Compatibility\DTO\MediaFileInformationInterface;
 
-interface MediaPathServiceInterface
+interface MediaFileInformationFactoryInterface
 {
-    public function getMediaFileInformation(string $path): MediaFileInformationInterface;
+    public function fromPath(string $path): MediaFileInformationInterface;
 }

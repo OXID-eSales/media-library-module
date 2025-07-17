@@ -9,6 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Compatibility\Exception;
 
-class MediaByPathNotFoundException extends \Exception
+class UnknownPathFormatException extends \Exception
 {
 }

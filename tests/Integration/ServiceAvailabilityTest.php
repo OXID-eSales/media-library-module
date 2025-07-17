@@ -63,7 +63,7 @@ class ServiceAvailabilityTest extends IntegrationTestCase
         return [
             // Compatibility
             [\OxidEsales\MediaLibrary\Compatibility\Repository\PathMappingRepositoryInterface::class],
-            [\OxidEsales\MediaLibrary\Compatibility\Service\MediaPathServiceInterface::class],
+            [\OxidEsales\MediaLibrary\Compatibility\Factory\MediaFileInformationFactoryInterface::class],
 
             // Media
             [\OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface::class],

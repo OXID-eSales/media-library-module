@@ -7,12 +7,13 @@
 
 namespace OxidEsales\MediaLibrary\Compatibility\Repository;
 
-use OxidEsales\MediaLibrary\Compatibility\Exception\MediaByPathNotFoundException;
+use OxidEsales\MediaLibrary\Compatibility\DTO\MediaFileInformationInterface;
+use OxidEsales\MediaLibrary\Compatibility\Exception\MediaNotFoundByFileInformationException;
 
 interface PathMappingRepositoryInterface
 {
     /**
-     * @throws MediaByPathNotFoundException
+     * @throws MediaNotFoundByFileInformationException
      */
-    public function getMediaIdByPath(string $filePath): string;
+    public function getMediaIdByInformation(MediaFileInformationInterface $fileInformation): string;
 }
