@@ -17,7 +17,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-class MediaPathServiceTest extends TestCase
+class MediaFileInformationFactoryTest extends TestCase
 {
     #[Test]
     #[DataProvider('pathDataProvider')]
@@ -54,6 +54,26 @@ class MediaPathServiceTest extends TestCase
 
         yield 'path in known directory with subdirectory' => [
             'path' => '//localhost.local/out/pictures/ddmedia/someFolder/fileExample.gif',
+            'expected' => new MediaFileInformation('fileExample.gif', 'someFolder'),
+        ];
+
+        yield 'path in known dynamic directory' => [
+            'path' => '{{oViewConf.getMediaUrl()}}/fileExample.gif',
+            'expected' => new MediaFileInformation('fileExample.gif', ''),
+        ];
+
+        yield 'path in known dynamic directory with spaces' => [
+            'path' => '{{ oViewConf.getMediaUrl() }}/fileExample.gif',
+            'expected' => new MediaFileInformation('fileExample.gif', ''),
+        ];
+
+        yield 'path in known dynamic directory case insensitive' => [
+            'path' => '{{ oViewConf.GETMEDIAURL() }}/fileExample.gif',
+            'expected' => new MediaFileInformation('fileExample.gif', ''),
+        ];
+
+        yield 'path in known dynamic directory with subdirectory' => [
+            'path' => '{{oViewConf.getMediaUrl()}}/someFolder/fileExample.gif',
             'expected' => new MediaFileInformation('fileExample.gif', 'someFolder'),
         ];
     }

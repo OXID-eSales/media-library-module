@@ -12,7 +12,6 @@ namespace OxidEsales\MediaLibrary\Tests\Integration\Compatibility\Repository;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\MediaLibrary\Compatibility\DTO\MediaFileInformationInterface;
 use OxidEsales\MediaLibrary\Compatibility\Exception\MediaNotFoundByFileInformationException;
-use OxidEsales\MediaLibrary\Compatibility\Factory\MediaFileInformationFactoryInterface;
 use OxidEsales\MediaLibrary\Compatibility\Repository\PathMappingRepository;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;

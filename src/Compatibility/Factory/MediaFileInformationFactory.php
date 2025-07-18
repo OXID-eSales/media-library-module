@@ -17,7 +17,13 @@ class MediaFileInformationFactory implements MediaFileInformationFactoryInterfac
 {
     public function fromPath(string $path): MediaFileInformationInterface
     {
-        if (strstr($path, 'out/pictures/ddmedia/') !== false) {
+        if (stristr($path, 'oViewConf.getMediaUrl') !== false) {
+            preg_match(
+                '/{{\s?oViewConf\.getMediaUrl\(\)\s?}}\/((?<foldername>[^\/]+)?\/)?(?<filename>[^\/]+)?$/i',
+                $path,
+                $matches
+            );
+        } elseif (strstr($path, 'out/pictures/ddmedia/') !== false) {
             preg_match(
                 '/out\/pictures\/ddmedia\/((?<foldername>[^\/]+)?\/)?(?<filename>[^\/]+)?$/',
                 $path,
