@@ -30,11 +30,16 @@ class PathMappingRepository implements PathMappingRepositoryInterface
 
         $queryBuilder->select('m.OXID')
             ->from('ddmedia', 'm')
-            ->leftJoin('m', 'ddmedia', 'j', 'j.OXID = m.DDFOLDERID AND m.DDFOLDERID <> ""')
             ->where('m.DDFILENAME = :filename')
-            ->andWhere('j.DDFILENAME = :foldername')
-            ->setParameter('filename', $fileInformation->getFileName())
-            ->setParameter('foldername', $fileInformation->getFolderName());
+            ->setParameter('filename', $fileInformation->getFileName());
+
+        if ($fileInformation->getFolderName()) {
+            $queryBuilder->leftJoin('m', 'ddmedia', 'j', 'j.OXID = m.DDFOLDERID AND m.DDFOLDERID <> ""')
+                ->andWhere('j.DDFILENAME = :foldername')
+                ->setParameter('foldername', $fileInformation->getFolderName());
+        } else {
+            $queryBuilder->andWhere('m.DDFOLDERID = ""');
+        }
 
         /** @var Result $result */
         $result = $queryBuilder->execute();

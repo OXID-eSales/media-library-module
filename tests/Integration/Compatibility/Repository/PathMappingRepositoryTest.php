@@ -21,7 +21,30 @@ use PHPUnit\Framework\Attributes\Test;
 class PathMappingRepositoryTest extends IntegrationTestCase
 {
     #[Test]
-    public function mediaIdIsFoundByPath(): void
+    public function mediaIdWithoutFolderIsFoundByPath(): void
+    {
+        $mediaRepository = $this->get(MediaRepositoryInterface::class);
+        $mediaRepository->addMedia(
+            new Media(
+                oxid: $oxid = uniqid(),
+                fileName: $fileName = uniqid()
+            )
+        );
+
+        $mediaFileInformationStub = $this->createConfiguredStub(MediaFileInformationInterface::class, [
+            'getFileName' => $fileName,
+            'getFolderName' => '',
+        ]);
+
+        $sut = new PathMappingRepository(
+            queryBuilderFactory: $this->get(QueryBuilderFactoryInterface::class),
+        );
+
+        $this->assertEquals($oxid, $sut->getMediaIdByInformation($mediaFileInformationStub));
+    }
+
+    #[Test]
+    public function mediaIdWithFolderIsFoundByPath(): void
     {
         $mediaRepository = $this->get(MediaRepositoryInterface::class);
         $mediaRepository->addMedia(
