@@ -31,7 +31,6 @@ perl -pi\
   containers/httpd/project.conf
 
 perl -pi\
-  -e 's#MYSQL_VERSION=.*#MYSQL_VERSION=8.0#g;'\
   -e 's#PHP_VERSION=.*#PHP_VERSION=8.2#g;'\
   .env
 
