@@ -9,6 +9,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Compatibility\Facade;
 
 use OxidEsales\MediaLibrary\Compatibility\DTO\MediaFileInformationInterface;
 use OxidEsales\MediaLibrary\Compatibility\Exception\MediaNotFoundByFileInformationException;
+use OxidEsales\MediaLibrary\Compatibility\Exception\UnknownPathFormatException;
 use OxidEsales\MediaLibrary\Compatibility\Facade\MediaIdByPathFacade;
 use OxidEsales\MediaLibrary\Compatibility\Facade\MediaIdByPathFacadeInterface;
 use OxidEsales\MediaLibrary\Compatibility\Factory\MediaFileInformationFactory;
@@ -40,6 +41,21 @@ class MediaIdByPathFacadeTest extends TestCase
         );
 
         $this->assertSame($mediaId, $sut->getMediaIdByPath($examplePath));
+    }
+
+    #[Test]
+    public function getMediaIdByPathExplodesWithExpectedExceptionIfPathFormatIsUnexpected(): void
+    {
+        $fileInformationFactoryMock = $this->createMock(MediaFileInformationFactoryInterface::class);
+        $fileInformationFactoryMock->method('fromPath')
+            ->willThrowException(new UnknownPathFormatException());
+
+        $sut = $this->getSut(
+            fileInformationFactory: $fileInformationFactoryMock
+        );
+
+        $this->expectException(UnknownPathFormatException::class);
+        $sut->getMediaIdByPath(uniqid());
     }
 
     #[Test]
