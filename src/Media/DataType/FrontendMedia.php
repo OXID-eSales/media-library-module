@@ -17,7 +17,8 @@ class FrontendMedia
         public string $filetype,
         public int $filesize,
         public string $thumb,
-        public string $imageSize
+        public string $imageSize,
+        public array $altTexts = []
     ) {
     }
 }

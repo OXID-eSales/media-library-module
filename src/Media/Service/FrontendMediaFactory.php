@@ -28,7 +28,8 @@ class FrontendMediaFactory implements FrontendMediaFactoryInterface
             filetype: $media->getFileType(),
             filesize: $media->getFileSize(),
             thumb: $this->getMediaDefaultThumbnail($media),
-            imageSize: $media->getImageSize()->getInFormat("%dx%d", '')
+            imageSize: $media->getImageSize()->getInFormat("%dx%d", ''),
+            altTexts: $media->getAltTexts()
         );
     }
 

@@ -32,6 +32,7 @@ class FrontendMediaFactoryTest extends TestCase
         $mediaStub->method('getFileType')->willReturn($fileType = uniqid());
         $mediaStub->method('getFileSize')->willReturn($fileSize = 123);
         $mediaStub->method('getImageSize')->willReturn(new ImageSize(width: 100, height: 100));
+        $mediaStub->method('getAltTexts')->willReturn($altTexts = ['de_DE' => 'German Text', 'en_EN' => 'English Text']);
 
         $thumbnailService->method('ensureAndGetThumbnailUrl')
             ->with($folderName, $fileName)
@@ -43,7 +44,8 @@ class FrontendMediaFactoryTest extends TestCase
             filetype: $fileType,
             filesize: $fileSize,
             thumb: $thumbUrl,
-            imageSize: '100x100'
+            imageSize: '100x100',
+            altTexts: $altTexts
         );
 
         $this->assertEquals($expected, $sut->createFromMedia($mediaStub));
@@ -61,6 +63,7 @@ class FrontendMediaFactoryTest extends TestCase
         $mediaStub->method('getFileType')->willReturn($fileType = uniqid());
         $mediaStub->method('getFileSize')->willReturn($fileSize = 123);
         $mediaStub->method('getImageSize')->willReturn(new ImageSize(width: 100, height: 100));
+        $mediaStub->method('getAltTexts')->willReturn($altTexts = []);
         $mediaStub->method('isDirectory')->willReturn(true);
 
         $thumbnailServiceSpy->expects($this->never())->method('ensureAndGetThumbnailUrl');
@@ -71,7 +74,8 @@ class FrontendMediaFactoryTest extends TestCase
             filetype: $fileType,
             filesize: $fileSize,
             thumb: '',
-            imageSize: '100x100'
+            imageSize: '100x100',
+            altTexts: $altTexts
         );
 
         $this->assertEquals($expected, $sut->createFromMedia($mediaStub));

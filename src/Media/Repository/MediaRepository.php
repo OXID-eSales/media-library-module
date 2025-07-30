@@ -24,7 +24,7 @@ class MediaRepository implements MediaRepositoryInterface
     public function __construct(
         private ConnectionProviderInterface $connectionProvider,
         private ContextInterface $context,
-        private MediaFactoryInterface $mediaFactory,
+        private MediaFactoryInterface $mediaFactory
     ) {
         $this->connection = $this->connectionProvider->get();
     }
@@ -46,7 +46,8 @@ class MediaRepository implements MediaRepositoryInterface
     {
         $queryResult = $this->connection->executeQuery(
             $this->getMediaSelectSqlPart()
-            . "WHERE m.OXSHOPID = :OXSHOPID AND m.DDFOLDERID = :DDFOLDERID
+            . " WHERE m.OXSHOPID = :OXSHOPID AND m.DDFOLDERID = :DDFOLDERID
+            GROUP BY m.OXID
             ORDER BY m.OXTIMESTAMP DESC LIMIT $start, $limit",
             [
                 'OXSHOPID' => $this->context->getCurrentShopId(),
@@ -66,7 +67,8 @@ class MediaRepository implements MediaRepositoryInterface
     {
         $result = $this->connection->executeQuery(
             $this->getMediaSelectSqlPart()
-            . "WHERE m.OXID = :OXID",
+            . " WHERE m.OXID = :OXID
+            GROUP BY m.OXID",
             [
                 'OXID' => $mediaId
             ]
@@ -105,8 +107,17 @@ class MediaRepository implements MediaRepositoryInterface
 
     private function getMediaSelectSqlPart(): string
     {
-        return "SELECT m.*, j.DDFILENAME as FOLDERNAME FROM ddmedia m
-            LEFT JOIN ddmedia j ON j.OXID=m.DDFOLDERID AND m.DDFOLDERID <> ''";
+        return "SELECT m.*, 
+                   j.DDFILENAME as FOLDERNAME,
+                   GROUP_CONCAT(
+                       CASE WHEN t.OXLOCALEID IS NOT NULL THEN
+                           CONCAT(t.OXLOCALEID, ':', t.OXALTSHORTTEXT) 
+                       END 
+                       SEPARATOR '|'
+                   ) as TRANSLATIONS
+            FROM ddmedia m
+            LEFT JOIN ddmedia j ON j.OXID=m.DDFOLDERID AND m.DDFOLDERID <> ''
+            LEFT JOIN ddoemedialibrary_translations t ON t.OXOBJECTID = m.OXID AND t.OXSHOPID = " . $this->context->getCurrentShopId();
     }
 
     /**
@@ -137,6 +148,12 @@ class MediaRepository implements MediaRepositoryInterface
 
         $this->connection->executeQuery(
             "DELETE FROM ddmedia WHERE OXID = :OXID OR DDFOLDERID = :OXID",
+            [
+                'OXID' => $idToRemove
+            ]
+        );
+        $this->connection->executeQuery(
+            "DELETE FROM ddoemedialibrary_translations WHERE OXOBJECTID = :OXID",
             [
                 'OXID' => $idToRemove
             ]

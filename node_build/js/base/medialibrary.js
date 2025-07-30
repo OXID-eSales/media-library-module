@@ -54,6 +54,7 @@ class MediaLibraryClass {
 
         if (!file) {
             $detailForm.hide();
+            $('.dd-media-translations', $detailForm).hide();
         } else {
             if (file.preview) {
                 $('.dd-media-details-preview-icon', $detailForm).hide();
@@ -81,10 +82,40 @@ class MediaLibraryClass {
             $('.dd-media-details-input-url', $detailForm).val(file.url);
             $('.dd-media-details-link-url', $detailForm).attr('href', file.url);
 
+            // Handle translations
+            this._loadTranslations(file.altTexts || {}, $detailForm);
+
             $detailForm.show();
         }
     };
 
+    _loadTranslations(altTexts, $detailForm) {
+        var $translationsGroup = $('.dd-media-translations', $detailForm);
+        var $translationsList = $('.dd-media-translations-list', $detailForm);
+        
+        // Clear previous translations
+        $translationsList.empty();
+        
+        if (!altTexts || Object.keys(altTexts).length === 0) {
+            $translationsGroup.hide();
+            return;
+        }
+        
+        // Show translations section
+        $translationsGroup.show();
+        
+        // Create translation items
+        Object.keys(altTexts).forEach(function(locale) {
+            var altText = altTexts[locale];
+            var $translationItem = $('<div class="dd-media-translation-item form-group">' +
+                '<label class="dd-media-translation-locale">' + locale + '</label>' +
+                '<input type="text" class="form-control dd-media-translation-text" value="" readonly="readonly" />' +
+                '</div>');
+            
+            $translationItem.find('.dd-media-translation-text').val(altText);
+            $translationsList.append($translationItem);
+        });
+    };
 
     _formatFileSize(size) {
         size = parseInt(size);
@@ -410,13 +441,13 @@ class MediaLibraryClass {
         }
     };
 
-    addMediaItem(id, file, filetype, filesize, thumb, imagesize) {
+    addMediaItem(id, file, filetype, filesize, thumb, imagesize, altTexts = {}) {
         var resourceLink = this._resourceLink;
         var ui = this;
         var $item = $('.dd-media-list-items .dd-media-dz-helper > div').clone();
 
         $('.dd-media-item', $item).data({
-            'id': id, 'file': file, 'filetype': filetype, 'filesize': filesize, 'imagesize': imagesize
+            'id': id, 'file': file, 'filetype': filetype, 'filesize': filesize, 'imagesize': imagesize, 'altTexts': altTexts
         });
 
         if (!thumb || thumb === undefined) {
@@ -487,7 +518,7 @@ class MediaLibraryClass {
                         data: {name: val},
                         success: function (addFolderResult) {
                             if (addFolderResult.id) {
-                                ui.addMediaItem(addFolderResult.id, addFolderResult.name, 'directory', 0, null, '');
+                                ui.addMediaItem(addFolderResult.id, addFolderResult.name, 'directory', 0, null, '', {});
                                 $('.dd-media-list', $dialog).removeClass('empty');
                                 $('.dd-media-file-count', $dialog).text(parseInt($('.dd-media-file-count', $dialog).text()) + 1);
                             }
@@ -685,7 +716,8 @@ class MediaLibraryClass {
                             'filetype': response.filetype,
                             'filesize': response.filesize,
                             'imagesize': (response.imagesize || null),
-                            'thumb': response.thumb
+                            'thumb': response.thumb,
+                            'altTexts': {}
                         }).trigger('click');
 
                         ui._makeItemMovable($('.dd-media-item', file.previewElement));
@@ -747,7 +779,7 @@ class MediaLibraryClass {
         $.get(actionLink + 'cl=ddoemedia_view&fnc=moreFiles&start=' + start + '&folderid=' + $('.dd-media').data('folderid'), function (data) {
             if (data.files && data.files.length) {
                 $.each(data.files, function () {
-                    ui.addMediaItem(this.id, this.file, this.filetype, this.filesize, (this.thumb || false), (this.imageSize || null));
+                    ui.addMediaItem(this.id, this.file, this.filetype, this.filesize, (this.thumb || false), (this.imageSize || null), (this.altTexts || {}));
                 });
             }
 

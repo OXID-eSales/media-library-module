@@ -40,6 +40,7 @@ class MediaTest extends TestCase
         $this->assertSame($imageSize, $sut->getImageSize());
         $this->assertSame('someFolderId', $sut->getFolderId());
         $this->assertSame('someFolderName', $sut->getFolderName());
+        $this->assertSame([], $sut->getAltTexts());
     }
 
     public function testOptionalDefaults(): void
@@ -56,6 +57,7 @@ class MediaTest extends TestCase
         $this->assertEquals(new ImageSize(0, 0), $sut->getImageSize());
         $this->assertSame('', $sut->getFolderId());
         $this->assertSame('', $sut->getFolderName());
+        $this->assertSame([], $sut->getAltTexts());
     }
 
     #[DataProvider('isDirectoryDataProvider')]
@@ -78,5 +80,113 @@ class MediaTest extends TestCase
         yield "some gif image filetype" => ['fileType' => 'image/gif', 'expectedResult' => false];
         yield "some jpeg image filetype" => ['fileType' => 'image/jpeg', 'expectedResult' => false];
         yield "directory media type" => ['fileType' => Media::FILETYPE_DIRECTORY, 'expectedResult' => true];
+    }
+
+    public function testAltTextsWithValidTranslations(): void
+    {
+        $altTexts = [
+            'de_DE' => 'German Alt Text',
+            'en_EN' => 'English Alt Text',
+            'fr_FR' => 'French Alt Text',
+        ];
+
+        $sut = new Media(
+            oxid: 'someOxid',
+            fileName: 'filename.jpg',
+            altTexts: $altTexts
+        );
+
+        $this->assertSame($altTexts, $sut->getAltTexts());
+        $this->assertIsArray($sut->getAltTexts());
+        
+        // Verify array structure
+        foreach ($sut->getAltTexts() as $locale => $text) {
+            $this->assertIsString($locale);
+            $this->assertIsString($text);
+            $this->assertNotEmpty($locale);
+        }
+    }
+
+    public function testAltTextsWithEmptyArray(): void
+    {
+        $sut = new Media(
+            oxid: 'someOxid',
+            fileName: 'filename.jpg',
+            altTexts: []
+        );
+
+        $this->assertSame([], $sut->getAltTexts());
+        $this->assertIsArray($sut->getAltTexts());
+        $this->assertEmpty($sut->getAltTexts());
+    }
+
+    public function testAltTextsWithEmptyStrings(): void
+    {
+        $altTexts = [
+            'de_DE' => '',
+            'en_EN' => 'Valid Text',
+        ];
+
+        $sut = new Media(
+            oxid: 'someOxid',
+            fileName: 'filename.jpg',
+            altTexts: $altTexts
+        );
+
+        $this->assertSame($altTexts, $sut->getAltTexts());
+        $this->assertIsArray($sut->getAltTexts());
+        
+        // Even empty strings should be allowed as values
+        $this->assertSame('', $sut->getAltTexts()['de_DE']);
+        $this->assertSame('Valid Text', $sut->getAltTexts()['en_EN']);
+    }
+
+    /**
+     * Test that altTexts maintains associative array structure
+     */
+    public function testAltTextsIsAssociativeArray(): void
+    {
+        $altTexts = [
+            'locale1' => 'Text 1',
+            'locale2' => 'Text 2',
+            'locale3' => 'Text 3',
+        ];
+
+        $sut = new Media(
+            oxid: 'someOxid',
+            fileName: 'filename.jpg',
+            altTexts: $altTexts
+        );
+
+        $result = $sut->getAltTexts();
+        
+        $this->assertIsArray($result);
+        $this->assertCount(3, $result);
+        
+        // Verify it's associative (not numeric indexed)
+        $this->assertTrue(array_keys($result) !== range(0, count($result) - 1));
+        
+        // Verify all keys are strings
+        foreach (array_keys($result) as $key) {
+            $this->assertIsString($key);
+        }
+        
+        // Verify all values are strings
+        foreach ($result as $value) {
+            $this->assertIsString($value);
+        }
+    }
+
+    public function testAltTextsDefaultsToEmptyArray(): void
+    {
+        $sut = new Media(
+            oxid: 'someOxid',
+            fileName: 'filename.jpg'
+            // altTexts parameter omitted, should default to []
+        );
+
+        $this->assertSame([], $sut->getAltTexts());
+        $this->assertIsArray($sut->getAltTexts());
+        $this->assertEmpty($sut->getAltTexts());
     }
 }
