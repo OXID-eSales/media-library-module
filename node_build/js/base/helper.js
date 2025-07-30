@@ -63,7 +63,40 @@ export const ddh = {
             });
         }
 
-        $('body').append($modal);
+        $('html').append($modal);
+
+        const ModalConstructor = $.fn.modal.Constructor;
+        const originalBackdropFn = ModalConstructor.prototype.backdrop;
+
+        ModalConstructor.prototype.backdrop = function (callback) {
+            const animate = this.$element.hasClass('fade') ? 'fade' : '';
+
+            if (this.isShown && this.options.backdrop) {
+                this.$backdrop = $('<div class="modal-backdrop ' + animate + '" />')
+                    .appendTo(this.$element.parent()); // <- important: same parent as modal
+
+                if (animate) this.$backdrop[0].offsetWidth; // force reflow
+                this.$backdrop.addClass('in');
+
+                if (callback) callback();
+            } else if (!this.isShown && this.$backdrop) {
+                this.$backdrop.removeClass('in');
+
+                const callbackRemove = () => {
+                    this.removeBackdrop();
+                    if (callback) callback();
+                };
+
+                $.support.transition && this.$element.hasClass('fade')
+                    ? this.$backdrop
+                        .one('bsTransitionEnd', callbackRemove)
+                        .emulateTransitionEnd(150)
+                    : callbackRemove();
+            } else if (callback) {
+                callback();
+            }
+        };
+
         $modal.modal({
             backdrop: opt.backdrop, keyboard: opt.keyboard
         }).on('hidden.bs.modal', function () {

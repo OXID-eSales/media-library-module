@@ -163,27 +163,21 @@ class MediaLibraryClass {
         if (arguments.length === 2) {
             if (typeof arguments[0] === 'string' || arguments[0] instanceof RegExp) {
                 filter = arguments[0];
-            } else {
-                if (typeof arguments[0] === 'boolean') {
-                    multiple = arguments[0];
-                }
+            } else if (typeof arguments[0] === 'boolean') {
+                multiple = arguments[0];
             }
 
             callback = arguments[1];
-        } else {
-            if (arguments.length === 3) {
-                if (typeof arguments[0] === 'string' || arguments[0] instanceof RegExp) {
-                    filter = arguments[0];
-                    multiple = arguments[1];
-                } else {
-                    if (typeof arguments[0] === 'boolean') {
-                        multiple = arguments[0];
-                        filter = arguments[1];
-                    }
-                }
-
-                callback = arguments[2];
+        } else if (arguments.length === 3) {
+            if (typeof arguments[0] === 'string' || arguments[0] instanceof RegExp) {
+                filter = arguments[0];
+                multiple = arguments[1];
+            } else if (typeof arguments[0] === 'boolean') {
+                multiple = arguments[0];
+                filter = arguments[1];
             }
+
+            callback = arguments[2];
         }
 
         var actions = [{
@@ -192,51 +186,7 @@ class MediaLibraryClass {
             }
         }, {
             label: ddh.translate('DD_APPLY'), css: ['btn btn-primary dd-media-submit'], action: function ($dialog) {
-                var $item = $('.dd-media-item.active', $dialog);
-                var foldername = $('.dd-media', $dialog).data('foldername');
-
-                if (!$item.length) {
-                    return;
-                }
-
-                if (typeof callback === 'function') {
-                    var blTypeNotAllowed = false;
-                    var files = [];
-
-                    $item.each(function () {
-                        var filetype = $(this).data('filetype');
-
-                        if (filter !== null && ((typeof filter === 'string' && filter !== filetype) || (filter instanceof RegExp && !filetype.match(filter)))) {
-                            blTypeNotAllowed = true;
-                        } else {
-                            //todo: rework every param besides id here, as those should Probably not be used as it is, but through twig placeholders instead.
-                            files.push({
-                                id: $(this).data('id'),
-                                file: (foldername ? foldername + '/' : '') + $(this).data('file'),
-                                url: ui._resourceLink + $(this).data('file'),
-                                type: filetype
-                            });
-                        }
-                    });
-
-                    if (blTypeNotAllowed) {
-                        ddh.alert(ddh.translate('DD_MEDIA_FILETYPE_NOT_ALLOWED'));
-                        return;
-                    }
-
-                    if (multiple) {
-                        callback.call($dialog, files);
-                    } else {
-                        if (files.length) {
-                            var item = files[0];
-                            callback.call($dialog, item.id, item.file, item.url, item.type);
-                        } else {
-                            callback.call($dialog, false);
-                        }
-                    }
-
-                }
-
+                ui.getApplyAction($dialog, filter, multiple, callback);
                 $dialog.modal('hide');
             }
         }];
@@ -265,39 +215,24 @@ class MediaLibraryClass {
 
     /**
      * Usage:
-     * MediaLibrary.init( [ filter ], [ multiple ], callback );
+     * MediaLibrary.init( [ filter ], [ multiple ]);
      *
-     * @param callback
      */
-    init(callback) {
-        var actionLink = this._actionLink;
-        var resourceLink = this._resourceLink;
+    init() {
         var filter = null, multiple = false;
-        var ui = this;
-
         if (arguments.length === 2) {
             if (typeof arguments[0] === 'string' || arguments[0] instanceof RegExp) {
                 filter = arguments[0];
-            } else {
-                if (typeof arguments[0] === 'boolean') {
-                    multiple = arguments[0];
-                }
+            } else if (typeof arguments[0] === 'boolean') {
+                multiple = arguments[0];
             }
-
-            callback = arguments[1];
-        } else {
-            if (arguments.length === 3) {
-                if (typeof arguments[0] === 'string' || arguments[0] instanceof RegExp) {
-                    filter = arguments[0];
-                    multiple = arguments[1];
-                } else {
-                    if (typeof arguments[0] === 'boolean') {
-                        multiple = arguments[0];
-                        filter = arguments[1];
-                    }
-                }
-
-                callback = arguments[2];
+        } else if (arguments.length === 3) {
+            if (typeof arguments[0] === 'string' || arguments[0] instanceof RegExp) {
+                filter = arguments[0];
+                multiple = arguments[1];
+            } else if (typeof arguments[0] === 'boolean') {
+                multiple = arguments[0];
+                filter = arguments[1];
             }
         }
 
@@ -307,84 +242,6 @@ class MediaLibraryClass {
             multiple: multiple,
             filter: filter
         });
-
-        // Communicate with Overlay
-        if (top.basefrm && top.basefrm.OverlayInstance) {
-            top.basefrm.OverlayInstance.onContentLoad(function () {
-                var self = this;
-
-                if ($('.dd-overlay-dialog-footer .dd-overlay-dialog-apply', self.$overlay).length) {
-                    $('.dd-overlay-dialog-footer .dd-overlay-dialog-apply', self.$overlay).remove();
-                }
-
-                if (typeof callback !== 'function' && self.overlayContext) {
-                    callback = function (id, file, fullpath) {
-                        self.overlayContext.invoke('editor.insertImage', fullpath, function ($image) {
-                            top.basefrm.mediaUrls[id] = fullpath;
-                            $image.css('max-width', '100%');
-                            $image.attr('src', fullpath);
-                            $image.attr('data-source', 'media');
-                            $image.attr('data-id', id);
-                            $image.addClass('dd-wysiwyg-media-image');
-                        });
-                    };
-                }
-
-                var $applyAction = $('<button type="button" class="dd-overlay-dialog-button dd-overlay-dialog-apply">' + ddh.translate('DD_APPLY') + '</button>');
-
-                $applyAction.on('click', function (e) {
-                    e.preventDefault();
-
-                    var $item = $('.dd-media-item.active', $dialog);
-
-                    if (!$item.length) {
-                        return;
-                    }
-
-                    if (typeof callback === 'function') {
-                        var blTypeNotAllowed = false;
-                        var files = [];
-                        var foldername = $('.dd-media', $dialog).data('foldername');
-
-                        $item.each(function () {
-                            var filetype = $(this).data('filetype');
-
-                            if (filter !== null && ((typeof filter === 'string' && filter !== filetype) || (filter instanceof RegExp && !filetype.match(filter)))) {
-                                blTypeNotAllowed = true;
-                            } else {
-                                files.push({
-                                    id: $(this).data('id'),
-                                    file: (foldername ? foldername + '/' : '') + $(this).data('file'),
-                                    url: ui._resourceLink + $(this).data('file'),
-                                    type: filetype
-                                });
-                            }
-                        });
-
-                        if (blTypeNotAllowed) {
-                            ddh.alert(ddh.translate('DD_MEDIA_FILETYPE_NOT_ALLOWED'));
-                            return;
-                        }
-
-                        if (multiple) {
-                            callback.call($dialog, files);
-                        } else {
-                            if (files.length) {
-                                var item = files[0];
-                                callback.call($dialog, item.id, item.file, item.url, item.type);
-                            } else {
-                                callback.call($dialog, false);
-                            }
-                        }
-
-                    }
-
-                    self.hideOverlay();
-                });
-
-                $('.dd-overlay-dialog-footer', self.$overlay).prepend($applyAction);
-            });
-        }
 
         this._loadMediaContent($dialog);
     };
@@ -671,6 +528,7 @@ class MediaLibraryClass {
                 previewTemplate: $('.dd-media-list-items .dd-media-dz-helper', $dialog).html(),
 
                 clickable: $('.dd-media-upload', $dialog)[0],
+                hiddenInputContainer: $('.dd-media', $dialog)[0],
 
                 init: function () {
                     this.on('addedfile', function () {
@@ -759,6 +617,54 @@ class MediaLibraryClass {
             }
         });
     };
+
+    getApplyAction($dialog, filter, multiple, callback) {
+        var $item = $('.dd-media-item.active', $dialog);
+        var foldername = $('.dd-media', $dialog).data('foldername');
+        var ui = this;
+
+        if (!$item.length) {
+            return;
+        }
+
+        if (typeof callback === 'function') {
+            var blTypeNotAllowed = false;
+            var files = [];
+
+            $item.each(function () {
+                console.log($(this));
+                var filetype = $(this).data('filetype');
+
+                console.log('filetype',filetype)
+                if (filter !== null && ((typeof filter === 'string' && filter !== filetype) || (filter instanceof RegExp && !filetype?.match(filter)))) {
+                    blTypeNotAllowed = true;
+                } else {
+                    files.push({
+                        id: $(this).data('id'),
+                        file: (foldername ? foldername + '/' : '') + $(this).data('file'),
+                        url: ui._resourceLink + $(this).data('file'),
+                        type: filetype
+                    });
+                }
+            });
+
+            if (blTypeNotAllowed) {
+                ddh.alert(ddh.translate('DD_MEDIA_FILETYPE_NOT_ALLOWED'));
+                return;
+            }
+
+            if (multiple) {
+                callback.call($dialog, files);
+            } else {
+                if (files.length) {
+                    var item = files[0];
+                    callback.call($dialog, item.id, item.file, item.url, item.type);
+                } else {
+                    callback.call($dialog, false);
+                }
+            }
+        }
+    }
 }
 
 export const MediaLibrary = new MediaLibraryClass();
