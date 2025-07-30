@@ -48,6 +48,12 @@ class PathMappingRepository implements PathMappingRepositoryInterface
             return (string)$mediaId;
         }
 
-        throw new MediaNotFoundByFileInformationException();
+        throw new MediaNotFoundByFileInformationException(
+            sprintf(
+                "Media '%s' not found in folder '%s'",
+                $fileInformation->getFileName(),
+                $fileInformation->getFolderName()
+            )
+        );
     }
 }
