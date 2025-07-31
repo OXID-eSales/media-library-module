@@ -16,24 +16,24 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
 {
 	// @codingStandardsIgnoreStart
     private string $createFolderButton = "//button[contains(@class, 'dd-media-folder-action')]";
-    private string $createDirectoryModel = "//div[contains(@class, 'dd-modal-confirm') and contains(@style, 'display: block')]";
+    private string $createDirectoryModal = "//div[contains(@class, 'dd-modal-confirm') and contains(@style, 'display: block')]";
     private string $createDirectoryField = "//div[contains(@class, 'dd-modal-confirm')]//input[@name='prompt']";
     private string $directoryTitle = "oxid";
-    private string $modelConfirmButton = "//div[contains(@class, 'dd-modal-confirm')]//button[contains(@class, 'btn-primary')]";
+    private string $modalConfirmButton = "//div[contains(@class, 'modal-dialog')]//div[contains(@class, 'modal-footer')]//button[contains(@class, 'btn-primary')]";
     private string $uploadGrid = "//div[contains(@class, 'dz-clickable')]";
     private string $uploadHolder = "//input[@class='dz-hidden-input'][last()]";
     private string $mediaDetails = "//input[contains(@class, 'dd-media-details-input-url')]";
-    private string $uploadTab = "//a[@href='#mediaUpload']";
-    private string $listTab = "//a[@href='#mediaList']";
+    private string $uploadTab = "//button[@data-bs-target='#mediaUpload']";
+    private string $listTab = "//button[@data-bs-target='#mediaList']";
     private string $imageSelect = "//div[@class='dd-media-list']//div[contains(@class, 'dz-image-preview')]//a[contains(@class, 'dd-media-item')][1]";
     public string $mediaSearchField = '#mediaSearchField';
     private string $imageWrapper = "//div[@class='dd-media-list']//div[contains(@class, 'dd-media-item-preview')]";
-    private string $removeImageButton = "//div[@class='dd-media-list-toolbar']//button[contains(@class, 'dd-media-remove-action')][1]";
-    private string $removeImageConfirmButton = "//div[@class='modal-content']//button[contains(@class, 'btn-primary')][1]";
+    private string $removeImageButton = "//div[contains(@class, 'dd-media-list-toolbar')]//button[contains(@class, 'dd-media-remove-action')]";
+    private string $removeImageConfirmButton = "//div[@class='modal-content']//button[contains(@class, 'btn-primary')]";
     private string $directorySelector = "//div[@class='dd-media-list']//div[contains(@class, 'dd-media-col')][%d]//a[contains(@class, 'dd-media-item')]";
     private string $removeDirectorySelector = "//div[@class='dd-media-list']//div[contains(@class, 'dd-media-col')][%d]//a[contains(@class, 'dd-media-item') and contains(@class, 'ui-droppable')]";
-    private string $directoryLevelUp = "//div[@class='dd-media-list-folder-up']//button[contains(@class, 'dd-media-folder-up-action')]";
-    private string $removeDirectoryButton = "//div[@class='dd-media-list-toolbar']//button[contains(@class, 'dd-media-remove-action')][1]";
+    private string $directoryLevelUp = "//div[contains(@class, 'dd-media-list-folder-up')]//button[contains(@class, 'dd-media-folder-up-action')]";
+    private string $removeDirectoryButton = "//div[contains(@class, 'dd-media-list-toolbar')]//button[contains(@class, 'dd-media-remove-action')]";
     private string $removeDirectoryConfirmButton = "//div[@class='modal-content']//button[contains(@class, 'btn-primary')]";
 	private string $searchFieldKeyUpScript = "document.querySelector('%s').dispatchEvent(new KeyboardEvent('keyup'));";
 	// @codingStandardsIgnoreEnd
@@ -61,13 +61,12 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
         $I->see(Translator::translate('DD_MEDIA_NEW_FOLDER'));
 
         $I->waitForElement($this->createFolderButton);
-        $I->waitForAjax();
-
-        $I->retryClick($this->createFolderButton);
-        $I->waitForElement($this->createDirectoryModel);
+        $I->click($this->createFolderButton);
+        $I->wait(0.3); // animation
+        $I->waitForElement($this->createDirectoryModal);
 
         $I->fillField($this->createDirectoryField, $this->directoryTitle);
-        $I->click($this->modelConfirmButton);
+        $I->retryClick($this->modalConfirmButton);
 
         $I->waitForAjax();
 
@@ -96,6 +95,7 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
         $locator = sprintf($this->removeDirectorySelector, $directoryNumber);
         $I->waitForElement($locator);
         $I->click($locator);
+
         $I->click($this->removeDirectoryButton);
         $I->click($this->removeDirectoryConfirmButton);
 
