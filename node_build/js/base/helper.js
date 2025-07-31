@@ -12,7 +12,8 @@ export const ddh = {
             size,
             css,
             backdrop: false,
-            keyboard: false
+            keyboard: false,
+            appendToHtml: false
         };
 
         if (typeof msg === 'object') {
@@ -39,14 +40,11 @@ export const ddh = {
             $('.modal-title', $modal).html(opt.title);
         }
 
-        if (opt.message !== undefined && opt.message !== '') {
+        if (opt.message) {
             if (typeof opt.message === 'string') {
                 $('.modal-body', $modal).html(opt.message);
-            } else {
-                if (typeof opt.message === 'object') {
-                    $('.modal-body', $modal).html('');
-                    $('.modal-body', $modal).append(opt.message);
-                }
+            } else if (typeof opt.message === 'object') {
+                $('.modal-body', $modal).empty().append(opt.message);
             }
         }
 
@@ -63,7 +61,8 @@ export const ddh = {
             });
         }
 
-        $('html').append($modal);
+        const $parent = opt.appendToHtml ? $(document.documentElement) : $(document.body);
+        $parent.append($modal);
 
         const ModalConstructor = $.fn.modal.Constructor;
         const originalBackdropFn = ModalConstructor.prototype.backdrop;
@@ -73,36 +72,35 @@ export const ddh = {
 
             if (this.isShown && this.options.backdrop) {
                 this.$backdrop = $('<div class="modal-backdrop ' + animate + '" />')
-                    .appendTo(this.$element.parent()); // <- important: same parent as modal
+                    .appendTo(this.$element.parent());
 
-                if (animate) this.$backdrop[0].offsetWidth; // force reflow
+                if (animate) this.$backdrop[0].offsetWidth;
                 this.$backdrop.addClass('in');
 
                 if (callback) callback();
             } else if (!this.isShown && this.$backdrop) {
                 this.$backdrop.removeClass('in');
-
-                const callbackRemove = () => {
+                const cb = () => {
                     this.removeBackdrop();
                     if (callback) callback();
                 };
-
                 $.support.transition && this.$element.hasClass('fade')
-                    ? this.$backdrop
-                        .one('bsTransitionEnd', callbackRemove)
-                        .emulateTransitionEnd(150)
-                    : callbackRemove();
+                    ? this.$backdrop.one('bsTransitionEnd', cb).emulateTransitionEnd(150)
+                    : cb();
             } else if (callback) {
                 callback();
             }
         };
 
         $modal.modal({
-            backdrop: opt.backdrop, keyboard: opt.keyboard
+            backdrop: opt.backdrop,
+            keyboard: opt.keyboard
         }).on('hidden.bs.modal', function () {
             $(this).remove();
         }).one('shown.bs.modal', function () {
-            $('.modal-body input[type="text"]', this).length ? $('.modal-body input[type="text"]', this).focus() : $('.modal-footer .btn-primary', this).focus();
+            $('.modal-body input[type="text"]', this).length
+                ? $('.modal-body input[type="text"]', this).focus()
+                : $('.modal-footer .btn-primary', this).focus();
         });
 
         $modal.modal('show');

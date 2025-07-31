@@ -150,35 +150,21 @@ class MediaLibraryClass {
 
 
     /**
-     * Usage:
-     * MediaLibrary.open( [ filter ], [ multiple ], callback );
-     *
+     * @param options
      * @param callback
      */
-    open(callback) {
-        var actionLink = this._actionLink;
-        var filter = null, multiple = false;
+    open(options = {}, callback) {
         var ui = this;
-
-        if (arguments.length === 2) {
-            if (typeof arguments[0] === 'string' || arguments[0] instanceof RegExp) {
-                filter = arguments[0];
-            } else if (typeof arguments[0] === 'boolean') {
-                multiple = arguments[0];
-            }
-
-            callback = arguments[1];
-        } else if (arguments.length === 3) {
-            if (typeof arguments[0] === 'string' || arguments[0] instanceof RegExp) {
-                filter = arguments[0];
-                multiple = arguments[1];
-            } else if (typeof arguments[0] === 'boolean') {
-                multiple = arguments[0];
-                filter = arguments[1];
-            }
-
-            callback = arguments[2];
+        if (typeof options === 'function') {
+            callback = options;
+            options = {};
         }
+
+        const {
+            filter = null,
+            multiple = false,
+            appendToHtml = false
+        } = options;
 
         var actions = [{
             label: ddh.translate('DD_CANCEL'), attributes: {
@@ -203,7 +189,8 @@ class MediaLibraryClass {
             message: '<div class="dd-dialog-loader"></div>',
             buttons: actions,
             size: 'lg',
-            backdrop: true
+            backdrop: true,
+            appendToHtml
         });
 
         $dialog.data('media-options', {
@@ -632,10 +619,8 @@ class MediaLibraryClass {
             var files = [];
 
             $item.each(function () {
-                console.log($(this));
                 var filetype = $(this).data('filetype');
 
-                console.log('filetype',filetype)
                 if (filter !== null && ((typeof filter === 'string' && filter !== filetype) || (filter instanceof RegExp && !filetype?.match(filter)))) {
                     blTypeNotAllowed = true;
                 } else {
