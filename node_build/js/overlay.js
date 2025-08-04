@@ -2,7 +2,7 @@
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
-import '../less/overlay.less'
+import '../scss/overlay.scss'
 import { ddh } from './base/helper.js';
 
 class Overlay {

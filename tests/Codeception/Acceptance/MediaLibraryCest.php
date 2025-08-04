@@ -38,8 +38,8 @@ final class MediaLibraryCest
         $I->loginAdmin();
 
         $I->openMediaLibrary()
-        ->createDirectory()
-        ->deleteDirectory(2);
+            ->createDirectory()
+            ->deleteDirectory(2);
     }
 
     public function testUploadAndDeleteImageMainDirectory(MediaLibraryAcceptanceTester $I): void
