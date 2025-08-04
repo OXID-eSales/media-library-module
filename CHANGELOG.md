@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [3.1.0] - Unreleased
+## [4.0.0] - Unreleased
 
 ### Added
 - Exception thrown on JsonResponse creation if the json encoding fails, instead of returning an empty string
@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Update phpstan level 6 -> 8
 
 ### Changed
+- Update to Bootstrap 5
+- Migrated from less to sass
 - Constructors with "iterator" promoted properties where the type is important now using regular properties
   - `ThumbnailGeneratorAggregate`
   - `DocumentNameValidatorChain`
@@ -98,6 +100,7 @@ Module extracted from wysiwyg module, and used by it now
 - Thumbnails are generated on demand and the type of thumbnail file is matching the original image type
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
+[4.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v3.0.0..v4.0.0
 [3.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v2.1.1..v3.0.0
 [2.1.1]: https://github.com/OXID-eSales/media-library-module/compare/v2.1.0..v2.1.1
 [2.1.0]: https://github.com/OXID-eSales/media-library-module/compare/v2.0.0..v2.1.0
