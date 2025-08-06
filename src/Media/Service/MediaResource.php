@@ -50,11 +50,6 @@ class MediaResource implements MediaResourceInterface
         return Path::join($mediaFolderUrl, $folderName);
     }
 
-    public function getPathToMedia(MediaInterface $media): string
-    {
-        return $this->getPathToMediaFile($media->getFolderName(), $media->getFileName());
-    }
-
     public function getPathToMediaFile(string $folderName = '', string $fileName = ''): string
     {
         return Path::join(

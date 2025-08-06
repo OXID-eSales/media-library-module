@@ -18,8 +18,6 @@ interface MediaResourceInterface
 
     public function getPathToMediaFile(string $folderName = '', string $fileName = ''): string;
 
-    public function getPathToMedia(MediaInterface $media): string;
-
     public function getUrlToMediaFiles(string $folderName = ''): string;
 
     public function getUrlToMediaFile(string $folderName = '', string $fileName = ''): string;

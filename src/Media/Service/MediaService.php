@@ -24,6 +24,7 @@ class MediaService implements MediaServiceInterface
         private FileSystemServiceInterface $fileSystemService,
         protected MediaResourceInterface $mediaResource,
         protected ThumbnailServiceInterface $thumbnailService,
+        private readonly MediaObjectResourceInterface $mediaObjectResource,
     ) {
     }
 
@@ -68,7 +69,7 @@ class MediaService implements MediaServiceInterface
         $this->thumbnailService->deleteMediaThumbnails($currentMedia);
 
         $this->fileSystemService->rename(
-            $this->mediaResource->getPathToMedia($currentMedia),
+            $this->mediaObjectResource->getPathToMedia($currentMedia),
             $uniqueFileName->getPath()
         );
 
@@ -92,7 +93,7 @@ class MediaService implements MediaServiceInterface
         }
 
         $this->fileSystemService->rename(
-            $this->mediaResource->getPathToMedia($media),
+            $this->mediaObjectResource->getPathToMedia($media),
             $uniqueFileName->getPath()
         );
 
@@ -109,7 +110,9 @@ class MediaService implements MediaServiceInterface
 
     public function deleteMedia(MediaInterface $media): void
     {
-        $this->fileSystemService->delete($this->mediaResource->getPathToMedia($media));
+        $this->fileSystemService->delete(
+            $this->mediaObjectResource->getPathToMedia($media)
+        );
         $this->thumbnailService->deleteMediaThumbnails($media);
         $this->mediaRepository->deleteMedia($media->getOxid());
     }

@@ -30,7 +30,7 @@
                 {% endif %}
 
                 <form class="dd-media-search-form">
-                    <input type="text" class="form-control input-sm" name="msearch" id="mediaSearchField" placeholder="Suche" />
+                    <input type="text" class="form-control input-sm" name="msearch" id="mediaSearchField" placeholder="{{ translate({ ident: "DD_MEDIA_SEARCH" }) }}" />
                 </form>
             </li>
         </ul>
@@ -120,7 +120,8 @@
                                     <div class="media-body">
                                         <strong class="media-heading dd-media-details-name"></strong>
                                         <div class="clearfix"></div>
-                                        <small class="dd-media-details-infos"></small>
+                                        <small class="dd-media-details-infos"></small><br>
+                                        <small class="dd-media-details-id"></small>
                                     </div>
                                 </div>
 

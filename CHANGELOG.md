@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [4.0.0] - Unreleased
 
 ### Added
+- - "Fallback" image feature
+- "oeMediaUrl" twig function to get URL to the media by ID, also uses Fallback image if requested one is not found.
+- `MediaIdByPathFacadeInterface::getMediaIdByPath` to calculate Media id by media path or url
+- `MediaFacadeInterface` for accessing media objects in other modules
 - Exception thrown on JsonResponse creation if the json encoding fails, instead of returning an empty string
 - Supported PHP range added to PHPStan configuration for better compatibility ensurance
 - Update phpstan level 6 -> 8
@@ -18,11 +22,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - `ThumbnailGeneratorAggregate`
   - `DocumentNameValidatorChain`
   - `UploadedFileValidatorChain`
+- Update phpstan level 6 -> 8
 
 ### Fixed
 - MediaRepositoryInterface::getMediaById return should not be null possible, as exception is thrown in this case
 - Issues reported by phpstan level increase
 - Wrong language calculated by default in `MediaLangJs` controller, now it uses active template language
+
+### Removed
+- Overlay functionality removed, use the Modal instead.
 
 ## [3.0.1] - Unreleased
 
@@ -100,7 +108,8 @@ Module extracted from wysiwyg module, and used by it now
 - Thumbnails are generated on demand and the type of thumbnail file is matching the original image type
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
-[4.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v3.0.0..v4.0.0
+[4.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v3.0.1..v4.0.0
+[3.0.1]: https://github.com/OXID-eSales/media-library-module/compare/v3.0.0..v3.0.1
 [3.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v2.1.1..v3.0.0
 [2.1.1]: https://github.com/OXID-eSales/media-library-module/compare/v2.1.0..v2.1.1
 [2.1.0]: https://github.com/OXID-eSales/media-library-module/compare/v2.0.0..v2.1.0

@@ -5,7 +5,7 @@
 
 import '../../scss/base.scss'
 
-import { ddh, areaselect } from './helper.js';
+import { ddh } from './helper.js';
 import Dropzone from "dropzone";
 
 class MediaLibraryClass {
@@ -77,6 +77,7 @@ class MediaLibraryClass {
 
             $('.dd-media-details-name', $detailForm).text(file.file);
             $('.dd-media-details-infos', $detailForm).text(fileInfo);
+            $('.dd-media-details-id', $detailForm).text(file.id);
 
             $('.dd-media-details-input-url', $detailForm).val(file.url);
             $('.dd-media-details-link-url', $detailForm).attr('href', file.url);
@@ -208,6 +209,7 @@ class MediaLibraryClass {
                         if (filter !== null && ((typeof filter === 'string' && filter !== filetype) || (filter instanceof RegExp && !filetype.match(filter)))) {
                             blTypeNotAllowed = true;
                         } else {
+                            //todo: rework every param besides id here, as those should Probably not be used as it is, but through twig placeholders instead.
                             files.push({
                                 id: $(this).data('id'),
                                 file: (foldername ? foldername + '/' : '') + $(this).data('file'),
@@ -318,10 +320,11 @@ class MediaLibraryClass {
                 if (typeof callback !== 'function' && self.overlayContext) {
                     callback = function (id, file, fullpath) {
                         self.overlayContext.invoke('editor.insertImage', fullpath, function ($image) {
+                            top.basefrm.mediaUrls[id] = fullpath;
                             $image.css('max-width', '100%');
-                            $image.attr('data-filename', file);
-                            $image.attr('data-filepath', fullpath);
+                            $image.attr('src', fullpath);
                             $image.attr('data-source', 'media');
+                            $image.attr('data-id', id);
                             $image.addClass('dd-wysiwyg-media-image');
                         });
                     };
@@ -760,4 +763,4 @@ class MediaLibraryClass {
 
 export const MediaLibrary = new MediaLibraryClass();
 window.MediaLibrary = MediaLibrary;
-export { ddh, areaselect };
+export { ddh };

@@ -13,6 +13,7 @@ use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
+use OxidEsales\MediaLibrary\Media\Service\MediaObjectResourceInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaService;
 use OxidEsales\MediaLibrary\Service\FileSystemService;
@@ -28,15 +29,17 @@ class MediaServiceTest extends TestCase
         ?NamingServiceInterface $namingService = null,
         ?MediaRepositoryInterface $mediaRepository = null,
         ?FileSystemServiceInterface $fileSystemService = null,
-        ?MediaResourceInterface $imageResource = null,
+        ?MediaResourceInterface $mediaResource = null,
+        ?MediaObjectResourceInterface $mediaObjectResource = null,
         ?ThumbnailServiceInterface $thumbnailService = null,
     ) {
-        return new \OxidEsales\MediaLibrary\Media\Service\MediaService(
+        return new MediaService(
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
             mediaRepository: $mediaRepository ?? $this->createStub(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemService ?? $this->createPartialMock(FileSystemService::class, []),
-            mediaResource: $imageResource ?? $this->createStub(MediaResourceInterface::class),
-            thumbnailService: $thumbnailService ?? $this->createStub(ThumbnailServiceInterface::class)
+            mediaResource: $mediaResource ?? $this->createStub(MediaResourceInterface::class),
+            thumbnailService: $thumbnailService ?? $this->createStub(ThumbnailServiceInterface::class),
+            mediaObjectResource: $mediaObjectResource ?? $this->createStub(MediaObjectResourceInterface::class),
         );
     }
 
@@ -56,8 +59,8 @@ class MediaServiceTest extends TestCase
         $sut = $this->getSut(
             mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
-            imageResource: $imageResource = $this->createStub(MediaResourceInterface::class),
             thumbnailService: $thumbnailServiceSpy = $this->createMock(ThumbnailServiceInterface::class),
+            mediaObjectResource: $mediaObjectResource = $this->createMock(MediaObjectResourceInterface::class),
         );
 
         $mediaId = uniqid();
@@ -72,7 +75,9 @@ class MediaServiceTest extends TestCase
         );
 
         $mediaFilePath = 'exampleMediaFilePath';
-        $imageResource->method('getPathToMedia')->with($exampleMedia)->willReturn($mediaFilePath);
+        $mediaObjectResource->method('getPathToMedia')
+            ->with($exampleMedia)
+            ->willReturn($mediaFilePath);
 
         $thumbnailServiceSpy->expects($this->once())->method('deleteMediaThumbnails')->with($exampleMedia);
 
@@ -88,8 +93,9 @@ class MediaServiceTest extends TestCase
             namingService: $namingMock = $this->createMock(NamingServiceInterface::class),
             mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
-            imageResource: $imageResource = $this->createStub(MediaResourceInterface::class),
+            mediaResource: $mediaResource = $this->createStub(MediaResourceInterface::class),
             thumbnailService: $thumbnailServiceSpy = $this->createMock(ThumbnailServiceInterface::class),
+            mediaObjectResource: $mediaObjectResource = $this->createMock(MediaObjectResourceInterface::class),
         );
 
         $mediaId = uniqid();
@@ -105,15 +111,15 @@ class MediaServiceTest extends TestCase
 
         $oldPath = 'exampleOldFilePath';
         $mediaFolderPath = 'mediaFolderPath';
-        $imageResource->method('getPathToMedia')->with($mediaStub)->willReturn($oldPath);
-        $imageResource->method('getPathToMediaFiles')->with($mediaFolderName)->willReturn($mediaFolderPath);
+        $mediaObjectResource->method('getPathToMedia')->with($mediaStub)->willReturn($oldPath);
+        $mediaResource->method('getPathToMediaFiles')->with($mediaFolderName)->willReturn($mediaFolderPath);
 
         $newMediaNameInput = 'someFileName';
         $newSanitizedMediaName = 'someSanitizedFileName.txt';
         $namingMock->method('sanitizeFilename')->with($newMediaNameInput)->willReturn($newSanitizedMediaName);
 
         $newSanitizedUniquePath = $mediaFolderPath . '/someSanitizedUniqueFileName.txt';
-        $imageResource->method('getPossibleMediaFilePath')
+        $mediaResource->method('getPossibleMediaFilePath')
             ->with($mediaFolderName, $newSanitizedMediaName)
             ->willReturn(new FilePath($newSanitizedUniquePath));
 
@@ -135,8 +141,9 @@ class MediaServiceTest extends TestCase
         $sut = $this->getSut(
             mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
-            imageResource: $imageResource = $this->createStub(MediaResourceInterface::class),
+            mediaResource: $mediaResource = $this->createStub(MediaResourceInterface::class),
             thumbnailService: $thumbnailServiceSpy = $this->createMock(ThumbnailServiceInterface::class),
+            mediaObjectResource: $mediaObjectResource = $this->createMock(MediaObjectResourceInterface::class),
         );
 
         $mediaId = uniqid();
@@ -165,11 +172,11 @@ class MediaServiceTest extends TestCase
         $oldPath = 'exampleOldFilePath';
         $mediaFolderPath = 'mediaFolderPath';
 
-        $imageResource->method('getPathToMedia')->with($mediaStub)->willReturn($oldPath);
-        $imageResource->method('getPathToMediaFiles')->with($newFolderName)->willReturn($mediaFolderPath);
+        $mediaObjectResource->method('getPathToMedia')->with($mediaStub)->willReturn($oldPath);
+        $mediaResource->method('getPathToMediaFiles')->with($newFolderName)->willReturn($mediaFolderPath);
 
         $newUniquePath = $mediaFolderPath . '/someUniqueFileName.txt';
-        $imageResource->method('getPossibleMediaFilePath')
+        $mediaResource->method('getPossibleMediaFilePath')
             ->with($newFolderName, $mediaFileName)
             ->willReturn(new FilePath($newUniquePath));
 
@@ -189,7 +196,7 @@ class MediaServiceTest extends TestCase
             namingService: $namingMock = $this->createMock(NamingServiceInterface::class),
             mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
-            imageResource: $imageResource = $this->createStub(MediaResourceInterface::class),
+            mediaResource: $imageResource = $this->createStub(MediaResourceInterface::class),
         );
 
         $newMediaId = uniqid();

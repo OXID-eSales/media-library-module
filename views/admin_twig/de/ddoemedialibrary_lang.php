@@ -15,6 +15,8 @@ $aLang = array(
     // Lang-Strings
     'SHOP_MODULE_GROUP_main'                                => 'Allgemein',
     'SHOP_MODULE_ddoeMediaLibraryAlternativeImageDirectory' => 'Alternatives Bild-URL',
+    'SHOP_MODULE_ddoeMediaLibraryFallbackMediaId' => 'Standard-Medien-ID (Ersatzanzeige)',
+    'HELP_SHOP_MODULE_ddoeMediaLibraryFallbackMediaId' => 'Dieses Medium wird angezeigt, wenn ein eigentlich eingebundenes Medium in der Mediathek nicht mehr vorhanden ist. Die Medien-ID findest du in der Liste der Mediathek unter "Medien-Informationen".',
 
     'SHOP_MODULE_GROUP_limitations' => 'Einschränkungen',
     'SHOP_MODULE_oeMediaLibraryAllowedExtensions' => 'Erlaubte Dateierweiterungen (kommagetrennt, Groß- und Kleinschreibung wird nicht beachtet)',
@@ -42,6 +44,7 @@ $aLang = array(
     'DD_MEDIA_EMPTY_LIST'             => 'Keine Medien vorhanden',
     'DD_MEDIA_FILETYPE_NOT_ALLOWED'   => 'Dateiformat nicht erlaubt!',
     'DD_MEDIA_FILES_FOUND'            => 'Dateien in der Mediathek',
+    'DD_MEDIA_SEARCH'                 => 'Suche',
     'DD_MEDIA_MULTIPLE_INFO'          => 'STRG + Mausklick für Mehrfachauswahl',
     'DD_MEDIA_NEW_FOLDER'             => 'Neuer Ordner',
     'DD_MEDIA_ADD_FOLDER'             => 'Neuen Ordner hinzufügen',

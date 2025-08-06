@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
+namespace OxidEsales\MediaLibrary\Media\Repository;
+
+use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
+use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
+
+/**
+ * Interface for a repository that retrieves media with bulk ids preloading.
+ * It allows doing less database queries when you need to access multiple media items.
+ */
+interface PreloadMediaRepositoryInterface
+{
+    public function registerForPreload(string ...$mediaIds): void;
+
+    /**
+     * @throws MediaNotFoundException
+     */
+    public function getMediaById(string $mediaId): MediaInterface;
+}

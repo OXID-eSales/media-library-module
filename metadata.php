@@ -4,6 +4,7 @@
  * See LICENSE file for license details.
  */
 
+use OxidEsales\MediaLibrary\Media\Settings\FallbackMediaSettings;
 use OxidEsales\MediaLibrary\Settings\Service\ModuleSettings;
 
 /**
@@ -51,6 +52,12 @@ $aModule = [
         [
             'group' => 'main',
             'name'  => ModuleSettings::SETTING_ALTERNATIVE_IMAGE_URL,
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'main',
+            'name'  => FallbackMediaSettings::SETTING_FALLBACK_MEDIA_ID,
             'type'  => 'str',
             'value' => '',
         ],

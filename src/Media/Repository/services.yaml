@@ -3,9 +3,19 @@ services:
     public: false
     autowire: true
 
+  OxidEsales\MediaLibrary\Media\Repository\Connection:
+    class: 'Doctrine\DBAL\Driver\Connection'
+    factory: ['@OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionFactoryInterface', 'create']
+
   OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface:
     class: OxidEsales\MediaLibrary\Media\Repository\MediaRepository
     public: true
 
   OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface:
     class: OxidEsales\MediaLibrary\Media\Repository\MediaFactory
+
+  OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepositoryInterface:
+    class: OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepository
+    arguments:
+      $connection: '@OxidEsales\MediaLibrary\Media\Repository\Connection'
+    public: true

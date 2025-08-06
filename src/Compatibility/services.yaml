@@ -1,0 +1,13 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Compatibility\Facade\MediaIdByPathFacadeInterface:
+    class: OxidEsales\MediaLibrary\Compatibility\Facade\MediaIdByPathFacade
+
+  OxidEsales\MediaLibrary\Compatibility\Repository\PathMappingRepositoryInterface:
+    class: OxidEsales\MediaLibrary\Compatibility\Repository\PathMappingRepository
+
+  OxidEsales\MediaLibrary\Compatibility\Factory\MediaFileInformationFactoryInterface:
+    class: OxidEsales\MediaLibrary\Compatibility\Factory\MediaFileInformationFactory
