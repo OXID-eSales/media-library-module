@@ -61,46 +61,66 @@ export const ddh = {
             });
         }
 
-        const $parent = opt.appendToHtml ? $(document.documentElement) : $(document.body);
-        $parent.append($modal);
+        // console.log('check body', document.body)
+        // console.log('check element', document.documentElement)
+        let $container = $(`<div id="modal-root"></div>`);
+        $('html').append($container);
+        $container.append($modal);
 
-        const ModalConstructor = $.fn.modal.Constructor;
-        const originalBackdropFn = ModalConstructor.prototype.backdrop;
+        // const ModalCtor = bootstrap.Modal;
+        // ModalCtor.prototype._initializeBackDrop = function() {
+        //     return new bootstrap.Backdrop({ rootElement: $container[0], isVisible: true });
+        // };
 
-        ModalConstructor.prototype.backdrop = function (callback) {
-            const animate = this.$element.hasClass('fade') ? 'fade' : '';
+        // const modalInstance = new ModalCtor($modal[0], {
+        //     backdrop: 'false',
+        //     keyboard: opt.keyboard,
+        //     focus: true
+        // });
+        //
+        // $modal.on('hidden.bs.modal', function () {
+        //     $(this).remove();
+        // }).one('shown.bs.modal', function () {
+        //     const $input = $('.modal-body input[type="text"]', this);
+        //     $input.length
+        //         ? $input.focus()
+        //         : $('.modal-footer .btn-primary', this).focus();
+        // });
 
-            if (this.isShown && this.options.backdrop) {
-                this.$backdrop = $('<div class="modal-backdrop ' + animate + '" />')
-                    .appendTo(this.$element.parent());
+        // modalInstance.show();
 
-                if (animate) this.$backdrop[0].offsetWidth;
-                this.$backdrop.addClass('in');
+        const ModalCtor = bootstrap.Modal;
 
-                if (callback) callback();
-            } else if (!this.isShown && this.$backdrop) {
-                this.$backdrop.removeClass('in');
-                const cb = () => {
-                    this.removeBackdrop();
-                    if (callback) callback();
-                };
-                $.support.transition && this.$element.hasClass('fade')
-                    ? this.$backdrop.one('bsTransitionEnd', cb).emulateTransitionEnd(150)
-                    : cb();
-            } else if (callback) {
-                callback();
+// patch _initializeBackDrop to use a custom container
+        const originalInitializeBackDrop = ModalCtor.prototype._initializeBackDrop;
+
+        ModalCtor.prototype._initializeBackDrop = function () {
+            // create modal-root if it doesn't exist
+            let modalRoot = document.getElementById('modal-root');
+            if (!modalRoot) {
+                modalRoot = document.createElement('div');
+                modalRoot.id = 'modal-root';
+                document.documentElement.appendChild(modalRoot); // append to <html>, sibling to <frameset>
             }
+
+            // call the original but override rootElement
+            const originalConfig = this._config;
+
+            // clone config and override rootElement
+            const newConfig = Object.assign({}, originalConfig, {
+                rootElement: modalRoot
+            });
+
+            return new bootstrap.Backdrop(newConfig);
         };
 
+        // $('body').append($modal);
         $modal.modal({
-            backdrop: opt.backdrop,
-            keyboard: opt.keyboard
+            backdrop: opt.backdrop, keyboard: opt.keyboard
         }).on('hidden.bs.modal', function () {
             $(this).remove();
         }).one('shown.bs.modal', function () {
-            $('.modal-body input[type="text"]', this).length
-                ? $('.modal-body input[type="text"]', this).focus()
-                : $('.modal-footer .btn-primary', this).focus();
+            $('.modal-body input[type="text"]', this).length ? $('.modal-body input[type="text"]', this).focus() : $('.modal-footer .btn-primary', this).focus();
         });
 
         $modal.modal('show');
@@ -154,32 +174,3 @@ export const ddh = {
         return typeof i18n === 'object' && i18n[string] ? i18n[string] : string;
     }
 };
-
-// todo: This method is used only in VE and should be moved to vcms
-export function areaselect() {
-    $.fn.areaselect = function () {
-        return this.each(function () {
-            $(this).on('change', function () {
-                const group = $(this).data('area-group-value');
-                let area = null;
-
-                if (typeof $().selectize === 'function' && this.selectize) {
-                    this.selectize.refreshOptions(false);
-                    if (this.selectize.getValue()) {
-                        area = this.selectize.options[this.selectize.getValue()].data.area;
-                    }
-                } else {
-                    area = $(this).val();
-                }
-
-                if (group) {
-                    $('*[data-area]' + (group ? `[data-area-group="${group}"]` : '')).hide();
-                }
-
-                if (area) {
-                    $('*[data-area="' + area + '"]').show();
-                }
-            }).trigger('change');
-        });
-    };
-}

@@ -13,8 +13,6 @@ use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 
 interface UIRequestInterface
 {
-    public function isOverlay(): bool;
-
     public function isPopout(): bool;
 
     public function getFolderId(): string;

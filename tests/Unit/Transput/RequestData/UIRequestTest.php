@@ -17,19 +17,6 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(UIRequest::class)]
 class UIRequestTest extends TestCase
 {
-    public function testIsOverlay(): void
-    {
-        $requestExampleValue = (bool)rand(0, 1);
-
-        $requestMock = $this->createMock(RequestInterface::class);
-        $requestMock->method('getBoolRequestParameter')->willReturnMap([
-            [UIRequest::REQUEST_PARAM_OVERLAY, $requestExampleValue]
-        ]);
-
-        $sut = new UIRequest($requestMock);
-        $this->assertSame($requestExampleValue, $sut->isOverlay());
-    }
-
     public function testIsPopup(): void
     {
         $requestExampleValue = (bool)rand(0, 1);
