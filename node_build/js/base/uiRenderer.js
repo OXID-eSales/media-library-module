@@ -5,80 +5,110 @@
 import '../../scss/base.scss'
 
 export default class UIRenderer {
-    constructor(fileManager, dragDropHandler) {
+    constructor(fileManager, dragDropHandler, dataStore) {
         this.fm = fileManager;
         this.dd = dragDropHandler;
+        this.store = dataStore;
     }
 
-    showItemDetails(file, $dialog = $('.dd-media').first().closest('.modal')) {
-        const $form = $('.dd-media-details-form', $dialog);
-        if (!file) { $form.hide(); return; }
+    showItemDetails(file, dialog = document.querySelector('.dd-media')?.closest('.modal')) {
+        if (!dialog) return;
+
+        const form = dialog.querySelector('.dd-media-details-form');
+        if (!form) return;
+
+        if (!file) {
+            form.style.display = 'none';
+            return;
+        }
+
+        const previewIcon = form.querySelector('.dd-media-details-preview-icon');
+        const dirIcon = form.querySelector('.dd-media-details-dir-icon');
+        const preview = form.querySelector('.dd-media-details-preview');
+        const urlEl = form.querySelector('.dd-media-url');
+        const nameEl = form.querySelector('.dd-media-details-name');
+        const infosEl = form.querySelector('.dd-media-details-infos');
+        const idEl = form.querySelector('.dd-media-details-id');
+        const inputUrl = form.querySelector('.dd-media-details-input-url');
+        const linkUrl = form.querySelector('.dd-media-details-link-url');
 
         if (file.preview) {
-            $('.dd-media-details-preview-icon', $form).hide();
-            $('.dd-media-details-dir-icon', $form).hide();
-            $('.dd-media-details-preview', $form).attr('src', file.preview).show();
-            $('.dd-media-url', $form).show();
+            previewIcon.style.display = 'none';
+            dirIcon.style.display = 'none';
+            preview.src = file.preview;
+            preview.style.display = '';
+            urlEl.style.display = '';
         } else {
             if (file.filetype === 'directory') {
-                $('.dd-media-details-dir-icon', $form).show();
-                $('.dd-media-details-preview-icon', $form).hide();
-                $('.dd-media-url', $form).hide();
+                dirIcon.style.display = '';
+                previewIcon.style.display = 'none';
+                urlEl.style.display = 'none';
             } else {
-                $('.dd-media-details-dir-icon', $form).hide();
-                $('.dd-media-details-preview-icon', $form).show();
-                $('.dd-media-url', $form).show();
+                dirIcon.style.display = 'none';
+                previewIcon.style.display = '';
+                urlEl.style.display = '';
             }
-            $('.dd-media-details-preview', $form).hide();
+            preview.style.display = 'none';
         }
 
         const fileInfo = file.imagesize
             ? `${file.imagesize} | ${this.fm.formatFileSize(file.filesize)}`
             : '';
 
-        $('.dd-media-details-name', $form).text(file.file);
-        $('.dd-media-details-infos', $form).text(fileInfo);
-        $('.dd-media-details-id', $form).text(file.id);
-
-        $('.dd-media-details-input-url', $form).val(file.url);
-        $('.dd-media-details-link-url', $form).attr('href', file.url);
-
-        $form.show();
+        nameEl.textContent = file.file;
+        infosEl.textContent = fileInfo;
+        idEl.textContent = file.id;
+        inputUrl.value = file.url;
+        linkUrl.setAttribute('href', file.url);
+        form.style.display = '';
     }
 
     addMediaItem({ id, file, filetype, filesize, thumb, imagesize }) {
-        const $wrap = $('.dd-media-list-items .dd-media-dz-helper > div').clone();
+        const template = document.querySelector('.dd-media-list-items .dd-media-dz-helper > div');
+        const wrap = template.cloneNode(true);
+        const item = wrap.querySelector('.dd-media-item');
+        this.store.setMultiple(item, { id, file, filetype, filesize, imagesize });
+        item.dataset.filetype = filetype;
 
-        $('.dd-media-item', $wrap).data({ id, file, filetype, filesize, imagesize });
+        const thumbEl = wrap.querySelector('.dd-media-thumb');
+        const iconFile = wrap.querySelector('.dd-media-icon-file');
+        const iconFolder = wrap.querySelector('.dd-media-icon-folder');
 
         if (!thumb) {
-            $('.dd-media-thumb', $wrap).hide();
+            thumbEl.style.display = 'none';
             if (filetype === 'directory') {
-                $('.dd-media-icon-file', $wrap).hide();
-                $('.dd-media-icon-folder', $wrap).show();
+                iconFile.style.display = 'none';
+                iconFolder.style.display = '';
             } else {
-                $('.dd-media-icon-file', $wrap).show();
-                $('.dd-media-icon-folder', $wrap).hide();
+                iconFile.style.display = '';
+                iconFolder.style.display = 'none';
             }
-            $('.dd-media-item', $wrap).addClass('no-thumb');
+            item.classList.add('no-thumb');
         } else {
-            $('.dd-media-thumb', $wrap).attr('src', thumb);
-            $('.dd-media-item', $wrap).removeClass('no-thumb');
+            thumbEl.src = thumb;
+            thumbEl.style.display = '';
+            item.classList.remove('no-thumb');
         }
 
-        $('.dd-media-item-label', $wrap).show().find('span').text(file);
-        $('.dd-media-list-items > .row').append($wrap);
+        const label = item.querySelector('.dd-media-item-label');
+        label.style.display = '';
+        const span = label.querySelector('span');
+        span.textContent = file;
+        const container = document.querySelector('.dd-media-list-items > .row');
+        container.appendChild(wrap);
 
-        this.dd.makeMovable($('.dd-media-item', $wrap));
+        this.dd.makeMovable(item);
     }
 
-    updateMediaState($dialog) {
-        const $list = $('.dd-media-list-items > .row', $dialog);
-        const hasItems = $('.dd-media-item', $list).length > 0;
-        $('.dd-media-no-files', $dialog).toggle(!hasItems);
+    updateMediaState(dialog) {
+        const list = dialog.querySelector('.dd-media-list-items > .row');
+        const items = list.querySelectorAll('.dd-media-item');
+        const hasItems = items.length > 0;
 
-        $('.dd-media-item', $list).each((_, el) => {
-            this.dd.makeMovable($(el));
+        const noFiles = dialog.querySelector('.dd-media-no-files');
+        noFiles.style.display = hasItems ? 'none' : '';
+        items.forEach(el => {
+            this.dd.makeMovable(el);
         });
     }
 }

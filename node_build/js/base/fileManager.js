@@ -3,8 +3,6 @@
  * See LICENSE file for license details.
  */
 
-import { buildActionLinkParams } from './mediaUtils.js';
-
 export default class FileManager {
     constructor(actionLink = '', resourceLink = '') {
         this.actionLink = actionLink;
@@ -24,46 +22,67 @@ export default class FileManager {
         return size + ' ' + names.pop();
     }
 
-    loadMediaContent(folderId, tab) {
-        const params = buildActionLinkParams(folderId, tab);
-        return $.get(this.actionLink + 'cl=ddoemedia_view' + params);
+    loadFiles(folderId, tab) {
+        let params = new URLSearchParams();
+        if (tab) {
+            params.append('tab', tab);
+        }
+        if (folderId) {
+            params.append('folderid', folderId);
+        }
+
+        const url = `${this.actionLink}cl=ddoemedia_view&${params.toString()}`;
+        return fetch(url).then(res => res.text());
     }
 
     fetchMoreFiles(page, folderId) {
         const start = page * 18;
-        return $.get(
-            `${this.actionLink}cl=ddoemedia_view&fnc=moreFiles&start=${start}&folderid=${folderId}`
-        );
+        const url = `${this.actionLink}cl=ddoemedia_view&fnc=moreFiles&start=${start}&folderid=${folderId}`;
+        return fetch(url).then(res => res.json());
     }
 
     moveFile(sourceId, targetId, file, folder, thumb) {
-        return $.post(this.actionLink + 'cl=ddoemedia_view&fnc=movefile', {
-            sourceid: sourceId, targetid: targetId, file, folder, thumb
-        });
+        const url = `${this.actionLink}cl=ddoemedia_view&fnc=movefile`;
+        const body = new URLSearchParams({ sourceid: sourceId, targetid: targetId, file, folder, thumb });
+        return fetch(url, { method: 'POST', body, headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+            .then(res => res.json());
     }
 
     renameFile(id, newName) {
-        return $.ajax({
-            type: 'POST',
-            url: this.actionLink + 'cl=ddoemedia_view&fnc=rename',
-            data: { id, newname: newName }
-        });
+        const url = `${this.actionLink}cl=ddoemedia_view&fnc=rename`;
+        const body = new URLSearchParams({ id, newname: newName });
+        return fetch(url, { method: 'POST', body, headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+            .then(res => {
+                if (!res.ok) {
+                    return res.json().then(err => {
+                        throw new Error(err.error);
+                    });
+                }
+                return res.json();
+            });
     }
 
     removeFiles(ids, folderId) {
-        const qs = ids.join('&ids[]=');
-        return $.get(
-            `${this.actionLink}cl=ddoemedia_view&fnc=remove&ids[]=${qs}&folderid=${folderId}`
-        );
+        const qs = ids.map(id => `ids[]=${encodeURIComponent(id)}`).join('&');
+        const url = `${this.actionLink}cl=ddoemedia_view&fnc=remove&${qs}&folderid=${folderId}`;
+        return fetch(url).then(res => res.json());
     }
 
     addFolder(name) {
-        return $.post(this.actionLink + 'cl=ddoemedia_view&fnc=addFolder', { name });
+        const url = `${this.actionLink}cl=ddoemedia_view&fnc=addFolder`;
+        const body = new URLSearchParams({ name });
+        return fetch(url, { method: 'POST', body, headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+            .then(res => {
+                if (!res.ok) {
+                    return res.json().then(err => {
+                        throw new Error(err.error);
+                    });
+                }
+                return res.json();
+            });
     }
 
     uploadUrl(folderId) {
-        return (
-            this.actionLink + 'cl=ddoemedia_view&fnc=upload&folderid=' + folderId
-        );
+        return `${this.actionLink}cl=ddoemedia_view&fnc=upload&folderid=${folderId}`;
     }
 }

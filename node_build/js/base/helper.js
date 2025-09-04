@@ -3,6 +3,8 @@
  * See LICENSE file for license details.
  */
 
+import { Modal } from "bootstrap";
+
 export const ddh = {
     _dialog(msg, title, buttons, size = 'sm', css = 'dd-dialog') {
         let opt = {
@@ -13,7 +15,6 @@ export const ddh = {
             css,
             backdrop: false,
             keyboard: false,
-            appendToHtml: false
         };
 
         if (typeof msg === 'object') {
@@ -35,97 +36,61 @@ export const ddh = {
                 </div>
             </div>`;
 
-        const $modal = $(modalLayout);
+        const template = document.createElement("template");
+        template.innerHTML = modalLayout.trim();
+        const modalEl = template.content.firstElementChild;
+
         if (opt.title !== undefined && opt.title !== '') {
-            $('.modal-title', $modal).html(opt.title);
+            modalEl.querySelector(".modal-title").innerHTML = opt.title;
         }
 
         if (opt.message) {
-            if (typeof opt.message === 'string') {
-                $('.modal-body', $modal).html(opt.message);
-            } else if (typeof opt.message === 'object') {
-                $('.modal-body', $modal).empty().append(opt.message);
+            const body = modalEl.querySelector(".modal-body");
+            if (typeof opt.message === "string") {
+                body.innerHTML = opt.message;
+            } else if (opt.message instanceof HTMLElement) {
+                body.innerHTML = "";
+                body.appendChild(opt.message);
             }
         }
 
         if (opt.buttons.length) {
-            opt.buttons.forEach(btn => {
-                const $btn = $(btn.html || `<button type="${btn.type || 'button'}" class="${(btn.css || ['btn btn-outline-primary']).join(' ')}">${btn.label}</button>`);
+            const footer = modalEl.querySelector(".modal-footer");
+            opt.buttons.forEach((btn) => {
+                let button;
+                if (btn.html) {
+                    const tmpl = document.createElement("template");
+                    tmpl.innerHTML = btn.html.trim();
+                    button = tmpl.content.firstElementChild;
+                } else {
+                    button = document.createElement("button");
+                    button.type = btn.type || "button";
+                    button.className = (btn.css || ["btn", "btn-outline-primary"]).join(" ");
+                    button.innerHTML = btn.label || "";
+                }
+
                 if (btn.attributes) {
-                    $btn.attr(btn.attributes);
+                    Object.entries(btn.attributes).forEach(([k, v]) => button.setAttribute(k, v));
                 }
+
                 if (btn.action) {
-                    $btn.on('click', () => btn.action($modal));
+                    button.addEventListener("click", () => btn.action(modalEl));
                 }
-                $('.modal-footer', $modal).append($btn);
+
+                footer.appendChild(button);
             });
         }
+        document.body.appendChild(modalEl);
 
-        // console.log('check body', document.body)
-        // console.log('check element', document.documentElement)
-        let $container = $(`<div id="modal-root"></div>`);
-        $('html').append($container);
-        $container.append($modal);
-
-        // const ModalCtor = bootstrap.Modal;
-        // ModalCtor.prototype._initializeBackDrop = function() {
-        //     return new bootstrap.Backdrop({ rootElement: $container[0], isVisible: true });
-        // };
-
-        // const modalInstance = new ModalCtor($modal[0], {
-        //     backdrop: 'false',
-        //     keyboard: opt.keyboard,
-        //     focus: true
-        // });
-        //
-        // $modal.on('hidden.bs.modal', function () {
-        //     $(this).remove();
-        // }).one('shown.bs.modal', function () {
-        //     const $input = $('.modal-body input[type="text"]', this);
-        //     $input.length
-        //         ? $input.focus()
-        //         : $('.modal-footer .btn-primary', this).focus();
-        // });
-
-        // modalInstance.show();
-
-        const ModalCtor = bootstrap.Modal;
-
-// patch _initializeBackDrop to use a custom container
-        const originalInitializeBackDrop = ModalCtor.prototype._initializeBackDrop;
-
-        ModalCtor.prototype._initializeBackDrop = function () {
-            // create modal-root if it doesn't exist
-            let modalRoot = document.getElementById('modal-root');
-            if (!modalRoot) {
-                modalRoot = document.createElement('div');
-                modalRoot.id = 'modal-root';
-                document.documentElement.appendChild(modalRoot); // append to <html>, sibling to <frameset>
-            }
-
-            // call the original but override rootElement
-            const originalConfig = this._config;
-
-            // clone config and override rootElement
-            const newConfig = Object.assign({}, originalConfig, {
-                rootElement: modalRoot
-            });
-
-            return new bootstrap.Backdrop(newConfig);
-        };
-
-        // $('body').append($modal);
-        $modal.modal({
-            backdrop: opt.backdrop, keyboard: opt.keyboard
-        }).on('hidden.bs.modal', function () {
-            $(this).remove();
-        }).one('shown.bs.modal', function () {
-            $('.modal-body input[type="text"]', this).length ? $('.modal-body input[type="text"]', this).focus() : $('.modal-footer .btn-primary', this).focus();
+        const modalInstance = Modal.getOrCreateInstance(modalEl, {
+            backdrop: opt.backdrop,
+            keyboard: opt.keyboard,
+            focus: true,
         });
 
-        $modal.modal('show');
+        modalInstance.show();
 
-        return $modal;
+        return modalEl;
     },
     confirm(msg, callback, title = ddh.translate('DD_CONFIRM'), warn = false) {
         const cssWarn = warn ? ' dd-warn' : '';
@@ -135,36 +100,44 @@ export const ddh = {
             },
             {
                 html: `<button type="button" class="btn btn-primary" autofocus>${ddh.translate('DD_OK')}</button>`,
-                action: ($modal) => {
-                    $modal.modal('hide');
+                action: (modalEl) => {
+                    Modal.getInstance(modalEl).hide();
                     callback();
-                }
-            }
+                },
+            },
         ];
 
         this._dialog(msg, title, buttons, 'sm', `dd-modal-confirm${cssWarn}`);
     },
     prompt(msg, callback, title = ddh.translate('DD_CONFIRM'), value = '') {
-        msg += `<div class="clearfix" style="margin-top: 10px;"><input type="text" name="prompt" class="form-control" value="${value}" /></div>`;
+        msg += `<div class="clearfix" style="margin-top: 10px;">
+                  <input type="text" name="prompt" class="form-control" value="${value}" />
+                </div>`;
+
         const buttons = [
             {
                 html: `<button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">${ddh.translate('DD_CANCEL')}</button>`
             },
             {
                 html: `<button type="button" class="btn btn-primary" autofocus>${ddh.translate('DD_OK')}</button>`,
-                action: ($modal) => {
-                    $modal.modal('hide');
-                    callback($('input[name=prompt]', $modal).val());
-                }
-            }
+                action: (modalEl) => {
+                    Modal.getInstance(modalEl).hide();
+                    const inputVal = modalEl.querySelector("input[name=prompt]").value;
+                    callback(inputVal);
+                },
+            },
         ];
 
-        const $modal = this._dialog(msg, title, buttons, 'sm', 'dd-modal-confirm');
-        $('input[name=prompt]', $modal).on('keypress', function (e) {
-            if (e.keyCode === 13) {
-                $('.btn-primary', $modal).click();
-            }
-        });
+        const modalEl = this._dialog(msg, title, buttons, 'sm', 'dd-modal-confirm');
+
+        const inputEl = modalEl.querySelector("input[name=prompt]");
+        if (inputEl) {
+            inputEl.addEventListener("keypress", (e) => {
+                if (e.key === 13) {
+                    modalEl.querySelector(".btn-primary").click();
+                }
+            });
+        }
     },
     alert(msg, title = 'Information') {
         const buttons = [{ html: `<button type="button" class="btn btn-primary" data-bs-dismiss="modal">${ddh.translate('DD_OK')}</button>` }];

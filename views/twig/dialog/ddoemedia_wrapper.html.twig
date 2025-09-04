@@ -16,30 +16,33 @@
 
     {{ style() }}
 </head>
-<body class="dd-media-wrapper">
-    <nav class="navbar bg-body-tertiary dd-navbar">
-        <div class="container-fluid">
+<body class="dd-media-wrapper{% if request.isOverlay() %} dd-overlay{% endif %}">
 
-            <div class="navbar-header">
-                <a class="navbar-brand" href="javascript:void(null);">
-                    {{ translate({ ident: "DD_MEDIA_DIALOG" }) }}
-                </a>
+    {% if not request.isOverlay() %}
+        <nav class="navbar bg-body-tertiary dd-navbar">
+            <div class="container-fluid">
+
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="javascript:void(null);">
+                        {{ translate({ ident: "DD_MEDIA_DIALOG" }) }}
+                    </a>
+                </div>
+
+                {% if not request.isPopout() %}
+                    <ul class="nav navbar-nav navbar-right hidden-xs">
+                        <li><a href="{{ oViewConf.getSelfLink()|replace({'&amp;':'&'})|raw }}cl={{ oViewConf.getActiveClassName() }}&popout=1" target="_blank" class="dd-admin-popout-action"><i class="fa fa-expand"></i></a></li>
+                    </ul>
+                {% endif %}
+
             </div>
-
-            {% if not request.isPopout() %}
-                <ul class="nav navbar-nav navbar-right hidden-xs">
-                    <li><a href="{{ oViewConf.getSelfLink()|replace({'&amp;':'&'})|raw }}cl={{ oViewConf.getActiveClassName() }}&popout=1" target="_blank" class="dd-admin-popout-action"><i class="fa fa-expand"></i></a></li>
-                </ul>
-            {% endif %}
-
-        </div>
-    </nav>
+        </nav>
+    {% endif %}
 
     <div class="dd-content">
         {% include "@ddoemedialibrary/dialog/ddoemedia.html.twig" %}
     </div>
 
-    {% set sActionLink = oViewConf.getSelfLink()|replace({'&amp;':'&'}) %}
+    {% set sActionLink = oViewConf.getSelfLink()|replace({'&amp;':'&'})|cat('overlay=' ~ request.isOverlay() ~ '&') %}
     {% set sMediaLink = oConf.getCurrentShopUrl(true)|regex_replace('/([^\/])(\/admin)/', '$1')|regex_replace('/http(s)?\, /', '')|trim('/', 'right')|cat('/out/pictures/ddmedia/') %}
     <script type="module">
         (async () => {
@@ -54,7 +57,7 @@
                 MediaLibrary.setActionLink("{{ sActionLink|raw }}");
                 MediaLibrary.setResourceLink("{{ sMediaLink }}");
                 const regexPattern = new RegExp("image/.*", "i");
-                MediaLibrary.init(regexPattern, null);
+                MediaLibrary.init({filter: regexPattern}, null);
             } catch (error) {
                 console.error("Failed to load Media Library script:", error);
             }
