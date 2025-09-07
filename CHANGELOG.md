@@ -23,6 +23,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - `DocumentNameValidatorChain`
   - `UploadedFileValidatorChain`
 - Update phpstan level 6 -> 8
+- Media library javascript refactored and split to different classes:
+  - DataStore class – manages metadata for DOM elements, with support for memory-only and persistent (DOM dataset) storage.
+  - MediaContent class – encapsulates loading and rendering of media items.
+  - FileManager class – API interaction and resource management for media.
+  - UIRenderer class – handles UI rendering logic for media items and dialogs.
+  - DragDropHandler class – manages drag & drop actions within the media library.
+- Replaced most jQuery DOM manipulation with native DOM APIs.
+- Public js method `open([filter], [multiple], callback)` changed to `open(options = {}, callback)` where `options` is an object ({ filter, multiple }).
+- Public js method `init([filter], [multiple], callback)` changed to `init(options = {}, callback)` where `options` is an object ({ filter, multiple }).
 
 ### Fixed
 - MediaRepositoryInterface::getMediaById return should not be null possible, as exception is thrown in this case

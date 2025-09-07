@@ -3,8 +3,6 @@
  * See LICENSE file for license details.
  */
 
-import interact from 'interactjs';
-
 export default class DragDropHandler {
     constructor(fileManager, dataStore) {
         this.fm = fileManager;
@@ -54,103 +52,6 @@ export default class DragDropHandler {
                                     }
                                 });
                         }
-                    }
-                }
-            });
-        }
-    }
-
-    makeMovableNew(itemEl) {
-        const fileType = this.store.get(itemEl, 'filetype');
-
-        if (fileType !== 'directory') {
-            // Draggable FILE
-            interact(itemEl).draggable({
-                inertia: false,
-                modifiers: [],
-                listeners: {
-                    start: (event) => {
-                        this.dragMoved = false;
-
-                        // Create ghost
-                        const ghost = event.target.cloneNode(true);
-                        ghost.classList.add('drag-ghost');
-                        ghost.style.position = 'absolute';
-                        ghost.style.pointerEvents = 'none';
-                        ghost.style.width = `${event.target.offsetWidth}px`;
-                        ghost.style.zIndex = '10000';
-                        document.body.appendChild(ghost);
-
-                        // Store references
-                        event.interaction.ghost = ghost;
-                        event.interaction.sourceEl = event.target;
-
-                        event.target.classList.add('ui-draggable-helper');
-                    },
-                    move: (event) => {
-                        this.dragMoved = true;
-
-                        const ghost = event.interaction.ghost;
-                        if (ghost) {
-                            ghost.style.left = `${event.clientX - ghost.offsetWidth / 2}px`;
-                            ghost.style.top = `${event.clientY - ghost.offsetHeight / 2}px`;
-                        }
-                    },
-                    end: (event) => {
-                        event.target.classList.remove('ui-draggable-helper');
-
-                        const ghost = event.interaction.ghost;
-                        if (ghost && ghost.parentNode) {
-                            ghost.parentNode.removeChild(ghost);
-                        }
-
-                        requestAnimationFrame(() => {
-                            this.dragMoved = false;
-                        });
-                    }
-                }
-            });
-
-        } else {
-            // Droppable FOLDER
-            interact(itemEl).dropzone({
-                accept: '[data-filetype="image/png"]',   // <-- only allow files, not directories
-                overlap: 0.5,
-                ondropactivate: (event) => {
-                    console.log('ondropactivate', event.target);
-                    event.target.classList.add('drop-active');
-                },
-                ondragenter: (event) => {
-                    console.log('ondragenter', event.target);
-                    event.target.classList.add('ui-state-hover');
-                },
-                ondragleave: (event) => {
-                    console.log('ondragleave', event.target);
-                    event.target.classList.remove('ui-state-hover');
-                },
-                ondrop: (event) => {
-                    console.log('ondrop', event.target);
-
-                    event.target.classList.remove('ui-state-hover');
-
-                    const dragEl = event.relatedTarget;   // <--- InteractJS gives you the real dragged element
-
-                    const fileId = dragEl.dataset.id;
-                    const file   = dragEl.dataset.file;
-                    const thumb  = dragEl.dataset.thumb;
-
-                    const folderId = itemEl.dataset.id;
-                    const folder   = itemEl.dataset.file;
-
-                    if (fileId && folderId) {
-                        this.fm.moveFile(fileId, folderId, file, folder, thumb)
-                            .then(res => {
-                                if (res.success) {
-                                    dragEl.parentElement.remove();
-                                } else if (res.msg) {
-                                    ddh.alert(ddh.translate(res.msg));
-                                }
-                            });
                     }
                 }
             });

@@ -23,7 +23,6 @@
     "bootstrap": "^5.3.7",
     "dropzone": "^6.0.0-beta.1",
     "font-awesome": "^4.7.0",
-    "interactjs": "^1.10.27",
     "jquery": "^3.7.1",
     "jquery-ui": "^1.14.1"
   }

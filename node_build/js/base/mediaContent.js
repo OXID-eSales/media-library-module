@@ -3,7 +3,6 @@
  * See LICENSE file for license details.
  */
 
-import interact from 'interactjs';
 import Dropzone from "dropzone";
 import {ddh} from './helper.js';
 
@@ -249,7 +248,9 @@ export default class MediaContent {
                 this.fm.removeFiles(deleteIDs, folderId).then((response) => {
                     if (response.success) {
                         const fileCountEl = dialog.querySelector('.dd-media-file-count');
-                        fileCountEl.textContent = parseInt(fileCountEl.textContent, 10) - items.length;
+                        if (fileCountEl) {
+                            fileCountEl.textContent = parseInt(fileCountEl.textContent, 10) - items.length;
+                        }
                         items.forEach(item => {
                             const parent = item.parentElement;
                             if (parent) parent.remove();
@@ -326,8 +327,10 @@ export default class MediaContent {
                     }
 
                     const fileCountEl = dialog.querySelector('.dd-media-file-count');
-                    const count = parseInt(fileCountEl.textContent, 10) || 0;
-                    fileCountEl.textContent = count + 1;
+                    if (fileCountEl) {
+                        const count = parseInt(fileCountEl.textContent, 10) || 0;
+                        fileCountEl.textContent = count + 1;
+                    }
                 });
 
                 this.on('complete', (file) => {

@@ -77,7 +77,7 @@ class MediaLibraryClass {
 
         const actions = [{
             label: ddh.translate('DD_CANCEL'),
-            attributes: { 'data-dismiss': 'modal' }
+            attributes: { 'data-bs-dismiss': 'modal' }
         }, {
             label: ddh.translate('DD_APPLY'),
             css: ['btn btn-primary dd-media-submit'],
@@ -102,7 +102,8 @@ class MediaLibraryClass {
             backdrop: true,
         });
 
-        dialog.dataset.mediaOptions = JSON.stringify({ multiple, filter });
+        this.store.set(dialog, 'multiple', multiple);
+        this.store.set(dialog, 'filter', filter);
         this.mediaContent.loadMediaContent(dialog);
     }
 

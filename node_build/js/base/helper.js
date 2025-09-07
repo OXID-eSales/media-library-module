@@ -88,6 +88,10 @@ export const ddh = {
             focus: true,
         });
 
+        modalEl.addEventListener("hidden.bs.modal", () => {
+            modalEl.remove();
+        });
+
         modalInstance.show();
 
         return modalEl;
