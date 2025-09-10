@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Integration\Media\Repository;
 
+use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
@@ -20,6 +22,7 @@ use OxidEsales\MediaLibrary\Media\Repository\MediaRepository;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use OxidEsales\Eshop\Core\Language;
 
 #[CoversClass(MediaRepository::class)]
 class MediaRepositoryTest extends RepositoryIntegrationTestCase
@@ -58,7 +61,9 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
         $this->assertSame($expectedItems, count($result));
         foreach ($result as $key => $oneItem) {
             $this->assertInstanceOf(Media::class, $oneItem);
-            $this->assertSame($folder . 'example' . ($firstListItemId - $key), $oneItem->getOxid());
+            $expectedOxid = $folder . 'example' . ($firstListItemId - $key);
+            $this->assertSame($expectedOxid, $oneItem->getOxid());
+            $this->assertSame('alttext_' . $expectedOxid, $oneItem->getMediaAltText());
         }
     }
 
@@ -120,6 +125,8 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     private function createTestItems(int $amount, string $folderId): void
     {
         $queryBuilder = $this->getAddItemQueryBuilder();
+        $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
+        $altTextLanguageId = 1;
 
         if ($folderId) {
             $queryBuilder->setParameters([
@@ -132,11 +139,23 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
                 'DDFOLDERID' => '',
                 'OXTIMESTAMP' => date("Y-m-d H:i:59")
             ])->execute();
+
+            $qbAlt = $queryBuilderFactory->create();
+            $qbAlt->insert('ddmedia_translations')->values([
+                'OXOBJECTID' => ':OXOBJECTID',
+                'OXLANGUAGEID' => ':OXLANGUAGEID',
+                'OXALTSHORTTEXT' => ':OXALTSHORTTEXT',
+            ])->setParameters([
+                'OXOBJECTID' => $folderId,
+                'OXLANGUAGEID' => $altTextLanguageId,
+                'OXALTSHORTTEXT' => 'alttext_' . $folderId
+            ])->execute();
         }
 
         for ($i = 1; $i <= $amount; $i++) {
+            $oxid = $folderId . 'example' . $i;
             $queryBuilder->setParameters([
-                'OXID' => $folderId . 'example' . $i,
+                'OXID' => $oxid,
                 'OXSHOPID' => 2,
                 'DDFILENAME' => 'filename' . $i . '.jpg',
                 'DDFILESIZE' => $i * 10,
@@ -144,6 +163,17 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
                 'DDIMAGESIZE' => $i . '00x' . $i . '00.jpg',
                 'DDFOLDERID' => $folderId,
                 'OXTIMESTAMP' => date("Y-m-d H:i:") . $i
+            ])->execute();
+
+            $qbAlt = $queryBuilderFactory->create();
+            $qbAlt->insert('ddmedia_translations')->values([
+                'OXOBJECTID' => ':OXOBJECTID',
+                'OXLANGUAGEID' => ':OXLANGUAGEID',
+                'OXALTSHORTTEXT' => ':OXALTSHORTTEXT',
+            ])->setParameters([
+                'OXOBJECTID' => $oxid,
+                'OXLANGUAGEID' => $altTextLanguageId,
+                'OXALTSHORTTEXT' => 'alttext_' . $oxid
             ])->execute();
         }
     }
@@ -161,14 +191,22 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
         ?ContextInterface $context = null,
         ?ConnectionProviderInterface $connectionProvider = null,
         ?MediaFactoryInterface $mediaFactory = null,
+        ?Language $language = null
     ): MediaRepository {
-        $sut = new MediaRepository(
+        $language = $language ?? $this->createLanguageStub();
+        return new MediaRepository(
             connectionProvider: $connectionProvider ?? $this->get(ConnectionProviderInterface::class),
             context: $context ?? $this->get(ContextInterface::class),
             mediaFactory: $mediaFactory ?? $this->get(MediaFactoryInterface::class),
+            language: $language
         );
+    }
 
-        return $sut;
+    private function createLanguageStub(): Language
+    {
+        $languageStub = $this->createMock(Language::class);
+        $languageStub->method('getBaseLanguage')->willReturn(1);
+        return $languageStub;
     }
 
     #[Test]
@@ -189,6 +227,7 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
 
         $resultMedia = $sut->getMediaById($oxid);
         $this->assertEquals($exampleMedia, $resultMedia);
+        $this->assertSame('', $resultMedia->getMediaAltText());
     }
 
     #[Test]

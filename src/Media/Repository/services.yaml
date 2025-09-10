@@ -2,6 +2,8 @@ services:
   _defaults:
     public: false
     autowire: true
+    bind:
+      OxidEsales\Eshop\Core\Language: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getLang()'
 
   OxidEsales\MediaLibrary\Media\Repository\Connection:
     class: 'Doctrine\DBAL\Driver\Connection'
@@ -19,3 +21,7 @@ services:
     arguments:
       $connection: '@OxidEsales\MediaLibrary\Media\Repository\Connection'
     public: true
+
+  OxidEsales\MediaLibrary\Media\Repository\MediaAltRepositoryInterface:
+    class: OxidEsales\MediaLibrary\Media\Repository\MediaAltRepository
+    public: false
