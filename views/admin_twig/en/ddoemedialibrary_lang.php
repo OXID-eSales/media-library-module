@@ -56,6 +56,11 @@ $aLang = array(
     'DD_MEDIA_MOVE_FILE_ERR'          => 'Image can not be moved because it is in use!',
     'DD_MEDIA_RENAME_FILE_ERR'        => 'Image or folder can not be renamed because it is in use!',
     'DD_MEDIA_IMG_URL'                => 'Image URL',
+    'DD_MEDIA_ALT_TEXT'                => 'Alt text',
+    'DD_MEDIA_ALT_TEXT_PLACEHOLDER'  => 'Enter alt text',
+    'DD_MEDIA_ALT_TEXT_LANG_SELECTOR'  => 'Select language',
+    'DD_MEDIA_ALT_TEXT_SAVE_SUCCESS' => 'Alt texts saved successfully!',
+    'DD_MEDIA_ALT_TEXT_SAVE_ERROR' => 'Failed to save alt texts.',
 
     'OE_MEDIA_LIBRARY_EXCEPTION_INVALID_FILE_EXTENTION' => 'Invalid file extension',
     'OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_EMPTY' => 'Filename cannot be empty',

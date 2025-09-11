@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Media\Controller\MediaAltTextController:
+    public: true
+    tags:
+      - { name: 'oxid.view_controller', controller_key: 'ddoemedialibrary_media_alt_text' }
+
