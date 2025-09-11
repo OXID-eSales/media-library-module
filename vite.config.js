@@ -8,7 +8,6 @@ export default defineConfig({
             targets: [
                 { src: path.resolve(__dirname, 'node_modules/jquery/dist/jquery.min.js'), dest: 'js' },
                 { src: path.resolve(__dirname, 'node_modules/jquery-ui/dist/jquery-ui.min.js'), dest: 'js' },
-                { src: path.resolve(__dirname, 'node_modules/bootstrap/dist/js/bootstrap.min.js'), dest: 'js' },
                 { src: path.resolve(__dirname, 'node_modules/bootstrap/dist/css/bootstrap.min.css*'), dest: 'css' },
                 { src: path.resolve(__dirname, 'node_modules/font-awesome/css/font-awesome.min.css'), dest: 'css' },
                 { src: path.resolve(__dirname, 'node_modules/font-awesome/fonts'), dest: '' },

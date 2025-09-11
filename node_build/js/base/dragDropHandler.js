@@ -18,17 +18,23 @@ export default class DragDropHandler {
             $($item).draggable({
                 revert: 'invalid',
                 helper: function (e) {
-                    const original = $(e.target).hasClass('ui-draggable')
-                        ? $(e.target)
-                        : $(e.target).closest('.ui-draggable');
-                    return original.clone().css({
-                        width: original.width(),
-                        height: original.height()
-                    });
+                    let original = e.target.classList.contains('ui-draggable')
+                        ? e.target
+                        : e.target.closest('.ui-draggable');
+
+                    let clone = original.cloneNode(true);
+
+                    let rect = original.getBoundingClientRect();
+                    clone.style.width = rect.width + 'px';
+                    clone.style.height = rect.height + 'px';
+
+                    return clone;
                 },
                 zIndex: 100,
                 opacity: 0.70,
-                start: function (_e, ui) { $(ui.helper).addClass('ui-draggable-helper'); }
+                start: function (_e, ui) {
+                    ui.helper.get(0).classList.add('ui-draggable-helper');
+                }
             });
         } else {
             $item.droppable({
@@ -46,7 +52,7 @@ export default class DragDropHandler {
                             this.fm.moveFile(fileId, folderId, file, folder, thumb)
                                 .then((res) => {
                                     if (res.success) {
-                                        $drag.parent().remove();
+                                        $drag.get(0).parentElement.remove();
                                     } else if (res.msg) {
                                         ddh.alert(ddh.translate(res.msg));
                                     }
