@@ -139,6 +139,25 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group dd-media-alttext mb-3">
+                                    <label for="media-alttext-language">{{ translate({ ident: "DD_MEDIA_ALT_TEXT_LANG_SELECTOR" }) }}</label>
+                                    <select class="form-select dd-media-alttext-language" id="media-alttext-language">
+                                        {% for lang in aMediaLanguages %}
+                                            <option value="{{ lang.id }}" {% if lang.selected %}selected{% endif %}>{{ lang.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group dd-media-alttext-inputs mb-3">
+                                    <!-- Alt text inputs for each language will be rendered here by JS -->
+                                </div>
+                                <div class="dd-media-alttext-messages">
+                                    <div class="alert alert-danger dd-media-alttext-error" style="display:none"></div>
+                                    <div class="alert alert-success dd-media-alttext-success" style="display:none"></div>
+                                </div>
+                                <div class="form-group dd-media-alttext-save">
+                                    <button type="button" class="btn btn-primary dd-media-alttext-save-btn">{{ translate({ ident: "DD_APPLY" }) }}</button>
+                                </div>
                             </form>
 
                         </div>
