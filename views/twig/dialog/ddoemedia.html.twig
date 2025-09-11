@@ -84,7 +84,7 @@
 
                                 <div class="dd-media-dz-helper" style="display: none;">
                                         <div class="dd-media-col {% if not request.isOverlay() %}col-md-2{% else %}col-md-3{% endif %} col-sm-3 col-xs-4">
-                                        <a class="dd-media-item" href="javascript:void(null);">
+                                        <a class="dd-media-item" href="javascript:void(null);" data-alttext="">
                                             <div class="dd-media-item-preview">
                                                 <div class="dd-media-item-centered">
                                                     <i class="dd-media-icon dd-media-icon-file fa fa-3x fa-file" style="display: none;"></i>
@@ -109,8 +109,8 @@
 
                             <div class="clearfix" style="height: 3px;"></div>
 
-                            <form class="form dd-media-details-form" method="post" style="display: none;">
-
+                            <form class="form dd-media-details-form" method="post" style="display: none;"
+                                  data-media-id="" data-media-type="file">
                                 <div class="media">
                                     <div class="media-left">
                                         <img class="media-object dd-media-details-preview" src="" style="max-width: 50px; max-height: 50px;">
@@ -127,7 +127,7 @@
 
                                 <div class="clearfix" style="height: 30px;"></div>
 
-                                <div class="form-group dd-media-url">
+                                <div class="form-group dd-media-url mb-3">
                                     <label>{{ translate({ ident: "DD_MEDIA_IMG_URL" }) }}</label>
                                     <div class="input-group">
                                         <input type="text" class="form-control dd-media-details-input-url" name="media[url]" value="" readonly="readonly" />
