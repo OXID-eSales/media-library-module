@@ -3,11 +3,12 @@
  * See LICENSE file for license details.
  */
 
+import {ddh} from './helper.js';
+
 export default class DragDropHandler {
     constructor(fileManager, dataStore) {
         this.fm = fileManager;
         this.store = dataStore;
-        this.dragMoved = false;
     }
 
     makeMovable(item) {
