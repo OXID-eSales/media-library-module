@@ -31,7 +31,7 @@ class MediaDataLogic implements MediaDataLogicInterface
         return $url;
     }
 
-    public function getMediaAltText(string $objectId, int $languageId): string
+    public function getMediaAltText(string $objectId): string
     {
         try {
             $media = $this->mediaFacade->getMedia($objectId);

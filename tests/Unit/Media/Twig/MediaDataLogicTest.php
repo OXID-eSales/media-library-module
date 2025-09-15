@@ -72,7 +72,7 @@ class MediaDataLogicTest extends TestCase
         $mediaFacadeMock->method('getMedia')->with($objectId)->willReturn($mediaMock);
 
         $sut = $this->getSut(mediaFacade: $mediaFacadeMock);
-        $result = $sut->getMediaAltText($objectId, 1);
+        $result = $sut->getMediaAltText($objectId);
         $this->assertSame($expectedText, $result);
     }
 
@@ -84,7 +84,7 @@ class MediaDataLogicTest extends TestCase
         $mediaFacadeMock->method('getMedia')->with($objectId)->willThrowException(new MediaNotFoundException());
 
         $sut = $this->getSut(mediaFacade: $mediaFacadeMock);
-        $result = $sut->getMediaAltText($objectId, 1);
+        $result = $sut->getMediaAltText($objectId);
         $this->assertSame('', $result);
     }
 

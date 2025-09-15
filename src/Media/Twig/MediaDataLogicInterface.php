@@ -11,5 +11,5 @@ interface MediaDataLogicInterface
 {
     public function getMediaUrl(string $mediaId): string;
 
-    public function getMediaAltText(string $objectId, int $languageId): string;
+    public function getMediaAltText(string $objectId): string;
 }
