@@ -10,4 +10,6 @@ namespace OxidEsales\MediaLibrary\Media\Twig;
 interface MediaDataLogicInterface
 {
     public function getMediaUrl(string $mediaId): string;
+
+    public function getMediaAltText(string $objectId, int $languageId): string;
 }
