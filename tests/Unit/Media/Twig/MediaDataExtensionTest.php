@@ -18,10 +18,10 @@ use Psr\Container\ContainerInterface;
 class MediaDataExtensionTest extends TestCase
 {
     #[Test]
-    public function twigFunctionIsRegistered(): void
+    public function twigFunctionsAreRegistered(): void
     {
         $sut = new MediaDataExtension(
-            container: $containerMock = $this->createStub(ContainerInterface::class),
+            container: $containerMock = $this->createMock(ContainerInterface::class),
         );
 
         $containerMock->method('get')
@@ -29,9 +29,15 @@ class MediaDataExtensionTest extends TestCase
             ->willReturn($logicStub = $this->createStub(MediaDataLogicInterface::class));
 
         $functions = $sut->getFunctions();
+        $functionMap = [];
+        foreach ($functions as $function) {
+            $functionMap[$function->getName()] = $function;
+        }
 
-        $first = reset($functions);
-        $this->assertSame('oeMediaUrl', $first->getName());
-        $this->assertSame([$logicStub, 'getMediaUrl'], $first->getCallable());
+        $this->assertArrayHasKey('oeMediaUrl', $functionMap);
+        $this->assertSame([$logicStub, 'getMediaUrl'], $functionMap['oeMediaUrl']->getCallable());
+
+        $this->assertArrayHasKey('oeMediaAlt', $functionMap);
+        $this->assertSame([$logicStub, 'getMediaAltText'], $functionMap['oeMediaAlt']->getCallable());
     }
 }

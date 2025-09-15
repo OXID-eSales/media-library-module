@@ -22,11 +22,16 @@ class MediaDataExtension extends AbstractExtension
 
     public function getFunctions(): array
     {
+        $mediaDataLogic = $this->container->get(MediaDataLogicInterface::class);
         return [
             new TwigFunction(
                 'oeMediaUrl',
-                [$this->container->get(MediaDataLogicInterface::class), 'getMediaUrl']
-            )
+                [$mediaDataLogic, 'getMediaUrl']
+            ),
+            new TwigFunction(
+                'oeMediaAlt',
+                [$mediaDataLogic, 'getMediaAltText']
+            ),
         ];
     }
 }
