@@ -143,18 +143,21 @@ class MediaLibraryClass {
         if (top.basefrm && top.basefrm.OverlayInstance) {
             top.basefrm.OverlayInstance.onContentLoad(function () {
                 const self = this;
-                const existingApply = self.$overlay.querySelector('.dd-overlay-dialog-footer .dd-overlay-dialog-apply');
-                if (existingApply) existingApply.remove();
+                const overlay = self.$overlay[0];
+                const existingApply = overlay.querySelector('.dd-overlay-dialog-footer .dd-overlay-dialog-apply');
+                if (existingApply) {
+                    existingApply.remove();
+                }
 
                 if (typeof callback !== 'function' && self.overlayContext) {
                     callback = function (id, file, fullpath) {
-                        self.overlayContext.invoke('editor.insertImage', fullpath, function (image) {
+                        self.overlayContext.invoke('editor.insertImage', fullpath, function ($image) {
                             top.basefrm.mediaUrls[id] = fullpath;
-                            image.style.maxWidth = '100%';
-                            image.src = fullpath;
-                            image.dataset.source = 'media';
-                            image.dataset.id = id;
-                            image.classList.add('dd-wysiwyg-media-image');
+                            $image.css('max-width', '100%');
+                            $image.attr('src', fullpath);
+                            $image.attr('data-source', 'media');
+                            $image.attr('data-id', id);
+                            $image.addClass('dd-wysiwyg-media-image');
                         });
                     };
                 }
@@ -171,8 +174,10 @@ class MediaLibraryClass {
                     self.hideOverlay();
                 });
 
-                const footer = self.$overlay.querySelector('.dd-overlay-dialog-footer');
-                if (footer) footer.prepend(applyButton);
+                const footer = overlay.querySelector('.dd-overlay-dialog-footer');
+                if (footer) {
+                    footer.prepend(applyButton);
+                }
             });
         }
 
