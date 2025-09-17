@@ -1,21 +1,17 @@
 install:
   cache:
     prepared_shop: false
-  git:
-    repository: 'OXID-eSales/media-library-module'
-    ref: &ref '{{ .Github.RefName }}'
-    shop_url: 'https://github.com/OXID-eSales/media-library-module.git'
-    shop_ref: *ref
   composer:
+    root_url: ''
     transform: |
       {
-          "require": {
-              "oxid-esales/oxideshop-ce": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/twig-component": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/twig-admin-theme": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/apex-theme": "{{ .Data.global.composer.dev_ref }}",
-              "oxid-esales/developer-tools": "{{ .Data.global.composer.dev_ref }}"
-          }
+        "require": {
+          "oxid-esales/oxideshop-ce": "{{ .Data.install.composer.dev_ref }}",
+          "oxid-esales/twig-admin-theme": "{{ .Data.install.composer.dev_ref }}",
+          "oxid-esales/twig-component": "{{ .Data.install.composer.dev_ref }}",
+          "oxid-esales/apex-theme": "{{ .Data.install.composer.dev_ref }}",
+          "oxid-esales/developer-tools": "{{ .Data.install.composer.dev_ref }}"
+        }
       }
   custom_script_container: |
     vendor/bin/oe-console oe:database:reset --db-host=mysql --db-port=3306 --db-name=example --db-user=root --db-password=root --force
@@ -24,44 +20,42 @@ install:
     vendor/bin/oe-console oe:module:activate ddoemedialibrary
     vendor/bin/oe-console oe:theme:activate apex
 
-install_shop_with_modules:
-  composer:
-    root_url: ''
-
 runscript: &runscript
   matrix:
     script: |
       [
-        "medialibrary:tests-unit",
-        "medialibrary:tests-integration",
-        "medialibrary:tests-codeception"
+        "report:tests-unit",
+        "report:tests-integration",
+        "no_report:tests-codeception",
       ]
-  medialibrary:
+  report:
     path: ''
-  composer:
-    early: true
+  no_report:
+    path: ''
+    coverage_prefix: ''
 
 runslim:
   <<: *runscript
   matrix:
     script: |
       [
-        "medialibrary:phpstan",
-        "medialibrary:phpcs"
+        "report:phpstan-report",
+        "no_report:phpcs",
       ]
 
 sonarcloud:
   matrix:
     testplan: '["-"]'
   strip_path: '/var/www/'
-  project_key: 'OXID-eSales_media-library-module'
+  organization: 'oxid-esales'
   project_name: 'oxid-esales/media-library-module'
-  parameters: |
-    -Dsonar.language=php \
-    -Dsonar.scm.provider=git \
-    -Dsonar.sources=src \
-    -Dsonar.tests=tests \
-    -Donar.php.phpstan.reportPaths=coverage-reports/phpstan.report.json
+  project_key: 'OXID-eSales_media-library-module'
+  target_branch: 'b-7.3.x'
+  parameters: >
+    -Dsonar.language=php
+    -Dsonar.scm.provider=git
+    -Dsonar.sources=src
+    -Dsonar.tests=tests
 
 finish:
-  slack_title: 'Media Library module ({{ .Data.global.git.shop_ref }}) by {{ .Github.Actor }}'
+  slack_title: 'Media Library module ({{ .Data.install.git.ref }}) by {{ .Github.Actor }}'

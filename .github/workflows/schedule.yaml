@@ -1,29 +1,26 @@
-name: Schedule for full matrix run
+name: Scheduled weekly run
 
 on:
-  workflow_dispatch:
   schedule:
     - cron: '0 0 */7 * *'
 
 jobs:
-  schedule_matrix:
-    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
+  matrix_73x_weekly:
+    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v5
     with:
-      testplan: '~/defaults/7.3.x.yaml,~/module-medialibrary.yaml'
+      testplan: '~/defaults/7.3.x.yaml,~/defaults/scheduled.yaml,~/module-medialibrary.yaml,~/_custom.yaml'
       runs_on: '"ubuntu-latest"'
-      defaults: 'v4'
+      defaults: 'v5'
       plan_folder: '.github/oxid-esales'
       custom_testplan_yaml: |
-        global:
-          title: 'php82_mysql80-{{ .Github.EventName }}-{{ .Github.RefName }}'
-      use_scheduled_slack_channel: true
+        finish:
+          slack_title: 'Matrix-73x-Weekly-{{ .Github.EventName }}-{{ .Github.RefName }}'
     secrets:
       DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
       DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
       CACHE_ENDPOINT: ${{ secrets.CACHE_ENDPOINT }}
       CACHE_ACCESS_KEY: ${{ secrets.CACHE_ACCESS_KEY }}
       CACHE_SECRET_KEY: ${{ secrets.CACHE_SECRET_KEY }}
-      enterprise_github_token: ${{ secrets.enterprise_github_token }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       SLACK_SCHEDULED_WEBHOOK_URL: ${{ secrets.SLACK_SCHEDULED_WEBHOOK_URL }}
