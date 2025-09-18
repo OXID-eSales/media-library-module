@@ -12,6 +12,7 @@ import UIRenderer from './uiRenderer.js';
 import DragDropHandler from './dragDropHandler.js'
 import MediaContent from "./mediaContent.js";
 import DataStore from "./dataStore.js";
+import AltAttributeManager from "./alt-attribute.js";
 
 class MediaLibraryClass {
     static VERSION = '1.0.0';
@@ -19,6 +20,7 @@ class MediaLibraryClass {
     ctrlKeyPressed = false;
     currentPath = '';
     currentFolderId = '';
+    altAttributeManager = null;
 
     constructor() {
         this.store = new DataStore();
@@ -38,6 +40,9 @@ class MediaLibraryClass {
                 this.ctrlKeyPressed = false;
             }
         });
+
+        this.altAttributeManager = new AltAttributeManager(
+        );
     }
 
     setActionLink(url) {
@@ -47,6 +52,62 @@ class MediaLibraryClass {
     setResourceLink(url) {
         this.fm.setResourceLink(url);
     }
+
+
+    _loadItemDetails(file, $dialog) {
+        var ui = this;
+
+        if (typeof file === 'undefined') {
+            file = false;
+        }
+
+        if (typeof $dialog === 'undefined') {
+            $dialog = $('.dd-media').first().closest('.modal');
+        }
+
+        var $detailForm = $('.dd-media-details-form', $dialog);
+
+        if (!file) {
+            $detailForm.hide();
+        } else {
+            if (file.preview) {
+                $('.dd-media-details-preview-icon', $detailForm).hide();
+                $('.dd-media-details-dir-icon', $detailForm).hide();
+                $('.dd-media-details-preview', $detailForm).attr('src', file.preview).show();
+                $('.dd-media-url', $detailForm).show();
+            } else {
+                if (file.filetype == "directory") {
+                    $('.dd-media-details-dir-icon', $detailForm).show();
+                    $('.dd-media-details-preview-icon', $detailForm).hide();
+                    $('.dd-media-url', $detailForm).hide();
+                } else {
+                    $('.dd-media-details-dir-icon', $detailForm).hide();
+                    $('.dd-media-details-preview-icon', $detailForm).show();
+                    $('.dd-media-url', $detailForm).show();
+                }
+                $('.dd-media-details-preview', $detailForm).hide();
+            }
+
+            var fileInfo = file.imagesize ? (file.imagesize ? file.imagesize + ' | ' : '') + ui._formatFileSize(file.filesize) : '';
+
+            $('.dd-media-details-name', $detailForm).text(file.file);
+            $('.dd-media-details-infos', $detailForm).text(fileInfo);
+            $('.dd-media-details-id', $detailForm).text(file.id);
+
+            $('.dd-media-details-input-url', $detailForm).val(file.url);
+            $('.dd-media-details-link-url', $detailForm).attr('href', file.url);
+
+            $detailForm.show();
+            if (file.filetype === 'directory') {
+                $detailForm.hide();
+            } else {
+                $detailForm.data('media-id', file.id);
+                $detailForm.data('media-type', 'file');
+                this.altAttributeManager.loadAltTexts(file.id, $detailForm, this._actionLink);
+                this.altAttributeManager.bindAltTextEvents($detailForm, this._actionLink);
+            }
+        }
+    };
 
     /**
      * Opens the media library dialog.
