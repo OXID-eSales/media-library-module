@@ -7,14 +7,14 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Controller;
+namespace OxidEsales\MediaLibrary\Tests\Integration\Media\Controller;
 
-use OxidEsales\MediaLibrary\Media\Controller\MediaAltTextController;
-use OxidEsales\MediaLibrary\Media\Repository\MediaAltRepositoryInterface;
-use OxidEsales\MediaLibrary\Media\DataType\MediaAltText;
-use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Request\RequestInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
+use OxidEsales\MediaLibrary\Media\Controller\MediaAltTextController;
+use OxidEsales\MediaLibrary\Media\DataType\MediaAltText;
+use OxidEsales\MediaLibrary\Media\Repository\MediaAltRepositoryInterface;
+use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -64,7 +64,7 @@ final class MediaAltTextControllerTest extends TestCase
 
         $mediaAltRepositoryMock->expects($this->exactly(2))
             ->method('saveAltText')
-            ->willReturnCallback(function($mediaAltText) use ($objectId, $altTexts) {
+            ->willReturnCallback(function ($mediaAltText) use ($objectId, $altTexts) {
                 $langId = $mediaAltText->getLanguageId();
                 $this->assertSame($objectId, $mediaAltText->getObjectId());
                 $this->assertArrayHasKey($langId, $altTexts);
