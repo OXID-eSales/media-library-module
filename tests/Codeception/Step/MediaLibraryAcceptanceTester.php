@@ -188,8 +188,20 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
     public function fillAltText(string $altText): self
     {
         $I = $this;
-        $I->waitForElement('//div[contains(@class, "dd-media-alttext-inputs")]//input');
-        $I->fillField('//div[contains(@class, "dd-media-alttext-inputs")]//input', $altText);
+        $langSelect = '//select[contains(@class, "dd-media-alttext-language")]';
+        $I->waitForElementVisible($langSelect, 20);
+        $I->selectOption($langSelect, [0]); // Select first language
+
+
+        $spinner = '//div[contains(@class, "dd-alttext-spinner")]';
+        if ($I->grabMultiple($spinner)) {
+            $I->waitForElementNotVisible($spinner, 20);
+        }
+
+        $selector = '//div[contains(@class, "dd-media-alttext-inputs")]//input';
+        $I->waitForElementVisible($selector, 20);
+        $I->seeElement($selector);
+        $I->fillField($selector, $altText);
         return $this;
     }
 
