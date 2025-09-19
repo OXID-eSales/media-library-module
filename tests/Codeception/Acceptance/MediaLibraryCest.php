@@ -110,9 +110,7 @@ final class MediaLibraryCest
 
         $I->waitForText('Alt texts saved successfully!', 5, '.dd-media-alttext-success');
 
-        $I->switchToMediaListTab()
-            ->openFirstMediaDetails()
-            ->seeAltTextEquals($altText)
+        $I->seeAltTextEquals($altText)
             ->deleteImage();
     }
 }
