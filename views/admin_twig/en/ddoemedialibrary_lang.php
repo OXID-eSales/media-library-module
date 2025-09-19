@@ -61,6 +61,7 @@ $aLang = array(
     'DD_MEDIA_ALT_TEXT_LANG_SELECTOR'  => 'Select language',
     'DD_MEDIA_ALT_TEXT_SAVE_SUCCESS' => 'Alt texts saved successfully!',
     'DD_MEDIA_ALT_TEXT_SAVE_ERROR' => 'Failed to save alt texts.',
+    'DD_SAVE_ALT_TEXTS'          => 'Save Alt Texts',
 
     'OE_MEDIA_LIBRARY_EXCEPTION_INVALID_FILE_EXTENTION' => 'Invalid file extension',
     'OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_EMPTY' => 'Filename cannot be empty',

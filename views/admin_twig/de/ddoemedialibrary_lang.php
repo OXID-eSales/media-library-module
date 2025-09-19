@@ -61,6 +61,7 @@ $aLang = array(
     'DD_MEDIA_ALT_TEXT_LANG_SELECTOR' => 'Sprache auswählen',
     'DD_MEDIA_ALT_TEXT_SAVE_SUCCESS' => 'Alt-Texte erfolgreich gespeichert!',
     'DD_MEDIA_ALT_TEXT_SAVE_ERROR' => 'Fehler beim Speichern der Alt-Texte.',
+    'DD_SAVE_ALT_TEXTS'          => 'Alt-Texte speichern',
 
     'OE_MEDIA_LIBRARY_EXCEPTION_INVALID_FILE_EXTENTION' => 'Ungültige Dateierweiterung',
     'OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_EMPTY' => 'Dateiname darf nicht leer sein',
