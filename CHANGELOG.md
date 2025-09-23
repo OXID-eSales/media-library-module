@@ -7,13 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [4.0.0] - Unreleased
 
 ### Added
-- - "Fallback" image feature
+- "Fallback" image feature
 - "oeMediaUrl" twig function to get URL to the media by ID, also uses Fallback image if requested one is not found.
 - `MediaIdByPathFacadeInterface::getMediaIdByPath` to calculate Media id by media path or url
 - `MediaFacadeInterface` for accessing media objects in other modules
 - Exception thrown on JsonResponse creation if the json encoding fails, instead of returning an empty string
 - Supported PHP range added to PHPStan configuration for better compatibility ensurance
 - Update phpstan level 6 -> 8
+- Support for alternative (alt) text per language for media items.
+- New database table for storing alt texts per language.
+- Media detail view: Language selector and alt text field with AJAX save, defaulting to shop language.
+- DTO for alt text data.
+- Repository for managing alt text persistence and retrieval.
+- Twig function/helper for retrieving alt text in templates.
 
 ### Changed
 - Update to Bootstrap 5
@@ -32,6 +38,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Replaced most jQuery DOM manipulation with native DOM APIs.
 - Public js method `open([filter], [multiple], callback)` changed to `open(options = {}, callback)` where `options` is an object ({ filter, multiple }).
 - Public js method `init([filter], [multiple], callback)` changed to `init(options = {}, callback)` where `options` is an object ({ filter, multiple }).
+- Media repository and DTOs updated to support alt text per language.
+- Added alt text rendering for images in all shortcodes that use media items via `getMediaAltText`.
 
 ### Fixed
 - MediaRepositoryInterface::getMediaById return should not be null possible, as exception is thrown in this case
