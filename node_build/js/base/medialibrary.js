@@ -160,6 +160,7 @@ class MediaLibraryClass {
                             $image.attr('data-source', 'media');
                             $image.attr('data-id', id);
                             $image.addClass('dd-wysiwyg-media-image');
+                            $image.attr('alt', "{{oeMediaAlt('" + id + "')}}");
                         });
                     };
                 }
