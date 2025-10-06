@@ -22,12 +22,17 @@ class MediaAltRepositoryTest extends RepositoryIntegrationTestCase
     {
         $objectId = uniqid();
         $languageId = rand(1, 10);
-        $text = uniqid('alt_');
-        $altText = new MediaAltText($objectId, $languageId, $text);
+        $text = uniqid();
 
-        $repository = $this->getSut();
-        $repository->saveAltText($altText);
-        $results = $repository->getObjectAltTexts($objectId);
+        $altTextStub = $this->createConfiguredStub(MediaAltTextInterface::class, [
+            'getObjectId' => $objectId,
+            'getLanguageId' => $languageId,
+            'getText' => $text,
+        ]);
+
+        $sut = $this->getSut();
+        $sut->saveAltText($altTextStub);
+        $results = $sut->getObjectAltTexts($objectId);
 
         $this->assertCount(1, $results);
         $this->assertSame($objectId, $results[0]->getObjectId());
@@ -40,41 +45,69 @@ class MediaAltRepositoryTest extends RepositoryIntegrationTestCase
     {
         $objectId = uniqid();
         $languageId = rand(1, 10);
-        $altText1 = new MediaAltText($objectId, $languageId, 'first');
-        $altText2 = new MediaAltText($objectId, $languageId, 'second');
+        $text2 = uniqid();
 
-        $repository = $this->getSut();
-        $repository->saveAltText($altText1);
-        $repository->saveAltText($altText2);
-        $results = $repository->getObjectAltTexts($objectId);
+        $altText1Stub = $this->createConfiguredStub(MediaAltTextInterface::class, [
+            'getObjectId' => $objectId,
+            'getLanguageId' => $languageId,
+            'getText' => uniqid(),
+        ]);
+
+        $altText2Stub = $this->createConfiguredStub(MediaAltTextInterface::class, [
+            'getObjectId' => $objectId,
+            'getLanguageId' => $languageId,
+            'getText' => $text2,
+        ]);
+
+        $sut = $this->getSut();
+        $sut->saveAltText($altText1Stub);
+        $sut->saveAltText($altText2Stub);
+        $results = $sut->getObjectAltTexts($objectId);
 
         $this->assertCount(1, $results);
-        $this->assertSame('second', $results[0]->getText());
+        $this->assertSame($text2, $results[0]->getText());
     }
 
     #[Test]
     public function saveMultipleLanguages(): void
     {
         $objectId = uniqid();
-        $altText1 = new MediaAltText($objectId, 1, 'en');
-        $altText2 = new MediaAltText($objectId, 2, 'de');
 
-        $repository = $this->getSut();
-        $repository->saveAltText($altText1);
-        $repository->saveAltText($altText2);
-        $results = $repository->getObjectAltTexts($objectId);
+        $text1 = uniqid();
+        $text2 = uniqid();
+        $languageId1 = rand(1, 10);
+        $languageId2 = rand(1, 10);
+        while ($languageId2 === $languageId1) {
+            $languageId2 = rand(1, 10);
+        }
+        $altText1Stub = $this->createConfiguredStub(MediaAltTextInterface::class, [
+            'getObjectId' => $objectId,
+            'getLanguageId' => $languageId1,
+            'getText' => $text1,
+        ]);
+
+        $altText2Stub = $this->createConfiguredStub(MediaAltTextInterface::class, [
+            'getObjectId' => $objectId,
+            'getLanguageId' => $languageId2,
+            'getText' => $text2,
+        ]);
+
+        $sut = $this->getSut();
+        $sut->saveAltText($altText1Stub);
+        $sut->saveAltText($altText2Stub);
+        $results = $sut->getObjectAltTexts($objectId);
 
         $this->assertCount(2, $results);
         $texts = array_map(fn($a) => $a->getText(), $results);
-        $this->assertContains('en', $texts);
-        $this->assertContains('de', $texts);
+        $this->assertContains($text1, $texts);
+        $this->assertContains($text2, $texts);
     }
 
     #[Test]
     public function getAltTextsForNonExistentObjectReturnsEmpty(): void
     {
-        $repository = $this->getSut();
-        $results = $repository->getObjectAltTexts(uniqid());
+        $sut = $this->getSut();
+        $results = $sut->getObjectAltTexts(uniqid());
         $this->assertIsArray($results);
         $this->assertCount(0, $results);
     }
@@ -84,11 +117,16 @@ class MediaAltRepositoryTest extends RepositoryIntegrationTestCase
     {
         $objectId = uniqid();
         $languageId = rand(1, 10);
-        $altText = new MediaAltText($objectId, $languageId, '');
 
-        $repository = $this->getSut();
-        $repository->saveAltText($altText);
-        $results = $repository->getObjectAltTexts($objectId);
+        $altTextStub = $this->createConfiguredStub(MediaAltTextInterface::class, [
+            'getObjectId' => $objectId,
+            'getLanguageId' => $languageId,
+            'getText' => '',
+        ]);
+
+        $sut = $this->getSut();
+        $sut->saveAltText($altTextStub);
+        $results = $sut->getObjectAltTexts($objectId);
         $this->assertCount(1, $results);
         $this->assertSame('', $results[0]->getText());
     }

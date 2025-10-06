@@ -30,38 +30,54 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     #[Test]
     public function getShopFolderMediaCount(): void
     {
-        $this->createTestItems(3, 'someFolder');
+        $folder = uniqid();
+        $this->createTestItems(3, $folder);
         $this->createTestItems(2, '');
 
-        $contextStub = $this->createMock(ContextInterface::class);
-        $contextStub->method('getCurrentShopId')->willReturn(2);
+        $contextStub = $this->createConfiguredStub(ContextInterface::class, [
+            'getCurrentShopId' => 2,
+        ]);
         $sut = $this->getSut(
             context: $contextStub
         );
 
-        $this->assertSame(3, $sut->getFolderMediaCount('someFolder'));
+        $this->assertSame(3, $sut->getFolderMediaCount($folder));
         $this->assertSame(3, $sut->getFolderMediaCount(''));
     }
 
-    #[DataProvider('getFolderMediaDataProvider')]
     #[Test]
-    public function getShopFolderMediaInFolder(
-        string $folder,
-        int $start,
-        int $expectedItems,
-        int $firstListItemId
-    ): void {
-        $this->createTestItems(7, 'someFolder');
+    public function getShopFolderMediaInFolderFirstPage(): void
+    {
+        $folderName = uniqid();
+        $this->createTestItems(7, $folderName);
         $this->createTestItems(3, '');
 
         $sut = $this->getSutForShop(2);
+        $result = $sut->getFolderMedia($folderName, 0, 5);
 
-        $result = $sut->getFolderMedia($folder, $start, 5);
-
-        $this->assertSame($expectedItems, count($result));
+        $this->assertCount(5, $result);
         foreach ($result as $key => $oneItem) {
             $this->assertInstanceOf(Media::class, $oneItem);
-            $expectedOxid = $folder . 'example' . ($firstListItemId - $key);
+            $expectedOxid = $folderName . 'example' . (7 - $key);
+            $this->assertSame($expectedOxid, $oneItem->getOxid());
+            $this->assertSame('alttext_' . $expectedOxid, $oneItem->getMediaAltText());
+        }
+    }
+
+    #[Test]
+    public function getShopFolderMediaInFolderSecondPage(): void
+    {
+        $folderName = uniqid();
+        $this->createTestItems(7, $folderName);
+        $this->createTestItems(3, '');
+
+        $sut = $this->getSutForShop(2);
+        $result = $sut->getFolderMedia($folderName, 5, 5);
+
+        $this->assertCount(2, $result);
+        foreach ($result as $key => $oneItem) {
+            $this->assertInstanceOf(Media::class, $oneItem);
+            $expectedOxid = $folderName . 'example' . (2 - $key);
             $this->assertSame($expectedOxid, $oneItem->getOxid());
             $this->assertSame('alttext_' . $expectedOxid, $oneItem->getMediaAltText());
         }
@@ -99,28 +115,12 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     #[Test]
     public function getMediaByIdNotFound(): void
     {
-        $sut = $this->getSut();
-
         $this->expectException(MediaNotFoundException::class);
-        $sut->getMediaById('someWrongId');
+
+        $sut = $this->getSut();
+        $sut->getMediaById(uniqid());
     }
 
-    public static function getFolderMediaDataProvider(): \Generator
-    {
-        yield "first page in folder" => [
-            'folder' => 'someFolder',
-            'start' => 0,
-            'expectedItems' => 5,
-            'firstListItemId' => 7
-        ];
-
-        yield "second page in folder" => [
-            'folder' => 'someFolder',
-            'start' => 5,
-            'expectedItems' => 2,
-            'firstListItemId' => 2
-        ];
-    }
 
     private function createTestItems(int $amount, string $folderId): void
     {
@@ -180,8 +180,9 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
 
     private function getSutForShop(int $shopId): MediaRepository
     {
-        $contextStub = $this->createMock(ContextInterface::class);
-        $contextStub->method('getCurrentShopId')->willReturn($shopId);
+        $contextStub = $this->createConfiguredStub(ContextInterface::class, [
+            'getCurrentShopId' => $shopId,
+        ]);
         return $this->getSut(
             context: $contextStub
         );
@@ -191,35 +192,37 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
         ?ContextInterface $context = null,
         ?ConnectionProviderInterface $connectionProvider = null,
         ?MediaFactoryInterface $mediaFactory = null,
-        ?Language $language = null
+        ?Language $language = null,
+        ?MediaAltRepositoryInterface $mediaAltRepository = null
     ): MediaRepository {
         $language = $language ?? $this->createLanguageStub();
         return new MediaRepository(
             connectionProvider: $connectionProvider ?? $this->get(ConnectionProviderInterface::class),
             context: $context ?? $this->get(ContextInterface::class),
             mediaFactory: $mediaFactory ?? $this->get(MediaFactoryInterface::class),
-            language: $language
+            language: $language,
+            mediaAltRepository: $mediaAltRepository ?? $this->get(MediaAltRepositoryInterface::class)
         );
     }
 
     private function createLanguageStub(): Language
     {
-        $languageStub = $this->createMock(Language::class);
-        $languageStub->method('getBaseLanguage')->willReturn(1);
-        return $languageStub;
+        return $this->createConfiguredStub(Language::class, [
+            'getBaseLanguage' => 1,
+        ]);
     }
 
     #[Test]
     public function addMedia(): void
     {
-        $oxid = 'someExampleMediaId';
+        $oxid = uniqid();
         $exampleMedia = new Media(
             oxid: $oxid,
-            fileName: 'someFilename',
+            fileName: uniqid(),
             fileSize: 123,
             fileType: 'image/gif',
             imageSize: new ImageSize(111, 222),
-            folderId: 'someFolderId'
+            folderId: uniqid()
         );
 
         $sut = $this->getSutForShop(3);
@@ -233,13 +236,13 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     #[Test]
     public function renameMedia(): void
     {
-        $mediaIdToRename = 'mediaToRename';
+        $mediaIdToRename = uniqid();
 
         $queryBuilder = $this->getAddItemQueryBuilder();
         $queryBuilder->setParameters([
             'OXID' => $mediaIdToRename,
             'OXSHOPID' => 2,
-            'DDFILENAME' => 'OriginalName',
+            'DDFILENAME' => uniqid(),
             'DDFILESIZE' => 0,
             'DDFILETYPE' => 'any',
             'DDIMAGESIZE' => 0,
@@ -247,7 +250,7 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
             'OXTIMESTAMP' => date("Y-m-d H:i:59")
         ])->execute();
 
-        $newName = 'NewName';
+        $newName = uniqid();
 
         $sut = $this->getSut();
         $renameResult = $sut->renameMedia($mediaIdToRename, $newName);
@@ -260,13 +263,13 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     #[Test]
     public function changeMediaFolder(): void
     {
-        $mediaIdToUpdate = 'mediaToChangeFolderId';
+        $mediaIdToUpdate = uniqid();
 
         $queryBuilder = $this->getAddItemQueryBuilder();
         $queryBuilder->setParameters([
             'OXID' => $mediaIdToUpdate,
             'OXSHOPID' => 2,
-            'DDFILENAME' => 'OriginalName',
+            'DDFILENAME' => uniqid(),
             'DDFILESIZE' => 0,
             'DDFILETYPE' => 'any',
             'DDIMAGESIZE' => 0,
@@ -288,7 +291,7 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     {
         $queryBuilder = $this->getAddItemQueryBuilder();
 
-        $idToRemove = 'regularMediaForRemoval';
+        $idToRemove = uniqid();
         $queryBuilder->setParameters([
             'OXID' => $idToRemove,
             'OXSHOPID' => 3,
@@ -312,7 +315,7 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     {
         $queryBuilder = $this->getAddItemQueryBuilder();
 
-        $idToRemove = 'directoryMediaForRemoval';
+        $idToRemove = uniqid();
         $queryBuilder->setParameters([
             'OXID' => $idToRemove,
             'OXSHOPID' => 3,
@@ -360,9 +363,9 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     #[Test]
     public function deleteArgumentWrongValueExplodes(): void
     {
-        $sut = $this->getSut();
-
         $this->expectException(WrongMediaIdGivenException::class);
+
+        $sut = $this->getSut();
         $sut->deleteMedia('');
     }
 
