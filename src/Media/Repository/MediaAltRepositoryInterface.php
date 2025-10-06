@@ -19,4 +19,6 @@ interface MediaAltRepositoryInterface
      * @return MediaAltTextInterface[]
      */
     public function getObjectAltTexts(string $objectId): array;
+
+    public function deleteMediaAltTexts(string $mediaId): void;
 }

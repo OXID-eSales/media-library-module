@@ -57,4 +57,13 @@ class MediaAltRepository implements MediaAltRepositoryInterface
         }
         return $altTexts;
     }
+
+    public function deleteMediaAltTexts(string $mediaId): void
+    {
+        $qb = $this->queryBuilderFactory->create();
+        $qb->delete('ddmedia_translations')
+            ->where('OXOBJECTID = :mediaId')
+            ->setParameter('mediaId', $mediaId)
+            ->execute();
+    }
 }

@@ -19,8 +19,8 @@ use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Exception\WrongMediaIdGivenException;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepository;
+use OxidEsales\MediaLibrary\Media\Repository\MediaAltRepositoryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use OxidEsales\Eshop\Core\Language;
 
@@ -364,5 +364,148 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
 
         $this->expectException(WrongMediaIdGivenException::class);
         $sut->deleteMedia('');
+    }
+
+    #[Test]
+    public function deleteMediaRemovesAltTextTranslations(): void
+    {
+        $connection = ContainerFacade::get(ConnectionProviderInterface::class)->get();
+        $mediaId = uniqid();
+
+        $queryBuilder = $this->getAddItemQueryBuilder();
+        $queryBuilder->setParameters([
+            'OXID' => $mediaId,
+            'OXSHOPID' => 2,
+            'DDFILENAME' => 'TestImage.jpg',
+            'DDFILESIZE' => 1000,
+            'DDFILETYPE' => 'image/jpeg',
+            'DDIMAGESIZE' => '100x100',
+            'DDFOLDERID' => '',
+            'OXTIMESTAMP' => date("Y-m-d H:i:s")
+        ])->execute();
+
+        $altText1 = uniqid();
+        $altText2 = uniqid();
+        $altText3 = uniqid();
+
+        $connection->executeQuery(
+            "INSERT INTO ddmedia_translations (OXOBJECTID, OXLANGUAGEID, OXALTSHORTTEXT) VALUES
+             (:id1, 0, :alt1),
+             (:id2, 1, :alt2),
+             (:id3, 2, :alt3)",
+            [
+                'id1' => $mediaId,
+                'alt1' => $altText1,
+                'id2' => $mediaId,
+                'alt2' => $altText2,
+                'id3' => $mediaId,
+                'alt3' => $altText3
+            ]
+        );
+
+        $result = $connection->executeQuery(
+            "SELECT COUNT(*) FROM ddmedia_translations WHERE OXOBJECTID = :id",
+            ['id' => $mediaId]
+        );
+        $this->assertEquals(3, $result->fetchOne());
+
+        $sut = $this->getSut();
+        $sut->deleteMedia($mediaId);
+
+        $this->expectException(MediaNotFoundException::class);
+        $sut->getMediaById($mediaId);
+
+        $result = $connection->executeQuery(
+            "SELECT COUNT(*) FROM ddmedia_translations WHERE OXOBJECTID = :id",
+            ['id' => $mediaId]
+        );
+        $this->assertEquals(0, $result->fetchOne());
+    }
+
+    #[Test]
+    public function deleteFolderRemovesAltTextForAllMediaInFolder(): void
+    {
+        $connection = ContainerFacade::get(ConnectionProviderInterface::class)->get();
+        $folderId = uniqid();
+        $mediaIds = [uniqid(), uniqid()];
+        $outsideId = uniqid();
+
+        // Add folder
+        $this->getAddItemQueryBuilder()->setParameters([
+            'OXID' => $folderId,
+            'OXSHOPID' => 2,
+            'DDFILENAME' => uniqid(),
+            'DDFILESIZE' => 0,
+            'DDFILETYPE' => 'directory',
+            'DDIMAGESIZE' => '',
+            'DDFOLDERID' => '',
+            'OXTIMESTAMP' => date("Y-m-d H:i:s")
+        ])->execute();
+
+        // Add media inside folder
+        foreach ($mediaIds as $i => $mediaId) {
+            $this->getAddItemQueryBuilder()->setParameters([
+                'OXID' => $mediaId,
+                'OXSHOPID' => 2,
+                'DDFILENAME' => uniqid() . '.jpg',
+                'DDFILESIZE' => 1000 * ($i + 1),
+                'DDFILETYPE' => 'image/jpeg',
+                'DDIMAGESIZE' => '100x100',
+                'DDFOLDERID' => $folderId,
+                'OXTIMESTAMP' => date("Y-m-d H:i:s")
+            ])->execute();
+        }
+
+        // Add media outside folder
+        $this->getAddItemQueryBuilder()->setParameters([
+            'OXID' => $outsideId,
+            'OXSHOPID' => 2,
+            'DDFILENAME' => uniqid() . '.jpg',
+            'DDFILESIZE' => 3000,
+            'DDFILETYPE' => 'image/jpeg',
+            'DDIMAGESIZE' => '300x300',
+            'DDFOLDERID' => '',
+            'OXTIMESTAMP' => date("Y-m-d H:i:s")
+        ])->execute();
+
+        // Insert alt texts
+        $ids = array_merge([$folderId], $mediaIds, [$outsideId]);
+        foreach ($ids as $id) {
+            $connection->executeQuery(
+                "INSERT INTO ddmedia_translations (OXOBJECTID, OXLANGUAGEID, OXALTSHORTTEXT) VALUES (:id, 0, :alt)",
+                ['id' => $id, 'alt' => uniqid()]
+            );
+        }
+
+        // Verify all alt texts exist
+        $result = $connection->executeQuery(
+            "SELECT COUNT(*) FROM ddmedia_translations WHERE OXOBJECTID IN (?, ?, ?, ?)",
+            [$folderId, $mediaIds[0], $mediaIds[1], $outsideId]
+        );
+        $this->assertEquals(4, $result->fetchOne());
+
+        // Delete folder
+        $sut = $this->getSut();
+        $sut->deleteMedia($folderId);
+
+        // Assert deleted
+        foreach ([$folderId, ...$mediaIds] as $id) {
+            $this->expectException(MediaNotFoundException::class);
+            $sut->getMediaById($id);
+        }
+        $this->assertInstanceOf(Media::class, $sut->getMediaById($outsideId));
+
+        // Alt text checks
+        $result = $connection->executeQuery(
+            "SELECT COUNT(*) FROM ddmedia_translations WHERE OXOBJECTID = :id",
+            ['id' => $outsideId]
+        );
+        $this->assertEquals(1, $result->fetchOne());
+
+        $result = $connection->executeQuery(
+            "SELECT COUNT(*) FROM ddmedia_translations WHERE OXOBJECTID IN (?, ?, ?)",
+            [$folderId, $mediaIds[0], $mediaIds[1]]
+        );
+        $this->assertEquals(0, $result->fetchOne());
     }
 }

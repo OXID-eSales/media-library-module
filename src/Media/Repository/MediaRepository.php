@@ -27,6 +27,7 @@ class MediaRepository implements MediaRepositoryInterface
         private ContextInterface $context,
         private MediaFactoryInterface $mediaFactory,
         private Language $language,
+        private MediaAltRepositoryInterface $mediaAltRepository,
     ) {
         $this->connection = $this->connectionProvider->get();
     }
@@ -138,6 +139,17 @@ class MediaRepository implements MediaRepositoryInterface
     {
         if (!$idToRemove) {
             throw new WrongMediaIdGivenException();
+        }
+
+        $mediaToDelete = $this->connection->executeQuery(
+            "SELECT OXID FROM ddmedia WHERE OXID = :OXID OR DDFOLDERID = :OXID",
+            [
+                'OXID' => $idToRemove
+            ]
+        )->fetchAllAssociative();
+
+        foreach ($mediaToDelete as $media) {
+            $this->mediaAltRepository->deleteMediaAltTexts($media['OXID']);
         }
 
         $this->connection->executeQuery(
