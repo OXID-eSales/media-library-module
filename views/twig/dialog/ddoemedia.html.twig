@@ -1,4 +1,4 @@
-<div class="dd-media{% if not request.isOverlay() %} dd-media-overview{% endif %}" data-foldername="{{ sFoldername }}" data-folderid="{{ sFolderId }}" data-medialink="{{ sResourceUrl }}/">
+<div class="dd-media{% if not request.isOverlay() %} dd-media-overview{% endif %}" data-foldername="{{ sFoldername }}" data-folderid="{{ sFolderId }}" data-medialink="{{ sResourceUrl }}/" data-translation-alt-text="{{ "DD_MEDIA_ALT_TEXT"|translate|e('html_attr') }}" data-translation-alt-text-placeholder="{{ "DD_MEDIA_ALT_TEXT_PLACEHOLDER"|translate|e('html_attr') }}" data-translation-alt-text-save-error="{{ "DD_MEDIA_ALT_TEXT_SAVE_ERROR"|translate|e('html_attr') }}">
 
     <div class="dd-media-drag-helper">
         <span>{{ translate({ ident: "DD_MEDIA_DRAG_INFO" })|raw }}</span>
@@ -189,10 +189,3 @@
     </div>
 </div>
 
-<script>
-window.OXID_TRANSLATIONS = {
-    DD_MEDIA_ALT_TEXT: '{{ "DD_MEDIA_ALT_TEXT"|translate|e('js') }}',
-    DD_MEDIA_ALT_TEXT_PLACEHOLDER: '{{ "DD_MEDIA_ALT_TEXT_PLACEHOLDER"|translate|e('js') }}',
-    DD_MEDIA_ALT_TEXT_SAVE_ERROR: '{{ "DD_MEDIA_ALT_TEXT_SAVE_ERROR"|translate|e('js') }}',
-};
-</script>
