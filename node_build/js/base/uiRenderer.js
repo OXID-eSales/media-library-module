@@ -21,6 +21,7 @@ export default class UIRenderer {
 
         if (!file) {
             form.style.display = 'none';
+            this.altAttributeManager.altTexts = {};
             return;
         }
 
@@ -72,6 +73,7 @@ export default class UIRenderer {
             this.altAttributeManager.bindAltTextEvents(form, this.fm.actionLink);
         } else {
             form.querySelector('#alt-attribute-wrapper').classList.replace('d-block', 'd-none');
+            this.altAttributeManager.altTexts = {};
         }
     }
 

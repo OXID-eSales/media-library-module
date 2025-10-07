@@ -10,9 +10,14 @@ class AltAttributeManager {
         const $detailForm = $(detailForm);
         this._showAltTextLoading($detailForm);
         this.fileManager.setActionLink(actionLink);
+        this.altTexts = {};
         return this.fileManager.getAltTexts(objectId)
             .then(data => {
                 this.altTexts = data.altTexts || {};
+                this._renderAltTextInputs($detailForm);
+            })
+            .catch(error => {
+                this.altTexts = {};
                 this._renderAltTextInputs($detailForm);
             })
             .finally(() => {
@@ -39,7 +44,7 @@ class AltAttributeManager {
         });
 
         saveBtn.on('click.alttext', () => {
-            const objectId = $detailForm.data('media-id');
+            const objectId = $detailForm[0].dataset.mediaId;
             const altTexts = {};
             altInputsContainer.find('input.dd-media-alttext-input').each(function () {
                 altTexts[$(this).data('langId')] = $(this).val();
