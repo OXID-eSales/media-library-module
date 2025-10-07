@@ -47,14 +47,14 @@ class MediaRepository implements MediaRepositoryInterface
 
     public function getFolderMedia(string $folderId, int $start, int $limit = 18): array
     {
+        $languageId = (int)$this->language->getBaseLanguage();
         $queryResult = $this->connection->executeQuery(
-            $this->getMediaSelectSqlPart()
+            $this->getMediaSelectSqlPart($languageId)
             . " WHERE m.OXSHOPID = :OXSHOPID AND m.DDFOLDERID = :DDFOLDERID
             ORDER BY m.OXTIMESTAMP DESC LIMIT $start, $limit",
             [
                 'OXSHOPID' => $this->context->getCurrentShopId(),
                 'DDFOLDERID' => $folderId,
-                'OXLANGUAGEID' => $this->language->getBaseLanguage(),
             ]
         );
 
@@ -68,12 +68,12 @@ class MediaRepository implements MediaRepositoryInterface
 
     public function getMediaById(string $mediaId): MediaInterface
     {
+        $languageId = (int)$this->language->getBaseLanguage();
         $result = $this->connection->executeQuery(
-            $this->getMediaSelectSqlPart()
+            $this->getMediaSelectSqlPart($languageId)
             . " WHERE m.OXID = :OXID",
             [
                 'OXID' => $mediaId,
-                'OXLANGUAGEID' => $this->language->getBaseLanguage(),
             ]
         );
 
@@ -108,11 +108,14 @@ class MediaRepository implements MediaRepositoryInterface
         );
     }
 
-    private function getMediaSelectSqlPart(): string
+    private function getMediaSelectSqlPart(int $languageId): string
     {
-        return "SELECT m.*, j.DDFILENAME as FOLDERNAME, t.OXALTSHORTTEXT FROM ddmedia m
+        return sprintf(
+            "SELECT m.*, j.DDFILENAME as FOLDERNAME, t.OXALTSHORTTEXT FROM ddmedia m
             LEFT JOIN ddmedia j ON j.OXID=m.DDFOLDERID AND m.DDFOLDERID <> ''
-            LEFT JOIN ddmedia_translations t ON t.OXOBJECTID = m.OXID AND t.OXLANGUAGEID = :OXLANGUAGEID";
+            LEFT JOIN ddmedia_translations t ON t.OXOBJECTID = m.OXID AND t.OXLANGUAGEID = %d",
+            $languageId
+        );
     }
 
     /**
