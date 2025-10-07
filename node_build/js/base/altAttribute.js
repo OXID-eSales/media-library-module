@@ -121,10 +121,6 @@ class AltAttributeManager {
     _hideAltTextLoading($detailForm) {
         $detailForm.find('.dd-alttext-spinner').remove();
     }
-
-    _fetchJSON(url, options) {
-        return fetch(url, Object.assign({credentials: 'same-origin'}, options)).then(r => r.json());
-    }
 }
 
 export default AltAttributeManager;
