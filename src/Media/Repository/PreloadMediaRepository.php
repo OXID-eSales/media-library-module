@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Media\Repository;
 
 use Doctrine\DBAL\Connection;
-use OxidEsales\Eshop\Core\Language;
+use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 
@@ -25,7 +25,7 @@ class PreloadMediaRepository implements PreloadMediaRepositoryInterface
     public function __construct(
         private readonly Connection $connection,
         private readonly MediaFactoryInterface $mediaFactory,
-        private readonly Language $language,
+        private readonly LanguageInterface $language,
     ) {
     }
 
@@ -60,7 +60,7 @@ class PreloadMediaRepository implements PreloadMediaRepositoryInterface
             return;
         }
 
-        $languageId = (int)$this->language->getBaseLanguage();
+        $languageId = $this->language->getBaseLanguage();
         $sql = $this->getMediaSelectSqlPart($languageId) . " WHERE m.OXID in (:OXIDLIST)";
         $params = [
             'OXIDLIST' => $this->idsToPreload

@@ -20,9 +20,9 @@ use OxidEsales\MediaLibrary\Media\Exception\WrongMediaIdGivenException;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepository;
 use OxidEsales\MediaLibrary\Media\Repository\MediaAltRepositoryInterface;
+use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use OxidEsales\Eshop\Core\Language;
 
 #[CoversClass(MediaRepository::class)]
 class MediaRepositoryTest extends RepositoryIntegrationTestCase
@@ -192,7 +192,7 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
         ?ContextInterface $context = null,
         ?ConnectionProviderInterface $connectionProvider = null,
         ?MediaFactoryInterface $mediaFactory = null,
-        ?Language $language = null,
+        ?LanguageInterface $language = null,
         ?MediaAltRepositoryInterface $mediaAltRepository = null
     ): MediaRepository {
         $language = $language ?? $this->createLanguageStub();
@@ -205,9 +205,9 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
         );
     }
 
-    private function createLanguageStub(): Language
+    private function createLanguageStub(): LanguageInterface
     {
-        return $this->createConfiguredStub(Language::class, [
+        return $this->createConfiguredStub(LanguageInterface::class, [
             'getBaseLanguage' => 1,
         ]);
     }

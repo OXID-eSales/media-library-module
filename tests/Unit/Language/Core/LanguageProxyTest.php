@@ -48,6 +48,28 @@ class LanguageProxyTest extends TestCase
         $this->assertSame($expected, $sut->getLanguageArray());
     }
 
+    public function testGetBaseLanguageReturnsInt(): void
+    {
+        $shopLanguageMock = $this->createPartialMock(ShopLanguage::class, ['getBaseLanguage']);
+        $shopLanguageMock->expects($this->once())
+            ->method('getBaseLanguage')
+            ->willReturn('0');
+
+        $sut = $this->getSut(shopLanguage: $shopLanguageMock);
+        $this->assertSame(0, $sut->getBaseLanguage());
+    }
+
+    public function testGetBaseLanguageWithIntInput(): void
+    {
+        $shopLanguageMock = $this->createPartialMock(ShopLanguage::class, ['getBaseLanguage']);
+        $shopLanguageMock->expects($this->once())
+            ->method('getBaseLanguage')
+            ->willReturn(1);
+
+        $sut = $this->getSut(shopLanguage: $shopLanguageMock);
+        $this->assertSame(1, $sut->getBaseLanguage());
+    }
+
     public function getSut(
         ShopLanguage $shopLanguage = null
     ): LanguageProxy {

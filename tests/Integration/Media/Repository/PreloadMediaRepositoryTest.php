@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Integration\Media\Repository;
 
-use OxidEsales\Eshop\Core\Language;
 use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepository;
@@ -161,11 +161,11 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
         );
     }
 
-    private function createLanguageStub(): Language
+    private function createLanguageStub(): LanguageInterface
     {
-        $languageStub = $this->createMock(Language::class);
-        $languageStub->method('getBaseLanguage')->willReturn(1);
-        return $languageStub;
+        return $this->createConfiguredStub(LanguageInterface::class, [
+            'getBaseLanguage' => 1,
+        ]);
     }
 
     private function createRandomMedia(): string

@@ -37,6 +37,17 @@ class LanguageProxyTest extends TestCase
         $this->assertSame($exampleLanguageStrings, $sut->getLanguageStringsArray());
     }
 
+    public function testGetBaseLanguage(): void
+    {
+        $shopLanguageMock = $this->createMock(ShopLanguage::class);
+        $shopLanguageMock->expects($this->once())
+            ->method('getBaseLanguage')
+            ->willReturn($expectedLanguageId = rand(0, 10));
+
+        $sut = $this->getSut(shopLanguage: $shopLanguageMock);
+        $this->assertSame($expectedLanguageId, $sut->getBaseLanguage());
+    }
+
 
     public function getSut(
         ShopLanguage $shopLanguage = null

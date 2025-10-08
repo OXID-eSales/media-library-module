@@ -16,7 +16,7 @@ use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Exception\WrongMediaIdGivenException;
-use OxidEsales\Eshop\Core\Language;
+use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 
 class MediaRepository implements MediaRepositoryInterface
 {
@@ -26,7 +26,7 @@ class MediaRepository implements MediaRepositoryInterface
         private ConnectionProviderInterface $connectionProvider,
         private ContextInterface $context,
         private MediaFactoryInterface $mediaFactory,
-        private Language $language,
+        private LanguageInterface $language,
         private MediaAltRepositoryInterface $mediaAltRepository,
     ) {
         $this->connection = $this->connectionProvider->get();
@@ -47,7 +47,7 @@ class MediaRepository implements MediaRepositoryInterface
 
     public function getFolderMedia(string $folderId, int $start, int $limit = 18): array
     {
-        $languageId = (int)$this->language->getBaseLanguage();
+        $languageId = $this->language->getBaseLanguage();
         $queryResult = $this->connection->executeQuery(
             $this->getMediaSelectSqlPart($languageId)
             . " WHERE m.OXSHOPID = :OXSHOPID AND m.DDFOLDERID = :DDFOLDERID
@@ -68,7 +68,7 @@ class MediaRepository implements MediaRepositoryInterface
 
     public function getMediaById(string $mediaId): MediaInterface
     {
-        $languageId = (int)$this->language->getBaseLanguage();
+        $languageId = $this->language->getBaseLanguage();
         $result = $this->connection->executeQuery(
             $this->getMediaSelectSqlPart($languageId)
             . " WHERE m.OXID = :OXID",

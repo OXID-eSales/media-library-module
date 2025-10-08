@@ -2,8 +2,6 @@ services:
   _defaults:
     public: false
     autowire: true
-    bind:
-      OxidEsales\Eshop\Core\Language: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getLang()'
 
   OxidEsales\MediaLibrary\Media\Repository\Connection:
     class: 'Doctrine\DBAL\Driver\Connection'
