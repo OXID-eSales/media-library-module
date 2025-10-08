@@ -31,7 +31,6 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
         $sut = $this->getSut();
         $media = $sut->getMediaById($id);
         $this->assertSame($id, $media->getOxid());
-        $this->assertSame('alttext_' . $id, $media->getMediaAltText());
     }
 
     #[Test]
@@ -43,7 +42,7 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
 
         // load the media object for the first time
         $media = $sut->getMediaById($id);
-        $this->assertSame('alttext_' . $id, $media->getMediaAltText());
+        $this->assertSame($id, $media->getOxid());
 
         $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
         $queryBuilder = $queryBuilderFactory->create();
@@ -54,7 +53,6 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
 
         $media = $sut->getMediaById($id);
         $this->assertSame($id, $media->getOxid());
-        $this->assertSame('alttext_' . $id, $media->getMediaAltText());
     }
 
     #[Test]
@@ -65,8 +63,7 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
         $sut = $this->getSut();
 
         // load the media object for the first time
-        $media = $sut->getMediaById($id);
-        $this->assertSame('alttext_' . $id, $media->getMediaAltText());
+        $sut->getMediaById($id);
 
         $startTime = microtime(true);
         for ($i = 0; $i < 10000; $i++) {
@@ -112,7 +109,6 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
 
         $media1 = $sut->getMediaById($id1);
         $this->assertSame($id1, $media1->getOxid());
-        $this->assertSame('alttext_' . $id1, $media1->getMediaAltText());
 
         $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
         $queryBuilder = $queryBuilderFactory->create();
@@ -123,28 +119,15 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
 
         $media2 = $sut->getMediaById($id2);
         $this->assertSame($id2, $media2->getOxid());
-        $this->assertSame('alttext_' . $id2, $media2->getMediaAltText());
 
         $media3 = $sut->getMediaById($id3);
         $this->assertSame($id3, $media3->getOxid());
-        $this->assertSame('alttext_' . $id3, $media3->getMediaAltText());
     }
 
     #[Test]
     public function getMediaByIdReturnsEmptyAltTextIfNoTranslationExists()
     {
-        $queryBuilder = $this->getAddItemQueryBuilder();
-        $id = uniqid();
-        $queryBuilder->setParameters([
-            'OXID' => $id,
-            'OXSHOPID' => 1,
-            'DDFILENAME' => uniqid(),
-            'DDFILESIZE' => 0,
-            'DDFILETYPE' => 'not in directory',
-            'DDIMAGESIZE' => 0,
-            'DDFOLDERID' => '',
-            'OXTIMESTAMP' => date("Y-m-d H:i:59")
-        ])->execute();
+        $id = $this->createRandomMedia();
 
         $sut = $this->getSut();
         $media = $sut->getMediaById($id);
@@ -152,20 +135,28 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
         $this->assertSame('', $media->getMediaAltText());
     }
 
-    private function getSut(): PreloadMediaRepositoryInterface
+    #[Test]
+    public function getMediaByIdReturnsAltTextForCorrectLanguage()
     {
-        return new PreloadMediaRepository(
-            connection: ContainerFacade::get(ConnectionProviderInterface::class)->get(),
-            mediaFactory: $this->get(MediaFactoryInterface::class),
-            language: $this->createLanguageStub(),
-        );
-    }
+        $id = uniqid();
+        $languageId = rand(0, 10);
+        $altTextForLanguage = uniqid();
+        $altTextForOtherLanguage = uniqid();
 
-    private function createLanguageStub(): LanguageInterface
-    {
-        return $this->createConfiguredStub(LanguageInterface::class, [
-            'getBaseLanguage' => 1,
-        ]);
+        $this->createMediaWithMultipleAltTexts(
+            $id,
+            $languageId,
+            $altTextForLanguage,
+            $altTextForOtherLanguage
+        );
+
+        $languageStub = $this->createConfiguredStub(LanguageInterface::class, ['getBaseLanguage' => rand(0, 10),]);
+
+        $sut = $this->getSut(language: $languageStub);
+
+        $media = $sut->getMediaById($id);
+        $this->assertSame($id, $media->getOxid());
+        $this->assertSame($altTextForLanguage, $media->getMediaAltText());
     }
 
     private function createRandomMedia(): string
@@ -182,7 +173,29 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
             'OXTIMESTAMP' => date("Y-m-d H:i:59")
         ])->execute();
 
+        return $id;
+    }
+
+    private function createMediaWithMultipleAltTexts(
+        string $id,
+        int $languageId,
+        string $altTextForLanguage,
+        string $altTextForOtherLanguage
+    ): void {
+        $queryBuilder = $this->getAddItemQueryBuilder();
+        $queryBuilder->setParameters([
+            'OXID' => $id,
+            'OXSHOPID' => 1,
+            'DDFILENAME' => uniqid(),
+            'DDFILESIZE' => 0,
+            'DDFILETYPE' => 'not in directory',
+            'DDIMAGESIZE' => 0,
+            'DDFOLDERID' => '',
+            'OXTIMESTAMP' => date("Y-m-d H:i:59")
+        ])->execute();
+
         $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
+
         $qbAlt = $queryBuilderFactory->create();
         $qbAlt->insert('ddmedia_translations')->values([
             'OXOBJECTID' => ':OXOBJECTID',
@@ -190,10 +203,29 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
             'OXALTSHORTTEXT' => ':OXALTSHORTTEXT',
         ])->setParameters([
             'OXOBJECTID' => $id,
-            'OXLANGUAGEID' => 1,
-            'OXALTSHORTTEXT' => 'alttext_' . $id
+            'OXLANGUAGEID' => $languageId,
+            'OXALTSHORTTEXT' => $altTextForLanguage
         ])->execute();
 
-        return $id;
+        $otherLanguageId = $languageId + 1;
+        $qbAlt2 = $queryBuilderFactory->create();
+        $qbAlt2->insert('ddmedia_translations')->values([
+            'OXOBJECTID' => ':OXOBJECTID',
+            'OXLANGUAGEID' => ':OXLANGUAGEID',
+            'OXALTSHORTTEXT' => ':OXALTSHORTTEXT',
+        ])->setParameters([
+            'OXOBJECTID' => $id,
+            'OXLANGUAGEID' => $otherLanguageId,
+            'OXALTSHORTTEXT' => $altTextForOtherLanguage
+        ])->execute();
+    }
+
+    private function getSut(?LanguageInterface $language = null): PreloadMediaRepositoryInterface
+    {
+        return new PreloadMediaRepository(
+            connection: ContainerFacade::get(ConnectionProviderInterface::class)->get(),
+            mediaFactory: $this->get(MediaFactoryInterface::class),
+            language: $language ?? $this->get(LanguageInterface::class),
+        );
     }
 }
