@@ -35,10 +35,7 @@ class LanguageProxyTest extends TestCase
 
     public function testGetLanguageArray(): void
     {
-        $expected = [
-            (object)['id' => 0, 'abbr' => 'en', 'name' => 'English', 'active' => true, 'baseId' => 0],
-            (object)['id' => 1, 'abbr' => 'de', 'name' => 'Deutsch', 'active' => true, 'baseId' => 1],
-        ];
+        $expected = [uniqid()];
         $shopLanguageMock = $this->createPartialMock(ShopLanguage::class, ['getLanguageArray']);
         $shopLanguageMock->expects($this->once())
             ->method('getLanguageArray')

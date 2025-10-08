@@ -61,6 +61,10 @@ class MediaAltRepositoryTest extends RepositoryIntegrationTestCase
 
         $sut = $this->getSut();
         $sut->saveAltText($altText1Stub);
+        $results = $sut->getObjectAltTexts($objectId);
+        $this->assertCount(1, $results);
+        $this->assertSame('first', $results[0]->getText());
+
         $sut->saveAltText($altText2Stub);
         $results = $sut->getObjectAltTexts($objectId);
 

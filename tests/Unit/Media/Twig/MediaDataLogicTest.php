@@ -9,15 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Twig;
 
-use OxidEsales\MediaLibrary\Media\DataType\MediaAltTextInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
-use OxidEsales\MediaLibrary\Media\Exception\MediaAltTextNotFoundException;
 use OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface;
-use OxidEsales\MediaLibrary\Media\Repository\MediaAltRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Twig\MediaDataLogic;
 use OxidEsales\MediaLibrary\Media\Twig\MediaDataLogicInterface;
-use OxidEsales\MediaLibrary\Media\DataType\MediaAltText;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -28,13 +24,13 @@ class MediaDataLogicTest extends TestCase
     {
         $mediaId = uniqid();
 
-        $mediaFacadStub = $this->createMock(MediaFacadeInterface::class);
-        $mediaFacadStub->method('getMediaUrl')
+        $mediaFacadeMock = $this->createMock(MediaFacadeInterface::class);
+        $mediaFacadeMock->method('getMediaUrl')
             ->with($mediaId)
             ->willReturn($expectedUrl = uniqid());
 
         $sut = $this->getSut(
-            mediaFacade: $mediaFacadStub,
+            mediaFacade: $mediaFacadeMock,
         );
 
         $result = $sut->getMediaUrl($mediaId);
@@ -65,11 +61,10 @@ class MediaDataLogicTest extends TestCase
         $objectId = uniqid();
         $expectedText = uniqid();
 
-        $mediaMock = $this->createMock(MediaInterface::class);
-        $mediaMock->method('getMediaAltText')->willReturn($expectedText);
+        $mediaStub = $this->createConfiguredStub(MediaInterface::class, ['getMediaAltText' => $expectedText]);
 
         $mediaFacadeMock = $this->createMock(MediaFacadeInterface::class);
-        $mediaFacadeMock->method('getMedia')->with($objectId)->willReturn($mediaMock);
+        $mediaFacadeMock->method('getMedia')->with($objectId)->willReturn($mediaStub);
 
         $sut = $this->getSut(mediaFacade: $mediaFacadeMock);
         $result = $sut->getMediaAltText($objectId);

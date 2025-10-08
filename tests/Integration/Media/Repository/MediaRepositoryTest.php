@@ -195,21 +195,13 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
         ?LanguageInterface $language = null,
         ?MediaAltRepositoryInterface $mediaAltRepository = null
     ): MediaRepository {
-        $language = $language ?? $this->createLanguageStub();
         return new MediaRepository(
             connectionProvider: $connectionProvider ?? $this->get(ConnectionProviderInterface::class),
             context: $context ?? $this->get(ContextInterface::class),
             mediaFactory: $mediaFactory ?? $this->get(MediaFactoryInterface::class),
-            language: $language,
+            language: $language ?? $this->get(LanguageInterface::class),
             mediaAltRepository: $mediaAltRepository ?? $this->get(MediaAltRepositoryInterface::class)
         );
-    }
-
-    private function createLanguageStub(): LanguageInterface
-    {
-        return $this->createConfiguredStub(LanguageInterface::class, [
-            'getBaseLanguage' => 1,
-        ]);
     }
 
     #[Test]
@@ -230,7 +222,6 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
 
         $resultMedia = $sut->getMediaById($oxid);
         $this->assertEquals($exampleMedia, $resultMedia);
-        $this->assertSame('', $resultMedia->getMediaAltText());
     }
 
     #[Test]
