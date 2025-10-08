@@ -113,4 +113,31 @@ final class MediaLibraryCest
         $I->seeAltTextEquals($altText)
             ->deleteImage();
     }
+
+    public function testEmptyAltTextCanBeSaved(MediaLibraryAcceptanceTester $I): void
+    {
+        $I->wantToTest('Empty alt text can be saved and clears existing text');
+
+        $I->loginAdmin();
+        $I->openMediaLibrary()
+            ->switchToUploadTab()
+            ->uploadImage($this->testImage)
+            ->switchToMediaListTab()
+            ->openFirstMediaDetails();
+
+        $altText = 'Test alt text ' . uniqid();
+        $I->fillAltText($altText)
+            ->saveAltText();
+
+        $I->waitForText('Alt texts saved successfully!', 5, '.dd-media-alttext-success');
+        $I->seeAltTextEquals($altText);
+
+        $I->fillAltText('')
+            ->saveAltText();
+
+        $I->waitForText('Alt texts saved successfully!', 5, '.dd-media-alttext-success');
+
+        $I->seeAltTextEquals('')
+            ->deleteImage();
+    }
 }
