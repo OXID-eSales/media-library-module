@@ -33,6 +33,21 @@ class LanguageProxyTest extends TestCase
         $this->assertSame($exampleTranslation, $sut->getSeoReplaceChars());
     }
 
+    public function testGetLanguageArray(): void
+    {
+        $expected = [
+            (object)['id' => 0, 'abbr' => 'en', 'name' => 'English', 'active' => true, 'baseId' => 0],
+            (object)['id' => 1, 'abbr' => 'de', 'name' => 'Deutsch', 'active' => true, 'baseId' => 1],
+        ];
+        $shopLanguageMock = $this->createPartialMock(ShopLanguage::class, ['getLanguageArray']);
+        $shopLanguageMock->expects($this->once())
+            ->method('getLanguageArray')
+            ->willReturn($expected);
+
+        $sut = $this->getSut(shopLanguage: $shopLanguageMock);
+        $this->assertSame($expected, $sut->getLanguageArray());
+    }
+
     public function getSut(
         ShopLanguage $shopLanguage = null
     ): LanguageProxy {

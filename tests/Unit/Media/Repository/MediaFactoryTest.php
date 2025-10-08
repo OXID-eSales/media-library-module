@@ -22,6 +22,7 @@ class MediaFactoryTest extends TestCase
         $sut = $this->getSut();
         $fileNameValue = 'filenameValue';
         $fileTypeValue = 'filetypeValue';
+        $altTextValue = 'Sample alt text';
 
         $data = [
             'OXID' => 'oxidValue',
@@ -33,6 +34,7 @@ class MediaFactoryTest extends TestCase
             'DDFOLDERID' => 'someFolderId',
             'OXTIMESTAMP' => '2023-10-30 12:53:10',
             'FOLDERNAME' => 'someFolderName',
+            'OXALTSHORTTEXT' => $altTextValue
         ];
 
         $result = $sut->fromDatabaseArray($data);
@@ -43,6 +45,7 @@ class MediaFactoryTest extends TestCase
         $this->assertSame($fileTypeValue, $result->getFileType());
         $this->assertSame('someFolderId', $result->getFolderId());
         $this->assertSame('someFolderName', $result->getFolderName());
+        $this->assertSame($altTextValue, $result->getMediaAltText());
 
         $size = $result->getImageSize();
         $this->assertSame(100, $size->getWidth());

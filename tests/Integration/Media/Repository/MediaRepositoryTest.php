@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Integration\Media\Repository;
 
+use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
@@ -17,9 +19,10 @@ use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Exception\WrongMediaIdGivenException;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepository;
+use OxidEsales\MediaLibrary\Media\Repository\MediaAltRepositoryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use OxidEsales\Eshop\Core\Language;
 
 #[CoversClass(MediaRepository::class)]
 class MediaRepositoryTest extends RepositoryIntegrationTestCase
@@ -27,38 +30,56 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     #[Test]
     public function getShopFolderMediaCount(): void
     {
-        $this->createTestItems(3, 'someFolder');
+        $folder = uniqid();
+        $this->createTestItems(3, $folder);
         $this->createTestItems(2, '');
 
-        $contextStub = $this->createMock(ContextInterface::class);
-        $contextStub->method('getCurrentShopId')->willReturn(2);
+        $contextStub = $this->createConfiguredStub(ContextInterface::class, [
+            'getCurrentShopId' => 2,
+        ]);
         $sut = $this->getSut(
             context: $contextStub
         );
 
-        $this->assertSame(3, $sut->getFolderMediaCount('someFolder'));
+        $this->assertSame(3, $sut->getFolderMediaCount($folder));
         $this->assertSame(3, $sut->getFolderMediaCount(''));
     }
 
-    #[DataProvider('getFolderMediaDataProvider')]
     #[Test]
-    public function getShopFolderMediaInFolder(
-        string $folder,
-        int $start,
-        int $expectedItems,
-        int $firstListItemId
-    ): void {
-        $this->createTestItems(7, 'someFolder');
+    public function getShopFolderMediaInFolderFirstPage(): void
+    {
+        $folderName = uniqid();
+        $this->createTestItems(7, $folderName);
         $this->createTestItems(3, '');
 
         $sut = $this->getSutForShop(2);
+        $result = $sut->getFolderMedia($folderName, 0, 5);
 
-        $result = $sut->getFolderMedia($folder, $start, 5);
-
-        $this->assertSame($expectedItems, count($result));
+        $this->assertCount(5, $result);
         foreach ($result as $key => $oneItem) {
             $this->assertInstanceOf(Media::class, $oneItem);
-            $this->assertSame($folder . 'example' . ($firstListItemId - $key), $oneItem->getOxid());
+            $expectedOxid = $folderName . 'example' . (7 - $key);
+            $this->assertSame($expectedOxid, $oneItem->getOxid());
+            $this->assertSame('alttext_' . $expectedOxid, $oneItem->getMediaAltText());
+        }
+    }
+
+    #[Test]
+    public function getShopFolderMediaInFolderSecondPage(): void
+    {
+        $folderName = uniqid();
+        $this->createTestItems(7, $folderName);
+        $this->createTestItems(3, '');
+
+        $sut = $this->getSutForShop(2);
+        $result = $sut->getFolderMedia($folderName, 5, 5);
+
+        $this->assertCount(2, $result);
+        foreach ($result as $key => $oneItem) {
+            $this->assertInstanceOf(Media::class, $oneItem);
+            $expectedOxid = $folderName . 'example' . (2 - $key);
+            $this->assertSame($expectedOxid, $oneItem->getOxid());
+            $this->assertSame('alttext_' . $expectedOxid, $oneItem->getMediaAltText());
         }
     }
 
@@ -94,32 +115,18 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     #[Test]
     public function getMediaByIdNotFound(): void
     {
-        $sut = $this->getSut();
-
         $this->expectException(MediaNotFoundException::class);
-        $sut->getMediaById('someWrongId');
+
+        $sut = $this->getSut();
+        $sut->getMediaById(uniqid());
     }
 
-    public static function getFolderMediaDataProvider(): \Generator
-    {
-        yield "first page in folder" => [
-            'folder' => 'someFolder',
-            'start' => 0,
-            'expectedItems' => 5,
-            'firstListItemId' => 7
-        ];
-
-        yield "second page in folder" => [
-            'folder' => 'someFolder',
-            'start' => 5,
-            'expectedItems' => 2,
-            'firstListItemId' => 2
-        ];
-    }
 
     private function createTestItems(int $amount, string $folderId): void
     {
         $queryBuilder = $this->getAddItemQueryBuilder();
+        $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
+        $altTextLanguageId = 1;
 
         if ($folderId) {
             $queryBuilder->setParameters([
@@ -132,11 +139,23 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
                 'DDFOLDERID' => '',
                 'OXTIMESTAMP' => date("Y-m-d H:i:59")
             ])->execute();
+
+            $qbAlt = $queryBuilderFactory->create();
+            $qbAlt->insert('ddmedia_translations')->values([
+                'OXOBJECTID' => ':OXOBJECTID',
+                'OXLANGUAGEID' => ':OXLANGUAGEID',
+                'OXALTSHORTTEXT' => ':OXALTSHORTTEXT',
+            ])->setParameters([
+                'OXOBJECTID' => $folderId,
+                'OXLANGUAGEID' => $altTextLanguageId,
+                'OXALTSHORTTEXT' => 'alttext_' . $folderId
+            ])->execute();
         }
 
         for ($i = 1; $i <= $amount; $i++) {
+            $oxid = $folderId . 'example' . $i;
             $queryBuilder->setParameters([
-                'OXID' => $folderId . 'example' . $i,
+                'OXID' => $oxid,
                 'OXSHOPID' => 2,
                 'DDFILENAME' => 'filename' . $i . '.jpg',
                 'DDFILESIZE' => $i * 10,
@@ -145,13 +164,25 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
                 'DDFOLDERID' => $folderId,
                 'OXTIMESTAMP' => date("Y-m-d H:i:") . $i
             ])->execute();
+
+            $qbAlt = $queryBuilderFactory->create();
+            $qbAlt->insert('ddmedia_translations')->values([
+                'OXOBJECTID' => ':OXOBJECTID',
+                'OXLANGUAGEID' => ':OXLANGUAGEID',
+                'OXALTSHORTTEXT' => ':OXALTSHORTTEXT',
+            ])->setParameters([
+                'OXOBJECTID' => $oxid,
+                'OXLANGUAGEID' => $altTextLanguageId,
+                'OXALTSHORTTEXT' => 'alttext_' . $oxid
+            ])->execute();
         }
     }
 
     private function getSutForShop(int $shopId): MediaRepository
     {
-        $contextStub = $this->createMock(ContextInterface::class);
-        $contextStub->method('getCurrentShopId')->willReturn($shopId);
+        $contextStub = $this->createConfiguredStub(ContextInterface::class, [
+            'getCurrentShopId' => $shopId,
+        ]);
         return $this->getSut(
             context: $contextStub
         );
@@ -161,27 +192,37 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
         ?ContextInterface $context = null,
         ?ConnectionProviderInterface $connectionProvider = null,
         ?MediaFactoryInterface $mediaFactory = null,
+        ?Language $language = null,
+        ?MediaAltRepositoryInterface $mediaAltRepository = null
     ): MediaRepository {
-        $sut = new MediaRepository(
+        $language = $language ?? $this->createLanguageStub();
+        return new MediaRepository(
             connectionProvider: $connectionProvider ?? $this->get(ConnectionProviderInterface::class),
             context: $context ?? $this->get(ContextInterface::class),
             mediaFactory: $mediaFactory ?? $this->get(MediaFactoryInterface::class),
+            language: $language,
+            mediaAltRepository: $mediaAltRepository ?? $this->get(MediaAltRepositoryInterface::class)
         );
+    }
 
-        return $sut;
+    private function createLanguageStub(): Language
+    {
+        return $this->createConfiguredStub(Language::class, [
+            'getBaseLanguage' => 1,
+        ]);
     }
 
     #[Test]
     public function addMedia(): void
     {
-        $oxid = 'someExampleMediaId';
+        $oxid = uniqid();
         $exampleMedia = new Media(
             oxid: $oxid,
-            fileName: 'someFilename',
+            fileName: uniqid(),
             fileSize: 123,
             fileType: 'image/gif',
             imageSize: new ImageSize(111, 222),
-            folderId: 'someFolderId'
+            folderId: uniqid()
         );
 
         $sut = $this->getSutForShop(3);
@@ -189,18 +230,19 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
 
         $resultMedia = $sut->getMediaById($oxid);
         $this->assertEquals($exampleMedia, $resultMedia);
+        $this->assertSame('', $resultMedia->getMediaAltText());
     }
 
     #[Test]
     public function renameMedia(): void
     {
-        $mediaIdToRename = 'mediaToRename';
+        $mediaIdToRename = uniqid();
 
         $queryBuilder = $this->getAddItemQueryBuilder();
         $queryBuilder->setParameters([
             'OXID' => $mediaIdToRename,
             'OXSHOPID' => 2,
-            'DDFILENAME' => 'OriginalName',
+            'DDFILENAME' => uniqid(),
             'DDFILESIZE' => 0,
             'DDFILETYPE' => 'any',
             'DDIMAGESIZE' => 0,
@@ -208,7 +250,7 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
             'OXTIMESTAMP' => date("Y-m-d H:i:59")
         ])->execute();
 
-        $newName = 'NewName';
+        $newName = uniqid();
 
         $sut = $this->getSut();
         $renameResult = $sut->renameMedia($mediaIdToRename, $newName);
@@ -221,13 +263,13 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     #[Test]
     public function changeMediaFolder(): void
     {
-        $mediaIdToUpdate = 'mediaToChangeFolderId';
+        $mediaIdToUpdate = uniqid();
 
         $queryBuilder = $this->getAddItemQueryBuilder();
         $queryBuilder->setParameters([
             'OXID' => $mediaIdToUpdate,
             'OXSHOPID' => 2,
-            'DDFILENAME' => 'OriginalName',
+            'DDFILENAME' => uniqid(),
             'DDFILESIZE' => 0,
             'DDFILETYPE' => 'any',
             'DDIMAGESIZE' => 0,
@@ -249,7 +291,7 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     {
         $queryBuilder = $this->getAddItemQueryBuilder();
 
-        $idToRemove = 'regularMediaForRemoval';
+        $idToRemove = uniqid();
         $queryBuilder->setParameters([
             'OXID' => $idToRemove,
             'OXSHOPID' => 3,
@@ -273,7 +315,7 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     {
         $queryBuilder = $this->getAddItemQueryBuilder();
 
-        $idToRemove = 'directoryMediaForRemoval';
+        $idToRemove = uniqid();
         $queryBuilder->setParameters([
             'OXID' => $idToRemove,
             'OXSHOPID' => 3,
@@ -321,9 +363,152 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     #[Test]
     public function deleteArgumentWrongValueExplodes(): void
     {
-        $sut = $this->getSut();
-
         $this->expectException(WrongMediaIdGivenException::class);
+
+        $sut = $this->getSut();
         $sut->deleteMedia('');
+    }
+
+    #[Test]
+    public function deleteMediaRemovesAltTextTranslations(): void
+    {
+        $connection = ContainerFacade::get(ConnectionProviderInterface::class)->get();
+        $mediaId = uniqid();
+
+        $queryBuilder = $this->getAddItemQueryBuilder();
+        $queryBuilder->setParameters([
+            'OXID' => $mediaId,
+            'OXSHOPID' => 2,
+            'DDFILENAME' => 'TestImage.jpg',
+            'DDFILESIZE' => 1000,
+            'DDFILETYPE' => 'image/jpeg',
+            'DDIMAGESIZE' => '100x100',
+            'DDFOLDERID' => '',
+            'OXTIMESTAMP' => date("Y-m-d H:i:s")
+        ])->execute();
+
+        $altText1 = uniqid();
+        $altText2 = uniqid();
+        $altText3 = uniqid();
+
+        $connection->executeQuery(
+            "INSERT INTO ddmedia_translations (OXOBJECTID, OXLANGUAGEID, OXALTSHORTTEXT) VALUES
+             (:id1, 0, :alt1),
+             (:id2, 1, :alt2),
+             (:id3, 2, :alt3)",
+            [
+                'id1' => $mediaId,
+                'alt1' => $altText1,
+                'id2' => $mediaId,
+                'alt2' => $altText2,
+                'id3' => $mediaId,
+                'alt3' => $altText3
+            ]
+        );
+
+        $result = $connection->executeQuery(
+            "SELECT COUNT(*) FROM ddmedia_translations WHERE OXOBJECTID = :id",
+            ['id' => $mediaId]
+        );
+        $this->assertEquals(3, $result->fetchOne());
+
+        $sut = $this->getSut();
+        $sut->deleteMedia($mediaId);
+
+        $this->expectException(MediaNotFoundException::class);
+        $sut->getMediaById($mediaId);
+
+        $result = $connection->executeQuery(
+            "SELECT COUNT(*) FROM ddmedia_translations WHERE OXOBJECTID = :id",
+            ['id' => $mediaId]
+        );
+        $this->assertEquals(0, $result->fetchOne());
+    }
+
+    #[Test]
+    public function deleteFolderRemovesAltTextForAllMediaInFolder(): void
+    {
+        $connection = ContainerFacade::get(ConnectionProviderInterface::class)->get();
+        $folderId = uniqid();
+        $mediaIds = [uniqid(), uniqid()];
+        $outsideId = uniqid();
+
+        // Add folder
+        $this->getAddItemQueryBuilder()->setParameters([
+            'OXID' => $folderId,
+            'OXSHOPID' => 2,
+            'DDFILENAME' => uniqid(),
+            'DDFILESIZE' => 0,
+            'DDFILETYPE' => 'directory',
+            'DDIMAGESIZE' => '',
+            'DDFOLDERID' => '',
+            'OXTIMESTAMP' => date("Y-m-d H:i:s")
+        ])->execute();
+
+        // Add media inside folder
+        foreach ($mediaIds as $i => $mediaId) {
+            $this->getAddItemQueryBuilder()->setParameters([
+                'OXID' => $mediaId,
+                'OXSHOPID' => 2,
+                'DDFILENAME' => uniqid() . '.jpg',
+                'DDFILESIZE' => 1000 * ($i + 1),
+                'DDFILETYPE' => 'image/jpeg',
+                'DDIMAGESIZE' => '100x100',
+                'DDFOLDERID' => $folderId,
+                'OXTIMESTAMP' => date("Y-m-d H:i:s")
+            ])->execute();
+        }
+
+        // Add media outside folder
+        $this->getAddItemQueryBuilder()->setParameters([
+            'OXID' => $outsideId,
+            'OXSHOPID' => 2,
+            'DDFILENAME' => uniqid() . '.jpg',
+            'DDFILESIZE' => 3000,
+            'DDFILETYPE' => 'image/jpeg',
+            'DDIMAGESIZE' => '300x300',
+            'DDFOLDERID' => '',
+            'OXTIMESTAMP' => date("Y-m-d H:i:s")
+        ])->execute();
+
+        // Insert alt texts
+        $ids = array_merge([$folderId], $mediaIds, [$outsideId]);
+        foreach ($ids as $id) {
+            $connection->executeQuery(
+                "INSERT INTO ddmedia_translations (OXOBJECTID, OXLANGUAGEID, OXALTSHORTTEXT) VALUES (:id, 0, :alt)",
+                ['id' => $id, 'alt' => uniqid()]
+            );
+        }
+
+        // Verify all alt texts exist
+        $result = $connection->executeQuery(
+            "SELECT COUNT(*) FROM ddmedia_translations WHERE OXOBJECTID IN (?, ?, ?, ?)",
+            [$folderId, $mediaIds[0], $mediaIds[1], $outsideId]
+        );
+        $this->assertEquals(4, $result->fetchOne());
+
+        // Delete folder
+        $sut = $this->getSut();
+        $sut->deleteMedia($folderId);
+
+        // Assert deleted
+        foreach ([$folderId, ...$mediaIds] as $id) {
+            $this->expectException(MediaNotFoundException::class);
+            $sut->getMediaById($id);
+        }
+        $this->assertInstanceOf(Media::class, $sut->getMediaById($outsideId));
+
+        // Alt text checks
+        $result = $connection->executeQuery(
+            "SELECT COUNT(*) FROM ddmedia_translations WHERE OXOBJECTID = :id",
+            ['id' => $outsideId]
+        );
+        $this->assertEquals(1, $result->fetchOne());
+
+        $result = $connection->executeQuery(
+            "SELECT COUNT(*) FROM ddmedia_translations WHERE OXOBJECTID IN (?, ?, ?)",
+            [$folderId, $mediaIds[0], $mediaIds[1]]
+        );
+        $this->assertEquals(0, $result->fetchOne());
     }
 }

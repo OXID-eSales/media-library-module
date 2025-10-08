@@ -84,7 +84,7 @@
 
                                 <div class="dd-media-dz-helper" style="display: none;">
                                         <div class="dd-media-col {% if not request.isOverlay() %}col-md-2{% else %}col-md-3{% endif %} col-sm-3 col-xs-4">
-                                        <a class="dd-media-item" href="javascript:void(null);">
+                                        <a class="dd-media-item" href="javascript:void(null);" data-alttext="">
                                             <div class="dd-media-item-preview">
                                                 <div class="dd-media-item-centered">
                                                     <i class="dd-media-icon dd-media-icon-file fa fa-3x fa-file" style="display: none;"></i>
@@ -109,8 +109,8 @@
 
                             <div class="clearfix" style="height: 3px;"></div>
 
-                            <form class="form dd-media-details-form" method="post" style="display: none;">
-
+                            <form class="form dd-media-details-form" method="post" style="display: none;"
+                                  data-media-id="" data-media-type="file">
                                 <div class="media">
                                     <div class="media-left">
                                         <img class="media-object dd-media-details-preview" src="" style="max-width: 50px; max-height: 50px;">
@@ -127,7 +127,7 @@
 
                                 <div class="clearfix" style="height: 30px;"></div>
 
-                                <div class="form-group dd-media-url">
+                                <div class="form-group dd-media-url mb-3">
                                     <label>{{ translate({ ident: "DD_MEDIA_IMG_URL" }) }}</label>
                                     <div class="input-group">
                                         <input type="text" class="form-control dd-media-details-input-url" name="media[url]" value="" readonly="readonly" />
@@ -136,6 +136,32 @@
                                                 <i class="fa fa-external-link"></i>
                                             </a>
                                         </span>
+                                    </div>
+                                </div>
+
+                                <div id="alt-attribute-wrapper" class="d-none">
+                                    <div class="form-group dd-media-alttext mb-3">
+                                        <label
+                                            for="media-alttext-language">{{ translate({ ident: "DD_MEDIA_ALT_TEXT_LANG_SELECTOR" }) }}</label>
+                                        <select class="form-select dd-media-alttext-language" id="media-alttext-language">
+                                            {% for lang in aMediaLanguages %}
+                                                <option value="{{ lang.id }}"
+                                                        {% if lang.selected %}selected{% endif %}>{{ lang.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group dd-media-alttext-inputs mb-3">
+                                        <!-- Alt text inputs for each language will be rendered here by JS -->
+                                    </div>
+                                    <div class="dd-media-alttext-messages">
+                                        <div class="alert alert-danger dd-media-alttext-error" style="display:none"></div>
+                                        <div class="alert alert-success dd-media-alttext-success"
+                                             style="display:none"></div>
+                                    </div>
+                                    <div class="form-group dd-media-alttext-save">
+                                        <button type="button"
+                                                class="btn btn-primary dd-media-alttext-save-btn">{{ translate({ ident: "DD_SAVE_ALT_TEXTS" }) }}</button>
                                     </div>
                                 </div>
 
@@ -162,3 +188,11 @@
         </div>
     </div>
 </div>
+
+<script>
+window.OXID_TRANSLATIONS = {
+    DD_MEDIA_ALT_TEXT: '{{ "DD_MEDIA_ALT_TEXT"|translate|e('js') }}',
+    DD_MEDIA_ALT_TEXT_PLACEHOLDER: '{{ "DD_MEDIA_ALT_TEXT_PLACEHOLDER"|translate|e('js') }}',
+    DD_MEDIA_ALT_TEXT_SAVE_ERROR: '{{ "DD_MEDIA_ALT_TEXT_SAVE_ERROR"|translate|e('js') }}',
+};
+</script>

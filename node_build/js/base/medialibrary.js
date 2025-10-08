@@ -13,12 +13,14 @@ import DragDropHandler from './dragDropHandler.js'
 import MediaContent from "./mediaContent.js";
 import DataStore from "./dataStore.js";
 
+
 class MediaLibraryClass {
     static VERSION = '1.0.0';
 
     ctrlKeyPressed = false;
     currentPath = '';
     currentFolderId = '';
+    altAttributeManager = null;
 
     constructor() {
         this.store = new DataStore();
@@ -158,6 +160,7 @@ class MediaLibraryClass {
                             $image.attr('data-source', 'media');
                             $image.attr('data-id', id);
                             $image.addClass('dd-wysiwyg-media-image');
+                            $image.attr('alt', "{{oeMediaAlt('" + id + "')}}");
                         });
                     };
                 }

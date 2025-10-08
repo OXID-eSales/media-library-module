@@ -122,4 +122,31 @@ export default class FileManager {
     uploadUrl(folderId) {
         return `${this.actionLink}cl=ddoemedia_view&fnc=upload&folderid=${folderId}`;
     }
+
+    /**
+     * Fetch alt texts for a given objectId
+     */
+    getAltTexts(objectId) {
+        const url = `${this.actionLink}cl=ddoemedialibrary_media_alt_text&fnc=getAltTexts&objectId=${encodeURIComponent(objectId)}`;
+        return fetch(url, {credentials: 'same-origin'})
+            .then(res => res.json());
+    }
+
+    /**
+     * Save alt texts for a given objectId
+     */
+    saveAltText(objectId, altTexts) {
+        const url = `${this.actionLink}cl=ddoemedialibrary_media_alt_text&fnc=saveAltText`;
+        const formData = new URLSearchParams();
+        formData.append('objectId', objectId);
+        Object.entries(altTexts).forEach(([langId, value]) => {
+            formData.append(`altTexts[${langId}]`, value);
+        });
+        return fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: formData.toString(),
+            credentials: 'same-origin'
+        }).then(res => res.json());
+    }
 }

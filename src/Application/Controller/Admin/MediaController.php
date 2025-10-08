@@ -12,7 +12,6 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
-use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
@@ -24,9 +23,8 @@ use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Service\DirectoryNameValidatorChainInterface;
-use OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChainInterface;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface;
-use OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator;
+use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 
 /**
  * Class MediaController
@@ -75,6 +73,8 @@ class MediaController extends AdminDetailsController
 
         $this->addTplParam('request', $uiRequest);
         $this->addTplParam('sTab', $uiRequest->getTabName());
+
+        $this->addTplParam('aMediaLanguages', $this->getService(LanguageInterface::class)->getLanguageArray());
 
         return parent::render();
     }

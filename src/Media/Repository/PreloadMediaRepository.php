@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Media\Repository;
 
 use Doctrine\DBAL\Connection;
+use OxidEsales\Eshop\Core\Language;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 
@@ -23,6 +24,7 @@ class PreloadMediaRepository implements PreloadMediaRepositoryInterface
     public function __construct(
         private readonly Connection $connection,
         private readonly MediaFactoryInterface $mediaFactory,
+        private readonly Language $language,
     ) {
     }
 
@@ -57,10 +59,19 @@ class PreloadMediaRepository implements PreloadMediaRepositoryInterface
             return;
         }
 
-        $placeholders = trim(str_repeat('?,', count($this->idsToPreload)), ',');
+        $sql = $this->getMediaSelectSqlPart() . " WHERE m.OXID in (:OXIDLIST)";
+        $params = [
+            'OXLANGUAGEID' => $this->language->getBaseLanguage(),
+            'OXIDLIST' => $this->idsToPreload
+        ];
+        $types = [
+            'OXLANGUAGEID' => \PDO::PARAM_INT,
+            'OXIDLIST' => \Doctrine\DBAL\Connection::PARAM_STR_ARRAY
+        ];
         $result = $this->connection->executeQuery(
-            $this->getMediaSelectSqlPart() . " WHERE m.OXID in ($placeholders)",
-            $this->idsToPreload
+            sql: $sql,
+            params: $params,
+            types: $types
         );
 
         $this->idsToPreload = [];
@@ -81,7 +92,8 @@ class PreloadMediaRepository implements PreloadMediaRepositoryInterface
 
     private function getMediaSelectSqlPart(): string
     {
-        return "SELECT m.*, j.DDFILENAME as FOLDERNAME FROM ddmedia m
-            LEFT JOIN ddmedia j ON j.OXID=m.DDFOLDERID AND m.DDFOLDERID <> ''";
+        return "SELECT m.*, j.DDFILENAME as FOLDERNAME, t.OXALTSHORTTEXT FROM ddmedia m
+            LEFT JOIN ddmedia j ON j.OXID=m.DDFOLDERID AND m.DDFOLDERID <> ''
+            LEFT JOIN ddmedia_translations t ON t.OXOBJECTID = m.OXID AND t.OXLANGUAGEID = :OXLANGUAGEID";
     }
 }

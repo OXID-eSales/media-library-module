@@ -23,7 +23,8 @@ class Media implements MediaInterface
         private string $fileType = '',
         private ImageSizeInterface $imageSize = new ImageSize(0, 0),
         private string $folderId = '',
-        private string $folderName = ''
+        private string $folderName = '',
+        private string $mediaAltText = ''
     ) {
     }
 
@@ -65,5 +66,10 @@ class Media implements MediaInterface
     public function isDirectory(): bool
     {
         return $this->getFileType() == self::FILETYPE_DIRECTORY;
+    }
+
+    public function getMediaAltText(): string
+    {
+        return $this->mediaAltText;
     }
 }

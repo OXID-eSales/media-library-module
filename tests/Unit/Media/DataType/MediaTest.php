@@ -30,7 +30,8 @@ class MediaTest extends TestCase
             fileType: 'image/gif',
             imageSize: $imageSize,
             folderId: 'someFolderId',
-            folderName: 'someFolderName'
+            folderName: 'someFolderName',
+            mediaAltText: $altText = uniqid()
         );
 
         $this->assertSame('someOxid', $sut->getOxid());
@@ -40,6 +41,7 @@ class MediaTest extends TestCase
         $this->assertSame($imageSize, $sut->getImageSize());
         $this->assertSame('someFolderId', $sut->getFolderId());
         $this->assertSame('someFolderName', $sut->getFolderName());
+        $this->assertSame($altText, $sut->getMediaAltText());
     }
 
     public function testOptionalDefaults(): void
@@ -56,6 +58,7 @@ class MediaTest extends TestCase
         $this->assertEquals(new ImageSize(0, 0), $sut->getImageSize());
         $this->assertSame('', $sut->getFolderId());
         $this->assertSame('', $sut->getFolderName());
+        $this->assertSame('', $sut->getMediaAltText());
     }
 
     #[DataProvider('isDirectoryDataProvider')]

@@ -9,9 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Integration\Media\Repository;
 
+use OxidEsales\Eshop\Core\Language;
 use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
+use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepository;
 use OxidEsales\MediaLibrary\Media\Repository\PreloadMediaRepositoryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -28,6 +31,7 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
         $sut = $this->getSut();
         $media = $sut->getMediaById($id);
         $this->assertSame($id, $media->getOxid());
+        $this->assertSame('alttext_' . $id, $media->getMediaAltText());
     }
 
     #[Test]
@@ -38,7 +42,8 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
         $sut = $this->getSut();
 
         // load the media object for the first time
-        $sut->getMediaById($id);
+        $media = $sut->getMediaById($id);
+        $this->assertSame('alttext_' . $id, $media->getMediaAltText());
 
         $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
         $queryBuilder = $queryBuilderFactory->create();
@@ -49,6 +54,7 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
 
         $media = $sut->getMediaById($id);
         $this->assertSame($id, $media->getOxid());
+        $this->assertSame('alttext_' . $id, $media->getMediaAltText());
     }
 
     #[Test]
@@ -59,7 +65,8 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
         $sut = $this->getSut();
 
         // load the media object for the first time
-        $sut->getMediaById($id);
+        $media = $sut->getMediaById($id);
+        $this->assertSame('alttext_' . $id, $media->getMediaAltText());
 
         $startTime = microtime(true);
         for ($i = 0; $i < 10000; $i++) {
@@ -105,6 +112,7 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
 
         $media1 = $sut->getMediaById($id1);
         $this->assertSame($id1, $media1->getOxid());
+        $this->assertSame('alttext_' . $id1, $media1->getMediaAltText());
 
         $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
         $queryBuilder = $queryBuilderFactory->create();
@@ -115,14 +123,49 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
 
         $media2 = $sut->getMediaById($id2);
         $this->assertSame($id2, $media2->getOxid());
+        $this->assertSame('alttext_' . $id2, $media2->getMediaAltText());
 
         $media3 = $sut->getMediaById($id3);
         $this->assertSame($id3, $media3->getOxid());
+        $this->assertSame('alttext_' . $id3, $media3->getMediaAltText());
+    }
+
+    #[Test]
+    public function getMediaByIdReturnsEmptyAltTextIfNoTranslationExists()
+    {
+        $queryBuilder = $this->getAddItemQueryBuilder();
+        $id = uniqid();
+        $queryBuilder->setParameters([
+            'OXID' => $id,
+            'OXSHOPID' => 1,
+            'DDFILENAME' => uniqid(),
+            'DDFILESIZE' => 0,
+            'DDFILETYPE' => 'not in directory',
+            'DDIMAGESIZE' => 0,
+            'DDFOLDERID' => '',
+            'OXTIMESTAMP' => date("Y-m-d H:i:59")
+        ])->execute();
+
+        $sut = $this->getSut();
+        $media = $sut->getMediaById($id);
+        $this->assertSame($id, $media->getOxid());
+        $this->assertSame('', $media->getMediaAltText());
     }
 
     private function getSut(): PreloadMediaRepositoryInterface
     {
-        return $this->get(PreloadMediaRepositoryInterface::class);
+        return new PreloadMediaRepository(
+            connection: ContainerFacade::get(ConnectionProviderInterface::class)->get(),
+            mediaFactory: $this->get(MediaFactoryInterface::class),
+            language: $this->createLanguageStub(),
+        );
+    }
+
+    private function createLanguageStub(): Language
+    {
+        $languageStub = $this->createMock(Language::class);
+        $languageStub->method('getBaseLanguage')->willReturn(1);
+        return $languageStub;
     }
 
     private function createRandomMedia(): string
@@ -137,6 +180,18 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
             'DDIMAGESIZE' => 0,
             'DDFOLDERID' => '',
             'OXTIMESTAMP' => date("Y-m-d H:i:59")
+        ])->execute();
+
+        $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
+        $qbAlt = $queryBuilderFactory->create();
+        $qbAlt->insert('ddmedia_translations')->values([
+            'OXOBJECTID' => ':OXOBJECTID',
+            'OXLANGUAGEID' => ':OXLANGUAGEID',
+            'OXALTSHORTTEXT' => ':OXALTSHORTTEXT',
+        ])->setParameters([
+            'OXOBJECTID' => $id,
+            'OXLANGUAGEID' => 1,
+            'OXALTSHORTTEXT' => 'alttext_' . $id
         ])->execute();
 
         return $id;

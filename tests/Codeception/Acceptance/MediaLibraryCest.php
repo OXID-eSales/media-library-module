@@ -92,4 +92,25 @@ final class MediaLibraryCest
             ->moveOutsideDirectory()
             ->deleteDirectory(1);
     }
+
+    public function testAltTextFunctionality(MediaLibraryAcceptanceTester $I): void
+    {
+        $I->wantToTest('Alt text can be set, saved, and persists for a media item');
+
+        $I->loginAdmin();
+        $I->openMediaLibrary()
+            ->switchToUploadTab()
+            ->uploadImage($this->testImage)
+            ->switchToMediaListTab()
+            ->openFirstMediaDetails();
+
+        $altText = 'Test alt text ' . uniqid();
+        $I->fillAltText($altText)
+            ->saveAltText();
+
+        $I->waitForText('Alt texts saved successfully!', 5, '.dd-media-alttext-success');
+
+        $I->seeAltTextEquals($altText)
+            ->deleteImage();
+    }
 }

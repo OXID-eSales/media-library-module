@@ -175,4 +175,48 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
 
         return $this;
     }
+
+    public function openFirstMediaDetails(): self
+    {
+        $I = $this;
+        $I->waitForElement($this->imageSelect);
+        $I->click($this->imageSelect);
+        $I->waitForElement($this->mediaDetails);
+        return $this;
+    }
+
+    public function fillAltText(string $altText): self
+    {
+        $I = $this;
+        $langSelect = '//select[contains(@class, "dd-media-alttext-language")]';
+        $I->waitForElementVisible($langSelect, 20);
+        $I->selectOption($langSelect, [0]); // Select first language
+
+
+        $spinner = '//div[contains(@class, "dd-alttext-spinner")]';
+        if ($I->grabMultiple($spinner)) {
+            $I->waitForElementNotVisible($spinner, 20);
+        }
+
+        $selector = '//div[contains(@class, "dd-media-alttext-inputs")]//input';
+        $I->waitForElementVisible($selector, 20);
+        $I->seeElement($selector);
+        $I->fillField($selector, $altText);
+        return $this;
+    }
+
+    public function saveAltText(): self
+    {
+        $I = $this;
+        $I->click('//button[contains(@class, "dd-media-alttext-save-btn")]');
+        return $this;
+    }
+
+    public function seeAltTextEquals(string $altText): self
+    {
+        $I = $this;
+        $I->waitForElement('//div[contains(@class, "dd-media-alttext-inputs")]//input');
+        $I->seeInField('//div[contains(@class, "dd-media-alttext-inputs")]//input', $altText);
+        return $this;
+    }
 }
