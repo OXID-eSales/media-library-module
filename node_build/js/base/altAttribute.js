@@ -10,6 +10,7 @@ class AltAttributeManager {
     loadAltTexts(objectId, detailForm, actionLink) {
         const $detailForm = $(detailForm);
         this._showAltTextLoading($detailForm);
+        this._hideMessages($detailForm);
         this.fileManager.setActionLink(actionLink);
         this.altTexts = {};
         return this.fileManager.getAltTexts(objectId)
@@ -120,6 +121,13 @@ class AltAttributeManager {
 
     _hideAltTextLoading($detailForm) {
         $detailForm.find('.dd-alttext-spinner').remove();
+    }
+
+    _hideMessages($detailForm) {
+        const errorDiv = $detailForm.find('.dd-media-alttext-error');
+        const successDiv = $detailForm.find('.dd-media-alttext-success');
+        errorDiv.hide().text('');
+        successDiv.hide().text('');
     }
 }
 
