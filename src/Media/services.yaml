@@ -3,6 +3,7 @@ imports:
   - { resource: Service/services.yaml }
   - { resource: Settings/services.yaml }
   - { resource: Twig/services.yaml }
+  - { resource: Factory/services.yaml }
   - { resource: Controller/services.yaml }
 
 services:

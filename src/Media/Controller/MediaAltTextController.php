@@ -12,7 +12,7 @@ namespace OxidEsales\MediaLibrary\Media\Controller;
 use OxidEsales\EshopCommunity\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\EshopCommunity\Internal\Framework\Request\RequestInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
-use OxidEsales\MediaLibrary\Media\DataType\MediaAltText;
+use OxidEsales\MediaLibrary\Media\Factory\MediaAltTextFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaAltRepositoryInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 
@@ -20,6 +20,7 @@ class MediaAltTextController extends AdminDetailsController
 {
     public function __construct(
         private readonly MediaAltRepositoryInterface $mediaAltRepository,
+        private readonly MediaAltTextFactoryInterface $mediaAltTextFactory,
         private readonly RequestInterface $request,
         private readonly ResponseInterface $response,
         private readonly ShopAdapterInterface $shopAdapter,
@@ -44,7 +45,7 @@ class MediaAltTextController extends AdminDetailsController
         $objectId = $this->request->get('objectId');
         $altTexts = $this->request->get('altTexts');
         foreach ($altTexts as $languageId => $altText) {
-            $mediaAltText = new MediaAltText($objectId, (int)$languageId, $altText);
+            $mediaAltText = $this->mediaAltTextFactory->create($objectId, (int)$languageId, $altText);
             $this->mediaAltRepository->saveAltText($mediaAltText);
         }
         $successMsg = $this->shopAdapter->translateString('DD_MEDIA_ALT_TEXT_SAVE_SUCCESS');

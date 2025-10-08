@@ -1,0 +1,7 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Media\Factory\MediaAltTextFactoryInterface:
+    class: OxidEsales\MediaLibrary\Media\Factory\MediaAltTextFactory
