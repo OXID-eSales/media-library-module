@@ -49,10 +49,14 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     public function getShopFolderMediaInFolderFirstPage(): void
     {
         $folderName = uniqid();
-        $this->createTestItems(7, $folderName);
-        $this->createTestItems(3, '');
+        $languageId = rand(0, 10);
+        $this->createTestItems(7, $folderName, $languageId);
+        $this->createTestItems(3, '', $languageId);
 
-        $sut = $this->getSutForShop(2);
+        $languageStub = $this->createConfiguredStub(LanguageInterface::class, [
+            'getBaseLanguage' => $languageId,
+        ]);
+        $sut = $this->getSutForShop(2, $languageStub);
         $result = $sut->getFolderMedia($folderName, 0, 5);
 
         $this->assertCount(5, $result);
@@ -68,10 +72,14 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     public function getShopFolderMediaInFolderSecondPage(): void
     {
         $folderName = uniqid();
-        $this->createTestItems(7, $folderName);
-        $this->createTestItems(3, '');
+        $languageId = rand(0, 10);
+        $this->createTestItems(7, $folderName, $languageId);
+        $this->createTestItems(3, '', $languageId);
 
-        $sut = $this->getSutForShop(2);
+        $languageStub = $this->createConfiguredStub(LanguageInterface::class, [
+            'getBaseLanguage' => $languageId,
+        ]);
+        $sut = $this->getSutForShop(2, $languageStub);
         $result = $sut->getFolderMedia($folderName, 5, 5);
 
         $this->assertCount(2, $result);
@@ -122,11 +130,10 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     }
 
 
-    private function createTestItems(int $amount, string $folderId): void
+    private function createTestItems(int $amount, string $folderId, int $altTextLanguageId = 1): void
     {
         $queryBuilder = $this->getAddItemQueryBuilder();
         $queryBuilderFactory = ContainerFacade::get(QueryBuilderFactoryInterface::class);
-        $altTextLanguageId = 1;
 
         if ($folderId) {
             $queryBuilder->setParameters([
@@ -178,13 +185,14 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
         }
     }
 
-    private function getSutForShop(int $shopId): MediaRepository
+    private function getSutForShop(int $shopId, ?LanguageInterface $language = null): MediaRepository
     {
         $contextStub = $this->createConfiguredStub(ContextInterface::class, [
             'getCurrentShopId' => $shopId,
         ]);
         return $this->getSut(
-            context: $contextStub
+            context: $contextStub,
+            language: $language
         );
     }
 
