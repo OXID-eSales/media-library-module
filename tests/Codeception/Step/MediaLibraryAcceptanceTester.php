@@ -84,8 +84,15 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
     public function moveOutsideDirectory(): self
     {
         $I = $this;
-        $I->click($this->directoryLevelUp);
-        $I->waitForAjax();
+        $I->waitForElement($this->directoryLevelUp);
+
+        // Check if button is enabled before clicking
+        $isDisabled = $I->grabAttributeFrom($this->directoryLevelUp, 'disabled');
+        if ($isDisabled === null) {
+            $I->click($this->directoryLevelUp);
+            $I->waitForAjax();
+        }
+
         return $this;
     }
 
