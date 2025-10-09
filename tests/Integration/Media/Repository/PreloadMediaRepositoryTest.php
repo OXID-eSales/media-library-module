@@ -150,7 +150,7 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
             $altTextForOtherLanguage
         );
 
-        $languageStub = $this->createConfiguredStub(LanguageInterface::class, ['getBaseLanguage' => rand(0, 10),]);
+        $languageStub = $this->createConfiguredStub(LanguageInterface::class, ['getBaseLanguage' => $languageId]);
 
         $sut = $this->getSut(language: $languageStub);
 
