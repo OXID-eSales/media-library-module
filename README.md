@@ -83,6 +83,14 @@ Alternatively, if you're actively developing and want changes to be applied auto
 npm run watch
 ```
 
+## Migration
+
+After updating the Media Library module, ensure you run the database migrations:
+
+```bash
+vendor/bin/oe-eshop-doctrine_migration migrations:migrate ddoemedialibrary
+```
+
 ## License
 
 OXID Module and Component License, see [LICENSE file](LICENSE).

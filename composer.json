@@ -52,7 +52,7 @@
     }
   },
   "conflict": {
-    "oxid-esales/oxideshop-ce": "<7.3"
+    "oxid-esales/oxideshop-ce": "<7.4"
   },
   "scripts": {
     "phpcs": "phpcs --standard=tests/phpcs.xml  --report=full",
