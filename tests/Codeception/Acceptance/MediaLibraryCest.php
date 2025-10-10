@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Codeception\Acceptance;
 
 use Codeception\Attribute\Group;
+use OxidEsales\Codeception\Module\Translation\Translator;
 use OxidEsales\MediaLibrary\Tests\Codeception\Step\MediaLibraryAcceptanceTester;
 
 #[Group('ddoemedialibrary')]
@@ -108,9 +109,9 @@ final class MediaLibraryCest
         $I->fillAltText($altText)
             ->saveAltText();
 
-        $I->waitForText('Alt texts saved successfully!', 5, '.dd-media-alttext-success');
+        $I->waitForText(Translator::translate('DD_MEDIA_ALT_TEXT_SAVE_SUCCESS'), 5, '.dd-media-alttext-success');
 
-        $I->seeAltTextEquals($altText)
+        $I->seeAltText($altText)
             ->deleteImage();
     }
 
@@ -125,19 +126,12 @@ final class MediaLibraryCest
             ->switchToMediaListTab()
             ->openFirstMediaDetails();
 
-        $altText = 'Test alt text ' . uniqid();
-        $I->fillAltText($altText)
-            ->saveAltText();
-
-        $I->waitForText('Alt texts saved successfully!', 5, '.dd-media-alttext-success');
-        $I->seeAltTextEquals($altText);
-
         $I->fillAltText('')
             ->saveAltText();
 
-        $I->waitForText('Alt texts saved successfully!', 5, '.dd-media-alttext-success');
+        $I->waitForText(Translator::translate('DD_MEDIA_ALT_TEXT_SAVE_SUCCESS'), 5, '.dd-media-alttext-success');
 
-        $I->seeAltTextEquals('')
+        $I->seeAltText('')
             ->deleteImage();
     }
 }

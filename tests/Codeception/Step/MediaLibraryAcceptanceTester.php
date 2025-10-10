@@ -219,7 +219,7 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
         return $this;
     }
 
-    public function seeAltTextEquals(string $altText): self
+    public function seeAltText(string $altText): self
     {
         $I = $this;
         $I->waitForElement('//div[contains(@class, "dd-media-alttext-inputs")]//input');
