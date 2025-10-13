@@ -47,7 +47,7 @@ class MediaAltRepository implements MediaAltRepositoryInterface
             ->where('OXOBJECTID = :objectId')
             ->setParameter('objectId', $objectId);
 
-        /** @var Result<array<string, mixed>> $result */
+        /** @var Result $result */
         $result = $qb->execute();
 
         $altTexts = [];

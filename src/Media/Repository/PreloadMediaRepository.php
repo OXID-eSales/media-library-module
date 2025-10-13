@@ -60,12 +60,13 @@ class PreloadMediaRepository implements PreloadMediaRepositoryInterface
             return;
         }
 
-        $languageId = $this->language->getBaseLanguage();
-        $sql = $this->getMediaSelectSqlPart($languageId) . " WHERE m.OXID in (:OXIDLIST)";
+        $sql = $this->getMediaSelectSqlPart() . "  WHERE m.OXID in (:OXIDLIST)";
         $params = [
+            'OXLANGUAGEID' => $this->language->getBaseLanguage(),
             'OXIDLIST' => $this->idsToPreload
         ];
         $types = [
+            'OXLANGUAGEID' => \PDO::PARAM_INT,
             'OXIDLIST' => \Doctrine\DBAL\Connection::PARAM_STR_ARRAY
         ];
         $result = $this->connection->executeQuery(
@@ -90,13 +91,10 @@ class PreloadMediaRepository implements PreloadMediaRepositoryInterface
         return $this->preloadedMedia[$mediaId];
     }
 
-    private function getMediaSelectSqlPart(int $languageId): string
+    private function getMediaSelectSqlPart(): string
     {
-        return sprintf(
-            "SELECT m.*, j.DDFILENAME as FOLDERNAME, t.OXALTSHORTTEXT FROM ddmedia m
+        return "SELECT m.*, j.DDFILENAME as FOLDERNAME, t.OXALTSHORTTEXT FROM ddmedia m
             LEFT JOIN ddmedia j ON j.OXID=m.DDFOLDERID AND m.DDFOLDERID <> ''
-            LEFT JOIN ddmedia_translations t ON t.OXOBJECTID = m.OXID AND t.OXLANGUAGEID = %d",
-            $languageId
-        );
+            LEFT JOIN ddmedia_translations t ON t.OXOBJECTID = m.OXID AND t.OXLANGUAGEID = :OXLANGUAGEID";
     }
 }
