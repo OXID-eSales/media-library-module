@@ -1,5 +1,4 @@
 import FileManager from './fileManager.js';
-import translations from './translations.js';
 
 class AltAttributeManager {
     constructor(actionLink = '') {
@@ -61,7 +60,7 @@ class AltAttributeManager {
                     if (data.success) {
                         successDiv.text(data.message).show();
                     } else {
-                        errorDiv.text(translations.get('ALT_TEXT_SAVE_ERROR', 'Failed to save alt texts.')).show();
+                        errorDiv.text(window.OXID_TRANSLATIONS.DD_MEDIA_ALT_TEXT_SAVE_ERROR).show();
                     }
                     setTimeout(() => {
                         errorDiv.fadeOut();
@@ -69,7 +68,7 @@ class AltAttributeManager {
                     }, 4000);
                 })
                 .catch(() => {
-                    errorDiv.text(translations.get('ALT_TEXT_SAVE_ERROR', 'Failed to save alt texts.')).show();
+                    errorDiv.text(window.OXID_TRANSLATIONS.DD_MEDIA_ALT_TEXT_SAVE_ERROR).show();
                     setTimeout(() => {
                         errorDiv.fadeOut();
                     }, 4000);
@@ -86,8 +85,8 @@ class AltAttributeManager {
         const altInputsContainer = $detailForm.find('.dd-media-alttext-inputs').get(0);
         if (!langSelect || !altInputsContainer) return;
         altInputsContainer.innerHTML = '';
-        const ALT_TEXT_LABEL = translations.get('ALT_TEXT', 'Alt text');
-        const ALT_TEXT_PLACEHOLDER = translations.get('ALT_TEXT_PLACEHOLDER', 'Enter alt text...');
+        const ALT_TEXT_LABEL = window.OXID_TRANSLATIONS.DD_MEDIA_ALT_TEXT;
+        const ALT_TEXT_PLACEHOLDER = window.OXID_TRANSLATIONS.DD_MEDIA_ALT_TEXT_PLACEHOLDER;
         const languages = Array.from(langSelect.options).map(opt => ({
             id: opt.value,
             name: opt.textContent
