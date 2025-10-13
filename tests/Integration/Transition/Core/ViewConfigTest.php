@@ -7,6 +7,7 @@
 
 namespace OxidEsales\MediaLibrary\Tests\Integration\Transition\Core;
 
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 use OxidEsales\MediaLibrary\Transition\Core\ViewConfig;
@@ -27,5 +28,21 @@ class ViewConfigTest extends IntegrationTestCase
         ]);
 
         $this->assertSame('someFilePath', $sut->getMediaUrl());
+    }
+
+    public function testFormJsFileUrl(): void
+    {
+        $config = Registry::getConfig();
+        $file = tempnam($config->getConfigParam('sShopDir'), 'test_');
+        file_put_contents($file, 'dummy content');
+        $mtime = filemtime($file);
+
+        /** @var \OxidEsales\Eshop\Core\ViewConfig $viewConfig */
+        $viewConfig = oxNew(ViewConfig::class);
+        $shopUrl = $config->getCurrentShopUrl(false);
+
+        $result = $viewConfig->formJsFileUrl($shopUrl . basename($file));
+        $this->assertStringEndsWith('?' . $mtime, $result);
+        unlink($file);
     }
 }

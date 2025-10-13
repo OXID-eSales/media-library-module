@@ -48,10 +48,10 @@
         (async () => {
             try {
                 await import("{{ oViewConf.getSelfLink()|replace({'&amp;':'&'})|cat('cl=ddoelangjs')|raw }}");
-                await import("{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/jquery.min.js') }}");
-                await import("{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/jquery-ui.min.js') }}");
+                await import("{{ oViewConf.formJsFileUrl(oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/jquery.min.js')) }}");
+                await import("{{ oViewConf.formJsFileUrl(oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/jquery-ui.min.js')) }}");
 
-                const { MediaLibrary } = await import("{{ oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/base.min.js') }}");
+                const { MediaLibrary } = await import("{{ oViewConf.formJsFileUrl(oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/js/base.min.js')) }}");
 
                 MediaLibrary.setActionLink("{{ sActionLink|raw }}");
                 MediaLibrary.setResourceLink("{{ sMediaLink }}");
