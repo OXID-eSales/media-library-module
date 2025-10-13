@@ -1,4 +1,5 @@
 import FileManager from './fileManager.js';
+import {ddh} from "./helper.js";
 
 class AltAttributeManager {
     constructor(actionLink = '') {
@@ -60,7 +61,7 @@ class AltAttributeManager {
                     if (data.success) {
                         successDiv.text(data.message).show();
                     } else {
-                        errorDiv.text(window.OXID_TRANSLATIONS.DD_MEDIA_ALT_TEXT_SAVE_ERROR).show();
+                        errorDiv.text(ddh.translate('DD_MEDIA_ALT_TEXT_SAVE_ERROR')).show();
                     }
                     setTimeout(() => {
                         errorDiv.fadeOut();
@@ -68,7 +69,7 @@ class AltAttributeManager {
                     }, 4000);
                 })
                 .catch(() => {
-                    errorDiv.text(window.OXID_TRANSLATIONS.DD_MEDIA_ALT_TEXT_SAVE_ERROR).show();
+                    errorDiv.text(ddh.translate('DD_MEDIA_ALT_TEXT_SAVE_ERROR')).show();
                     setTimeout(() => {
                         errorDiv.fadeOut();
                     }, 4000);
@@ -85,8 +86,6 @@ class AltAttributeManager {
         const altInputsContainer = $detailForm.find('.dd-media-alttext-inputs').get(0);
         if (!langSelect || !altInputsContainer) return;
         altInputsContainer.innerHTML = '';
-        const ALT_TEXT_LABEL = window.OXID_TRANSLATIONS.DD_MEDIA_ALT_TEXT;
-        const ALT_TEXT_PLACEHOLDER = window.OXID_TRANSLATIONS.DD_MEDIA_ALT_TEXT_PLACEHOLDER;
         const languages = Array.from(langSelect.options).map(opt => ({
             id: opt.value,
             name: opt.textContent
@@ -95,13 +94,13 @@ class AltAttributeManager {
             const inputId = `media-alttext-input-${lang.id}`;
             const label = document.createElement('label');
             label.setAttribute('for', inputId);
-            label.textContent = ALT_TEXT_LABEL;
+            label.textContent = ddh.translate('DD_MEDIA_ALT_TEXT');
             const input = document.createElement('input');
             input.type = 'text';
             input.className = 'form-control dd-media-alttext-input';
             input.dataset.langId = lang.id;
             input.id = inputId;
-            input.placeholder = ALT_TEXT_PLACEHOLDER;
+            input.placeholder = ddh.translate('DD_MEDIA_ALT_TEXT_PLACEHOLDER');
             input.value = this.altTexts[String(lang.id)] || '';
             const isSelected = langSelect.value == lang.id;
             input.style.display = isSelected ? '' : 'none';
