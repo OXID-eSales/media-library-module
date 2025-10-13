@@ -28,4 +28,8 @@ final class Version20250910121000 extends AbstractMigration
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
         }
     }
+
+    public function down(Schema $schema): void
+    {
+    }
 }

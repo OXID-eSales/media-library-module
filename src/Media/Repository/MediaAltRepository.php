@@ -36,6 +36,9 @@ class MediaAltRepository implements MediaAltRepositoryInterface
         );
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getObjectAltTexts(string $objectId): array
     {
         $qb = $this->queryBuilderFactory->create();
@@ -44,7 +47,7 @@ class MediaAltRepository implements MediaAltRepositoryInterface
             ->where('OXOBJECTID = :objectId')
             ->setParameter('objectId', $objectId);
 
-        /** @var Result<mixed> $result */
+        /** @var Result $result */
         $result = $qb->execute();
 
         $altTexts = [];

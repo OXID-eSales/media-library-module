@@ -38,4 +38,9 @@ class LanguageProxy implements LanguageInterface
     {
         return $this->language->getLanguageArray();
     }
+
+    public function getBaseLanguage(): int
+    {
+        return (int)$this->language->getBaseLanguage();
+    }
 }

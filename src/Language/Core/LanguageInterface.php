@@ -16,4 +16,6 @@ interface LanguageInterface
     public function getSeoReplaceChars(): array;
 
     public function getLanguageArray(): array;
+
+    public function getBaseLanguage(): int;
 }

@@ -45,12 +45,13 @@ class MediaAltRepositoryTest extends RepositoryIntegrationTestCase
     {
         $objectId = uniqid();
         $languageId = rand(1, 10);
+        $text1 = uniqid();
         $text2 = uniqid();
 
         $altText1Stub = $this->createConfiguredStub(MediaAltTextInterface::class, [
             'getObjectId' => $objectId,
             'getLanguageId' => $languageId,
-            'getText' => uniqid(),
+            'getText' => $text1,
         ]);
 
         $altText2Stub = $this->createConfiguredStub(MediaAltTextInterface::class, [
@@ -61,6 +62,10 @@ class MediaAltRepositoryTest extends RepositoryIntegrationTestCase
 
         $sut = $this->getSut();
         $sut->saveAltText($altText1Stub);
+        $results = $sut->getObjectAltTexts($objectId);
+        $this->assertCount(1, $results);
+        $this->assertSame($text1, $results[0]->getText());
+
         $sut->saveAltText($altText2Stub);
         $results = $sut->getObjectAltTexts($objectId);
 

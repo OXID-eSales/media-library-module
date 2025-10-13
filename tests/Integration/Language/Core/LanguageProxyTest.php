@@ -37,7 +37,6 @@ class LanguageProxyTest extends TestCase
         $this->assertSame($exampleLanguageStrings, $sut->getLanguageStringsArray());
     }
 
-
     public function getSut(
         ShopLanguage $shopLanguage = null
     ): LanguageProxy {
