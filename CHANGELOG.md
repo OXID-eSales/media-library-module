@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - DTO for alt text data.
 - Repository for managing alt text persistence and retrieval.
 - Twig function/helper for retrieving alt text in templates.
+- Temporal `ViewConfig::formJsFileUrl` method to append file modification date to js file paths, which prevents caching issues after updates.
 
 ### Changed
 - Update to Bootstrap 5
