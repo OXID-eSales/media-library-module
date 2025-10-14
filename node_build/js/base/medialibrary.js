@@ -158,6 +158,7 @@ class MediaLibraryClass {
                             $image.css('max-width', '100%');
                             $image.attr('src', fullpath);
                             $image.attr('data-source', 'media');
+                            $image.attr('data-filepath', fullpath);
                             $image.attr('data-id', id);
                             $image.addClass('dd-wysiwyg-media-image');
                             $image.attr('alt', "{{oeMediaAlt('" + id + "')}}");

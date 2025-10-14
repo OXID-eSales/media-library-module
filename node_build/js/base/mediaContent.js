@@ -77,21 +77,6 @@ export default class MediaContent {
         actionEls.forEach(el => el.disabled = true);
     }
 
-    // _initSearch($dialog) {
-    //     $('.dd-media-search-form').on('submit', e => e.preventDefault());
-    //     $('.dd-media-search-form input').on('keyup', e => {
-    //         const items = $('.dd-media-list-items > .row > .dd-media-col', $dialog);
-    //         if (!$(e.target).val()) {
-    //             items.show();
-    //         } else {
-    //             items.each(function() {
-    //                 const $item = $('.dd-media-item', this);
-    //                 $item.data('file').includes($(e.target).val()) ? $(this).show() : $(this).hide();
-    //             });
-    //         }
-    //     });
-    // }
-
     _initSearch(dialog) {
         const form = dialog.querySelector('.dd-media-search-form');
         form.addEventListener('submit', e => e.preventDefault());
