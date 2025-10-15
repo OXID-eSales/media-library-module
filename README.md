@@ -13,6 +13,7 @@ Module provides basic media files management.
 ## Compatibility
 
 ### Versions
+* v4.0.x is compatible with eShop compilation 7.4.x and higher
 * v3.0.x is compatible with eShop compilation 7.3.x and higher
 * v2.1.x is compatible with eShop compilation 7.2.x and higher
 * v2.0.x is compatible with eShop compilation 7.1.x and higher
@@ -27,7 +28,7 @@ Module provides basic media files management.
 # Development installation on OXID eShop SDK
 
 The installation instructions below are shown for the current [SDK](https://github.com/OXID-eSales/docker-eshop-sdk)
-for shop 7.3. Make sure your system meets the requirements of the SDK.
+for shop 7.4. Make sure your system meets the requirements of the SDK.
 
 0. Ensure all docker containers are down to avoid port conflicts
 
