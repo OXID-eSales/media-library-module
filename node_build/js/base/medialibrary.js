@@ -6,6 +6,7 @@
 import '../../scss/base.scss'
 import { Modal } from "bootstrap";
 import { ddh } from './helper.js';
+import { setMediaUrl } from './mediaService.js';
 
 import FileManager from './fileManager.js';
 import UIRenderer from './uiRenderer.js';
@@ -154,11 +155,10 @@ class MediaLibraryClass {
                 if (typeof callback !== 'function' && self.overlayContext) {
                     callback = function (id, file, fullpath) {
                         self.overlayContext.invoke('editor.insertImage', fullpath, function ($image) {
-                            top.basefrm.mediaUrls[id] = fullpath;
+                            setMediaUrl(id, fullpath);
                             $image.css('max-width', '100%');
                             $image.attr('src', fullpath);
                             $image.attr('data-source', 'media');
-                            $image.attr('data-filepath', fullpath);
                             $image.attr('data-id', id);
                             $image.addClass('dd-wysiwyg-media-image');
                             $image.attr('alt', "{{oeMediaAlt('" + id + "')}}");
@@ -251,3 +251,4 @@ class MediaLibraryClass {
 export const MediaLibrary = new MediaLibraryClass();
 window.MediaLibrary = MediaLibrary;
 export { ddh };
+export { getMediaUrl, setMediaUrl, preloadMediaUrls } from './mediaService.js';
