@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Integration\Media\Repository;
 
 use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
-use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
@@ -223,7 +222,7 @@ class PreloadMediaRepositoryTest extends RepositoryIntegrationTestCase
     private function getSut(?LanguageInterface $language = null): PreloadMediaRepositoryInterface
     {
         return new PreloadMediaRepository(
-            connection: ContainerFacade::get(ConnectionProviderInterface::class)->get(),
+            queryBuilderFactory: ContainerFacade::get(QueryBuilderFactoryInterface::class),
             mediaFactory: $this->get(MediaFactoryInterface::class),
             language: $language ?? $this->get(LanguageInterface::class),
         );

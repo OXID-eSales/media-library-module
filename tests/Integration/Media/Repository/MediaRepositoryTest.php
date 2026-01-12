@@ -197,14 +197,14 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
     }
 
     private function getSut(
+        ?QueryBuilderFactoryInterface $queryBuilderFactory = null,
         ?ContextInterface $context = null,
-        ?ConnectionProviderInterface $connectionProvider = null,
         ?MediaFactoryInterface $mediaFactory = null,
         ?LanguageInterface $language = null,
         ?MediaAltRepositoryInterface $mediaAltRepository = null
     ): MediaRepository {
         return new MediaRepository(
-            connectionProvider: $connectionProvider ?? $this->get(ConnectionProviderInterface::class),
+            queryBuilderFactory: $queryBuilderFactory ?? $this->get(QueryBuilderFactoryInterface::class),
             context: $context ?? $this->get(ContextInterface::class),
             mediaFactory: $mediaFactory ?? $this->get(MediaFactoryInterface::class),
             language: $language ?? $this->get(LanguageInterface::class),

@@ -9,54 +9,65 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Media\Repository;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
-use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use Doctrine\DBAL\ForwardCompatibility\Result;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Exception\WrongMediaIdGivenException;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 
-class MediaRepository implements MediaRepositoryInterface
+readonly class MediaRepository implements MediaRepositoryInterface
 {
-    private Connection $connection;
-
     public function __construct(
-        private ConnectionProviderInterface $connectionProvider,
+        private QueryBuilderFactoryInterface $queryBuilderFactory,
         private ContextInterface $context,
         private MediaFactoryInterface $mediaFactory,
         private LanguageInterface $language,
         private MediaAltRepositoryInterface $mediaAltRepository,
     ) {
-        $this->connection = $this->connectionProvider->get();
     }
 
     public function getFolderMediaCount(string $folderId): int
     {
-        $result = $this->connection->executeQuery(
-            "SELECT count(*) FROM ddmedia WHERE OXSHOPID = :OXSHOPID AND DDFOLDERID = :DDFOLDERID",
-            [
+        $queryBuilder = $this->queryBuilderFactory->create();
+        $queryBuilder
+            ->select('count(*)')
+            ->from('ddmedia')
+            ->where('OXSHOPID = :OXSHOPID')
+            ->andWhere('DDFOLDERID = :DDFOLDERID')
+            ->setParameters([
                 'OXSHOPID' => $this->context->getCurrentShopId(),
-                'DDFOLDERID' => $folderId
-            ]
-        );
+                'DDFOLDERID' => $folderId,
+            ]);
 
-        return $result->fetchOne();
+        /** @var Result $result */
+        $result = $queryBuilder->execute();
+        return (int)$result->fetchOne();
     }
 
     public function getFolderMedia(string $folderId, int $start, int $limit = 18): array
     {
-        $queryResult = $this->connection->executeQuery(
-            $this->getMediaSelectSqlPart()
-            . " WHERE m.OXSHOPID = :OXSHOPID AND m.DDFOLDERID = :DDFOLDERID
-            ORDER BY m.OXTIMESTAMP DESC LIMIT $start, $limit",
-            [
+        $queryBuilder = $this->queryBuilderFactory->create();
+        $queryBuilder
+            ->select('m.*', 'j.DDFILENAME as FOLDERNAME', 't.OXALTSHORTTEXT')
+            ->from('ddmedia', 'm')
+            ->leftJoin('m', 'ddmedia', 'j', "j.OXID = m.DDFOLDERID AND m.DDFOLDERID <> ''")
+            ->leftJoin('m', 'ddmedia_translations', 't', 't.OXOBJECTID = m.OXID AND t.OXLANGUAGEID = :OXLANGUAGEID')
+            ->where('m.OXSHOPID = :OXSHOPID')
+            ->andWhere('m.DDFOLDERID = :DDFOLDERID')
+            ->orderBy('m.OXTIMESTAMP', 'DESC')
+            ->setFirstResult($start)
+            ->setMaxResults($limit)
+            ->setParameters([
                 'OXSHOPID' => $this->context->getCurrentShopId(),
                 'DDFOLDERID' => $folderId,
                 'OXLANGUAGEID' => $this->language->getBaseLanguage(),
-            ]
-        );
+            ]);
+
+        /** @var Result $queryResult */
+        $queryResult = $queryBuilder->execute();
 
         $result = [];
         while ($data = $queryResult->fetchAssociative()) {
@@ -68,16 +79,21 @@ class MediaRepository implements MediaRepositoryInterface
 
     public function getMediaById(string $mediaId): MediaInterface
     {
-        $result = $this->connection->executeQuery(
-            $this->getMediaSelectSqlPart()
-            . " WHERE m.OXID = :OXID",
-            [
+        $queryBuilder = $this->queryBuilderFactory->create();
+        $queryBuilder
+            ->select('m.*', 'j.DDFILENAME as FOLDERNAME', 't.OXALTSHORTTEXT')
+            ->from('ddmedia', 'm')
+            ->leftJoin('m', 'ddmedia', 'j', "j.OXID = m.DDFOLDERID AND m.DDFOLDERID <> ''")
+            ->leftJoin('m', 'ddmedia_translations', 't', 't.OXOBJECTID = m.OXID AND t.OXLANGUAGEID = :OXLANGUAGEID')
+            ->where('m.OXID = :OXID')
+            ->setParameters([
                 'OXID' => $mediaId,
                 'OXLANGUAGEID' => $this->language->getBaseLanguage(),
-            ]
-        );
+            ]);
 
-        $data = $result->fetchAssociative();
+        /** @var Result $queryResult */
+        $queryResult = $queryBuilder->execute();
+        $data = $queryResult->fetchAssociative();
         if ($data) {
             return $this->mediaFactory->fromDatabaseArray($data);
         }
@@ -87,32 +103,29 @@ class MediaRepository implements MediaRepositoryInterface
 
     public function addMedia(MediaInterface $exampleMedia): void
     {
-        $this->connection->executeQuery(
-            "insert into ddmedia SET
-                OXID = :OXID,
-                OXSHOPID = :OXSHOPID,
-                DDFILENAME = :DDFILENAME,
-                DDFILESIZE = :DDFILESIZE,
-                DDFILETYPE = :DDFILETYPE,
-                DDIMAGESIZE = :DDIMAGESIZE,
-                DDFOLDERID = :DDFOLDERID",
-            [
-                'OXSHOPID' => $this->context->getCurrentShopId(),
+        $queryBuilder = $this->queryBuilderFactory->create();
+        $queryBuilder
+            ->insert('ddmedia')
+            ->values([
+                'OXID' => ':OXID',
+                'OXSHOPID' => ':OXSHOPID',
+                'DDFILENAME' => ':DDFILENAME',
+                'DDFILESIZE' => ':DDFILESIZE',
+                'DDFILETYPE' => ':DDFILETYPE',
+                'DDIMAGESIZE' => ':DDIMAGESIZE',
+                'DDFOLDERID' => ':DDFOLDERID',
+            ])
+            ->setParameters([
                 'OXID' => $exampleMedia->getOxid(),
+                'OXSHOPID' => $this->context->getCurrentShopId(),
                 'DDFILENAME' => $exampleMedia->getFileName(),
                 'DDFILESIZE' => $exampleMedia->getFileSize(),
                 'DDFILETYPE' => $exampleMedia->getFileType(),
                 'DDIMAGESIZE' => $exampleMedia->getImageSize()->getInFormat("%dx%d", ""),
-                'DDFOLDERID' => $exampleMedia->getFolderId()
-            ]
-        );
-    }
+                'DDFOLDERID' => $exampleMedia->getFolderId(),
+            ]);
 
-    private function getMediaSelectSqlPart(): string
-    {
-        return "SELECT m.*, j.DDFILENAME as FOLDERNAME, t.OXALTSHORTTEXT FROM ddmedia m
-            LEFT JOIN ddmedia j ON j.OXID=m.DDFOLDERID AND m.DDFOLDERID <> ''
-            LEFT JOIN ddmedia_translations t ON t.OXOBJECTID = m.OXID AND t.OXLANGUAGEID = :OXLANGUAGEID";
+        $queryBuilder->execute();
     }
 
     /**
@@ -120,13 +133,17 @@ class MediaRepository implements MediaRepositoryInterface
      */
     public function renameMedia(string $mediaIdToRename, string $newName): MediaInterface
     {
-        $this->connection->executeQuery(
-            "UPDATE ddmedia SET DDFILENAME = :DDFILENAME WHERE OXID = :OXID",
-            [
+        $queryBuilder = $this->queryBuilderFactory->create();
+        $queryBuilder
+            ->update('ddmedia')
+            ->set('DDFILENAME', ':DDFILENAME')
+            ->where('OXID = :OXID')
+            ->setParameters([
                 'DDFILENAME' => $newName,
-                'OXID' => $mediaIdToRename
-            ]
-        );
+                'OXID' => $mediaIdToRename,
+            ]);
+
+        $queryBuilder->execute();
 
         return $this->getMediaById($mediaIdToRename);
     }
@@ -141,33 +158,44 @@ class MediaRepository implements MediaRepositoryInterface
             throw new WrongMediaIdGivenException();
         }
 
-        $mediaToDelete = $this->connection->executeQuery(
-            "SELECT OXID FROM ddmedia WHERE OXID = :OXID OR DDFOLDERID = :OXID",
-            [
-                'OXID' => $idToRemove
-            ]
-        )->fetchAllAssociative();
+        $queryBuilder = $this->queryBuilderFactory->create();
+        $queryBuilder
+            ->select('OXID')
+            ->from('ddmedia')
+            ->where('OXID = :OXID')
+            ->orWhere('DDFOLDERID = :OXID')
+            ->setParameter('OXID', $idToRemove);
+
+        /** @var Result $queryResult */
+        $queryResult = $queryBuilder->execute();
+        $mediaToDelete = $queryResult->fetchAllAssociative();
 
         foreach ($mediaToDelete as $media) {
             $this->mediaAltRepository->deleteMediaAltTexts($media['OXID']);
         }
 
-        $this->connection->executeQuery(
-            "DELETE FROM ddmedia WHERE OXID = :OXID OR DDFOLDERID = :OXID",
-            [
-                'OXID' => $idToRemove
-            ]
-        );
+        $deleteBuilder = $this->queryBuilderFactory->create();
+        $deleteBuilder
+            ->delete('ddmedia')
+            ->where('OXID = :OXID')
+            ->orWhere('DDFOLDERID = :OXID')
+            ->setParameter('OXID', $idToRemove);
+
+        $deleteBuilder->execute();
     }
 
     public function changeMediaFolderId(string $mediaIdToUpdate, string $newFolderId): void
     {
-        $this->connection->executeQuery(
-            "UPDATE ddmedia SET DDFOLDERID = :DDFOLDERID WHERE OXID = :OXID",
-            [
+        $queryBuilder = $this->queryBuilderFactory->create();
+        $queryBuilder
+            ->update('ddmedia')
+            ->set('DDFOLDERID', ':DDFOLDERID')
+            ->where('OXID = :OXID')
+            ->setParameters([
                 'DDFOLDERID' => $newFolderId,
-                'OXID' => $mediaIdToUpdate
-            ]
-        );
+                'OXID' => $mediaIdToUpdate,
+            ]);
+
+        $queryBuilder->execute();
     }
 }
