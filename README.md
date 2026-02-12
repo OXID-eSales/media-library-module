@@ -13,6 +13,7 @@ Module provides basic media files management.
 ## Compatibility
 
 ### Versions
+* v5.x is compatible with eShop compilation 7.5.x and higher
 * v4.x is compatible with eShop compilation 7.4.x and higher
 * v3.0.x is compatible with eShop compilation 7.3.x and higher
 * v2.1.x is compatible with eShop compilation 7.2.x and higher
