@@ -138,6 +138,7 @@ Module extracted from wysiwyg module, and used by it now
 - Thumbnails are generated on demand and the type of thumbnail file is matching the original image type
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
+[5.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.1.0..b-7.5.x
 [4.1.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.0.0..v4.1.0
 [4.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v3.0.1..v4.0.0
 [3.0.1]: https://github.com/OXID-eSales/media-library-module/compare/v3.0.0..v3.0.1

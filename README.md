@@ -27,6 +27,15 @@ Module provides basic media files management.
 * b-7.2.x is compatible with shop b-7.2.x branches
 * b-7.1.x is compatible with shop b-7.1.x branches
 
+### Module installation via composer
+
+In order to install the module via composer run one of the following commands in commandline in your shop base directory
+(where the shop's composer.json file resides).
+* `composer require oxid-esales/media-library-module:^5.0.0`
+  to install the released version compatible with OXID eShop v7.5.x
+* `composer require oxid-esales/media-library-module:dev-b-7.5.x`
+  to install the specific unreleased branch
+
 # Development installation on OXID eShop SDK
 
 The installation instructions below are shown for the current [SDK](https://github.com/OXID-eSales/docker-eshop-sdk)
