@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Updated to work with OXID eShop 7.5.x
 - Minimum PHP version is now 8.3, tested up to PHP 8.5
 - `MediaRepository` and `PreloadMediaRepository` uses `QueryBuilderFactoryInterface` instead of Connection
+- Removed Bootstrap 3 CSS classes from templates
 
 ## [4.1.0] - 2025-11-10
 

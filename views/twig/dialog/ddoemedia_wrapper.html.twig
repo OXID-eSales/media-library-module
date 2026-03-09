@@ -29,7 +29,7 @@
                 </div>
 
                 {% if not request.isPopout() %}
-                    <ul class="nav navbar-nav navbar-right hidden-xs">
+                    <ul class="nav navbar-nav ms-auto d-none d-sm-block">
                         <li><a href="{{ oViewConf.getSelfLink()|replace({'&amp;':'&'})|raw }}cl={{ oViewConf.getActiveClassName() }}&popout=1" target="_blank" class="dd-admin-popout-action"><i class="fa fa-expand"></i></a></li>
                     </ul>
                 {% endif %}

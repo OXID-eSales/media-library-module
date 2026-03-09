@@ -30,7 +30,7 @@
                 {% endif %}
 
                 <form class="dd-media-search-form">
-                    <input type="text" class="form-control input-sm" name="msearch" id="mediaSearchField" placeholder="{{ translate({ ident: "DD_MEDIA_SEARCH" }) }}" />
+                    <input type="text" class="form-control form-control-sm" name="msearch" id="mediaSearchField" placeholder="{{ translate({ ident: "DD_MEDIA_SEARCH" }) }}" />
                 </form>
             </li>
         </ul>
@@ -45,7 +45,7 @@
             </ol>
 
             <div class="dd-media-list-folder-up ms-auto">
-                <button type="button" class="btn btn-link btn-xs dd-media-folder-up-action">{{ translate({ ident: "DD_MEDIA_LEVEL_UP" }) }} <i class="fa fa-level-up"></i></button>
+                <button type="button" class="btn btn-link btn-sm dd-media-folder-up-action">{{ translate({ ident: "DD_MEDIA_LEVEL_UP" }) }} <i class="fa fa-level-up"></i></button>
             </div>
         {% endset %}
 
@@ -83,7 +83,7 @@
                                 </div>
 
                                 <div class="dd-media-dz-helper" style="display: none;">
-                                        <div class="dd-media-col {% if not request.isOverlay() %}col-md-2{% else %}col-md-3{% endif %} col-sm-3 col-xs-4">
+                                        <div class="dd-media-col {% if not request.isOverlay() %}col-md-2{% else %}col-md-3{% endif %} col-sm-3 col-4">
                                         <a class="dd-media-item" href="javascript:void(null);" data-alttext="">
                                             <div class="dd-media-item-preview">
                                                 <div class="dd-media-item-centered">
