@@ -33,7 +33,7 @@ $aLang = array(
     'DD_MEDIA_DIALOG'                 => 'Media gallery',
     'DD_MEDIA_LIST'                   => 'Media list',
     'DD_MEDIA_UPLOAD'                 => 'Upload',
-    'DD_MEDIA_REMOVE'                 => '<i class="fa fa-times-circle"></i> Delete data irrevocably',
+    'DD_MEDIA_REMOVE'                 => '<i class="bi bi-x-circle-fill"></i> Delete data irrevocably',
     'DD_MEDIA_REMOVE_CONFIRM'         => 'Do you really want to delete this file irrevocably?',
     'DD_MEDIA_REMOVE_ERR'             => 'Deletion failed',
     'DD_MEDIA_REMOVE_MANY_CONFIRM'    => 'Do you really want to delete the selected files irrevocably?',

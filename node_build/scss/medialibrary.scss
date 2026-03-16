@@ -60,9 +60,6 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
     }
 }
 
-@import 'font-awesome/scss/variables';
-@import 'font-awesome/scss/mixins';
-
 $items-gutter-width: 12px;
 
 .dd-dialog-loader {
