@@ -33,7 +33,7 @@ $aLang = array(
     'DD_MEDIA_DIALOG'                 => 'Mediathek',
     'DD_MEDIA_LIST'                   => 'Medien',
     'DD_MEDIA_UPLOAD'                 => 'Upload',
-    'DD_MEDIA_REMOVE'                 => '<i class="fa fa-times-circle"></i> Datei unwiderruflich löschen',
+    'DD_MEDIA_REMOVE'                 => '<i class="bi bi-x-circle-fill"></i> Datei unwiderruflich löschen',
     'DD_MEDIA_REMOVE_ERR'             => 'Löschen fehlgeschlagen',
     'DD_MEDIA_REMOVE_CONFIRM'         => 'Möchten Sie die Datei wirklich unwiderruflich löschen?',
     'DD_MEDIA_REMOVE_MANY_CONFIRM'    => 'Möchten Sie die Dateien wirklich unwiderruflich löschen?',

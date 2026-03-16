@@ -10,7 +10,7 @@
     {% set oViewConf = oView.getViewConfig() %}
 
     {{ style({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/css/bootstrap.min.css') }) }}
-    {{ style({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/css/font-awesome.min.css') }) }}
+    {{ style({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/css/bootstrap-icons.min.css') }) }}
     {{ style({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/css/base.min.css') }) }}
     {{ style({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/css/medialibrary.min.css') }) }}
 
@@ -30,7 +30,7 @@
 
                 {% if not request.isPopout() %}
                     <ul class="nav navbar-nav ms-auto d-none d-sm-block">
-                        <li><a href="{{ oViewConf.getSelfLink()|replace({'&amp;':'&'})|raw }}cl={{ oViewConf.getActiveClassName() }}&popout=1" target="_blank" class="dd-admin-popout-action"><i class="fa fa-expand"></i></a></li>
+                        <li><a href="{{ oViewConf.getSelfLink()|replace({'&amp;':'&'})|raw }}cl={{ oViewConf.getActiveClassName() }}&popout=1" target="_blank" class="dd-admin-popout-action"><i class="bi bi-arrows-fullscreen"></i></a></li>
                     </ul>
                 {% endif %}
 
