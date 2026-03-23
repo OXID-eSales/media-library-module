@@ -18,6 +18,11 @@ on:
           - 'PHP8.5/MariaDb11'
         default: 'PHP8.3/MySQL8.0'
         description: 'Limit to one PHP/MySQL combination'
+      gha_version:
+        type: choice
+        options: ['stable', 'v0']
+        description: 'GitHub Actions version'
+        default: 'stable'
 
 jobs:
   build_testplan:
@@ -49,13 +54,32 @@ jobs:
           TESTPLAN="~/defaults/7.5.x.yaml,${LIMIT}~/module-medialibrary.yaml"
           echo "testplan=${TESTPLAN}" | tee -a "${GITHUB_OUTPUT}"
 
-  dispatch_stable:
+  stable:
     needs: build_testplan
+    if: ${{ inputs.gha_version == 'stable' }}
     uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v5
     with:
       testplan: ${{ needs.build_testplan.outputs.testplan }}
       runs_on: '"ubuntu-latest"'
       defaults: 'v5'
+      plan_folder: '.github/oxid-esales'
+    secrets:
+      DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      CACHE_ENDPOINT: ${{ secrets.CACHE_ENDPOINT }}
+      CACHE_ACCESS_KEY: ${{ secrets.CACHE_ACCESS_KEY }}
+      CACHE_SECRET_KEY: ${{ secrets.CACHE_SECRET_KEY }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  dev:
+    needs: build_testplan
+    if: ${{ inputs.gha_version == 'v0' }}
+    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v0
+    with:
+      testplan: ${{ needs.build_testplan.outputs.testplan }}
+      runs_on: '"ubuntu-latest"'
+      defaults: 'v0'
       plan_folder: '.github/oxid-esales'
     secrets:
       DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
