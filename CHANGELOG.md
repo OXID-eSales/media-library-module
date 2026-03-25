@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Removed Bootstrap 3 CSS classes from templates
 - Replaced Font Awesome with Bootstrap Icons
 
+### Added
+- Media library search field now matches against media ID in addition to filename
+
 ## [4.1.0] - 2025-11-10
 
 ### Added

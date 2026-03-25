@@ -89,7 +89,8 @@ export default class MediaContent {
             items.forEach(item => {
                 const mediaItem = item.querySelector('.dd-media-item');
                 const fileName = this.store.get(mediaItem, 'file') || '';
-                if (!searchValue || fileName.toLowerCase().includes(searchValue)) {
+                const mediaId = this.store.get(mediaItem, 'id') || '';
+                if (!searchValue || fileName.toLowerCase().includes(searchValue) || mediaId.toLowerCase().includes(searchValue)) {
                     item.style.display = '';
                 } else {
                     item.style.display = 'none';
