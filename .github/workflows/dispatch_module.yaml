@@ -75,7 +75,7 @@ jobs:
   dev:
     needs: build_testplan
     if: ${{ inputs.gha_version == 'v0' }}
-    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v0
+    uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v5
     with:
       testplan: ${{ needs.build_testplan.outputs.testplan }}
       runs_on: '"ubuntu-latest"'
