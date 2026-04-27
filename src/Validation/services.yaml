@@ -18,6 +18,7 @@ services:
         - '@OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator'
         - '@OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator'
 
+  # TODO: consider using a tagged-iterator so future validators
   OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface:
     class: OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain
     public: true
@@ -26,7 +27,9 @@ services:
         - '@OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator'
         - '@OxidEsales\MediaLibrary\Validation\Validator\FileUploadStatusValidator'
         - '@OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator'
+        - '@OxidEsales\MediaLibrary\Validation\Validator\SvgContentValidator'
 
   OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator: ~
   OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator: ~
   OxidEsales\MediaLibrary\Validation\Validator\FileUploadStatusValidator: ~
+  OxidEsales\MediaLibrary\Validation\Validator\SvgContentValidator: ~

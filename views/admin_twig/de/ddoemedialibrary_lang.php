@@ -67,4 +67,5 @@ $aLang = array(
     'OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_EMPTY' => 'Dateiname darf nicht leer sein',
     'OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_STARTS_DOT' => 'Dateiname darf nicht mit "." beginnen',
     'OE_MEDIA_LIBRARY_EXCEPTION_FILE_NOT_UPLOADED' => 'Datei wurde nicht hochgeladen',
+    'OE_MEDIA_LIBRARY_EXCEPTION_SVG_DISALLOWED_CONTENT' => 'Die SVG-Datei enthält nicht erlaubte Inhalte (z.B. Skripte oder Event-Handler) und wurde abgelehnt.',
 );
