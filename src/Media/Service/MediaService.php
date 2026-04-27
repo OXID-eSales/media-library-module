@@ -38,7 +38,10 @@ class MediaService implements MediaServiceInterface
             $folderName = $folder->getFileName();
         }
 
-        $newMediaPath = $this->mediaResource->getPossibleMediaFilePath($folderName, $fileName);
+        $newMediaPath = $this->mediaResource->getPossibleMediaFilePath(
+            $folderName,
+            $this->namingService->sanitizeFilename($fileName)
+        );
 
         $this->fileSystemService->moveUploadedFile($uploadedFilePath, $newMediaPath->getPath());
 
