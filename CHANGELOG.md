@@ -4,7 +4,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [5.0.1] - unreleased
+## [5.1.0] - unreleased
+
+### Added
+- SVG content validation on upload — uploads containing script
+  elements, foreign-object embedding, event-handler attributes
+  (`on*`) or dangerous URL schemes (`javascript:`, `data:`) are
+  rejected with a translation-key error
+- New `Image\Sanitizer\SvgValidatorInterface` and detector-based
+  implementation under `Image\Sanitizer\Detector\` (internal)
+- Upload validation fails closed when an SVG cannot be read at
+  validation time (rejected instead of silently accepted)
+
+### Note for integrators
+- The `UploadedFileValidatorChainInterface` service in
+  `src/Validation/services.yaml` now lists a fourth validator
+  (`SvgContentValidator`). Modules that fully replace this
+  service definition need to add the new validator to keep the
+  SVG protection.
 
 ### Changed
 - Apply consistent filename sanitization across upload and rename
