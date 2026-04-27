@@ -202,6 +202,7 @@ class MediaServiceTest extends TestCase
         $newMediaId = uniqid();
         $newMediaName = 'someNewMediaName';
         $namingMock->method('getUniqueId')->willReturn($newMediaId);
+        $namingMock->method('sanitizeFilename')->willReturnArgument(0);
 
         $folderId = 'someFolderId';
         $folderName = 'someNewFolderName';
@@ -249,6 +250,55 @@ class MediaServiceTest extends TestCase
         );
 
         $this->assertSame($newMediaStub, $sut->upload($uploadedFilePath, $folderId, $newMediaName));
+    }
+
+    public function testUploadSanitizesFilenameToPreventPathTraversal(): void
+    {
+        $sut = $this->getSut(
+            namingService: $namingMock = $this->createMock(NamingServiceInterface::class),
+            mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
+            fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
+            mediaResource: $mediaResource = $this->createMock(MediaResourceInterface::class),
+        );
+
+        $newMediaId = uniqid();
+        $namingMock->method('getUniqueId')->willReturn($newMediaId);
+
+        $folderId = 'someFolderId';
+        $folderName = 'someFolderName';
+        $folderMediaStub = $this->createStub(MediaInterface::class);
+        $folderMediaStub->method('getFileName')->willReturn($folderName);
+
+        $newMediaStub = $this->createStub(MediaInterface::class);
+        $repositorySpy->method('getMediaById')->willReturnMap([
+            [$folderId, $folderMediaStub],
+            [$newMediaId, $newMediaStub],
+        ]);
+
+        $maliciousFileName = 'a/../../../source/modules/tainted.svg';
+        $sanitizedFileName = 'a-.-.-.-source-modules-tainted.svg';
+
+        $namingMock->expects($this->once())
+            ->method('sanitizeFilename')
+            ->with($maliciousFileName)
+            ->willReturn($sanitizedFileName);
+
+        $safePath = 'mediapath/' . $folderName . '/' . $sanitizedFileName;
+        $mediaResource->expects($this->once())
+            ->method('getPossibleMediaFilePath')
+            ->with($folderName, $sanitizedFileName)
+            ->willReturn(new FilePath($safePath));
+
+        $fileSystemSpy->expects($this->once())
+            ->method('moveUploadedFile')
+            ->with('someUploadedFilePath', $safePath);
+
+        $fileSystemSpy->method('getImageSize')
+            ->willReturn($this->createStub(ImageSizeInterface::class));
+        $fileSystemSpy->method('getFileSize')->willReturn(0);
+        $fileSystemSpy->method('getMimeType')->willReturn('image/svg+xml');
+
+        $sut->upload('someUploadedFilePath', $folderId, $maliciousFileName);
     }
 
     public function testGetMediaById(): void
