@@ -113,17 +113,20 @@ class SvgContentValidatorTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
+    #[DataProvider('unreadableSvgProvider')]
     #[Test]
-    public function validateFileThrowsWhenSvgUnreadable(): void
+    public function validateFileThrowsWhenSvgContentIsUnusable(?string $fileContent): void
     {
-        $vfs = vfsStream::setup(uniqid());
+        $fileName = uniqid() . '.svg';
+        $vfsContents = $fileContent === null ? [] : [$fileName => $fileContent];
+        $vfs = vfsStream::setup(uniqid(), null, $vfsContents);
 
         $svgValidatorSpy = $this->createMock(SvgValidatorInterface::class);
         $svgValidatorSpy->expects($this->never())->method('validate');
 
         $filePathStub = $this->createConfiguredStub(UploadedFileInterface::class, [
-            'getFileName' => uniqid() . '.svg',
-            'getPath' => $vfs->url() . '/' . uniqid() . '.svg',
+            'getFileName' => $fileName,
+            'getPath' => $vfs->url() . '/' . $fileName,
         ]);
 
         $sut = $this->getSut(svgValidator: $svgValidatorSpy);
@@ -132,6 +135,12 @@ class SvgContentValidatorTest extends TestCase
         $this->expectExceptionMessage('OE_MEDIA_LIBRARY_EXCEPTION_FILE_NOT_UPLOADED');
 
         $sut->validateFile($filePathStub);
+    }
+
+    public static function unreadableSvgProvider(): \Generator
+    {
+        yield 'file does not exist' => ['fileContent' => null];
+        yield 'file exists but is empty' => ['fileContent' => ''];
     }
 
     #[Test]
