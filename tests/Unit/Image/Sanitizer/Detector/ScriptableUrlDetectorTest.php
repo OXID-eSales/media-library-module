@@ -12,75 +12,83 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Sanitizer\Detector;
 use DOMDocument;
 use OxidEsales\MediaLibrary\Image\Sanitizer\Detector\ScriptableUrlDetector;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ScriptableUrlDetector::class)]
 class ScriptableUrlDetectorTest extends TestCase
 {
-    public function testReturnsTrueForJavascriptHref(): void
+    #[DataProvider('violatingSvgProvider')]
+    #[Test]
+    public function detectFindsScriptableUrl(string $svg): void
     {
-        $document = $this->loadSvg(<<<'XML'
-            <svg xmlns="http://www.w3.org/2000/svg">
-                <a href="javascript:alert(1)"><text>x</text></a>
-            </svg>
-            XML);
+        $sut = $this->getSut();
 
-        $this->assertTrue((new ScriptableUrlDetector())->detect($document));
+        $this->assertTrue($sut->detect($this->loadSvg($svg)));
     }
 
-    public function testReturnsTrueForXlinkJavascriptHref(): void
+    public static function violatingSvgProvider(): \Generator
     {
-        $document = $this->loadSvg(<<<'XML'
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <use xlink:href="javascript:alert(1)"/>
-            </svg>
-            XML);
+        yield 'javascript scheme in href' => [
+            'svg' => <<<'XML'
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <a href="javascript:alert(1)"><text>x</text></a>
+                </svg>
+                XML,
+        ];
 
-        $this->assertTrue((new ScriptableUrlDetector())->detect($document));
+        yield 'javascript scheme in xlink:href' => [
+            'svg' => <<<'XML'
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <use xlink:href="javascript:alert(1)"/>
+                </svg>
+                XML,
+        ];
+
+        yield 'data URI scheme in href' => [
+            'svg' => <<<'XML'
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <a href="data:text/html,&lt;script/&gt;"><text>x</text></a>
+                </svg>
+                XML,
+        ];
+
+        yield 'obfuscated javascript scheme (mixed case + leading whitespace)' => [
+            'svg' => <<<'XML'
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <a href="  JaVaScRiPt:alert(1)"><text>x</text></a>
+                </svg>
+                XML,
+        ];
     }
 
-    public function testReturnsTrueForDataUriHref(): void
+    #[DataProvider('benignSvgProvider')]
+    #[Test]
+    public function detectIgnoresBenignDocument(string $svg): void
     {
-        $document = $this->loadSvg(<<<'XML'
-            <svg xmlns="http://www.w3.org/2000/svg">
-                <a href="data:text/html,&lt;script/&gt;"><text>x</text></a>
-            </svg>
-            XML);
+        $sut = $this->getSut();
 
-        $this->assertTrue((new ScriptableUrlDetector())->detect($document));
+        $this->assertFalse($sut->detect($this->loadSvg($svg)));
     }
 
-    public function testReturnsTrueIgnoringCaseAndWhitespace(): void
+    public static function benignSvgProvider(): \Generator
     {
-        $document = $this->loadSvg(<<<'XML'
-            <svg xmlns="http://www.w3.org/2000/svg">
-                <a href="  JaVaScRiPt:alert(1)"><text>x</text></a>
-            </svg>
-            XML);
+        yield 'absolute https href' => [
+            'svg' => <<<'XML'
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <a href="https://example.com/page"><text>x</text></a>
+                </svg>
+                XML,
+        ];
 
-        $this->assertTrue((new ScriptableUrlDetector())->detect($document));
-    }
-
-    public function testReturnsFalseForBenignHttpHref(): void
-    {
-        $document = $this->loadSvg(<<<'XML'
-            <svg xmlns="http://www.w3.org/2000/svg">
-                <a href="https://example.com/page"><text>x</text></a>
-            </svg>
-            XML);
-
-        $this->assertFalse((new ScriptableUrlDetector())->detect($document));
-    }
-
-    public function testReturnsFalseForRelativeHref(): void
-    {
-        $document = $this->loadSvg(<<<'XML'
-            <svg xmlns="http://www.w3.org/2000/svg">
-                <a href="/page.html"><text>x</text></a>
-            </svg>
-            XML);
-
-        $this->assertFalse((new ScriptableUrlDetector())->detect($document));
+        yield 'relative path href' => [
+            'svg' => <<<'XML'
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <a href="/page.html"><text>x</text></a>
+                </svg>
+                XML,
+        ];
     }
 
     private function loadSvg(string $xml): DOMDocument
@@ -88,5 +96,10 @@ class ScriptableUrlDetectorTest extends TestCase
         $document = new DOMDocument();
         $document->loadXML($xml);
         return $document;
+    }
+
+    protected function getSut(): ScriptableUrlDetector
+    {
+        return new ScriptableUrlDetector();
     }
 }

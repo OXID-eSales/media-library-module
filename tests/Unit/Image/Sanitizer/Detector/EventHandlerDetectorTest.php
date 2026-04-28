@@ -12,42 +12,59 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Sanitizer\Detector;
 use DOMDocument;
 use OxidEsales\MediaLibrary\Image\Sanitizer\Detector\EventHandlerDetector;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(EventHandlerDetector::class)]
 class EventHandlerDetectorTest extends TestCase
 {
-    public function testReturnsTrueWhenOnloadIsPresent(): void
+    #[DataProvider('violatingSvgProvider')]
+    #[Test]
+    public function detectFindsEventHandler(string $svg): void
     {
-        $document = $this->loadSvg(<<<'XML'
-            <svg xmlns="http://www.w3.org/2000/svg">
-                <rect onload="alert(1)" width="10"/>
-            </svg>
-            XML);
+        $sut = $this->getSut();
 
-        $this->assertTrue((new EventHandlerDetector())->detect($document));
+        $this->assertTrue($sut->detect($this->loadSvg($svg)));
     }
 
-    public function testReturnsTrueWhenAnimationEventIsPresent(): void
+    public static function violatingSvgProvider(): \Generator
     {
-        $document = $this->loadSvg(<<<'XML'
-            <svg xmlns="http://www.w3.org/2000/svg">
-                <animate onbegin="alert(1)" attributeName="x"/>
-            </svg>
-            XML);
+        yield 'onload attribute' => [
+            'svg' => <<<'XML'
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <rect onload="alert(1)" width="10"/>
+                </svg>
+                XML,
+        ];
 
-        $this->assertTrue((new EventHandlerDetector())->detect($document));
+        yield 'animation onbegin attribute' => [
+            'svg' => <<<'XML'
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <animate onbegin="alert(1)" attributeName="x"/>
+                </svg>
+                XML,
+        ];
     }
 
-    public function testReturnsFalseForBenignDocument(): void
+    #[DataProvider('benignSvgProvider')]
+    #[Test]
+    public function detectIgnoresBenignDocument(string $svg): void
     {
-        $document = $this->loadSvg(<<<'XML'
-            <svg xmlns="http://www.w3.org/2000/svg">
-                <text font-size="20" stroke="black">hi</text>
-            </svg>
-            XML);
+        $sut = $this->getSut();
 
-        $this->assertFalse((new EventHandlerDetector())->detect($document));
+        $this->assertFalse($sut->detect($this->loadSvg($svg)));
+    }
+
+    public static function benignSvgProvider(): \Generator
+    {
+        yield 'text element with styling attributes' => [
+            'svg' => <<<'XML'
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <text font-size="20" stroke="black">hi</text>
+                </svg>
+                XML,
+        ];
     }
 
     private function loadSvg(string $xml): DOMDocument
@@ -55,5 +72,10 @@ class EventHandlerDetectorTest extends TestCase
         $document = new DOMDocument();
         $document->loadXML($xml);
         return $document;
+    }
+
+    protected function getSut(): EventHandlerDetector
+    {
+        return new EventHandlerDetector();
     }
 }

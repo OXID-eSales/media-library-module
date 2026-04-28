@@ -16,6 +16,8 @@ use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Validator\SvgContentValidator;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -23,110 +25,152 @@ use Psr\Log\NullLogger;
 #[CoversClass(SvgContentValidator::class)]
 class SvgContentValidatorTest extends TestCase
 {
-    public function testIgnoresFilesWhoseNameIsNotSvg(): void
+    #[DataProvider('nonSvgFileNameProvider')]
+    #[Test]
+    public function validateFileIgnoresNonSvgFiles(string $fileName): void
     {
-        $svgValidator = $this->createMock(SvgValidatorInterface::class);
-        $svgValidator->expects($this->never())->method('validate');
+        $svgValidatorSpy = $this->createMock(SvgValidatorInterface::class);
+        $svgValidatorSpy->expects($this->never())->method('validate');
 
-        $filePath = $this->createMock(UploadedFileInterface::class);
-        $filePath->method('getFileName')->willReturn('photo.jpg');
+        $filePathStub = $this->createConfiguredStub(UploadedFileInterface::class, [
+            'getFileName' => $fileName,
+        ]);
 
-        (new SvgContentValidator($svgValidator, new NullLogger()))->validateFile($filePath);
+        $sut = $this->getSut(svgValidator: $svgValidatorSpy);
+        $sut->validateFile($filePathStub);
 
         $this->addToAssertionCount(1);
     }
 
-    public function testReadsContentAndDelegatesForSvgUpload(): void
+    public static function nonSvgFileNameProvider(): \Generator
     {
-        $vfs = vfsStream::setup('uploads', null, ['some.svg' => '<svg/>']);
-
-        $svgValidator = $this->createMock(SvgValidatorInterface::class);
-        $svgValidator->expects($this->once())
-            ->method('validate')
-            ->with('<svg/>');
-
-        $filePath = $this->createMock(UploadedFileInterface::class);
-        $filePath->method('getFileName')->willReturn('some.svg');
-        $filePath->method('getPath')->willReturn($vfs->url() . '/some.svg');
-
-        (new SvgContentValidator($svgValidator, new NullLogger()))->validateFile($filePath);
+        yield 'JPEG image' => ['fileName' => uniqid() . '.jpg'];
+        yield 'PNG image' => ['fileName' => uniqid() . '.png'];
+        yield 'PDF document' => ['fileName' => uniqid() . '.pdf'];
+        yield 'archive with multi-part extension' => ['fileName' => uniqid() . '.tar.gz'];
+        yield 'no extension at all' => ['fileName' => uniqid()];
     }
 
-    public function testPropagatesValidationException(): void
+    #[Test]
+    public function validateFileReadsContentAndDelegatesForSvg(): void
     {
-        $vfs = vfsStream::setup('uploads', null, ['xss.svg' => '<svg><script/></svg>']);
+        $fileName = uniqid() . '.svg';
+        $fileContent = uniqid();
+        $vfs = vfsStream::setup(uniqid(), null, [$fileName => $fileContent]);
 
-        $svgValidator = $this->createMock(SvgValidatorInterface::class);
-        $svgValidator->method('validate')
-            ->willThrowException(new ValidationFailedException(
-                'OE_MEDIA_LIBRARY_EXCEPTION_SVG_DISALLOWED_CONTENT'
-            ));
+        $svgValidatorSpy = $this->createMock(SvgValidatorInterface::class);
+        $svgValidatorSpy->expects($this->once())
+            ->method('validate')
+            ->with($fileContent);
 
-        $filePath = $this->createMock(UploadedFileInterface::class);
-        $filePath->method('getFileName')->willReturn('xss.svg');
-        $filePath->method('getPath')->willReturn($vfs->url() . '/xss.svg');
+        $filePathStub = $this->createConfiguredStub(UploadedFileInterface::class, [
+            'getFileName' => $fileName,
+            'getPath' => $vfs->url() . '/' . $fileName,
+        ]);
+
+        $sut = $this->getSut(svgValidator: $svgValidatorSpy);
+        $sut->validateFile($filePathStub);
+    }
+
+    #[Test]
+    public function validateFilePropagatesValidationException(): void
+    {
+        $fileName = uniqid() . '.svg';
+        $vfs = vfsStream::setup(uniqid(), null, [$fileName => uniqid()]);
+        $exceptionMessage = uniqid();
+
+        $svgValidatorStub = $this->createStub(SvgValidatorInterface::class);
+        $svgValidatorStub->method('validate')
+            ->willThrowException(new ValidationFailedException($exceptionMessage));
+
+        $filePathStub = $this->createConfiguredStub(UploadedFileInterface::class, [
+            'getFileName' => $fileName,
+            'getPath' => $vfs->url() . '/' . $fileName,
+        ]);
+
+        $sut = $this->getSut(svgValidator: $svgValidatorStub);
 
         $this->expectException(ValidationFailedException::class);
-        $this->expectExceptionMessage('OE_MEDIA_LIBRARY_EXCEPTION_SVG_DISALLOWED_CONTENT');
+        $this->expectExceptionMessage($exceptionMessage);
 
-        (new SvgContentValidator($svgValidator, new NullLogger()))->validateFile($filePath);
+        $sut->validateFile($filePathStub);
     }
 
-    public function testIgnoresNonUploadedFilePaths(): void
+    #[Test]
+    public function validateFileIgnoresNonUploadedPaths(): void
     {
-        $svgValidator = $this->createMock(SvgValidatorInterface::class);
-        $svgValidator->expects($this->never())->method('validate');
+        $svgValidatorSpy = $this->createMock(SvgValidatorInterface::class);
+        $svgValidatorSpy->expects($this->never())->method('validate');
 
         // Plain FilePathInterface, not an upload — no temp file to read.
-        $filePath = $this->createMock(FilePathInterface::class);
-        $filePath->method('getFileName')->willReturn('renamed.svg');
+        $filePathStub = $this->createConfiguredStub(FilePathInterface::class, [
+            'getFileName' => uniqid() . '.svg',
+        ]);
 
-        (new SvgContentValidator($svgValidator, new NullLogger()))->validateFile($filePath);
+        $sut = $this->getSut(svgValidator: $svgValidatorSpy);
+        $sut->validateFile($filePathStub);
 
         $this->addToAssertionCount(1);
     }
 
-    public function testThrowsWhenSvgFileCannotBeRead(): void
+    #[Test]
+    public function validateFileThrowsWhenSvgUnreadable(): void
     {
-        $vfs = vfsStream::setup('uploads');
+        $vfs = vfsStream::setup(uniqid());
 
-        $svgValidator = $this->createMock(SvgValidatorInterface::class);
-        $svgValidator->expects($this->never())->method('validate');
+        $svgValidatorSpy = $this->createMock(SvgValidatorInterface::class);
+        $svgValidatorSpy->expects($this->never())->method('validate');
 
-        $filePath = $this->createMock(UploadedFileInterface::class);
-        $filePath->method('getFileName')->willReturn('missing.svg');
-        $filePath->method('getPath')->willReturn($vfs->url() . '/does-not-exist.svg');
+        $filePathStub = $this->createConfiguredStub(UploadedFileInterface::class, [
+            'getFileName' => uniqid() . '.svg',
+            'getPath' => $vfs->url() . '/' . uniqid() . '.svg',
+        ]);
+
+        $sut = $this->getSut(svgValidator: $svgValidatorSpy);
 
         $this->expectException(ValidationFailedException::class);
         $this->expectExceptionMessage('OE_MEDIA_LIBRARY_EXCEPTION_FILE_NOT_UPLOADED');
 
-        (new SvgContentValidator($svgValidator, new NullLogger()))->validateFile($filePath);
+        $sut->validateFile($filePathStub);
     }
 
-    public function testLogsRejectedSvgWithFileName(): void
+    #[Test]
+    public function validateFileLogsRejectedSvg(): void
     {
-        $vfs = vfsStream::setup('uploads', null, ['xss.svg' => '<svg><script/></svg>']);
+        $fileName = uniqid() . '.svg';
+        $vfs = vfsStream::setup(uniqid(), null, [$fileName => uniqid()]);
 
-        $svgValidator = $this->createMock(SvgValidatorInterface::class);
-        $svgValidator->method('validate')
-            ->willThrowException(new ValidationFailedException(
-                'OE_MEDIA_LIBRARY_EXCEPTION_SVG_DISALLOWED_CONTENT'
-            ));
+        $svgValidatorStub = $this->createStub(SvgValidatorInterface::class);
+        $svgValidatorStub->method('validate')
+            ->willThrowException(new ValidationFailedException(uniqid()));
 
-        $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())
+        $loggerSpy = $this->createMock(LoggerInterface::class);
+        $loggerSpy->expects($this->once())
             ->method('error')
             ->with(
                 $this->stringContains('Rejected SVG upload'),
-                $this->callback(fn(array $context) => ($context['file'] ?? null) === 'xss.svg')
+                $this->callback(fn(array $context) => ($context['file'] ?? null) === $fileName)
             );
 
-        $filePath = $this->createMock(UploadedFileInterface::class);
-        $filePath->method('getFileName')->willReturn('xss.svg');
-        $filePath->method('getPath')->willReturn($vfs->url() . '/xss.svg');
+        $filePathStub = $this->createConfiguredStub(UploadedFileInterface::class, [
+            'getFileName' => $fileName,
+            'getPath' => $vfs->url() . '/' . $fileName,
+        ]);
+
+        $sut = $this->getSut(svgValidator: $svgValidatorStub, logger: $loggerSpy);
 
         $this->expectException(ValidationFailedException::class);
 
-        (new SvgContentValidator($svgValidator, $logger))->validateFile($filePath);
+        $sut->validateFile($filePathStub);
+    }
+
+    protected function getSut(
+        ?SvgValidatorInterface $svgValidator = null,
+        ?LoggerInterface $logger = null,
+    ): SvgContentValidator {
+        return new SvgContentValidator(
+            svgValidator: $svgValidator ?? $this->createStub(SvgValidatorInterface::class),
+            logger: $logger ?? new NullLogger(),
+        );
     }
 }
