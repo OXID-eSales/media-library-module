@@ -14,34 +14,37 @@ use OxidEsales\MediaLibrary\Image\Sanitizer\Detector\SvgViolationDetectorInterfa
 use OxidEsales\MediaLibrary\Image\Sanitizer\SvgValidator;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(SvgValidator::class)]
 class SvgValidatorTest extends TestCase
 {
-    public function testPassesWhenAllDetectorsReturnFalse(): void
+    #[Test]
+    public function validatePassesWhenAllDetectorsReturnFalse(): void
     {
-        $detectorA = $this->createMock(SvgViolationDetectorInterface::class);
-        $detectorA->method('detect')->willReturn(false);
+        $detectorAStub = $this->createStub(SvgViolationDetectorInterface::class);
+        $detectorAStub->method('detect')->willReturn(false);
 
-        $detectorB = $this->createMock(SvgViolationDetectorInterface::class);
-        $detectorB->method('detect')->willReturn(false);
+        $detectorBStub = $this->createStub(SvgViolationDetectorInterface::class);
+        $detectorBStub->method('detect')->willReturn(false);
 
-        $sut = new SvgValidator([$detectorA, $detectorB]);
+        $sut = $this->getSut([$detectorAStub, $detectorBStub]);
         $sut->validate('<svg xmlns="http://www.w3.org/2000/svg"/>');
 
         $this->addToAssertionCount(1);
     }
 
-    public function testThrowsWhenAnyDetectorReturnsTrue(): void
+    #[Test]
+    public function validateThrowsWhenAnyDetectorReturnsTrue(): void
     {
-        $clean = $this->createMock(SvgViolationDetectorInterface::class);
-        $clean->method('detect')->willReturn(false);
+        $cleanStub = $this->createStub(SvgViolationDetectorInterface::class);
+        $cleanStub->method('detect')->willReturn(false);
 
-        $hits = $this->createMock(SvgViolationDetectorInterface::class);
-        $hits->method('detect')->willReturn(true);
+        $hitsStub = $this->createStub(SvgViolationDetectorInterface::class);
+        $hitsStub->method('detect')->willReturn(true);
 
-        $sut = new SvgValidator([$clean, $hits]);
+        $sut = $this->getSut([$cleanStub, $hitsStub]);
 
         $this->expectException(ValidationFailedException::class);
         $this->expectExceptionMessage('OE_MEDIA_LIBRARY_EXCEPTION_SVG_DISALLOWED_CONTENT');
@@ -49,29 +52,36 @@ class SvgValidatorTest extends TestCase
         $sut->validate('<svg xmlns="http://www.w3.org/2000/svg"/>');
     }
 
-    public function testStopsAtFirstHit(): void
+    #[Test]
+    public function validateStopsAtFirstHit(): void
     {
-        $first = $this->createMock(SvgViolationDetectorInterface::class);
-        $first->expects($this->once())->method('detect')->willReturn(true);
+        $firstMock = $this->createMock(SvgViolationDetectorInterface::class);
+        $firstMock->expects($this->once())->method('detect')->willReturn(true);
 
-        $second = $this->createMock(SvgViolationDetectorInterface::class);
-        $second->expects($this->never())->method('detect');
+        $secondSpy = $this->createMock(SvgViolationDetectorInterface::class);
+        $secondSpy->expects($this->never())->method('detect');
 
-        $sut = new SvgValidator([$first, $second]);
+        $sut = $this->getSut([$firstMock, $secondSpy]);
 
         $this->expectException(ValidationFailedException::class);
         $sut->validate('<svg xmlns="http://www.w3.org/2000/svg"/>');
     }
 
-    public function testEachDetectorReceivesADomDocument(): void
+    #[Test]
+    public function validatePassesDomDocumentToEachDetector(): void
     {
-        $detector = $this->createMock(SvgViolationDetectorInterface::class);
-        $detector->expects($this->once())
+        $detectorMock = $this->createMock(SvgViolationDetectorInterface::class);
+        $detectorMock->expects($this->once())
             ->method('detect')
             ->with($this->isInstanceOf(DOMDocument::class))
             ->willReturn(false);
 
-        (new SvgValidator([$detector]))
-            ->validate('<svg xmlns="http://www.w3.org/2000/svg"><rect/></svg>');
+        $sut = $this->getSut([$detectorMock]);
+        $sut->validate('<svg xmlns="http://www.w3.org/2000/svg"><rect/></svg>');
+    }
+
+    protected function getSut(iterable $detectors = []): SvgValidator
+    {
+        return new SvgValidator($detectors);
     }
 }

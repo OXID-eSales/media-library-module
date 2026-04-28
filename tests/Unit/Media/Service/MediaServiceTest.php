@@ -20,6 +20,7 @@ use OxidEsales\MediaLibrary\Service\FileSystemService;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(MediaService::class)]
@@ -252,25 +253,26 @@ class MediaServiceTest extends TestCase
         $this->assertSame($newMediaStub, $sut->upload($uploadedFilePath, $folderId, $newMediaName));
     }
 
-    public function testUploadSanitizesFilenameToPreventPathTraversal(): void
+    #[Test]
+    public function uploadSanitizesFilenameToPreventPathTraversal(): void
     {
         $sut = $this->getSut(
             namingService: $namingMock = $this->createMock(NamingServiceInterface::class),
-            mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
+            mediaRepository: $repositoryStub = $this->createMock(MediaRepositoryInterface::class),
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
-            mediaResource: $mediaResource = $this->createMock(MediaResourceInterface::class),
+            mediaResource: $mediaResourceMock = $this->createMock(MediaResourceInterface::class),
         );
 
         $newMediaId = uniqid();
         $namingMock->method('getUniqueId')->willReturn($newMediaId);
 
-        $folderId = 'someFolderId';
-        $folderName = 'someFolderName';
+        $folderId = uniqid();
+        $folderName = uniqid();
         $folderMediaStub = $this->createStub(MediaInterface::class);
         $folderMediaStub->method('getFileName')->willReturn($folderName);
 
         $newMediaStub = $this->createStub(MediaInterface::class);
-        $repositorySpy->method('getMediaById')->willReturnMap([
+        $repositoryStub->method('getMediaById')->willReturnMap([
             [$folderId, $folderMediaStub],
             [$newMediaId, $newMediaStub],
         ]);
@@ -284,21 +286,22 @@ class MediaServiceTest extends TestCase
             ->willReturn($sanitizedFileName);
 
         $safePath = 'mediapath/' . $folderName . '/' . $sanitizedFileName;
-        $mediaResource->expects($this->once())
+        $mediaResourceMock->expects($this->once())
             ->method('getPossibleMediaFilePath')
             ->with($folderName, $sanitizedFileName)
             ->willReturn(new FilePath($safePath));
 
+        $uploadedFilePath = uniqid();
         $fileSystemSpy->expects($this->once())
             ->method('moveUploadedFile')
-            ->with('someUploadedFilePath', $safePath);
+            ->with($uploadedFilePath, $safePath);
 
         $fileSystemSpy->method('getImageSize')
             ->willReturn($this->createStub(ImageSizeInterface::class));
         $fileSystemSpy->method('getFileSize')->willReturn(0);
         $fileSystemSpy->method('getMimeType')->willReturn('image/svg+xml');
 
-        $sut->upload('someUploadedFilePath', $folderId, $maliciousFileName);
+        $sut->upload($uploadedFilePath, $folderId, $maliciousFileName);
     }
 
     public function testGetMediaById(): void

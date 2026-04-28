@@ -12,29 +12,47 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Sanitizer\Detector;
 use DOMDocument;
 use OxidEsales\MediaLibrary\Image\Sanitizer\Detector\ForeignObjectDetector;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ForeignObjectDetector::class)]
 class ForeignObjectDetectorTest extends TestCase
 {
-    public function testReturnsTrueWhenForeignObjectIsPresent(): void
+    #[DataProvider('violatingSvgProvider')]
+    #[Test]
+    public function detectFindsForeignObject(string $svg): void
     {
-        $document = $this->loadSvg(<<<'XML'
-            <svg xmlns="http://www.w3.org/2000/svg">
-                <foreignObject width="100" height="50"/>
-            </svg>
-            XML);
+        $sut = $this->getSut();
 
-        $this->assertTrue((new ForeignObjectDetector())->detect($document));
+        $this->assertTrue($sut->detect($this->loadSvg($svg)));
     }
 
-    public function testReturnsFalseForBenignDocument(): void
+    public static function violatingSvgProvider(): \Generator
     {
-        $document = $this->loadSvg(<<<'XML'
-            <svg xmlns="http://www.w3.org/2000/svg"><rect/></svg>
-            XML);
+        yield 'foreignObject element' => [
+            'svg' => <<<'XML'
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <foreignObject width="100" height="50"/>
+                </svg>
+                XML,
+        ];
+    }
 
-        $this->assertFalse((new ForeignObjectDetector())->detect($document));
+    #[DataProvider('benignSvgProvider')]
+    #[Test]
+    public function detectIgnoresBenignDocument(string $svg): void
+    {
+        $sut = $this->getSut();
+
+        $this->assertFalse($sut->detect($this->loadSvg($svg)));
+    }
+
+    public static function benignSvgProvider(): \Generator
+    {
+        yield 'plain rect element' => [
+            'svg' => '<svg xmlns="http://www.w3.org/2000/svg"><rect/></svg>',
+        ];
     }
 
     private function loadSvg(string $xml): DOMDocument
@@ -42,5 +60,10 @@ class ForeignObjectDetectorTest extends TestCase
         $document = new DOMDocument();
         $document->loadXML($xml);
         return $document;
+    }
+
+    protected function getSut(): ForeignObjectDetector
+    {
+        return new ForeignObjectDetector();
     }
 }

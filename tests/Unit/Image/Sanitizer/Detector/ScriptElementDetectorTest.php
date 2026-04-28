@@ -12,43 +12,60 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Sanitizer\Detector;
 use DOMDocument;
 use OxidEsales\MediaLibrary\Image\Sanitizer\Detector\ScriptElementDetector;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ScriptElementDetector::class)]
 class ScriptElementDetectorTest extends TestCase
 {
-    public function testReturnsTrueWhenScriptIsPresent(): void
+    #[DataProvider('violatingSvgProvider')]
+    #[Test]
+    public function detectFindsScriptElement(string $svg): void
     {
-        $document = $this->loadSvg(<<<'XML'
-            <svg xmlns="http://www.w3.org/2000/svg">
-                <script>alert(1)</script>
-                <rect/>
-            </svg>
-            XML);
+        $sut = $this->getSut();
 
-        $this->assertTrue((new ScriptElementDetector())->detect($document));
+        $this->assertTrue($sut->detect($this->loadSvg($svg)));
     }
 
-    public function testReturnsTrueWhenScriptIsNested(): void
+    public static function violatingSvgProvider(): \Generator
     {
-        $document = $this->loadSvg(<<<'XML'
-            <svg xmlns="http://www.w3.org/2000/svg">
-                <g><script>alert(1)</script></g>
-            </svg>
-            XML);
+        yield 'top-level script element' => [
+            'svg' => <<<'XML'
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <script>alert(1)</script>
+                    <rect/>
+                </svg>
+                XML,
+        ];
 
-        $this->assertTrue((new ScriptElementDetector())->detect($document));
+        yield 'nested script element inside group' => [
+            'svg' => <<<'XML'
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <g><script>alert(1)</script></g>
+                </svg>
+                XML,
+        ];
     }
 
-    public function testReturnsFalseForBenignDocument(): void
+    #[DataProvider('benignSvgProvider')]
+    #[Test]
+    public function detectIgnoresBenignDocument(string $svg): void
     {
-        $document = $this->loadSvg(<<<'XML'
-            <svg xmlns="http://www.w3.org/2000/svg">
-                <rect width="10" height="10"/>
-            </svg>
-            XML);
+        $sut = $this->getSut();
 
-        $this->assertFalse((new ScriptElementDetector())->detect($document));
+        $this->assertFalse($sut->detect($this->loadSvg($svg)));
+    }
+
+    public static function benignSvgProvider(): \Generator
+    {
+        yield 'plain rect element' => [
+            'svg' => <<<'XML'
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <rect width="10" height="10"/>
+                </svg>
+                XML,
+        ];
     }
 
     private function loadSvg(string $xml): DOMDocument
@@ -56,5 +73,10 @@ class ScriptElementDetectorTest extends TestCase
         $document = new DOMDocument();
         $document->loadXML($xml);
         return $document;
+    }
+
+    protected function getSut(): ScriptElementDetector
+    {
+        return new ScriptElementDetector();
     }
 }
