@@ -30,7 +30,7 @@ final class SvgContentValidator implements FilePathValidatorInterface
         }
 
         $content = @file_get_contents($filePath->getPath());
-        if ($content === false) {
+        if ($content === false || $content === '') {
             throw new ValidationFailedException('OE_MEDIA_LIBRARY_EXCEPTION_FILE_NOT_UPLOADED');
         }
 

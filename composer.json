@@ -23,6 +23,7 @@
     "symfony/filesystem": "*",
     "ext-gd": "*",
     "ext-fileinfo": "*",
+    "ext-dom": "*",
     "intervention/image": "^3.3"
   },
   "require-dev": {

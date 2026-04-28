@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Apply consistent filename sanitization across upload and rename
+- `composer.json` now declares `ext-dom` (used by the new SVG content
+  validator)
 
 ## [5.0.0] - 2026-04-09
 
