@@ -11,10 +11,10 @@ namespace OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg;
 
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 
-interface SvgValidatorInterface
+interface SvgScannerInterface
 {
     /**
      * @throws ValidationFailedException
      */
-    public function validate(string $svgContent): void;
+    public function scan(string $svgContent): void;
 }

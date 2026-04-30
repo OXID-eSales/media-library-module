@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator\ContentValidator;
 
-use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgValidatorInterface;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgScannerInterface;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
@@ -52,15 +52,15 @@ class SvgContentValidatorTest extends TestCase
     }
 
     #[Test]
-    public function validateReadsContentAndDelegatesToSvgValidator(): void
+    public function validateReadsContentAndDelegatesToSvgScanner(): void
     {
         $fileName = uniqid() . '.svg';
         $fileContent = uniqid();
         $vfs = vfsStream::setup(uniqid(), null, [$fileName => $fileContent]);
 
-        $svgValidatorSpy = $this->createMock(SvgValidatorInterface::class);
-        $svgValidatorSpy->expects($this->once())
-            ->method('validate')
+        $svgScannerSpy = $this->createMock(SvgScannerInterface::class);
+        $svgScannerSpy->expects($this->once())
+            ->method('scan')
             ->with($fileContent);
 
         $filePathStub = $this->createConfiguredStub(UploadedFileInterface::class, [
@@ -68,7 +68,7 @@ class SvgContentValidatorTest extends TestCase
             'getPath' => $vfs->url() . '/' . $fileName,
         ]);
 
-        $sut = $this->getSut(svgValidator: $svgValidatorSpy);
+        $sut = $this->getSut(svgScanner: $svgScannerSpy);
         $sut->validate($filePathStub);
     }
 
@@ -79,8 +79,8 @@ class SvgContentValidatorTest extends TestCase
         $vfs = vfsStream::setup(uniqid(), null, [$fileName => uniqid()]);
         $exceptionMessage = uniqid();
 
-        $svgValidatorStub = $this->createStub(SvgValidatorInterface::class);
-        $svgValidatorStub->method('validate')
+        $svgScannerStub = $this->createStub(SvgScannerInterface::class);
+        $svgScannerStub->method('scan')
             ->willThrowException(new ValidationFailedException($exceptionMessage));
 
         $filePathStub = $this->createConfiguredStub(UploadedFileInterface::class, [
@@ -88,7 +88,7 @@ class SvgContentValidatorTest extends TestCase
             'getPath' => $vfs->url() . '/' . $fileName,
         ]);
 
-        $sut = $this->getSut(svgValidator: $svgValidatorStub);
+        $sut = $this->getSut(svgScanner: $svgScannerStub);
 
         $this->expectException(ValidationFailedException::class);
         $this->expectExceptionMessage($exceptionMessage);
@@ -99,14 +99,14 @@ class SvgContentValidatorTest extends TestCase
     #[Test]
     public function validateIgnoresNonUploadedPaths(): void
     {
-        $svgValidatorSpy = $this->createMock(SvgValidatorInterface::class);
-        $svgValidatorSpy->expects($this->never())->method('validate');
+        $svgScannerSpy = $this->createMock(SvgScannerInterface::class);
+        $svgScannerSpy->expects($this->never())->method('scan');
 
         $filePathStub = $this->createConfiguredStub(FilePathInterface::class, [
             'getFileName' => uniqid() . '.svg',
         ]);
 
-        $sut = $this->getSut(svgValidator: $svgValidatorSpy);
+        $sut = $this->getSut(svgScanner: $svgScannerSpy);
         $sut->validate($filePathStub);
 
         $this->addToAssertionCount(1);
@@ -120,15 +120,15 @@ class SvgContentValidatorTest extends TestCase
         $vfsContents = $fileContent === null ? [] : [$fileName => $fileContent];
         $vfs = vfsStream::setup(uniqid(), null, $vfsContents);
 
-        $svgValidatorSpy = $this->createMock(SvgValidatorInterface::class);
-        $svgValidatorSpy->expects($this->never())->method('validate');
+        $svgScannerSpy = $this->createMock(SvgScannerInterface::class);
+        $svgScannerSpy->expects($this->never())->method('scan');
 
         $filePathStub = $this->createConfiguredStub(UploadedFileInterface::class, [
             'getFileName' => $fileName,
             'getPath' => $vfs->url() . '/' . $fileName,
         ]);
 
-        $sut = $this->getSut(svgValidator: $svgValidatorSpy);
+        $sut = $this->getSut(svgScanner: $svgScannerSpy);
 
         $this->expectException(ValidationFailedException::class);
         $this->expectExceptionMessage('OE_MEDIA_LIBRARY_EXCEPTION_FILE_NOT_UPLOADED');
@@ -148,8 +148,8 @@ class SvgContentValidatorTest extends TestCase
         $fileName = uniqid() . '.svg';
         $vfs = vfsStream::setup(uniqid(), null, [$fileName => uniqid()]);
 
-        $svgValidatorStub = $this->createStub(SvgValidatorInterface::class);
-        $svgValidatorStub->method('validate')
+        $svgScannerStub = $this->createStub(SvgScannerInterface::class);
+        $svgScannerStub->method('scan')
             ->willThrowException(new ValidationFailedException(uniqid()));
 
         $loggerSpy = $this->createMock(LoggerInterface::class);
@@ -165,7 +165,7 @@ class SvgContentValidatorTest extends TestCase
             'getPath' => $vfs->url() . '/' . $fileName,
         ]);
 
-        $sut = $this->getSut(svgValidator: $svgValidatorStub, logger: $loggerSpy);
+        $sut = $this->getSut(svgScanner: $svgScannerStub, logger: $loggerSpy);
 
         $this->expectException(ValidationFailedException::class);
 
@@ -173,11 +173,11 @@ class SvgContentValidatorTest extends TestCase
     }
 
     protected function getSut(
-        ?SvgValidatorInterface $svgValidator = null,
+        ?SvgScannerInterface $svgScanner = null,
         ?LoggerInterface $logger = null,
     ): SvgContentValidator {
         return new SvgContentValidator(
-            svgValidator: $svgValidator ?? $this->createStub(SvgValidatorInterface::class),
+            svgScanner: $svgScanner ?? $this->createStub(SvgScannerInterface::class),
             logger: $logger ?? new NullLogger(),
         );
     }

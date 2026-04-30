@@ -13,7 +13,7 @@ use DOMDocument;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\SvgViolationDetectorInterface;
 
-final class SvgValidator implements SvgValidatorInterface
+final class SvgScanner implements SvgScannerInterface
 {
     /**
      * @param iterable<SvgViolationDetectorInterface> $detectors
@@ -22,7 +22,7 @@ final class SvgValidator implements SvgValidatorInterface
     {
     }
 
-    public function validate(string $svgContent): void
+    public function scan(string $svgContent): void
     {
         $document = new DOMDocument();
         $document->loadXML($svgContent, LIBXML_NONET);

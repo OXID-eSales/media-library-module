@@ -3,8 +3,8 @@ services:
     public: false
     autowire: true
 
-  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgValidatorInterface:
-    class: OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgValidator
+  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgScannerInterface:
+    class: OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgScanner
     arguments:
       $detectors: !tagged_iterator oxid_esales.media_library.validation.svg_violation_detector
 

@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Validation\Validator\ContentValidator;
 
-use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgValidatorInterface;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgScannerInterface;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormatInterface;
@@ -21,7 +21,7 @@ final class SvgContentValidator implements ContentValidatorInterface
     private const SUPPORTED_EXTENSION = 'svg';
 
     public function __construct(
-        private readonly SvgValidatorInterface $svgValidator,
+        private readonly SvgScannerInterface $svgScanner,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -43,7 +43,7 @@ final class SvgContentValidator implements ContentValidatorInterface
         }
 
         try {
-            $this->svgValidator->validate($content);
+            $this->svgScanner->scan($content);
         } catch (ValidationFailedException $exception) {
             $this->logger->error(
                 'Rejected SVG upload: contains disallowed content',
