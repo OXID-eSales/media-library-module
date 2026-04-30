@@ -51,5 +51,16 @@ class UploadedFileTest extends TestCase
         $this->assertSame('', $sut->getPath());
         $this->assertTrue($sut->isError());
         $this->assertSame(0, $sut->getSize());
+        $this->assertSame('', $sut->getExtension());
+    }
+
+    public function testGetExtensionReturnsLowercase(): void
+    {
+        $extension = uniqid();
+        $sut = new UploadedFile([
+            'name' => uniqid() . '.' . strtoupper($extension),
+        ]);
+
+        $this->assertSame(strtolower($extension), $sut->getExtension());
     }
 }

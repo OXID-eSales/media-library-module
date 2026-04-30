@@ -14,4 +14,6 @@ interface FilePathInterface
     public function getPath(): string;
 
     public function getFileName(): string;
+
+    public function getExtension(): string;
 }

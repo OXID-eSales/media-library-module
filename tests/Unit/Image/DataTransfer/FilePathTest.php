@@ -31,4 +31,19 @@ class FilePathTest extends TestCase
         $sut = new FilePath($examplePath);
         $this->assertSame($exampleFileName, $sut->getFileName());
     }
+
+    public function testGetExtensionReturnsLowercase(): void
+    {
+        $extension = uniqid();
+        $sut = new FilePath('/some/path/' . uniqid() . '.' . strtoupper($extension));
+
+        $this->assertSame(strtolower($extension), $sut->getExtension());
+    }
+
+    public function testGetExtensionReturnsEmptyForFileWithoutExtension(): void
+    {
+        $sut = new FilePath('/some/path/' . uniqid());
+
+        $this->assertSame('', $sut->getExtension());
+    }
 }
