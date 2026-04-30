@@ -1,0 +1,89 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Validation\Format\FileFormatRegistryInterface:
+    class: OxidEsales\MediaLibrary\Validation\Format\FileFormatRegistry
+    arguments:
+      $formats: !tagged_iterator oxid_esales.media_library.validation.file_format
+
+  oxid_esales.media_library.validation.file_format.jpg:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['jpg', ['image/jpeg']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.jpeg:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['jpeg', ['image/jpeg']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.gif:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['gif', ['image/gif']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.png:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['png', ['image/png']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.webp:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['webp', ['image/webp']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.avif:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['avif', ['image/avif', 'image/avif-sequence']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.svg:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['svg', ['image/svg+xml', 'image/svg', 'text/xml', 'application/xml']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.pdf:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['pdf', ['application/pdf']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.mp3:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['mp3', ['audio/mpeg']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.avi:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['avi', ['video/x-msvideo', 'video/avi']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.mpg:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['mpg', ['video/mpeg']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.mpeg:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['mpeg', ['video/mpeg']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.doc:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['doc', ['application/msword', 'application/vnd.ms-office', 'application/CDFV2']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.xls:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['xls', ['application/vnd.ms-excel', 'application/vnd.ms-office', 'application/CDFV2']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.ppt:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['ppt', ['application/vnd.ms-powerpoint', 'application/vnd.ms-office', 'application/CDFV2']]
+    tags: ['oxid_esales.media_library.validation.file_format']
+
+  oxid_esales.media_library.validation.file_format.zip:
+    class: OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat
+    arguments: ['zip', ['application/zip', 'application/x-zip-compressed']]
+    tags: ['oxid_esales.media_library.validation.file_format']
