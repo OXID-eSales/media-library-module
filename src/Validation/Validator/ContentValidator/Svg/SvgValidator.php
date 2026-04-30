@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Image\Sanitizer;
+namespace OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg;
 
 use DOMDocument;
-use OxidEsales\MediaLibrary\Image\Sanitizer\Detector\SvgViolationDetectorInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\SvgViolationDetectorInterface;
 
 final class SvgValidator implements SvgValidatorInterface
 {

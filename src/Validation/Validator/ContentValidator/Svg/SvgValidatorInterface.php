@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Image\Sanitizer;
+namespace OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg;
 
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 

@@ -1,0 +1,18 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgValidatorInterface:
+    class: OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgValidator
+    arguments:
+      $detectors:
+        - '@OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ScriptElementDetector'
+        - '@OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ForeignObjectDetector'
+        - '@OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\EventHandlerDetector'
+        - '@OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ScriptableUrlDetector'
+
+  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ScriptElementDetector: ~
+  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ForeignObjectDetector: ~
+  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\EventHandlerDetector: ~
+  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ScriptableUrlDetector: ~

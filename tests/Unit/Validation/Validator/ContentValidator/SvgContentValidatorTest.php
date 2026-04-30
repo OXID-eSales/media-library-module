@@ -7,13 +7,14 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator\ContentValidator;
 
-use OxidEsales\MediaLibrary\Image\Sanitizer\SvgValidatorInterface;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgValidatorInterface;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
-use OxidEsales\MediaLibrary\Validation\Validator\SvgContentValidator;
+use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\SvgContentValidator;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -25,34 +26,33 @@ use Psr\Log\NullLogger;
 #[CoversClass(SvgContentValidator::class)]
 class SvgContentValidatorTest extends TestCase
 {
-    #[DataProvider('nonSvgFileNameProvider')]
     #[Test]
-    public function validateFileIgnoresNonSvgFiles(string $fileName): void
+    public function supportsReturnsTrueForSvgFormat(): void
     {
-        $svgValidatorSpy = $this->createMock(SvgValidatorInterface::class);
-        $svgValidatorSpy->expects($this->never())->method('validate');
+        $sut = $this->getSut();
 
-        $filePathStub = $this->createConfiguredStub(UploadedFileInterface::class, [
-            'getFileName' => $fileName,
-        ]);
-
-        $sut = $this->getSut(svgValidator: $svgValidatorSpy);
-        $sut->validateFile($filePathStub);
-
-        $this->addToAssertionCount(1);
+        $this->assertTrue($sut->supports(new FileFormat('svg', ['image/svg+xml'])));
     }
 
-    public static function nonSvgFileNameProvider(): \Generator
+    #[DataProvider('nonSvgExtensionProvider')]
+    #[Test]
+    public function supportsReturnsFalseForNonSvgFormat(string $extension): void
     {
-        yield 'JPEG image' => ['fileName' => uniqid() . '.jpg'];
-        yield 'PNG image' => ['fileName' => uniqid() . '.png'];
-        yield 'PDF document' => ['fileName' => uniqid() . '.pdf'];
-        yield 'archive with multi-part extension' => ['fileName' => uniqid() . '.tar.gz'];
-        yield 'no extension at all' => ['fileName' => uniqid()];
+        $sut = $this->getSut();
+
+        $this->assertFalse($sut->supports(new FileFormat($extension, [])));
+    }
+
+    public static function nonSvgExtensionProvider(): \Generator
+    {
+        yield 'png' => ['extension' => 'png'];
+        yield 'jpg' => ['extension' => 'jpg'];
+        yield 'pdf' => ['extension' => 'pdf'];
+        yield 'gif' => ['extension' => 'gif'];
     }
 
     #[Test]
-    public function validateFileReadsContentAndDelegatesForSvg(): void
+    public function validateReadsContentAndDelegatesToSvgValidator(): void
     {
         $fileName = uniqid() . '.svg';
         $fileContent = uniqid();
@@ -69,11 +69,11 @@ class SvgContentValidatorTest extends TestCase
         ]);
 
         $sut = $this->getSut(svgValidator: $svgValidatorSpy);
-        $sut->validateFile($filePathStub);
+        $sut->validate($filePathStub);
     }
 
     #[Test]
-    public function validateFilePropagatesValidationException(): void
+    public function validatePropagatesValidationException(): void
     {
         $fileName = uniqid() . '.svg';
         $vfs = vfsStream::setup(uniqid(), null, [$fileName => uniqid()]);
@@ -93,29 +93,28 @@ class SvgContentValidatorTest extends TestCase
         $this->expectException(ValidationFailedException::class);
         $this->expectExceptionMessage($exceptionMessage);
 
-        $sut->validateFile($filePathStub);
+        $sut->validate($filePathStub);
     }
 
     #[Test]
-    public function validateFileIgnoresNonUploadedPaths(): void
+    public function validateIgnoresNonUploadedPaths(): void
     {
         $svgValidatorSpy = $this->createMock(SvgValidatorInterface::class);
         $svgValidatorSpy->expects($this->never())->method('validate');
 
-        // Plain FilePathInterface, not an upload — no temp file to read.
         $filePathStub = $this->createConfiguredStub(FilePathInterface::class, [
             'getFileName' => uniqid() . '.svg',
         ]);
 
         $sut = $this->getSut(svgValidator: $svgValidatorSpy);
-        $sut->validateFile($filePathStub);
+        $sut->validate($filePathStub);
 
         $this->addToAssertionCount(1);
     }
 
     #[DataProvider('unreadableSvgProvider')]
     #[Test]
-    public function validateFileThrowsWhenSvgContentIsUnusable(?string $fileContent): void
+    public function validateThrowsWhenSvgContentIsUnusable(?string $fileContent): void
     {
         $fileName = uniqid() . '.svg';
         $vfsContents = $fileContent === null ? [] : [$fileName => $fileContent];
@@ -134,7 +133,7 @@ class SvgContentValidatorTest extends TestCase
         $this->expectException(ValidationFailedException::class);
         $this->expectExceptionMessage('OE_MEDIA_LIBRARY_EXCEPTION_FILE_NOT_UPLOADED');
 
-        $sut->validateFile($filePathStub);
+        $sut->validate($filePathStub);
     }
 
     public static function unreadableSvgProvider(): \Generator
@@ -144,7 +143,7 @@ class SvgContentValidatorTest extends TestCase
     }
 
     #[Test]
-    public function validateFileLogsRejectedSvg(): void
+    public function validateLogsRejectedSvg(): void
     {
         $fileName = uniqid() . '.svg';
         $vfs = vfsStream::setup(uniqid(), null, [$fileName => uniqid()]);
@@ -170,7 +169,7 @@ class SvgContentValidatorTest extends TestCase
 
         $this->expectException(ValidationFailedException::class);
 
-        $sut->validateFile($filePathStub);
+        $sut->validate($filePathStub);
     }
 
     protected function getSut(

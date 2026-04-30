@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Image\Sanitizer\Detector;
+namespace OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector;
 
 use DOMAttr;
 use DOMDocument;

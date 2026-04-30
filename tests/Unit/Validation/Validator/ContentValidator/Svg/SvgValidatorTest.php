@@ -7,12 +7,12 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Sanitizer;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator\ContentValidator\Svg;
 
 use DOMDocument;
-use OxidEsales\MediaLibrary\Image\Sanitizer\Detector\SvgViolationDetectorInterface;
-use OxidEsales\MediaLibrary\Image\Sanitizer\SvgValidator;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\SvgViolationDetectorInterface;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgValidator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

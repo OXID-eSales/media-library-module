@@ -7,10 +7,10 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Sanitizer\Detector;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator\ContentValidator\Svg\Detector;
 
 use DOMDocument;
-use OxidEsales\MediaLibrary\Image\Sanitizer\Detector\ScriptElementDetector;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ScriptElementDetector;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;

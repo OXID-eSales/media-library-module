@@ -7,25 +7,33 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Validation\Validator;
+namespace OxidEsales\MediaLibrary\Validation\Validator\ContentValidator;
 
-use OxidEsales\MediaLibrary\Image\Sanitizer\SvgValidatorInterface;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgValidatorInterface;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
+use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormatInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use Psr\Log\LoggerInterface;
 
-final class SvgContentValidator implements FilePathValidatorInterface
+final class SvgContentValidator implements ContentValidatorInterface
 {
+    private const SUPPORTED_EXTENSION = 'svg';
+
     public function __construct(
         private readonly SvgValidatorInterface $svgValidator,
         private readonly LoggerInterface $logger,
     ) {
     }
 
-    public function validateFile(FilePathInterface $filePath): void
+    public function supports(FileFormatInterface $format): bool
     {
-        if (!$this->isSvgUpload($filePath)) {
+        return $format->getExtension() === self::SUPPORTED_EXTENSION;
+    }
+
+    public function validate(FilePathInterface $filePath): void
+    {
+        if (!$filePath instanceof UploadedFileInterface) {
             return;
         }
 
@@ -46,14 +54,5 @@ final class SvgContentValidator implements FilePathValidatorInterface
             );
             throw $exception;
         }
-    }
-
-    private function isSvgUpload(FilePathInterface $filePath): bool
-    {
-        if (!$filePath instanceof UploadedFileInterface) {
-            return false;
-        }
-
-        return strtolower(pathinfo($filePath->getFileName(), PATHINFO_EXTENSION)) === 'svg';
     }
 }
