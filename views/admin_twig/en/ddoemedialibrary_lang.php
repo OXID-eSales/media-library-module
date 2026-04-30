@@ -68,4 +68,5 @@ $aLang = array(
     'OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_STARTS_DOT' => 'Filename cannot start with "."',
     'OE_MEDIA_LIBRARY_EXCEPTION_FILE_NOT_UPLOADED' => 'File was not uploaded',
     'OE_MEDIA_LIBRARY_EXCEPTION_SVG_DISALLOWED_CONTENT' => 'The SVG file contains disallowed content (e.g. scripts or event handlers) and was rejected.',
+    'OE_MEDIA_LIBRARY_EXCEPTION_INVALID_FILE_MIME' => 'The uploaded file content does not match its extension and was rejected.',
 );
