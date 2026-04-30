@@ -6,13 +6,16 @@ services:
   OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgValidatorInterface:
     class: OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgValidator
     arguments:
-      $detectors:
-        - '@OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ScriptElementDetector'
-        - '@OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ForeignObjectDetector'
-        - '@OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\EventHandlerDetector'
-        - '@OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ScriptableUrlDetector'
+      $detectors: !tagged_iterator oxid_esales.media_library.validation.svg_violation_detector
 
-  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ScriptElementDetector: ~
-  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ForeignObjectDetector: ~
-  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\EventHandlerDetector: ~
-  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ScriptableUrlDetector: ~
+  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ScriptElementDetector:
+    tags: ['oxid_esales.media_library.validation.svg_violation_detector']
+
+  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ForeignObjectDetector:
+    tags: ['oxid_esales.media_library.validation.svg_violation_detector']
+
+  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\EventHandlerDetector:
+    tags: ['oxid_esales.media_library.validation.svg_violation_detector']
+
+  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ScriptableUrlDetector:
+    tags: ['oxid_esales.media_library.validation.svg_violation_detector']

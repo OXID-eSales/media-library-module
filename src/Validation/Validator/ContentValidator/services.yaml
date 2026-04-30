@@ -1,0 +1,13 @@
+imports:
+  - { resource: 'Svg/services.yaml' }
+
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\SvgContentValidator:
+    tags: ['oxid_esales.media_library.validation.content_validator']
+
+  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\RasterImageContentValidator:
+    tags: ['oxid_esales.media_library.validation.content_validator']
