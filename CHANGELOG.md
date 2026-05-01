@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   implementation under `Image\Sanitizer\Detector\` (internal)
 - Upload validation fails closed when an SVG cannot be read at
   validation time (rejected instead of silently accepted)
+- Changes from 4.1.1
 
 ### Note for integrators
 - The `UploadedFileValidatorChainInterface` service in
@@ -39,6 +40,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - Media library search field now matches against media ID in addition to filename
+
+## [4.1.1] - Unreleased
+
+### Fixed
+- Ctrl+click multi-select was not working due to wrong event button check.
 
 ## [4.1.0] - 2025-11-10
 
@@ -168,6 +174,7 @@ Module extracted from wysiwyg module, and used by it now
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
 [5.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.1.0..v5.0.0
+[4.1.1]: https://github.com/OXID-eSales/media-library-module/compare/v4.1.0..v4.1.1
 [4.1.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.0.0..v4.1.0
 [4.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v3.0.1..v4.0.0
 [3.0.1]: https://github.com/OXID-eSales/media-library-module/compare/v3.0.0..v3.0.1

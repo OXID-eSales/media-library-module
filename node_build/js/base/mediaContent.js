@@ -113,7 +113,7 @@ export default class MediaContent {
                 return;
             }
 
-            if (multiple && this.ctrlKeyPressed) {
+            if (multiple && e.ctrlKey) {
                 target.classList.toggle('active');
             } else {
                 dialog.querySelectorAll('.dd-media-item.active').forEach(el => el.classList.remove('active'));
