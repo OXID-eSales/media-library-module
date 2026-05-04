@@ -5,15 +5,16 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Service;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Service;
 
 use OxidEsales\Eshop\Core\Config;
-use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\Service\MediaResource;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface;
+use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(MediaResource::class)]
@@ -21,7 +22,8 @@ class MediaResourceTest extends TestCase
 {
     protected const EXAMPLE_SHOP_URL = 'someShopUrl';
 
-    public function testGetPathToMediaFiles(): void
+    #[Test]
+    public function getPathToMediaFiles(): void
     {
         $sut = $this->getSut(
             shopConfig: $shopConfigStub = $this->createStub(Config::class)
@@ -31,21 +33,8 @@ class MediaResourceTest extends TestCase
         $this->assertSame('someShopDir/' . MediaResource::MEDIA_PATH, $sut->getPathToMediaFiles());
     }
 
-    protected function getSut(
-        Config $shopConfig = null,
-        NamingServiceInterface $namingService = null,
-        ModuleSettingsInterface $moduleSettings = null,
-    ) {
-        return new MediaResource(
-            shopConfig: $shopConfig ?? $this->createStub(Config::class),
-            namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
-            moduleSettings: $moduleSettings ?? $this->createStub(
-                ModuleSettingsInterface::class
-            ),
-        );
-    }
-
-    public function testGetPathToMediaFilesWithSubdirectory(): void
+    #[Test]
+    public function getPathToMediaFilesWithSubdirectory(): void
     {
         $sut = $this->getSut(
             shopConfig: $shopConfigStub = $this->createStub(Config::class)
@@ -86,8 +75,9 @@ class MediaResourceTest extends TestCase
         ];
     }
 
+    #[Test]
     #[DataProvider('getUrlToMediaDataProvider')]
-    public function testGetUrlToMediaFile(
+    public function getUrlToMediaFile(
         string $folder,
         string $fileName,
         string $expectedResult
@@ -131,8 +121,9 @@ class MediaResourceTest extends TestCase
         ];
     }
 
+    #[Test]
     #[DataProvider('getUrlToMediaWithAlternativeUrlSetDataProvider')]
-    public function testGetUrlToMediaFileWithAlternativeUrlSet(
+    public function getUrlToMediaFileWithAlternativeUrlSet(
         string $folder,
         string $fileName,
         string $alternativeUrl,
@@ -148,7 +139,8 @@ class MediaResourceTest extends TestCase
         $this->assertSame($expectedResult, $sut->getUrlToMediaFile($folder, $fileName));
     }
 
-    public function testGetUrlToMediaFiles(): void
+    #[Test]
+    public function getUrlToMediaFiles(): void
     {
         $sut = $this->getSut(
             shopConfig: $shopConfigStub = $this->createStub(Config::class)
@@ -158,7 +150,8 @@ class MediaResourceTest extends TestCase
         $this->assertSame('someShopUrl/' . MediaResource::MEDIA_PATH, $sut->getUrlToMediaFiles());
     }
 
-    public function testGetUrlToMediaFilesWithFolder(): void
+    #[Test]
+    public function getUrlToMediaFilesWithFolder(): void
     {
         $sut = $this->getSut(
             shopConfig: $shopConfigStub = $this->createStub(Config::class)
@@ -171,7 +164,8 @@ class MediaResourceTest extends TestCase
         );
     }
 
-    public function testGetUrlToMediaFilesWithAlternativeUrl(): void
+    #[Test]
+    public function getUrlToMediaFilesWithAlternativeUrl(): void
     {
         $sut = $this->getSut(
             moduleSettings: $moduleSettings = $this->createStub(
@@ -184,7 +178,8 @@ class MediaResourceTest extends TestCase
         $this->assertSame($alternativeUrl, $sut->getUrlToMediaFiles());
     }
 
-    public function testGetUrlToMediaFilesWithAlternativeUrlAndSpecificFolder(): void
+    #[Test]
+    public function getUrlToMediaFilesWithAlternativeUrlAndSpecificFolder(): void
     {
         $sut = $this->getSut(
             moduleSettings: $moduleSettings = $this->createStub(
@@ -197,7 +192,8 @@ class MediaResourceTest extends TestCase
         $this->assertSame($alternativeUrl . '/someFolder', $sut->getUrlToMediaFiles('someFolder'));
     }
 
-    public function testGetPathToMediaFile(): void
+    #[Test]
+    public function getPathToMediaFile(): void
     {
         $mediaFileName = uniqid();
         $directoryName = uniqid();
@@ -210,28 +206,68 @@ class MediaResourceTest extends TestCase
         $this->assertSame($expectedPath, $sut->getPathToMediaFile($directoryName, $mediaFileName));
     }
 
-    public function testCalculateUniqueFilePath(): void
+    #[Test]
+    public function getPossibleMediaFilePath(): void
     {
-        $fileName = uniqid();
+        $shopDir = '/var/www/source';
+        $mediaRoot = $shopDir . '/' . MediaResource::MEDIA_PATH;
         $folderName = uniqid();
+        $fileName = uniqid() . '.svg';
+        $expectedJoin = "{$mediaRoot}/{$folderName}/{$fileName}";
+        $uniqueBaseName = uniqid() . '.svg';
+        $uniquePath = "{$mediaRoot}/{$folderName}/{$uniqueBaseName}";
 
-        $sut = $this->getMockBuilder(MediaResource::class)
-            ->setConstructorArgs([
-                'shopConfig' => $this->createStub(Config::class),
-                'namingService' => $namingService = $this->createMock(NamingServiceInterface::class),
-                'moduleSettings' => $this->createStub(ModuleSettingsInterface::class),
-            ])
-            ->onlyMethods(['getPathToMediaFiles'])
-            ->getMock();
-        $sut->method('getPathToMediaFiles')->with($folderName)->willReturn('someMediaDirectory');
+        $shopConfigMock = $this->createMock(Config::class);
+        $shopConfigMock->method('getConfigParam')->with('sShopDir')->willReturn($shopDir);
 
-        $somePath = "someMediaDirectory/{$fileName}";
-        $someUniquePath = 'someDirectory/someFileName';
-        $namingService->method('getUniqueFilename')->with($somePath)->willReturn($someUniquePath);
+        $namingServiceMock = $this->createMock(NamingServiceInterface::class);
+        $namingServiceMock->method('getUniqueFilename')
+            ->with($expectedJoin)
+            ->willReturn($uniquePath);
+
+        $sut = $this->getSut(shopConfig: $shopConfigMock, namingService: $namingServiceMock);
 
         $result = $sut->getPossibleMediaFilePath($folderName, $fileName);
 
-        $this->assertSame($someUniquePath, $result->getPath());
-        $this->assertSame('someFileName', $result->getFileName());
+        $this->assertSame($uniquePath, $result->getPath());
+        $this->assertSame($uniqueBaseName, $result->getFileName());
+    }
+
+    public static function traversalFileNameProvider(): \Generator
+    {
+        yield "escapes within shop root" => ['fileName' => '../../../pt-B.svg'];
+        yield "escapes above shop root"  => ['fileName' => 'a/../../../../../pt-D.svg'];
+    }
+
+    #[Test]
+    #[DataProvider('traversalFileNameProvider')]
+    public function getPossibleMediaFilePathRejectsTraversalFileNames(string $fileName): void
+    {
+        $shopConfigMock = $this->createMock(Config::class);
+        $shopConfigMock->method('getConfigParam')->with('sShopDir')->willReturn('/var/www/source');
+
+        $namingServiceStub = $this->createStub(NamingServiceInterface::class);
+        $namingServiceStub->method('getUniqueFilename')->willReturnArgument(0);
+
+        $sut = $this->getSut(shopConfig: $shopConfigMock, namingService: $namingServiceStub);
+
+        $this->expectException(ValidationFailedException::class);
+        $this->expectExceptionMessage('OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_INVALID_PATH');
+
+        $sut->getPossibleMediaFilePath('', $fileName);
+    }
+
+    protected function getSut(
+        Config $shopConfig = null,
+        NamingServiceInterface $namingService = null,
+        ModuleSettingsInterface $moduleSettings = null,
+    ): MediaResource {
+        return new MediaResource(
+            shopConfig: $shopConfig ?? $this->createStub(Config::class),
+            namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
+            moduleSettings: $moduleSettings ?? $this->createStub(
+                ModuleSettingsInterface::class
+            ),
+        );
     }
 }
