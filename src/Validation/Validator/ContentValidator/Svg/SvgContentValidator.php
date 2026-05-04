@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Validation\Validator\ContentValidator;
+namespace OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg;
 
-use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgScannerInterface;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
-use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormatInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
+use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormatInterface;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\ContentValidatorInterface;
 use Psr\Log\LoggerInterface;
 
 final class SvgContentValidator implements ContentValidatorInterface

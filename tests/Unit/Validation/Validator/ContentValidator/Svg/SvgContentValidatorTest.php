@@ -7,14 +7,14 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator\ContentValidator;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator\ContentValidator\Svg;
 
-use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgScannerInterface;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat;
-use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\SvgContentValidator;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgContentValidator;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgScannerInterface;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
