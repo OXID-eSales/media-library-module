@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Validation\Validator;
+namespace OxidEsales\MediaLibrary\Validation\Validator\ContentValidator;
 
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Validation\Format\FileFormatRegistryInterface;
-use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\ContentValidatorInterface;
+use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 
-final class ContentValidatorDispatcher implements FilePathValidatorInterface
+final class Dispatcher implements FilePathValidatorInterface
 {
     /**
      * @param iterable<ContentValidatorInterface> $contentValidators

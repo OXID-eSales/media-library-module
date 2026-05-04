@@ -7,19 +7,19 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator\ContentValidator;
 
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat;
 use OxidEsales\MediaLibrary\Validation\Format\FileFormatRegistryInterface;
-use OxidEsales\MediaLibrary\Validation\Validator\ContentValidatorDispatcher;
 use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\ContentValidatorInterface;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Dispatcher;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(ContentValidatorDispatcher::class)]
-class ContentValidatorDispatcherTest extends TestCase
+#[CoversClass(Dispatcher::class)]
+class DispatcherTest extends TestCase
 {
     #[Test]
     public function validateFileNoOpsWhenExtensionIsNotInRegistry(): void
@@ -122,10 +122,10 @@ class ContentValidatorDispatcherTest extends TestCase
     private function getSut(
         ?FileFormatRegistryInterface $registry = null,
         iterable $contentValidators = [],
-    ): ContentValidatorDispatcher {
+    ): Dispatcher {
         $registry ??= $this->createStub(FileFormatRegistryInterface::class);
 
-        return new ContentValidatorDispatcher(
+        return new Dispatcher(
             registry: $registry,
             contentValidators: $contentValidators,
         );
