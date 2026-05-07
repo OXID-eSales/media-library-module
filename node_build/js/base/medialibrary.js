@@ -18,7 +18,6 @@ import DataStore from "./dataStore.js";
 class MediaLibraryClass {
     static VERSION = '1.0.0';
 
-    ctrlKeyPressed = false;
     currentPath = '';
     currentFolderId = '';
     altAttributeManager = null;
@@ -29,18 +28,6 @@ class MediaLibraryClass {
         this.dd = new DragDropHandler(this.fm, this.store);
         this.ui = new UIRenderer(this.fm, this.dd, this.store);
         this.mediaContent = new MediaContent(this.fm, this.ui, this.dd, this.store);
-
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey || e.keyCode === 224 || e.keyCode === 91 || e.keyCode === 93) {
-                this.ctrlKeyPressed = true;
-            }
-        });
-
-        document.addEventListener('keyup', (e) => {
-            if (e.ctrlKey || e.keyCode === 224 || e.keyCode === 91 || e.keyCode === 93) {
-                this.ctrlKeyPressed = false;
-            }
-        });
     }
 
     setActionLink(url) {
