@@ -13,7 +13,7 @@ use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Validation\Format\FileFormatRegistryInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 
-final class Dispatcher implements FilePathValidatorInterface
+final class ContentValidatorChain implements FilePathValidatorInterface
 {
     /**
      * @param iterable<ContentValidatorInterface> $contentValidators
