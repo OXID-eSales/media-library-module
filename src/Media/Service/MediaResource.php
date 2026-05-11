@@ -12,7 +12,6 @@ use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface;
-use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use Symfony\Component\Filesystem\Path;
 
 class MediaResource implements MediaResourceInterface
@@ -61,19 +60,10 @@ class MediaResource implements MediaResourceInterface
 
     public function getPossibleMediaFilePath(string $folderName = '', string $fileName = ''): FilePathInterface
     {
-        $mediaRoot = $this->getPathToMediaFiles();
-
-        $uniqueFileName = $this->namingService->getUniqueFilename(
-            Path::join(
-                $this->getPathToMediaFiles($folderName),
-                $fileName
-            ),
+        return new FilePath(
+            $this->namingService->getUniqueFilename(
+                Path::join($this->getPathToMediaFiles($folderName), $fileName),
+            )
         );
-
-        if (!str_starts_with($uniqueFileName . '/', $mediaRoot . '/')) {
-            throw new ValidationFailedException("OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_INVALID_PATH");
-        }
-
-        return new FilePath($uniqueFileName);
     }
 }

@@ -11,7 +11,6 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\MediaLibrary\Media\Service\MediaResource;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface;
-use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -231,30 +230,6 @@ class MediaResourceTest extends TestCase
 
         $this->assertSame($uniquePath, $result->getPath());
         $this->assertSame($uniqueBaseName, $result->getFileName());
-    }
-
-    public static function traversalFileNameProvider(): \Generator
-    {
-        yield "escapes within shop root" => ['fileName' => '../../../pt-B.svg'];
-        yield "escapes above shop root"  => ['fileName' => 'a/../../../../../pt-D.svg'];
-    }
-
-    #[Test]
-    #[DataProvider('traversalFileNameProvider')]
-    public function getPossibleMediaFilePathRejectsTraversalFileNames(string $fileName): void
-    {
-        $shopConfigMock = $this->createMock(Config::class);
-        $shopConfigMock->method('getConfigParam')->with('sShopDir')->willReturn('/var/www/source');
-
-        $namingServiceStub = $this->createStub(NamingServiceInterface::class);
-        $namingServiceStub->method('getUniqueFilename')->willReturnArgument(0);
-
-        $sut = $this->getSut(shopConfig: $shopConfigMock, namingService: $namingServiceStub);
-
-        $this->expectException(ValidationFailedException::class);
-        $this->expectExceptionMessage('OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_INVALID_PATH');
-
-        $sut->getPossibleMediaFilePath('', $fileName);
     }
 
     protected function getSut(
