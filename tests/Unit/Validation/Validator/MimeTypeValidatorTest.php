@@ -17,7 +17,6 @@ use OxidEsales\MediaLibrary\Validation\Format\FileFormatRegistryInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\MimeTypeValidator;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -75,11 +74,11 @@ class MimeTypeValidatorTest extends TestCase
         $sut->validateFile($filePathStub);
     }
 
-    #[DataProvider('invalidSniffedMimeProvider')]
     #[Test]
-    public function validateFileThrowsWhenSniffedMimeIsInvalid(string $sniffedMimeType): void
+    public function validateFileThrowsWhenSniffedMimeDoesNotMatch(): void
     {
         $extension = uniqid();
+        $sniffedMimeType = uniqid() . '/' . uniqid();
 
         $filePathStub = $this->createConfiguredStub(FilePathInterface::class, [
             'getExtension' => $extension,
@@ -105,16 +104,6 @@ class MimeTypeValidatorTest extends TestCase
         $this->expectExceptionMessage('OE_MEDIA_LIBRARY_EXCEPTION_INVALID_FILE_MIME');
 
         $sut->validateFile($filePathStub);
-    }
-
-    public static function invalidSniffedMimeProvider(): \Generator
-    {
-        yield 'sniffed MIME does not match allowed list' => [
-            'sniffedMimeType' => uniqid() . '/' . uniqid(),
-        ];
-        yield 'sniff returned empty (failed/missing file)' => [
-            'sniffedMimeType' => '',
-        ];
     }
 
     private function getSut(

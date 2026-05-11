@@ -16,6 +16,7 @@ use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 final class RasterImageContentValidator implements ContentValidatorInterface
 {
     private const SUPPORTED_EXTENSIONS = ['jpg', 'jpeg', 'gif', 'png', 'webp', 'avif'];
+    private const INVALID_IMAGE_CONTENT_MESSAGE = 'OE_MEDIA_LIBRARY_EXCEPTION_INVALID_IMAGE_CONTENT';
 
     public function supports(FileFormatInterface $format): bool
     {
@@ -25,7 +26,7 @@ final class RasterImageContentValidator implements ContentValidatorInterface
     public function validate(FilePathInterface $filePath): void
     {
         if (@getimagesize($filePath->getPath()) === false) {
-            throw new ValidationFailedException('OE_MEDIA_LIBRARY_EXCEPTION_INVALID_IMAGE_CONTENT');
+            throw new ValidationFailedException(self::INVALID_IMAGE_CONTENT_MESSAGE);
         }
     }
 }

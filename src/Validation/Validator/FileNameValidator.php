@@ -14,6 +14,8 @@ use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 
 class FileNameValidator implements FilePathValidatorInterface
 {
+    private const EMPTY_FILENAME_MESSAGE = "OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_EMPTY";
+    private const STARTS_WITH_DOT_MESSAGE = "OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_STARTS_DOT";
     private const INVALID_PATH_MESSAGE = "OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_INVALID_PATH";
 
     public function validateFile(FilePathInterface $filePath): void
@@ -30,14 +32,14 @@ class FileNameValidator implements FilePathValidatorInterface
     private function checkFilenameNotEmpty(string $fileName): void
     {
         if (!$fileName) {
-            throw new ValidationFailedException("OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_EMPTY");
+            throw new ValidationFailedException(self::EMPTY_FILENAME_MESSAGE);
         }
     }
 
     private function checkFilenameDoesNotStartWithDot(string $fileName): void
     {
         if ($fileName[0] === '.') {
-            throw new ValidationFailedException("OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_STARTS_DOT");
+            throw new ValidationFailedException(self::STARTS_WITH_DOT_MESSAGE);
         }
     }
 

@@ -16,6 +16,8 @@ use OxidEsales\MediaLibrary\Validation\Format\FileFormatRegistryInterface;
 
 final class MimeTypeValidator implements FilePathValidatorInterface
 {
+    private const INVALID_FILE_MIME_MESSAGE = 'OE_MEDIA_LIBRARY_EXCEPTION_INVALID_FILE_MIME';
+
     public function __construct(
         private readonly FileFormatRegistryInterface $registry,
         private readonly FileSystemServiceInterface $fileSystemService,
@@ -30,8 +32,8 @@ final class MimeTypeValidator implements FilePathValidatorInterface
         }
 
         $sniffedMimeType = $this->fileSystemService->getMimeType($filePath->getPath());
-        if ($sniffedMimeType === '' || !in_array($sniffedMimeType, $format->getMimeTypes(), true)) {
-            throw new ValidationFailedException('OE_MEDIA_LIBRARY_EXCEPTION_INVALID_FILE_MIME');
+        if (!in_array($sniffedMimeType, $format->getMimeTypes(), true)) {
+            throw new ValidationFailedException(self::INVALID_FILE_MIME_MESSAGE);
         }
     }
 }
