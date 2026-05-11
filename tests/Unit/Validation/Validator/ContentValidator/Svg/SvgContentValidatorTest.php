@@ -11,7 +11,8 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator\ContentValidat
 
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
-use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat;
+use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormatInterface;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\ContentValidatorInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgContentValidator;
 use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgScannerInterface;
 use org\bovigo\vfs\vfsStream;
@@ -20,7 +21,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 #[CoversClass(SvgContentValidator::class)]
 class SvgContentValidatorTest extends TestCase
@@ -28,18 +28,28 @@ class SvgContentValidatorTest extends TestCase
     #[Test]
     public function supportsReturnsTrueForSvgFormat(): void
     {
-        $sut = $this->getSut();
+        $svgFormatStub = $this->createConfiguredStub(FileFormatInterface::class, [
+            'getExtension' => 'svg',
+        ]);
 
-        $this->assertTrue($sut->supports(new FileFormat('svg', ['image/svg+xml'])));
+        $sut = $this->getSut();
+        $isSupported = $sut->supports($svgFormatStub);
+
+        $this->assertTrue($isSupported);
     }
 
     #[DataProvider('nonSvgExtensionProvider')]
     #[Test]
     public function supportsReturnsFalseForNonSvgFormat(string $extension): void
     {
-        $sut = $this->getSut();
+        $formatStub = $this->createConfiguredStub(FileFormatInterface::class, [
+            'getExtension' => $extension,
+        ]);
 
-        $this->assertFalse($sut->supports(new FileFormat($extension, [])));
+        $sut = $this->getSut();
+        $isSupported = $sut->supports($formatStub);
+
+        $this->assertFalse($isSupported);
     }
 
     public static function nonSvgExtensionProvider(): \Generator
@@ -140,7 +150,7 @@ class SvgContentValidatorTest extends TestCase
             ->method('error')
             ->with(
                 $this->stringContains('Rejected SVG upload'),
-                $this->callback(fn(array $context) => ($context['file'] ?? null) === $fileName)
+                $this->callback(fn(array $context) => $context['file'] === $fileName),
             );
 
         $filePathStub = $this->createConfiguredStub(UploadedFileInterface::class, [
@@ -155,13 +165,13 @@ class SvgContentValidatorTest extends TestCase
         $sut->validate($filePathStub);
     }
 
-    protected function getSut(
+    private function getSut(
         ?SvgScannerInterface $svgScanner = null,
         ?LoggerInterface $logger = null,
-    ): SvgContentValidator {
+    ): ContentValidatorInterface {
         return new SvgContentValidator(
             svgScanner: $svgScanner ?? $this->createStub(SvgScannerInterface::class),
-            logger: $logger ?? new NullLogger(),
+            logger: $logger ?? $this->createStub(LoggerInterface::class),
         );
     }
 }

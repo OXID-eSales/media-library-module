@@ -12,8 +12,9 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
-use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat;
+use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormatInterface;
 use OxidEsales\MediaLibrary\Validation\Format\FileFormatRegistryInterface;
+use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\MimeTypeValidator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -34,37 +35,44 @@ class MimeTypeValidatorTest extends TestCase
             'getPath' => uniqid(),
         ]);
 
-        $registryStub = $this->createStub(FileFormatRegistryInterface::class);
-        $registryStub->method('findByExtension')
-            ->willReturn(new FileFormat($extension, [$allowedMimeType]));
+        $formatStub = $this->createConfiguredStub(FileFormatInterface::class, [
+            'getMimeTypes' => [$allowedMimeType],
+        ]);
+
+        $registryMock = $this->createMock(FileFormatRegistryInterface::class);
+        $registryMock->expects($this->once())
+            ->method('findByExtension')
+            ->with($extension)
+            ->willReturn($formatStub);
 
         $fileSystemServiceStub = $this->createStub(FileSystemServiceInterface::class);
         $fileSystemServiceStub->method('getMimeType')->willReturn($allowedMimeType);
 
-        $sut = $this->getSut($registryStub, $fileSystemServiceStub);
+        $sut = $this->getSut(registry: $registryMock, fileSystemService: $fileSystemServiceStub);
         $sut->validateFile($filePathStub);
-
-        $this->addToAssertionCount(1);
     }
 
     #[Test]
     public function validateFileNoOpsWhenExtensionIsNotInRegistry(): void
     {
+        $extension = uniqid();
+
         $filePathStub = $this->createConfiguredStub(FilePathInterface::class, [
-            'getExtension' => uniqid(),
+            'getExtension' => $extension,
             'getPath' => uniqid(),
         ]);
 
-        $registryStub = $this->createStub(FileFormatRegistryInterface::class);
-        $registryStub->method('findByExtension')->willReturn(null);
+        $registryMock = $this->createMock(FileFormatRegistryInterface::class);
+        $registryMock->expects($this->once())
+            ->method('findByExtension')
+            ->with($extension)
+            ->willReturn(null);
 
         $fileSystemServiceSpy = $this->createMock(FileSystemServiceInterface::class);
         $fileSystemServiceSpy->expects($this->never())->method('getMimeType');
 
-        $sut = $this->getSut($registryStub, $fileSystemServiceSpy);
+        $sut = $this->getSut(registry: $registryMock, fileSystemService: $fileSystemServiceSpy);
         $sut->validateFile($filePathStub);
-
-        $this->addToAssertionCount(1);
     }
 
     #[DataProvider('invalidSniffedMimeProvider')]
@@ -78,14 +86,20 @@ class MimeTypeValidatorTest extends TestCase
             'getPath' => uniqid(),
         ]);
 
-        $registryStub = $this->createStub(FileFormatRegistryInterface::class);
-        $registryStub->method('findByExtension')
-            ->willReturn(new FileFormat($extension, [uniqid() . '/' . uniqid()]));
+        $formatStub = $this->createConfiguredStub(FileFormatInterface::class, [
+            'getMimeTypes' => [uniqid() . '/' . uniqid()],
+        ]);
+
+        $registryMock = $this->createMock(FileFormatRegistryInterface::class);
+        $registryMock->expects($this->once())
+            ->method('findByExtension')
+            ->with($extension)
+            ->willReturn($formatStub);
 
         $fileSystemServiceStub = $this->createStub(FileSystemServiceInterface::class);
         $fileSystemServiceStub->method('getMimeType')->willReturn($sniffedMimeType);
 
-        $sut = $this->getSut($registryStub, $fileSystemServiceStub);
+        $sut = $this->getSut(registry: $registryMock, fileSystemService: $fileSystemServiceStub);
 
         $this->expectException(ValidationFailedException::class);
         $this->expectExceptionMessage('OE_MEDIA_LIBRARY_EXCEPTION_INVALID_FILE_MIME');
@@ -103,36 +117,10 @@ class MimeTypeValidatorTest extends TestCase
         ];
     }
 
-    #[Test]
-    public function validateFileLooksUpExtensionFromFilePath(): void
-    {
-        $extension = uniqid();
-        $allowedMimeType = uniqid() . '/' . uniqid();
-
-        $filePathStub = $this->createConfiguredStub(FilePathInterface::class, [
-            'getExtension' => $extension,
-            'getPath' => uniqid(),
-        ]);
-
-        $registryMock = $this->createMock(FileFormatRegistryInterface::class);
-        $registryMock->expects($this->once())
-            ->method('findByExtension')
-            ->with($extension)
-            ->willReturn(new FileFormat($extension, [$allowedMimeType]));
-
-        $fileSystemServiceStub = $this->createStub(FileSystemServiceInterface::class);
-        $fileSystemServiceStub->method('getMimeType')->willReturn($allowedMimeType);
-
-        $sut = $this->getSut($registryMock, $fileSystemServiceStub);
-        $sut->validateFile($filePathStub);
-
-        $this->addToAssertionCount(1);
-    }
-
     private function getSut(
         ?FileFormatRegistryInterface $registry = null,
         ?FileSystemServiceInterface $fileSystemService = null,
-    ): MimeTypeValidator {
+    ): FilePathValidatorInterface {
         $registry ??= $this->createStub(FileFormatRegistryInterface::class);
         $fileSystemService ??= $this->createStub(FileSystemServiceInterface::class);
 

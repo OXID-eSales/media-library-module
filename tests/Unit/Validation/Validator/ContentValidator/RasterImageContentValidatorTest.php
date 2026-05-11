@@ -11,8 +11,10 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator\ContentValidat
 
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
-use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat;
+use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormatInterface;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\ContentValidatorInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\RasterImageContentValidator;
+use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -21,26 +23,18 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(RasterImageContentValidator::class)]
 class RasterImageContentValidatorTest extends TestCase
 {
-    /** @var list<string> */
-    private array $tempFiles = [];
-
-    protected function tearDown(): void
-    {
-        foreach ($this->tempFiles as $path) {
-            if (is_file($path)) {
-                unlink($path);
-            }
-        }
-        $this->tempFiles = [];
-    }
-
     #[DataProvider('rasterExtensionProvider')]
     #[Test]
     public function supportsReturnsTrueForRasterExtension(string $extension): void
     {
-        $sut = $this->getSut();
+        $formatStub = $this->createConfiguredStub(FileFormatInterface::class, [
+            'getExtension' => $extension,
+        ]);
 
-        $this->assertTrue($sut->supports(new FileFormat($extension, [])));
+        $sut = $this->getSut();
+        $isSupported = $sut->supports($formatStub);
+
+        $this->assertTrue($isSupported);
     }
 
     public static function rasterExtensionProvider(): \Generator
@@ -57,9 +51,14 @@ class RasterImageContentValidatorTest extends TestCase
     #[Test]
     public function supportsReturnsFalseForNonRasterExtension(string $extension): void
     {
-        $sut = $this->getSut();
+        $formatStub = $this->createConfiguredStub(FileFormatInterface::class, [
+            'getExtension' => $extension,
+        ]);
 
-        $this->assertFalse($sut->supports(new FileFormat($extension, [])));
+        $sut = $this->getSut();
+        $isSupported = $sut->supports($formatStub);
+
+        $this->assertFalse($isSupported);
     }
 
     public static function nonRasterExtensionProvider(): \Generator
@@ -73,29 +72,29 @@ class RasterImageContentValidatorTest extends TestCase
     #[Test]
     public function validatePassesForGenuinePngBytes(): void
     {
-        $path = $this->createGenuinePng();
+        $fileName = uniqid() . '.png';
+        $vfs = vfsStream::setup(uniqid(), null, [$fileName => $this->genuinePngBytes()]);
 
         $filePathStub = $this->createConfiguredStub(FilePathInterface::class, [
-            'getPath' => $path,
-            'getFileName' => basename($path),
+            'getPath' => $vfs->url() . '/' . $fileName,
+            'getFileName' => $fileName,
         ]);
 
         $sut = $this->getSut();
-        $sut->validate($filePathStub);
 
-        $this->addToAssertionCount(1);
+        $this->expectNotToPerformAssertions();
+        $sut->validate($filePathStub);
     }
 
     #[Test]
     public function validateThrowsWhenContentIsNotARecognizableImage(): void
     {
-        $path = tempnam(sys_get_temp_dir(), 'rasterTest_') . '.png';
-        $this->tempFiles[] = $path;
-        file_put_contents($path, '<?php phpinfo(); ?>');
+        $fileName = uniqid() . '.png';
+        $vfs = vfsStream::setup(uniqid(), null, [$fileName => '<?php phpinfo(); ?>']);
 
         $filePathStub = $this->createConfiguredStub(FilePathInterface::class, [
-            'getPath' => $path,
-            'getFileName' => basename($path),
+            'getPath' => $vfs->url() . '/' . $fileName,
+            'getFileName' => $fileName,
         ]);
 
         $sut = $this->getSut();
@@ -109,17 +108,15 @@ class RasterImageContentValidatorTest extends TestCase
     #[Test]
     public function validateThrowsWhenPolyglotPngHasNonImageBytesAppended(): void
     {
-        $path = $this->createGenuinePng();
-        // Truncate to break PNG structure (genuine 8-byte signature plus garbage):
-        $truncatedPath = $path . '.broken.png';
-        $this->tempFiles[] = $truncatedPath;
-        $bytes = (string)file_get_contents($path);
+        $fileName = uniqid() . '.broken.png';
+        $genuineBytes = $this->genuinePngBytes();
         // Keep only the PNG signature so getimagesize() rejects the file as not parseable.
-        file_put_contents($truncatedPath, substr($bytes, 0, 8) . random_bytes(16));
+        $truncatedBytes = substr($genuineBytes, 0, 8) . random_bytes(16);
+        $vfs = vfsStream::setup(uniqid(), null, [$fileName => $truncatedBytes]);
 
         $filePathStub = $this->createConfiguredStub(FilePathInterface::class, [
-            'getPath' => $truncatedPath,
-            'getFileName' => basename($truncatedPath),
+            'getPath' => $vfs->url() . '/' . $fileName,
+            'getFileName' => $fileName,
         ]);
 
         $sut = $this->getSut();
@@ -130,17 +127,17 @@ class RasterImageContentValidatorTest extends TestCase
         $sut->validate($filePathStub);
     }
 
-    private function createGenuinePng(): string
+    private function genuinePngBytes(): string
     {
-        $path = tempnam(sys_get_temp_dir(), 'rasterTest_') . '.png';
-        $this->tempFiles[] = $path;
         $image = imagecreatetruecolor(4, 4);
-        imagepng($image, $path);
+        ob_start();
+        imagepng($image);
+        $bytes = (string)ob_get_clean();
         imagedestroy($image);
-        return $path;
+        return $bytes;
     }
 
-    private function getSut(): RasterImageContentValidator
+    private function getSut(): ContentValidatorInterface
     {
         return new RasterImageContentValidator();
     }

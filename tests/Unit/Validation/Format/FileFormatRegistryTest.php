@@ -31,8 +31,9 @@ class FileFormatRegistryTest extends TestCase
         ]);
 
         $sut = $this->getSut(formats: [$format]);
+        $foundFormat = $sut->findByExtension($lookupExtension);
 
-        $this->assertSame($format, $sut->findByExtension($lookupExtension));
+        $this->assertSame($format, $foundFormat);
     }
 
     #[Test]
@@ -45,8 +46,9 @@ class FileFormatRegistryTest extends TestCase
         $sut = $this->getSut(formats: [$registeredFormat]);
 
         $unregisteredExtension = uniqid();
+        $foundFormat = $sut->findByExtension($unregisteredExtension);
 
-        $this->assertNull($sut->findByExtension($unregisteredExtension));
+        $this->assertNull($foundFormat);
     }
 
     public static function caseInsensitiveLookupProvider(): \Generator

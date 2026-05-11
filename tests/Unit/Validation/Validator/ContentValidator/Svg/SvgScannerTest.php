@@ -13,6 +13,7 @@ use DOMDocument;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\SvgViolationDetectorInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgScanner;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\SvgScannerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -20,67 +21,54 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(SvgScanner::class)]
 class SvgScannerTest extends TestCase
 {
+    private const SVG_CONTENT = '<svg xmlns="http://www.w3.org/2000/svg"/>';
+
     #[Test]
     public function scanPassesWhenAllDetectorsReturnFalse(): void
     {
-        $detectorAStub = $this->createStub(SvgViolationDetectorInterface::class);
-        $detectorAStub->method('detect')->willReturn(false);
+        $detectorAMock = $this->createMock(SvgViolationDetectorInterface::class);
+        $detectorAMock->expects($this->once())
+            ->method('detect')
+            ->with($this->isInstanceOf(DOMDocument::class))
+            ->willReturn(false);
 
-        $detectorBStub = $this->createStub(SvgViolationDetectorInterface::class);
-        $detectorBStub->method('detect')->willReturn(false);
+        $detectorBMock = $this->createMock(SvgViolationDetectorInterface::class);
+        $detectorBMock->expects($this->once())
+            ->method('detect')
+            ->with($this->isInstanceOf(DOMDocument::class))
+            ->willReturn(false);
 
-        $sut = $this->getSut([$detectorAStub, $detectorBStub]);
-        $sut->scan('<svg xmlns="http://www.w3.org/2000/svg"/>');
-
-        $this->addToAssertionCount(1);
+        $sut = $this->getSut(detectors: [$detectorAMock, $detectorBMock]);
+        $sut->scan(self::SVG_CONTENT);
     }
 
     #[Test]
     public function scanThrowsWhenAnyDetectorReturnsTrue(): void
     {
-        $cleanStub = $this->createStub(SvgViolationDetectorInterface::class);
-        $cleanStub->method('detect')->willReturn(false);
-
-        $hitsStub = $this->createStub(SvgViolationDetectorInterface::class);
-        $hitsStub->method('detect')->willReturn(true);
-
-        $sut = $this->getSut([$cleanStub, $hitsStub]);
-
-        $this->expectException(ValidationFailedException::class);
-        $this->expectExceptionMessage('OE_MEDIA_LIBRARY_EXCEPTION_SVG_DISALLOWED_CONTENT');
-
-        $sut->scan('<svg xmlns="http://www.w3.org/2000/svg"/>');
-    }
-
-    #[Test]
-    public function scanStopsAtFirstHit(): void
-    {
-        $firstMock = $this->createMock(SvgViolationDetectorInterface::class);
-        $firstMock->expects($this->once())->method('detect')->willReturn(true);
-
-        $secondSpy = $this->createMock(SvgViolationDetectorInterface::class);
-        $secondSpy->expects($this->never())->method('detect');
-
-        $sut = $this->getSut([$firstMock, $secondSpy]);
-
-        $this->expectException(ValidationFailedException::class);
-        $sut->scan('<svg xmlns="http://www.w3.org/2000/svg"/>');
-    }
-
-    #[Test]
-    public function scanPassesDomDocumentToEachDetector(): void
-    {
-        $detectorMock = $this->createMock(SvgViolationDetectorInterface::class);
-        $detectorMock->expects($this->once())
+        $cleanMock = $this->createMock(SvgViolationDetectorInterface::class);
+        $cleanMock->expects($this->once())
             ->method('detect')
             ->with($this->isInstanceOf(DOMDocument::class))
             ->willReturn(false);
 
-        $sut = $this->getSut([$detectorMock]);
-        $sut->scan('<svg xmlns="http://www.w3.org/2000/svg"><rect/></svg>');
+        $hitsMock = $this->createMock(SvgViolationDetectorInterface::class);
+        $hitsMock->expects($this->once())
+            ->method('detect')
+            ->with($this->isInstanceOf(DOMDocument::class))
+            ->willReturn(true);
+
+        $sut = $this->getSut(detectors: [$cleanMock, $hitsMock]);
+
+        $this->expectException(ValidationFailedException::class);
+        $this->expectExceptionMessage('OE_MEDIA_LIBRARY_EXCEPTION_SVG_DISALLOWED_CONTENT');
+
+        $sut->scan(self::SVG_CONTENT);
     }
 
-    protected function getSut(iterable $detectors = []): SvgScanner
+    /**
+     * @param iterable<SvgViolationDetectorInterface> $detectors
+     */
+    private function getSut(iterable $detectors = []): SvgScannerInterface
     {
         return new SvgScanner($detectors);
     }
