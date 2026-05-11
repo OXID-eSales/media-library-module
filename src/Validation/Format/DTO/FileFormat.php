@@ -11,16 +11,13 @@ namespace OxidEsales\MediaLibrary\Validation\Format\DTO;
 
 final class FileFormat implements FileFormatInterface
 {
-    private readonly string $extension;
-
     /**
      * @param string[] $mimeTypes
      */
     public function __construct(
-        string $extension,
+        private readonly string $extension,
         private readonly array $mimeTypes,
     ) {
-        $this->extension = strtolower($extension);
     }
 
     public function getExtension(): string

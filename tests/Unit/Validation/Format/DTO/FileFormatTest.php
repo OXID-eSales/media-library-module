@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Format\DTO;
 
 use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat;
+use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormatInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -23,26 +24,26 @@ class FileFormatTest extends TestCase
         $extension = uniqid();
         $mimeTypes = [uniqid() . '/' . uniqid(), uniqid() . '/' . uniqid()];
 
-        $sut = $this->getSut($extension, $mimeTypes);
+        $sut = $this->getSut(extension: $extension, mimeTypes: $mimeTypes);
 
         $this->assertSame($extension, $sut->getExtension());
         $this->assertSame($mimeTypes, $sut->getMimeTypes());
     }
 
     #[Test]
-    public function lowercasesExtensionForCaseInsensitiveLookups(): void
+    public function preservesExtensionCase(): void
     {
-        $extension = uniqid();
+        $extension = strtoupper(uniqid());
 
-        $sut = $this->getSut(strtoupper($extension), [uniqid()]);
+        $sut = $this->getSut(extension: $extension, mimeTypes: [uniqid()]);
 
-        $this->assertSame(strtolower($extension), $sut->getExtension());
+        $this->assertSame($extension, $sut->getExtension());
     }
 
     /**
      * @param string[] $mimeTypes
      */
-    private function getSut(string $extension, array $mimeTypes): FileFormat
+    private function getSut(string $extension, array $mimeTypes): FileFormatInterface
     {
         return new FileFormat($extension, $mimeTypes);
     }

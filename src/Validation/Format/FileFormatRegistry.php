@@ -22,7 +22,7 @@ final class FileFormatRegistry implements FileFormatRegistryInterface
     public function __construct(iterable $formats)
     {
         foreach ($formats as $format) {
-            $this->formatsByExtension[$format->getExtension()] = $format;
+            $this->formatsByExtension[strtolower($format->getExtension())] = $format;
         }
     }
 

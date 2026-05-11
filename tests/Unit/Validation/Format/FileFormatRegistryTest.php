@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Format;
 
-use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat;
+use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormatInterface;
 use OxidEsales\MediaLibrary\Validation\Format\FileFormatRegistry;
+use OxidEsales\MediaLibrary\Validation\Format\FileFormatRegistryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -19,40 +21,61 @@ use PHPUnit\Framework\TestCase;
 class FileFormatRegistryTest extends TestCase
 {
     #[Test]
-    public function findByExtensionReturnsMatchingFormat(): void
-    {
-        $targetExtension = uniqid();
-        $targetFormat = new FileFormat($targetExtension, [uniqid()]);
-        $otherFormat = new FileFormat(uniqid(), [uniqid()]);
+    #[DataProvider('caseInsensitiveLookupProvider')]
+    public function findByExtensionMatchesRegardlessOfCase(
+        string $registeredExtension,
+        string $lookupExtension,
+    ): void {
+        $format = $this->createConfiguredStub(FileFormatInterface::class, [
+            'getExtension' => $registeredExtension,
+        ]);
 
-        $sut = $this->getSut([$targetFormat, $otherFormat]);
+        $sut = $this->getSut(formats: [$format]);
 
-        $this->assertSame($targetFormat, $sut->findByExtension($targetExtension));
-    }
-
-    #[Test]
-    public function findByExtensionIsCaseInsensitive(): void
-    {
-        $extension = uniqid();
-        $format = new FileFormat($extension, [uniqid()]);
-
-        $sut = $this->getSut([$format]);
-
-        $this->assertSame($format, $sut->findByExtension(strtoupper($extension)));
+        $this->assertSame($format, $sut->findByExtension($lookupExtension));
     }
 
     #[Test]
     public function findByExtensionReturnsNullWhenNotRegistered(): void
     {
-        $sut = $this->getSut([new FileFormat(uniqid(), [uniqid()])]);
+        $registeredFormat = $this->createConfiguredStub(FileFormatInterface::class, [
+            'getExtension' => uniqid(),
+        ]);
 
-        $this->assertNull($sut->findByExtension(uniqid()));
+        $sut = $this->getSut(formats: [$registeredFormat]);
+
+        $unregisteredExtension = uniqid();
+
+        $this->assertNull($sut->findByExtension($unregisteredExtension));
+    }
+
+    public static function caseInsensitiveLookupProvider(): \Generator
+    {
+        yield 'lowercase registered, uppercase lookup' => [
+            'registeredExtension' => 'svg',
+            'lookupExtension' => 'SVG',
+        ];
+
+        yield 'uppercase registered, lowercase lookup' => [
+            'registeredExtension' => 'PNG',
+            'lookupExtension' => 'png',
+        ];
+
+        yield 'mixed case registered, lowercase lookup' => [
+            'registeredExtension' => 'JpEg',
+            'lookupExtension' => 'jpeg',
+        ];
+
+        yield 'uppercase registered, uppercase lookup' => [
+            'registeredExtension' => 'GIF',
+            'lookupExtension' => 'GIF',
+        ];
     }
 
     /**
-     * @param iterable<FileFormat> $formats
+     * @param iterable<FileFormatInterface> $formats
      */
-    private function getSut(iterable $formats = []): FileFormatRegistry
+    private function getSut(iterable $formats = []): FileFormatRegistryInterface
     {
         return new FileFormatRegistry($formats);
     }

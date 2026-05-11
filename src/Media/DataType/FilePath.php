@@ -28,6 +28,6 @@ class FilePath implements FilePathInterface
 
     public function getExtension(): string
     {
-        return strtolower(pathinfo($this->getFileName(), PATHINFO_EXTENSION));
+        return pathinfo($this->getFileName(), PATHINFO_EXTENSION);
     }
 }

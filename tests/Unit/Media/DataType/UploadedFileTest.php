@@ -10,13 +10,16 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Media\DataType;
 
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFile;
+use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(UploadedFile::class)]
 class UploadedFileTest extends TestCase
 {
-    public function testRegularCaseWorks(): void
+    #[Test]
+    public function regularCaseWorks(): void
     {
         $fileName = uniqid();
         $fileType = uniqid();
@@ -31,7 +34,7 @@ class UploadedFileTest extends TestCase
             'size' => $fileSize,
         ];
 
-        $sut = new UploadedFile($fileExample);
+        $sut = $this->getSut(fileData: $fileExample);
 
         $this->assertSame($fileName, $sut->getFileName());
         $this->assertSame($fileType, $sut->getFileType());
@@ -40,11 +43,10 @@ class UploadedFileTest extends TestCase
         $this->assertSame($fileSize, $sut->getSize());
     }
 
-    public function testEmptyDataWorks(): void
+    #[Test]
+    public function emptyDataWorks(): void
     {
-        $fileExample = [];
-
-        $sut = new UploadedFile($fileExample);
+        $sut = $this->getSut(fileData: []);
 
         $this->assertSame('', $sut->getFileName());
         $this->assertSame('', $sut->getFileType());
@@ -54,13 +56,21 @@ class UploadedFileTest extends TestCase
         $this->assertSame('', $sut->getExtension());
     }
 
-    public function testGetExtensionReturnsLowercase(): void
+    #[Test]
+    public function getExtensionPreservesCase(): void
     {
-        $extension = uniqid();
-        $sut = new UploadedFile([
-            'name' => uniqid() . '.' . strtoupper($extension),
-        ]);
+        $extension = strtoupper(uniqid());
 
-        $this->assertSame(strtolower($extension), $sut->getExtension());
+        $sut = $this->getSut(fileData: ['name' => uniqid() . '.' . $extension]);
+
+        $this->assertSame($extension, $sut->getExtension());
+    }
+
+    /**
+     * @param array<string, mixed> $fileData
+     */
+    private function getSut(array $fileData = []): UploadedFileInterface
+    {
+        return new UploadedFile($fileData);
     }
 }
