@@ -22,7 +22,8 @@ final class ScriptableUrlDetector implements SvgViolationDetectorInterface
         $xpath = new DOMXPath($document);
 
         foreach ($xpath->query('//@*[local-name()="href"]') ?: [] as $attribute) {
-            if ($attribute instanceof DOMAttr && $this->isDangerous($attribute->value)) {
+            /** @var DOMAttr $attribute */
+            if ($this->isDangerous($attribute->value)) {
                 return true;
             }
         }

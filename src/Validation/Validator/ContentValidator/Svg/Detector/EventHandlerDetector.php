@@ -17,8 +17,8 @@ final class EventHandlerDetector implements SvgViolationDetectorInterface
     public function detect(DOMDocument $document): bool
     {
         $xpath = new DOMXPath($document);
-        $attributes = $xpath->query('//@*[starts-with(local-name(), "on")]');
+        $attributeList = $xpath->query('//@*[starts-with(local-name(), "on")]');
 
-        return $attributes !== false && $attributes->length > 0;
+        return $attributeList instanceof \DOMNodeList && $attributeList->length > 0;
     }
 }

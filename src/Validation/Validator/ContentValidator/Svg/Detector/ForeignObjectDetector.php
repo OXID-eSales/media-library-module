@@ -17,8 +17,8 @@ final class ForeignObjectDetector implements SvgViolationDetectorInterface
     public function detect(DOMDocument $document): bool
     {
         $xpath = new DOMXPath($document);
-        $nodes = $xpath->query('//*[local-name()="foreignObject"]');
+        $nodeList = $xpath->query('//*[local-name()="foreignObject"]');
 
-        return $nodes !== false && $nodes->length > 0;
+        return $nodeList instanceof \DOMNodeList && $nodeList->length > 0;
     }
 }

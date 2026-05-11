@@ -17,8 +17,8 @@ final class ScriptElementDetector implements SvgViolationDetectorInterface
     public function detect(DOMDocument $document): bool
     {
         $xpath = new DOMXPath($document);
-        $nodes = $xpath->query('//*[local-name()="script"]');
+        $nodeList = $xpath->query('//*[local-name()="script"]');
 
-        return $nodes !== false && $nodes->length > 0;
+        return $nodeList instanceof \DOMNodeList && $nodeList->length > 0;
     }
 }
