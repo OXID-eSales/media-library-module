@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator\ContentValidator\Svg;
 
-use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormat;
@@ -94,22 +93,6 @@ class SvgContentValidatorTest extends TestCase
         $this->expectExceptionMessage($exceptionMessage);
 
         $sut->validate($filePathStub);
-    }
-
-    #[Test]
-    public function validateIgnoresNonUploadedPaths(): void
-    {
-        $svgScannerSpy = $this->createMock(SvgScannerInterface::class);
-        $svgScannerSpy->expects($this->never())->method('scan');
-
-        $filePathStub = $this->createConfiguredStub(FilePathInterface::class, [
-            'getFileName' => uniqid() . '.svg',
-        ]);
-
-        $sut = $this->getSut(svgScanner: $svgScannerSpy);
-        $sut->validate($filePathStub);
-
-        $this->addToAssertionCount(1);
     }
 
     #[DataProvider('unreadableSvgProvider')]

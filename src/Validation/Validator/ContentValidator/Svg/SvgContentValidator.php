@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg;
 
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
-use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormatInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\ContentValidatorInterface;
@@ -33,10 +32,6 @@ final class SvgContentValidator implements ContentValidatorInterface
 
     public function validate(FilePathInterface $filePath): void
     {
-        if (!$filePath instanceof UploadedFileInterface) {
-            return;
-        }
-
         $content = @file_get_contents($filePath->getPath());
         if ($content === false || $content === '') {
             throw new ValidationFailedException('OE_MEDIA_LIBRARY_EXCEPTION_FILE_NOT_UPLOADED');
