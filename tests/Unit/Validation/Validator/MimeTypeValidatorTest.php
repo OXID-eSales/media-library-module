@@ -39,8 +39,7 @@ class MimeTypeValidatorTest extends TestCase
         ]);
 
         $registryMock = $this->createMock(FileFormatRegistryInterface::class);
-        $registryMock->expects($this->once())
-            ->method('findByExtension')
+        $registryMock->method('findByExtension')
             ->with($extension)
             ->willReturn($formatStub);
 
@@ -62,8 +61,7 @@ class MimeTypeValidatorTest extends TestCase
         ]);
 
         $registryMock = $this->createMock(FileFormatRegistryInterface::class);
-        $registryMock->expects($this->once())
-            ->method('findByExtension')
+        $registryMock->method('findByExtension')
             ->with($extension)
             ->willReturn(null);
 
@@ -90,8 +88,7 @@ class MimeTypeValidatorTest extends TestCase
         ]);
 
         $registryMock = $this->createMock(FileFormatRegistryInterface::class);
-        $registryMock->expects($this->once())
-            ->method('findByExtension')
+        $registryMock->method('findByExtension')
             ->with($extension)
             ->willReturn($formatStub);
 

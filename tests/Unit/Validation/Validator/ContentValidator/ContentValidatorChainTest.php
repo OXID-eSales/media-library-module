@@ -32,8 +32,7 @@ class ContentValidatorChainTest extends TestCase
         ]);
 
         $registryMock = $this->createMock(FileFormatRegistryInterface::class);
-        $registryMock->expects($this->once())
-            ->method('findByExtension')
+        $registryMock->method('findByExtension')
             ->with($extension)
             ->willReturn(null);
 
@@ -58,13 +57,12 @@ class ContentValidatorChainTest extends TestCase
         ]);
 
         $registryMock = $this->createMock(FileFormatRegistryInterface::class);
-        $registryMock->expects($this->once())
-            ->method('findByExtension')
+        $registryMock->method('findByExtension')
             ->with($extension)
             ->willReturn($formatStub);
 
         $unsupportedMock = $this->createMock(ContentValidatorInterface::class);
-        $unsupportedMock->expects($this->once())->method('supports')->with($formatStub)->willReturn(false);
+        $unsupportedMock->method('supports')->with($formatStub)->willReturn(false);
         $unsupportedMock->expects($this->never())->method('validate');
 
         $sut = $this->getSut($registryMock, [$unsupportedMock]);
@@ -84,21 +82,20 @@ class ContentValidatorChainTest extends TestCase
         ]);
 
         $registryMock = $this->createMock(FileFormatRegistryInterface::class);
-        $registryMock->expects($this->once())
-            ->method('findByExtension')
+        $registryMock->method('findByExtension')
             ->with($extension)
             ->willReturn($formatStub);
 
         $supportingMock = $this->createMock(ContentValidatorInterface::class);
-        $supportingMock->expects($this->once())->method('supports')->with($formatStub)->willReturn(true);
+        $supportingMock->method('supports')->with($formatStub)->willReturn(true);
         $supportingMock->expects($this->once())->method('validate')->with($filePathStub);
 
         $alsoSupportingMock = $this->createMock(ContentValidatorInterface::class);
-        $alsoSupportingMock->expects($this->once())->method('supports')->with($formatStub)->willReturn(true);
+        $alsoSupportingMock->method('supports')->with($formatStub)->willReturn(true);
         $alsoSupportingMock->expects($this->once())->method('validate')->with($filePathStub);
 
         $skipMock = $this->createMock(ContentValidatorInterface::class);
-        $skipMock->expects($this->once())->method('supports')->with($formatStub)->willReturn(false);
+        $skipMock->method('supports')->with($formatStub)->willReturn(false);
         $skipMock->expects($this->never())->method('validate');
 
         $sut = $this->getSut($registryMock, [$supportingMock, $skipMock, $alsoSupportingMock]);

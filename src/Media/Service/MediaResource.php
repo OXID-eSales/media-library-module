@@ -60,10 +60,13 @@ class MediaResource implements MediaResourceInterface
 
     public function getPossibleMediaFilePath(string $folderName = '', string $fileName = ''): FilePathInterface
     {
-        return new FilePath(
-            $this->namingService->getUniqueFilename(
-                Path::join($this->getPathToMediaFiles($folderName), $fileName),
-            )
+        $uniqueFileName = $this->namingService->getUniqueFilename(
+            Path::join(
+                $this->getPathToMediaFiles($folderName),
+                $fileName
+            ),
         );
+
+        return new FilePath($uniqueFileName);
     }
 }

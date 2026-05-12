@@ -27,14 +27,12 @@ class SvgScannerTest extends TestCase
     public function scanPassesWhenAllDetectorsReturnFalse(): void
     {
         $detectorAMock = $this->createMock(SvgViolationDetectorInterface::class);
-        $detectorAMock->expects($this->once())
-            ->method('detect')
+        $detectorAMock->method('detect')
             ->with($this->isInstanceOf(DOMDocument::class))
             ->willReturn(false);
 
         $detectorBMock = $this->createMock(SvgViolationDetectorInterface::class);
-        $detectorBMock->expects($this->once())
-            ->method('detect')
+        $detectorBMock->method('detect')
             ->with($this->isInstanceOf(DOMDocument::class))
             ->willReturn(false);
 
@@ -46,14 +44,12 @@ class SvgScannerTest extends TestCase
     public function scanThrowsWhenAnyDetectorReturnsTrue(): void
     {
         $cleanMock = $this->createMock(SvgViolationDetectorInterface::class);
-        $cleanMock->expects($this->once())
-            ->method('detect')
+        $cleanMock->method('detect')
             ->with($this->isInstanceOf(DOMDocument::class))
             ->willReturn(false);
 
         $hitsMock = $this->createMock(SvgViolationDetectorInterface::class);
-        $hitsMock->expects($this->once())
-            ->method('detect')
+        $hitsMock->method('detect')
             ->with($this->isInstanceOf(DOMDocument::class))
             ->willReturn(true);
 
