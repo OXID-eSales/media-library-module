@@ -1,35 +1,4 @@
-services:
-  _defaults:
-    public: false
-    autowire: true
-
-  OxidEsales\MediaLibrary\Validation\Service\DirectoryNameValidatorChainInterface:
-    class: OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChain
-    public: true
-    arguments:
-      $fileValidators:
-        - '@OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator'
-
-  OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChainInterface:
-    class: OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChain
-    public: true
-    arguments:
-      $fileValidators:
-        - '@OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator'
-        - '@OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator'
-
-  # TODO: consider using a tagged-iterator so future validators
-  OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface:
-    class: OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain
-    public: true
-    arguments:
-      $fileValidators:
-        - '@OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator'
-        - '@OxidEsales\MediaLibrary\Validation\Validator\FileUploadStatusValidator'
-        - '@OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator'
-        - '@OxidEsales\MediaLibrary\Validation\Validator\SvgContentValidator'
-
-  OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator: ~
-  OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator: ~
-  OxidEsales\MediaLibrary\Validation\Validator\FileUploadStatusValidator: ~
-  OxidEsales\MediaLibrary\Validation\Validator\SvgContentValidator: ~
+imports:
+  - { resource: Service/services.yaml }
+  - { resource: Validator/services.yaml }
+  - { resource: Format/services.yaml }

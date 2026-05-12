@@ -7,13 +7,14 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Media\DataType;
+namespace OxidEsales\MediaLibrary\Validation\Format\DTO;
 
-interface FilePathInterface
+interface FileFormatInterface
 {
-    public function getPath(): string;
-
-    public function getFileName(): string;
-
     public function getExtension(): string;
+
+    /**
+     * @return string[]
+     */
+    public function getMimeTypes(): array;
 }

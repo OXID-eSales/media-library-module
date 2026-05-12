@@ -26,6 +26,11 @@ class UploadedFile implements UploadedFileInterface
         return $this->fileData['tmp_name'] ?? '';
     }
 
+    public function getExtension(): string
+    {
+        return pathinfo($this->getFileName(), PATHINFO_EXTENSION);
+    }
+
     public function isError(): bool
     {
         return !isset($this->fileData['error']) || $this->fileData['error'] !== UPLOAD_ERR_OK;

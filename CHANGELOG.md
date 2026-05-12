@@ -7,27 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [5.1.0] - unreleased
 
 ### Added
-- SVG content validation on upload — uploads containing script
-  elements, foreign-object embedding, event-handler attributes
-  (`on*`) or dangerous URL schemes (`javascript:`, `data:`) are
-  rejected with a translation-key error
-- New `Image\Sanitizer\SvgValidatorInterface` and detector-based
-  implementation under `Image\Sanitizer\Detector\` (internal)
-- Upload validation fails closed when an SVG cannot be read at
-  validation time (rejected instead of silently accepted)
-- Changes from 4.1.1
-
-### Note for integrators
-- The `UploadedFileValidatorChainInterface` service in
-  `src/Validation/services.yaml` now lists a fourth validator
-  (`SvgContentValidator`). Modules that fully replace this
-  service definition need to add the new validator to keep the
-  SVG protection.
-
-### Changed
-- Apply consistent filename sanitization across upload and rename
-- `composer.json` now declares `ext-dom` (used by the new SVG content
-  validator)
+- Changes from 4.2.0
 
 ## [5.0.0] - 2026-04-09
 
@@ -41,7 +21,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Media library search field now matches against media ID in addition to filename
 
-## [4.1.1] - Unreleased
+## [4.2.0] - Unreleased
+
+### Added
+- SVG upload content validation: rejects files containing scripts, foreign objects, `on*` event handlers, or `javascript:`/`data:` URLs
+- MIME-type validation on every upload: rejects files whose sniffed content type does not match the declared extension
+- Raster-image content validation for `jpg`, `jpeg`, `gif`, `png`, `webp`, `avif`: files that do not parse as a valid image are rejected
+- `FileFormatRegistry` mapping allowed extensions to accepted MIME types; integrators can register additional formats via service configuration
+- `ContentValidatorInterface` for per-format content checks; tagged services are auto-discovered by the upload chain
+- `FilePathInterface::getExtension()` returns the lowercased file extension
+
+### Changed
+- Apply consistent filename sanitization across upload and rename
+- `composer.json` now declares `ext-dom`
+
+### Security
+- Reject path-traversal characters (`/`, `\`, `..` segments, null bytes) in upload filenames
+
+### Note for integrators
+- The upload validator chain now adds `MimeTypeValidator` and `ContentValidatorDispatcher` after `FileExtensionValidator`. Modules that fully replace `UploadedFileValidatorChainInterface` need to list both validators in the same order to retain the upload-content protection.
+- `FilePathInterface` adds a new method `getExtension()`. Modules implementing this interface themselves need to add the method, returning the lowercased file extension.
 
 ### Fixed
 - Ctrl+click multi-select was not working due to wrong event button check.
@@ -173,8 +172,9 @@ Module extracted from wysiwyg module, and used by it now
 - Thumbnails are generated on demand and the type of thumbnail file is matching the original image type
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
+[5.1.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.0.0..v5.1.0
 [5.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.1.0..v5.0.0
-[4.1.1]: https://github.com/OXID-eSales/media-library-module/compare/v4.1.0..v4.1.1
+[4.2.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.1.0..v4.2.0
 [4.1.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.0.0..v4.1.0
 [4.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v3.0.1..v4.0.0
 [3.0.1]: https://github.com/OXID-eSales/media-library-module/compare/v3.0.0..v3.0.1

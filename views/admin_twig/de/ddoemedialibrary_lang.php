@@ -68,4 +68,6 @@ $aLang = array(
     'OE_MEDIA_LIBRARY_EXCEPTION_FILENAME_STARTS_DOT' => 'Dateiname darf nicht mit "." beginnen',
     'OE_MEDIA_LIBRARY_EXCEPTION_FILE_NOT_UPLOADED' => 'Datei wurde nicht hochgeladen',
     'OE_MEDIA_LIBRARY_EXCEPTION_SVG_DISALLOWED_CONTENT' => 'Die SVG-Datei enthält nicht erlaubte Inhalte (z.B. Skripte oder Event-Handler) und wurde abgelehnt.',
+    'OE_MEDIA_LIBRARY_EXCEPTION_INVALID_FILE_MIME' => 'Der Inhalt der hochgeladenen Datei stimmt nicht mit der Dateierweiterung überein und wurde abgelehnt.',
+    'OE_MEDIA_LIBRARY_EXCEPTION_INVALID_IMAGE_CONTENT' => 'Die Bilddatei ist fehlerhaft oder enthält Nicht-Bild-Inhalte und wurde abgelehnt.',
 );

@@ -1,0 +1,26 @@
+imports:
+  - { resource: 'ContentValidator/services.yaml' }
+
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  # Tagged with `oxid_esales.media_library.validation.chain_validator` and consumed
+  # by `UploadedFileValidatorChainInterface` via tagged_iterator.
+  OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator:
+    tags: ['oxid_esales.media_library.validation.chain_validator']
+
+  OxidEsales\MediaLibrary\Validation\Validator\FileUploadStatusValidator:
+    tags: ['oxid_esales.media_library.validation.chain_validator']
+
+  OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator:
+    tags: ['oxid_esales.media_library.validation.chain_validator']
+
+  OxidEsales\MediaLibrary\Validation\Validator\MimeTypeValidator:
+    tags: ['oxid_esales.media_library.validation.chain_validator']
+
+  OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\ContentValidatorChain:
+    arguments:
+      $contentValidators: !tagged_iterator oxid_esales.media_library.validation.content_validator
+    tags: ['oxid_esales.media_library.validation.chain_validator']

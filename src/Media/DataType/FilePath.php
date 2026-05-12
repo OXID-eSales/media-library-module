@@ -25,4 +25,9 @@ class FilePath implements FilePathInterface
     {
         return basename($this->filePath);
     }
+
+    public function getExtension(): string
+    {
+        return pathinfo($this->getFileName(), PATHINFO_EXTENSION);
+    }
 }
