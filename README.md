@@ -31,7 +31,7 @@ Module provides basic media files management.
 
 In order to install the module via composer run one of the following commands in commandline in your shop base directory
 (where the shop's composer.json file resides).
-* `composer require oxid-esales/media-library-module:^5.0.0`
+* `composer require oxid-esales/media-library-module:^5.1.0`
   to install the released version compatible with OXID eShop v7.5.x
 * `composer require oxid-esales/media-library-module:dev-b-7.5.x`
   to install the specific unreleased branch
