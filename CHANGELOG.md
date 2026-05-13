@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Media library search field now matches against media ID in addition to filename
 
-## [4.2.0] - Unreleased
+## [4.2.0] - 2026-05-13
 
 ### Added
 - SVG upload content validation: rejects files containing scripts, foreign objects, `on*` event handlers, or `javascript:`/`data:` URLs
