@@ -9,7 +9,6 @@ namespace OxidEsales\MediaLibrary\Tests\Integration\Image\ThumbnailGenerator;
 
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
-use org\bovigo\vfs\vfsStream;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionDriver;
@@ -21,6 +20,24 @@ use Psr\Log\LoggerInterface;
 #[CoversClass(InterventionDriver::class)]
 class InterventionDriverTest extends IntegrationTestCase
 {
+    private string $tempDir;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->tempDir = sys_get_temp_dir() . '/intervention-driver-test-' . uniqid();
+        mkdir($this->tempDir);
+    }
+
+    public function tearDown(): void
+    {
+        foreach (glob($this->tempDir . '/*') ?: [] as $file) {
+            @unlink($file);
+        }
+        @rmdir($this->tempDir);
+        parent::tearDown();
+    }
+
     #[DataProvider('getThumbnailDataProvider')]
     public function testGenerateThumbnail(
         $sourceWidth,
@@ -30,16 +47,14 @@ class InterventionDriverTest extends IntegrationTestCase
         $expectedThumbnailHeight,
         $cropThumbnail
     ): void {
-        $rootPath = vfsStream::setup()->url();
-
         $imageManager = new ImageManager(new Driver());
         $sut = $this->getSut(imageManager: $imageManager);
 
-        $sourcePath = $rootPath . '/source.jpg';
-        $img = $imageManager->create($sourceWidth, $sourceHeight);
+        $sourcePath = $this->tempDir . '/source.jpg';
+        $img = $imageManager->createImage($sourceWidth, $sourceHeight);
         $img->save($sourcePath);
 
-        $thumbnailPath = $rootPath . '/thumbnail.jpg';
+        $thumbnailPath = $this->tempDir . '/thumbnail.jpg';
         $sut->generateThumbnail(
             sourcePath: $sourcePath,
             thumbnailPath: $thumbnailPath,
@@ -49,22 +64,20 @@ class InterventionDriverTest extends IntegrationTestCase
 
         self::assertFileExists($thumbnailPath);
 
-        $resultThumbnailImage = $imageManager->read($thumbnailPath);
+        $resultThumbnailImage = $imageManager->decode($thumbnailPath);
         self::assertSame($expectedThumbnailWidth, $resultThumbnailImage->width());
         self::assertSame($expectedThumbnailHeight, $resultThumbnailImage->height());
     }
 
     public function testInterventionExceptionDoesntExplodeButLogsError(): void
     {
-        $rootPath = vfsStream::setup()->url();
-
         $loggerSpy = $this->createMock(LoggerInterface::class);
         $loggerSpy->expects($this->once())->method('error');
 
         $sut = $this->getSut(logger: $loggerSpy);
 
         $sourcePath = 'notExisting';
-        $thumbnailPath = $rootPath . '/thumbnail.jpg';
+        $thumbnailPath = $this->tempDir . '/thumbnail.jpg';
 
         $sut->generateThumbnail(
             sourcePath: $sourcePath,

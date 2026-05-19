@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Updated to work with OXID eShop 7.6.x
+- Updated `intervention/image` from `^3.3` to `^4.0`
 
 ## [5.1.0] - 2026-05-13
 
