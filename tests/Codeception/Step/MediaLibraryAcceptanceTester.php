@@ -14,7 +14,7 @@ use OxidEsales\MediaLibrary\Tests\Codeception\Support\AcceptanceTester;
 
 class MediaLibraryAcceptanceTester extends AcceptanceTester
 {
-	// @codingStandardsIgnoreStart
+    // phpcs:disable
     private string $createFolderButton = "//button[contains(@class, 'dd-media-folder-action')]";
     private string $createDirectoryModal = "//div[contains(@class, 'dd-modal-confirm') and contains(@style, 'display: block')]";
     private string $createDirectoryField = "//div[contains(@class, 'dd-modal-confirm')]//input[@name='prompt']";
@@ -35,8 +35,8 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
     private string $directoryLevelUp = "//div[contains(@class, 'dd-media-list-folder-up')]//button[contains(@class, 'dd-media-folder-up-action')]";
     private string $removeDirectoryButton = "//div[contains(@class, 'dd-media-list-toolbar')]//button[contains(@class, 'dd-media-remove-action')]";
     private string $removeDirectoryConfirmButton = "//div[@class='modal-content']//button[contains(@class, 'btn-primary')]";
-	private string $searchFieldKeyUpScript = "document.querySelector('%s').dispatchEvent(new KeyboardEvent('keyup'));";
-	// @codingStandardsIgnoreEnd
+    private string $searchFieldKeyUpScript = "document.querySelector('%s').dispatchEvent(new KeyboardEvent('keyup'));";
+    // phpcs:enable
 
     public function openMediaLibrary(): self
     {
