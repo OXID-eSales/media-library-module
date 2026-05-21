@@ -24,7 +24,7 @@
     "ext-gd": "*",
     "ext-fileinfo": "*",
     "ext-dom": "*",
-    "intervention/image": "^3.3"
+    "intervention/image": "^4.1"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^4.0",
