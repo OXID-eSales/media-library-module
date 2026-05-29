@@ -25,17 +25,25 @@ class InterventionDriverTest extends IntegrationTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->tempDir = sys_get_temp_dir() . '/intervention-driver-test-' . uniqid();
+        $this->tempDir = sys_get_temp_dir() . '/intervention-driver-test';
+        $this->removeTempDir();
         mkdir($this->tempDir);
     }
 
     public function tearDown(): void
     {
-        foreach (glob($this->tempDir . '/*') ?: [] as $file) {
-            @unlink($file);
-        }
-        @rmdir($this->tempDir);
+        $this->removeTempDir();
         parent::tearDown();
+    }
+
+    private function removeTempDir(): void
+    {
+        foreach (glob($this->tempDir . '/*') ?: [] as $file) {
+            unlink($file);
+        }
+        if (is_dir($this->tempDir)) {
+            rmdir($this->tempDir);
+        }
     }
 
     #[DataProvider('getThumbnailDataProvider')]
