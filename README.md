@@ -34,13 +34,13 @@ In order to install the module via composer run one of the following commands in
 (where the shop's composer.json file resides).
 * `composer require oxid-esales/media-library-module:^5.1.0`
   to install the released version compatible with OXID eShop v7.5.x
-* `composer require oxid-esales/media-library-module:dev-b-7.5.x`
+* `composer require oxid-esales/media-library-module:dev-b-7.6.x`
   to install the specific unreleased branch
 
 # Development installation on OXID eShop SDK
 
 The installation instructions below are shown for the current [SDK](https://github.com/OXID-eSales/docker-eshop-sdk)
-for shop 7.5. Make sure your system meets the requirements of the SDK.
+for shop 7.6. Make sure your system meets the requirements of the SDK.
 
 0. Ensure all docker containers are down to avoid port conflicts
 
@@ -51,7 +51,7 @@ echo MyProject && git clone https://github.com/OXID-eSales/docker-eshop-sdk.git 
 
 2. Clone the repository to the source directory
 ```shell
-git clone --recurse-submodules https://github.com/OXID-eSales/media-library-module.git --branch=b-7.5.x ./source
+git clone --recurse-submodules https://github.com/OXID-eSales/media-library-module.git --branch=b-7.6.x ./source
 ```
 
 3. Run the recipe to setup the development environment
