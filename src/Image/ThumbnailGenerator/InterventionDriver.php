@@ -38,7 +38,7 @@ class InterventionDriver implements ThumbnailGeneratorInterface
         $thumbnailHeight = $thumbnailSize->getHeight();
 
         try {
-            $image = $this->imageManager->read($sourcePath);
+            $image = $this->imageManager->decode($sourcePath);
             if ($isCropRequired) {
                 $image->coverDown(
                     width: $thumbnailWidth,
