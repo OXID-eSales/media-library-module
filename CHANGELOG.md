@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Updated to work with OXID eShop 7.6.x
 - Updated `squizlabs/php_codesniffer` from `3.*` to `^4.0`
 - Updated `intervention/image` from `^3.3` to `^4.0`
+- Newly created folders now appear at the top of the media library list instead of at the end
 
 ## [5.1.0] - 2026-05-13
 

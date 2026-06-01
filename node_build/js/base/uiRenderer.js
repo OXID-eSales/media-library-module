@@ -77,7 +77,7 @@ export default class UIRenderer {
         }
     }
 
-    addMediaItem({ id, file, filetype, filesize, thumb, imagesize }) {
+    addMediaItem({ id, file, filetype, filesize, thumb, imagesize }, prepend = false) {
         const template = document.querySelector('.dd-media-list-items .dd-media-dz-helper > div');
         const wrap = template.cloneNode(true);
         const item = wrap.querySelector('.dd-media-item');
@@ -109,7 +109,11 @@ export default class UIRenderer {
         const span = label.querySelector('span');
         span.textContent = file;
         const container = document.querySelector('.dd-media-list-items > .row');
-        container.appendChild(wrap);
+        if (prepend) {
+            container.prepend(wrap);
+        } else {
+            container.appendChild(wrap);
+        }
 
         this.dd.makeMovable(item);
     }

@@ -364,7 +364,7 @@ export default class MediaContent {
                                 filesize: 0,
                                 thumb: null,
                                 imagesize: ''
-                            });
+                            }, true);
 
                             const mediaList = dialog.querySelector('.dd-media-list');
                             mediaList.classList.remove('empty');
