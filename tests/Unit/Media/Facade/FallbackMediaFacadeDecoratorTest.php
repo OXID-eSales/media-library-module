@@ -136,6 +136,9 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
     public function getMediaThrowsExceptionIfOriginalAndFallbackMediaNotFound(): void
     {
         $exampleMediaId = uniqid();
+        $settingsStub = $this->createConfiguredStub(FallbackMediaSettingsInterface::class, [
+            'getFallbackMediaId' => uniqid(),
+        ]);
 
         $originalFacadeMock = $this->createMock(MediaFacadeInterface::class);
         $originalFacadeMock->method('getMedia')
@@ -143,6 +146,7 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
 
         $sut = $this->getSut(
             originalMediaFacade: $originalFacadeMock,
+            fallbackMediaSettings: $settingsStub,
         );
 
         $this->expectException(MediaNotFoundException::class);
@@ -153,6 +157,9 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
     public function getMediaUrlThrowsExceptionIfOriginalAndFallbackMediaNotFound(): void
     {
         $exampleMediaId = uniqid();
+        $settingsStub = $this->createConfiguredStub(FallbackMediaSettingsInterface::class, [
+            'getFallbackMediaId' => uniqid(),
+        ]);
 
         $originalFacadeMock = $this->createMock(MediaFacadeInterface::class);
         $originalFacadeMock->method('getMediaUrl')
@@ -160,9 +167,62 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
 
         $sut = $this->getSut(
             originalMediaFacade: $originalFacadeMock,
+            fallbackMediaSettings: $settingsStub,
         );
 
         $this->expectException(MediaNotFoundException::class);
+        $sut->getMediaUrl($exampleMediaId);
+    }
+
+    #[Test]
+    public function getMediaKeepsTheRequestedIdInTheExceptionIfNoFallbackConfigured(): void
+    {
+        $exampleMediaId = uniqid();
+        $settingsStub = $this->createConfiguredStub(FallbackMediaSettingsInterface::class, [
+            'getFallbackMediaId' => '',
+        ]);
+
+        $originalFacadeMock = $this->createMock(MediaFacadeInterface::class);
+        $originalFacadeMock->expects($this->once())
+            ->method('getMedia')
+            ->with($exampleMediaId)
+            ->willThrowException(
+                new MediaNotFoundException(sprintf('Media with id "%s" not found.', $exampleMediaId))
+            );
+
+        $sut = $this->getSut(
+            originalMediaFacade: $originalFacadeMock,
+            fallbackMediaSettings: $settingsStub,
+        );
+
+        $this->expectException(MediaNotFoundException::class);
+        $this->expectExceptionMessage(sprintf('Media with id "%s" not found.', $exampleMediaId));
+        $sut->getMedia($exampleMediaId);
+    }
+
+    #[Test]
+    public function getMediaUrlKeepsTheRequestedIdInTheExceptionIfNoFallbackConfigured(): void
+    {
+        $exampleMediaId = uniqid();
+        $settingsStub = $this->createConfiguredStub(FallbackMediaSettingsInterface::class, [
+            'getFallbackMediaId' => '',
+        ]);
+
+        $originalFacadeMock = $this->createMock(MediaFacadeInterface::class);
+        $originalFacadeMock->expects($this->once())
+            ->method('getMediaUrl')
+            ->with($exampleMediaId)
+            ->willThrowException(
+                new MediaNotFoundException(sprintf('Media with id "%s" not found.', $exampleMediaId))
+            );
+
+        $sut = $this->getSut(
+            originalMediaFacade: $originalFacadeMock,
+            fallbackMediaSettings: $settingsStub,
+        );
+
+        $this->expectException(MediaNotFoundException::class);
+        $this->expectExceptionMessage(sprintf('Media with id "%s" not found.', $exampleMediaId));
         $sut->getMediaUrl($exampleMediaId);
     }
 
