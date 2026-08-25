@@ -4,13 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [5.2.0] - unreleased
+## [5.3.0] - unreleased
 
 ### Changed
 - Updated to work with OXID eShop 7.6.x
 - Updated `squizlabs/php_codesniffer` from `3.*` to `^4.0`
 - Updated `intervention/image` from `^3.3` to `^4.0`
 - Newly created folders now appear at the top of the media library list instead of at the end
+
+## [5.2.0] - Unreleased
+
+### Fixed
+- `FallbackMediaFacadeDecorator` no longer search for an empty fallback media id and trhows the original exception instead.
 
 ## [5.1.0] - 2026-05-13
 
@@ -180,6 +185,8 @@ Module extracted from wysiwyg module, and used by it now
 - Thumbnails are generated on demand and the type of thumbnail file is matching the original image type
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
+[5.3.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.2.0..b-7.6.x
+[5.2.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.1.0..b-7.5.x
 [5.1.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.0.0..v5.1.0
 [5.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.1.0..v5.0.0
 [4.2.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.1.0..v4.2.0
