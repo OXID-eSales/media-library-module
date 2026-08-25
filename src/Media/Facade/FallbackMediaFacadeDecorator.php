@@ -35,12 +35,15 @@ class FallbackMediaFacadeDecorator implements MediaFacadeInterface
     {
         try {
             $result = $this->originalMediaFacade->getMedia($mediaId);
-        } catch (MediaNotFoundException) {
+        } catch (MediaNotFoundException $exception) {
+            $fallbackMediaId = $this->fallbackMediaSettings->getFallbackMediaId();
+            if ($fallbackMediaId === '') {
+                throw $exception;
+            }
+
             $this->logWarning($mediaId);
 
-            $result = $this->originalMediaFacade->getMedia(
-                $this->fallbackMediaSettings->getFallbackMediaId()
-            );
+            $result = $this->originalMediaFacade->getMedia($fallbackMediaId);
         }
 
         return $result;
@@ -50,12 +53,15 @@ class FallbackMediaFacadeDecorator implements MediaFacadeInterface
     {
         try {
             $result = $this->originalMediaFacade->getMediaUrl($mediaId);
-        } catch (MediaNotFoundException) {
+        } catch (MediaNotFoundException $exception) {
+            $fallbackMediaId = $this->fallbackMediaSettings->getFallbackMediaId();
+            if ($fallbackMediaId === '') {
+                throw $exception;
+            }
+
             $this->logWarning($mediaId);
 
-            $result = $this->originalMediaFacade->getMediaUrl(
-                $this->fallbackMediaSettings->getFallbackMediaId()
-            );
+            $result = $this->originalMediaFacade->getMediaUrl($fallbackMediaId);
         }
 
         return $result;
