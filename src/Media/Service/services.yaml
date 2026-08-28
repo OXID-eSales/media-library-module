@@ -20,6 +20,13 @@ services:
   OxidEsales\MediaLibrary\Media\Service\MediaObjectResourceInterface:
     class: OxidEsales\MediaLibrary\Media\Service\MediaObjectResource
 
+  OxidEsales\MediaLibrary\Media\Service\FallbackMediaResourceInterface:
+    class: OxidEsales\MediaLibrary\Media\Service\FallbackMediaResource
+
+  OxidEsales\MediaLibrary\Media\Service\FallbackMediaSeederInterface:
+    class: OxidEsales\MediaLibrary\Media\Service\FallbackMediaSeeder
+    public: true
+
   OxidEsales\MediaLibrary\Media\Service\ValidatorStrategyServiceInterface:
     class: OxidEsales\MediaLibrary\Media\Service\ValidatorStrategyService
     public: true

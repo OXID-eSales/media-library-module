@@ -19,18 +19,40 @@ use Symfony\Component\String\UnicodeString;
 class FallbackMediaSettingsTest extends TestCase
 {
     #[Test]
-    public function getDefaultMediaIdReturnsModuleSettingValue(): void
+    public function getFallbackMediaId(): void
     {
-        $moduleSettingsService = $this->createMock(ModuleSettingServiceInterface::class);
-        $moduleSettingsService->method('getString')
+        $moduleSettingServiceMock = $this->createMock(ModuleSettingServiceInterface::class);
+        $moduleSettingServiceMock->method('getString')
             ->with(FallbackMediaSettings::SETTING_FALLBACK_MEDIA_ID, Module::MODULE_ID)
             ->willReturn(new UnicodeString($settingValue = uniqid()));
 
-        $sut = new FallbackMediaSettings(
-            moduleSettingService: $moduleSettingsService,
-        );
+        $sut = $this->getSut(moduleSettingService: $moduleSettingServiceMock);
 
-        $result = $sut->getFallbackMediaId();
-        $this->assertSame($settingValue, $result);
+        $this->assertSame($settingValue, $sut->getFallbackMediaId());
+    }
+
+    #[Test]
+    public function saveFallbackMediaId(): void
+    {
+        $mediaId = uniqid();
+
+        $moduleSettingServiceSpy = $this->createMock(ModuleSettingServiceInterface::class);
+        $moduleSettingServiceSpy->expects($this->once())
+            ->method('saveString')
+            ->with(FallbackMediaSettings::SETTING_FALLBACK_MEDIA_ID, $mediaId, Module::MODULE_ID);
+
+        $sut = $this->getSut(moduleSettingService: $moduleSettingServiceSpy);
+
+        $sut->saveFallbackMediaId($mediaId);
+    }
+
+    private function getSut(
+        ?ModuleSettingServiceInterface $moduleSettingService = null,
+    ): FallbackMediaSettings {
+        $moduleSettingService ??= $this->createStub(ModuleSettingServiceInterface::class);
+
+        return new FallbackMediaSettings(
+            moduleSettingService: $moduleSettingService,
+        );
     }
 }

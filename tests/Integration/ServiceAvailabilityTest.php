@@ -69,6 +69,8 @@ class ServiceAvailabilityTest extends IntegrationTestCase
             // Media
             [\OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface::class],
             [\OxidEsales\MediaLibrary\Media\Settings\FallbackMediaSettingsInterface::class],
+            [\OxidEsales\MediaLibrary\Media\Service\FallbackMediaResourceInterface::class],
+            [\OxidEsales\MediaLibrary\Media\Service\FallbackMediaSeederInterface::class],
 
             [\OxidEsales\MediaLibrary\Media\Twig\MediaDataExtension::class],
             [\OxidEsales\MediaLibrary\Media\Twig\MediaDataLogicInterface::class],

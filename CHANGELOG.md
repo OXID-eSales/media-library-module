@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [5.3.0] - unreleased
 
+### Added
+- Placeholder image, added to the media library and set as the fallback media on module activation
+
 ### Changed
+- The `"Fallback" media ID` setting now has a default value pointing at the shipped placeholder image
 - Updated to work with OXID eShop 7.6.x
 - Updated `squizlabs/php_codesniffer` from `3.*` to `^4.0`
 - Updated `intervention/image` from `^3.3` to `^4.0`

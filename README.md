@@ -104,6 +104,22 @@ After updating the Media Library module, ensure you run the database migrations:
 vendor/bin/oe-eshop-doctrine_migration migrations:migrate ddoemedialibrary
 ```
 
+### Fallback image
+
+The module ships a placeholder image. On activation it is added to the media library and stored in the
+`"Fallback" media ID` setting, and it is shown in place of a media item that is referenced somewhere but
+no longer exists.
+
+If you updated the module rather than installing it for the first time, activate it once to get the
+placeholder:
+
+```bash
+vendor/bin/oe-console oe:module:activate ddoemedialibrary
+```
+
+Activation never replaces a fallback you configured yourself. Clear the setting and activate again to get
+the shipped placeholder back.
+
 ## License
 
 OXID Module and Component License, see [LICENSE file](LICENSE).

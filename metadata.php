@@ -5,6 +5,7 @@
  * See LICENSE file for license details.
  */
 
+use OxidEsales\MediaLibrary\Media\Service\FallbackMediaResource;
 use OxidEsales\MediaLibrary\Media\Settings\FallbackMediaSettings;
 use OxidEsales\MediaLibrary\Settings\Service\ModuleSettings;
 
@@ -60,7 +61,7 @@ $aModule = [
             'group' => 'main',
             'name'  => FallbackMediaSettings::SETTING_FALLBACK_MEDIA_ID,
             'type'  => 'str',
-            'value' => '',
+            'value' => FallbackMediaResource::MEDIA_ID,
         ],
         [
             'group' => 'limitations',

@@ -8,8 +8,12 @@
 namespace OxidEsales\MediaLibrary\Transition\Core;
 
 use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\MediaLibrary\Media\Service\FallbackMediaSeederInterface;
 use OxidEsales\MediaLibrary\Module;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Throwable;
 
 /**
  * Class defines what module does on Shop events.
@@ -22,6 +26,7 @@ class Events
     public static function onActivate(): void
     {
         self::executeMigrations();
+        self::seedFallbackMedia();
     }
 
     private static function executeMigrations(): void
@@ -34,6 +39,24 @@ class Events
 
         if ($needsUpdate) {
             $migrations->execute('migrations:migrate', Module::MODULE_ID);
+        }
+    }
+
+    private static function seedFallbackMedia(): void
+    {
+        $container = ContainerFactory::getInstance()->getContainer();
+
+        try {
+            /** @var FallbackMediaSeederInterface $seeder */
+            $seeder = $container->get(FallbackMediaSeederInterface::class);
+            $seeder->seedMedia();
+        } catch (Throwable $throwable) {
+            /** @var LoggerInterface $logger */
+            $logger = $container->get(LoggerInterface::class);
+            $logger->error(
+                'Could not seed the fallback media.',
+                ['exception' => $throwable->getMessage()]
+            );
         }
     }
 

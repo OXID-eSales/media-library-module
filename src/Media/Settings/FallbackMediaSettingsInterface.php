@@ -10,4 +10,6 @@ namespace OxidEsales\MediaLibrary\Media\Settings;
 interface FallbackMediaSettingsInterface
 {
     public function getFallbackMediaId(): string;
+
+    public function saveFallbackMediaId(string $mediaId): void;
 }

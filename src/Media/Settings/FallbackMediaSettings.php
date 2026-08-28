@@ -28,4 +28,13 @@ class FallbackMediaSettings implements FallbackMediaSettingsInterface
             moduleId: Module::MODULE_ID
         )->toString();
     }
+
+    public function saveFallbackMediaId(string $mediaId): void
+    {
+        $this->moduleSettingService->saveString(
+            name: self::SETTING_FALLBACK_MEDIA_ID,
+            value: $mediaId,
+            moduleId: Module::MODULE_ID
+        );
+    }
 }
