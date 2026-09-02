@@ -19,6 +19,8 @@ interface UIRequestInterface
 
     public function getFolderId(): string;
 
+    public function getMediaIds(): array;
+
     public function getMediaListStartIndex(): int;
 
     public function getTabName(): string;

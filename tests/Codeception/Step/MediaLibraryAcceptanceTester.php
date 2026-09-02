@@ -36,6 +36,11 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
     private string $removeDirectoryButton = "//div[contains(@class, 'dd-media-list-toolbar')]//button[contains(@class, 'dd-media-remove-action')]";
     private string $removeDirectoryConfirmButton = "//div[@class='modal-content']//button[contains(@class, 'btn-primary')]";
     private string $searchFieldKeyUpScript = "document.querySelector('%s').dispatchEvent(new KeyboardEvent('keyup'));";
+    private string $visibleImageSelect = "//div[contains(@class, 'dd-media-list-items')]//div[contains(@class, 'dd-media-col') and not(contains(@style, 'display: none')) and not(ancestor::div[contains(@class, 'dd-media-dz-helper')])]//a[contains(@class, 'dd-media-item')]";
+    private string $mediaDetailsForm = "//form[contains(@class, 'dd-media-details-form')]";
+    private string $mediaDetailsFormById = "//form[contains(@class, 'dd-media-details-form')][@data-media-id='%s']";
+    private string $alertModalBody = "//div[contains(@class, 'dd-modal-confirm')]//div[contains(@class, 'modal-body')]";
+    private string $alertModalOkButton = "//div[contains(@class, 'dd-modal-confirm')]//div[contains(@class, 'modal-footer')]//button[contains(@class, 'btn-primary')]";
     // phpcs:enable
 
     public function openMediaLibrary(): self
@@ -51,6 +56,24 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
         $I->see(Translator::translate('DD_MEDIA_DIALOG'));
         $I->see(Translator::translate('DD_MEDIA_LIST'));
         $I->see(Translator::translate('DD_MEDIA_UPLOAD'));
+
+        return $this;
+    }
+
+    /**
+     * The media gallery menu entry stays expanded once the library has been opened,
+     * so re-opening must not click the parent menu again (that would collapse it).
+     */
+    public function reopenMediaLibrary(): self
+    {
+        $I = $this;
+        $I->selectNavigationFrame();
+        $I->retryClick(Translator::translate('DD_MEDIA_DIALOG'));
+
+        $I->selectBaseFrame();
+        $I->waitForAjax();
+
+        $I->see(Translator::translate('DD_MEDIA_LIST'));
 
         return $this;
     }
@@ -179,6 +202,67 @@ class MediaLibraryAcceptanceTester extends AcceptanceTester
         $I->waitForElementClickable($this->removeImageConfirmButton);
         $I->click($this->removeImageConfirmButton);
         $I->waitForElementNotVisible($this->mediaDetails);
+
+        return $this;
+    }
+
+    public function selectMediaById(string $mediaId): self
+    {
+        $I = $this;
+        $I->waitForElement($this->mediaSearchField);
+        $I->fillField($this->mediaSearchField, $mediaId);
+        $I->executeJS(sprintf($this->searchFieldKeyUpScript, $this->mediaSearchField));
+
+        $I->waitForElementVisible($this->visibleImageSelect);
+        $I->click($this->visibleImageSelect);
+
+        return $this->seeMediaDetailsOf($mediaId);
+    }
+
+    public function grabSelectedMediaId(): string
+    {
+        $I = $this;
+        $I->waitForElementVisible($this->mediaDetailsForm);
+
+        return (string)$I->grabAttributeFrom($this->mediaDetailsForm, 'data-media-id');
+    }
+
+    public function tryToDeleteSelectedMedia(): self
+    {
+        $I = $this;
+        $I->waitForElementClickable($this->removeImageButton);
+        $I->click($this->removeImageButton);
+        $I->wait(0.3); // animation
+        $I->waitForElementClickable($this->removeImageConfirmButton);
+        $I->click($this->removeImageConfirmButton);
+
+        return $this;
+    }
+
+    public function deleteSelectedMedia(): self
+    {
+        $I = $this;
+        $I->tryToDeleteSelectedMedia();
+        $I->waitForElementNotVisible($this->mediaDetails);
+
+        return $this;
+    }
+
+    public function seeDeletionBlockedMessage(string $message): self
+    {
+        $I = $this;
+        $I->waitForText($message, 10, $this->alertModalBody);
+        $I->waitForElementClickable($this->alertModalOkButton);
+        $I->click($this->alertModalOkButton);
+        $I->wait(0.3); // animation
+
+        return $this;
+    }
+
+    public function seeMediaDetailsOf(string $mediaId): self
+    {
+        $I = $this;
+        $I->waitForElement(sprintf($this->mediaDetailsFormById, $mediaId));
 
         return $this;
     }

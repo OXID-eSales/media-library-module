@@ -16,4 +16,9 @@ interface RequestInterface
     public function getStringRequestParameter(string $name, string $default = ''): string;
 
     public function getIntRequestParameter(string $name): int;
+
+    /**
+     * @return string[]
+     */
+    public function getArrayRequestParameter(string $name): array;
 }

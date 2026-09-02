@@ -30,6 +30,19 @@ class UIRequestTest extends TestCase
         $this->assertSame($requestExampleValue, $sut->isPopout());
     }
 
+    public function testGetMediaIds(): void
+    {
+        $requestExampleValue = [uniqid(), uniqid()];
+
+        $requestMock = $this->createMock(RequestInterface::class);
+        $requestMock->method('getArrayRequestParameter')->willReturnMap([
+            [UIRequest::REQUEST_PARAM_MEDIA_IDS, $requestExampleValue]
+        ]);
+
+        $sut = new UIRequest($requestMock);
+        $this->assertSame($requestExampleValue, $sut->getMediaIds());
+    }
+
     public function testGetFolderId(): void
     {
         $requestExampleValue = uniqid();

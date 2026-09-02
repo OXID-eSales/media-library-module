@@ -12,6 +12,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
+use OxidEsales\MediaLibrary\Media\Exception\MediaDeletionErrorException;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
@@ -190,21 +191,24 @@ class MediaController extends AdminDetailsController
      */
     public function remove(): void
     {
-        $blReturn = false;
-        $sMsg = 'DD_MEDIA_REMOVE_ERR';
+        $isDeleted = false;
+        $message = 'DD_MEDIA_REMOVE_ERR';
 
-        $request = Registry::getRequest();
         $mediaService = $this->getService(MediaServiceInterface::class);
+        $mediaIds = $this->getService(UIRequestInterface::class)->getMediaIds();
 
-        $aIDs = $request->getRequestParameter('ids');
-        if ($aIDs && count($aIDs)) {
-            $mediaService->delete($aIDs);
-            $blReturn = true;
-            $sMsg = '';
+        if ($mediaIds !== []) {
+            try {
+                $mediaService->delete($mediaIds);
+                $isDeleted = true;
+                $message = '';
+            } catch (MediaDeletionErrorException $exception) {
+                $message = $exception->getMessage();
+            }
         }
 
         $responseService = $this->getService(ResponseInterface::class);
-        $responseService->responseAsJson(['success' => $blReturn, 'msg' => $sMsg]);
+        $responseService->responseAsJson(['success' => $isDeleted, 'msg' => $message]);
     }
 
     public function movefile(): void

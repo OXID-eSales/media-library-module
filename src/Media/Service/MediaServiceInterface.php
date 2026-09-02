@@ -10,7 +10,11 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Media\Service;
 
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface as MediaDataType;
+use OxidEsales\MediaLibrary\Media\Exception\MediaDeletionErrorException;
 
+/**
+ * @todo-medium We need to segregate more interfaces, so we can decorate those individually
+ */
 interface MediaServiceInterface
 {
     public function upload(string $uploadedFilePath, string $folderId, string $fileName): MediaDataType;
@@ -19,6 +23,9 @@ interface MediaServiceInterface
 
     public function moveToFolder(string $mediaId, string $folderId): void;
 
+    /**
+     * @throws MediaDeletionErrorException
+     */
     public function delete(array $ids): void;
 
     public function deleteMedia(MediaDataType $media): void;

@@ -16,6 +16,7 @@ use OxidEsales\MediaLibrary\Transput\RequestInterface;
 class UIRequest implements UIRequestInterface
 {
     public const REQUEST_PARAM_FOLDER_ID = 'folderid';
+    public const REQUEST_PARAM_MEDIA_IDS = 'ids';
     public const REQUEST_PARAM_OVERLAY = 'overlay';
     public const REQUEST_PARAM_POPUP = 'popout';
     public const REQUEST_PARAM_MEDIA_LIST_START_INDEX = 'start';
@@ -40,6 +41,11 @@ class UIRequest implements UIRequestInterface
     public function getFolderId(): string
     {
         return $this->request->getStringRequestParameter(self::REQUEST_PARAM_FOLDER_ID);
+    }
+
+    public function getMediaIds(): array
+    {
+        return $this->request->getArrayRequestParameter(self::REQUEST_PARAM_MEDIA_IDS);
     }
 
     public function getMediaListStartIndex(): int

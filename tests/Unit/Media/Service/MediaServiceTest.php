@@ -12,7 +12,10 @@ use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
+use OxidEsales\MediaLibrary\Media\Exception\MediaDeletionErrorException;
+use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
+use OxidEsales\MediaLibrary\Media\Service\MediaDeletionPolicyServiceInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaObjectResourceInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaService;
@@ -33,6 +36,7 @@ class MediaServiceTest extends TestCase
         ?MediaResourceInterface $mediaResource = null,
         ?MediaObjectResourceInterface $mediaObjectResource = null,
         ?ThumbnailServiceInterface $thumbnailService = null,
+        ?MediaDeletionPolicyServiceInterface $deletionPolicy = null,
     ) {
         return new MediaService(
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),
@@ -41,6 +45,8 @@ class MediaServiceTest extends TestCase
             mediaResource: $mediaResource ?? $this->createStub(MediaResourceInterface::class),
             thumbnailService: $thumbnailService ?? $this->createStub(ThumbnailServiceInterface::class),
             mediaObjectResource: $mediaObjectResource ?? $this->createStub(MediaObjectResourceInterface::class),
+            mediaDeletionPolicy: $deletionPolicy
+                ?? $this->createStub(MediaDeletionPolicyServiceInterface::class),
         );
     }
 
@@ -86,6 +92,45 @@ class MediaServiceTest extends TestCase
         $fileSystemSpy->expects($this->once())->method('delete')->with($mediaFilePath);
 
         $sut->deleteMedia($exampleMedia);
+    }
+
+    public function testDeleteRemovesNothingWhenThePolicyRefuses(): void
+    {
+        $restrictedId = uniqid();
+        $deletableId = uniqid();
+
+        $deletionPolicyStub = $this->createStub(MediaDeletionPolicyServiceInterface::class);
+        $deletionPolicyStub->method('validateMediaDeletion')
+            ->willReturnCallback(function (array $ids) use ($restrictedId): void {
+                if (in_array($restrictedId, $ids, true)) {
+                    throw new MediaDeletionErrorException();
+                }
+            });
+
+        $sut = $this->getSut(
+            mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
+            fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class),
+            deletionPolicy: $deletionPolicyStub,
+        );
+
+        $repositorySpy->expects($this->never())->method('deleteMedia');
+        $fileSystemSpy->expects($this->never())->method('delete');
+
+        $this->expectException(MediaDeletionErrorException::class);
+
+        $sut->delete([$deletableId, $restrictedId]);
+    }
+
+    public function testDeleteIgnoresMediaThatIsAlreadyGone(): void
+    {
+        $sut = $this->getSut(
+            mediaRepository: $repositoryStub = $this->createMock(MediaRepositoryInterface::class),
+        );
+
+        $repositoryStub->method('getMediaById')->willThrowException(new MediaNotFoundException());
+        $repositoryStub->expects($this->never())->method('deleteMedia');
+
+        $sut->delete([uniqid()]);
     }
 
     public function testRename(): void

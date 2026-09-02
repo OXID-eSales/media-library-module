@@ -12,6 +12,7 @@ namespace OxidEsales\MediaLibrary\Media\Service;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media as MediaDataType;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
+use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
@@ -25,6 +26,7 @@ class MediaService implements MediaServiceInterface
         protected MediaResourceInterface $mediaResource,
         protected ThumbnailServiceInterface $thumbnailService,
         private readonly MediaObjectResourceInterface $mediaObjectResource,
+        private readonly MediaDeletionPolicyServiceInterface $mediaDeletionPolicy,
     ) {
     }
 
@@ -105,9 +107,13 @@ class MediaService implements MediaServiceInterface
 
     public function delete(array $ids): void
     {
-        foreach ($ids as $oneId) {
-            $mediaItem = $this->mediaRepository->getMediaById($oneId);
-            $this->deleteMedia($mediaItem);
+        $this->mediaDeletionPolicy->validateMediaDeletion($ids);
+
+        foreach ($ids as $mediaId) {
+            try {
+                $this->deleteMedia($this->mediaRepository->getMediaById($mediaId));
+            } catch (MediaNotFoundException) {
+            }
         }
     }
 

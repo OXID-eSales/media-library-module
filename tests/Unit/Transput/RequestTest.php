@@ -53,6 +53,32 @@ class RequestTest extends TestCase
         ];
     }
 
+    #[DataProvider('requestArrayDataProvider')]
+    public function testGetArrayRequestParameter(mixed $requestValue, array $expectedValue): void
+    {
+        $paramName = uniqid();
+
+        $requestMock = $this->createPartialMock(ShopRequest::class, ['getRequestParameter']);
+        $requestMock->method('getRequestParameter')->willReturnMap([
+            [$paramName, null, $requestValue]
+        ]);
+
+        $sut = new Request($requestMock);
+
+        $this->assertSame($expectedValue, $sut->getArrayRequestParameter($paramName));
+    }
+
+    public static function requestArrayDataProvider(): array
+    {
+        return [
+            'missing parameter' => [null, []],
+            'scalar instead of an array' => ['single', []],
+            'list of ids' => [['first', 'second'], ['first', 'second']],
+            'numeric values become strings' => [[1, 2], ['1', '2']],
+            'keys are discarded' => [['a' => 'first', 'b' => 'second'], ['first', 'second']],
+        ];
+    }
+
     #[DataProvider('requestBoolDataProvider')]
     public function testGetBoolRequestParameter($requestValue, $expectedValue): void
     {

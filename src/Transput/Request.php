@@ -35,4 +35,11 @@ class Request implements RequestInterface
         $value = $this->request->getRequestParameter($name);
         return (int)$value;
     }
+
+    public function getArrayRequestParameter(string $name): array
+    {
+        $value = $this->request->getRequestParameter($name);
+
+        return is_array($value) ? array_values(array_map('strval', $value)) : [];
+    }
 }

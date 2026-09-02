@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - Placeholder image, added to the media library and set as the fallback media on module activation
+- The media item configured as the fallback image, and the folder containing it, are protected against deletion in the media library
 
 ### Changed
 - The `"Fallback" media ID` setting now has a default value pointing at the shipped placeholder image

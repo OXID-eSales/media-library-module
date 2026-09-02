@@ -134,4 +134,37 @@ final class MediaLibraryCest
         $I->seeAltText('')
             ->deleteImage();
     }
+
+    public function testFallbackImageCannotBeDeleted(MediaLibraryAcceptanceTester $I): void
+    {
+        $I->wantToTest('The configured fallback image cannot be deleted');
+
+        $originalFallbackMediaId = $I->grabFallbackMediaId();
+
+        $I->loginAdmin();
+        $I->openMediaLibrary()
+            ->switchToUploadTab()
+            ->uploadImage($this->testImage);
+
+        $uploadedMediaId = $I->grabSelectedMediaId();
+        $I->setFallbackMediaId($uploadedMediaId);
+
+        $I->reopenMediaLibrary()
+            ->selectMediaById($uploadedMediaId)
+            ->tryToDeleteSelectedMedia()
+            ->seeDeletionBlockedMessage(
+                sprintf(Translator::translate('DD_MEDIA_REMOVE_FALLBACK_ERR'), $uploadedMediaId)
+            )
+            ->seeMediaDetailsOf($uploadedMediaId);
+
+        $I->seeInDatabase('ddmedia', ['OXID' => $uploadedMediaId]);
+
+        $I->setFallbackMediaId($originalFallbackMediaId);
+
+        $I->reopenMediaLibrary()
+            ->selectMediaById($uploadedMediaId)
+            ->deleteSelectedMedia();
+
+        $I->dontSeeInDatabase('ddmedia', ['OXID' => $uploadedMediaId]);
+    }
 }

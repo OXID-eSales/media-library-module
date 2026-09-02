@@ -35,6 +35,8 @@ $aLang = array(
     'DD_MEDIA_UPLOAD'                 => 'Upload',
     'DD_MEDIA_REMOVE'                 => '<i class="bi bi-x-circle-fill"></i> Datei unwiderruflich löschen',
     'DD_MEDIA_REMOVE_ERR'             => 'Löschen fehlgeschlagen',
+    'DD_MEDIA_REMOVE_FALLBACK_ERR'    => 'Das Fallback-Bild (ID: %s) kann nicht gelöscht werden. Heben Sie die Auswahl auf und versuchen Sie es erneut.',
+    'DD_MEDIA_REMOVE_FALLBACK_FOLDER_ERR' => 'Dieser Ordner (ID: %s) kann nicht gelöscht werden, da er das Fallback-Bild enthält.',
     'DD_MEDIA_REMOVE_CONFIRM'         => 'Möchten Sie die Datei wirklich unwiderruflich löschen?',
     'DD_MEDIA_REMOVE_MANY_CONFIRM'    => 'Möchten Sie die Dateien wirklich unwiderruflich löschen?',
     'DD_MEDIA_REMOVE_FOLDER_CONFIRM'  => 'Möchten Sie den Ordner wirklich unwiderruflich löschen?',

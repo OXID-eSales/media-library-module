@@ -27,6 +27,9 @@ services:
     class: OxidEsales\MediaLibrary\Media\Service\FallbackMediaSeeder
     public: true
 
+  OxidEsales\MediaLibrary\Media\Service\MediaDeletionPolicyServiceInterface:
+    class: OxidEsales\MediaLibrary\Media\Service\FallbackMediaDeletionPolicyService
+
   OxidEsales\MediaLibrary\Media\Service\ValidatorStrategyServiceInterface:
     class: OxidEsales\MediaLibrary\Media\Service\ValidatorStrategyService
     public: true

@@ -25,6 +25,8 @@ interface MediaRepositoryInterface
     public function renameMedia(string $mediaIdToRename, string $newName): MediaInterface;
 
     /**
+     * Also removes the content of a folder, across all shops.
+     *
      * @throws WrongMediaIdGivenException
      */
     public function deleteMedia(string $idToRemove): void;
