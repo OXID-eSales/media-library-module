@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Updated `squizlabs/php_codesniffer` from `3.*` to `^4.0`
 - Updated `intervention/image` from `^3.3` to `^4.0`
 - Newly created folders now appear at the top of the media library list instead of at the end
+- Assets are built with Vite 8 and Sass 1.80 now, which requires Node 22.12 or newer (or Node 24 and newer)
+- Deprecated Sass syntax replaced in the module styles
 
 ## [5.2.0] - Unreleased
 

@@ -1,1 +1,1 @@
-@charset "UTF-8";html,body{overflow:hidden;width:100%;height:100%;margin:0;padding:0}.dd-navbar{margin:0;border-bottom-color:#ddd}.dd-content{position:absolute;top:46px;left:0;bottom:0;right:0}
+html,body{width:100%;height:100%;margin:0;padding:0;overflow:hidden}.dd-navbar{border-bottom-color:#ddd;margin:0}.dd-content{position:absolute;inset:46px 0 0}
