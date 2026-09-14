@@ -10,13 +10,13 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Facade;
 
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
+use OxidEsales\MediaLibrary\Media\DataType\MediaLookupContextInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Facade\FallbackMediaFacadeDecorator;
 use OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface;
 use OxidEsales\MediaLibrary\Media\Settings\FallbackMediaSettingsInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 class FallbackMediaFacadeDecoratorTest extends TestCase
 {
@@ -24,16 +24,18 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
     public function getMediaReturnsOriginalResultIfItsFine(): void
     {
         $originalFacadeMock = $this->createMock(MediaFacadeInterface::class);
-        $exampleMediaId = uniqid();
+
+        $exampleMediaId = uniqid('mediaId');
+        $contextStub = $this->createStub(MediaLookupContextInterface::class);
         $originalFacadeMock->method('getMedia')
-            ->with($exampleMediaId)
+            ->with($exampleMediaId, $contextStub)
             ->willReturn($mediaStub = $this->createStub(MediaInterface::class));
 
         $sut = $this->getSut(
             originalMediaFacade: $originalFacadeMock,
         );
 
-        $result = $sut->getMedia($exampleMediaId);
+        $result = $sut->getMedia($exampleMediaId, $contextStub);
         $this->assertSame($mediaStub, $result);
     }
 
@@ -41,107 +43,104 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
     public function getMediaUrlReturnsOriginalResultIfItsFine()
     {
         $originalFacadeMock = $this->createMock(MediaFacadeInterface::class);
-        $exampleMediaId = uniqid();
+
+        $exampleMediaId = uniqid('mediaId');
+        $contextStub = $this->createStub(MediaLookupContextInterface::class);
         $originalFacadeMock->method('getMediaUrl')
-            ->with($exampleMediaId)
-            ->willReturn($originalMediaUrl = uniqid());
+            ->with($exampleMediaId, $contextStub)
+            ->willReturn($originalMediaUrl = uniqid('mediaUrl'));
 
         $sut = $this->getSut(
             originalMediaFacade: $originalFacadeMock,
         );
 
-        $result = $sut->getMediaUrl($exampleMediaId);
+        $result = $sut->getMediaUrl($exampleMediaId, $contextStub);
         $this->assertSame($originalMediaUrl, $result);
     }
 
     #[Test]
-    public function getMediaReturnsFallbackResultAndLogsIfOriginalMediaNotFound(): void
+    public function getMediaReturnsFallbackResultIfOriginalMediaNotFound(): void
     {
-        $exampleMediaId = uniqid();
+        $exampleMediaId = uniqid('mediaId');
         $settingsStub = $this->createConfiguredStub(FallbackMediaSettingsInterface::class, [
-            'getFallbackMediaId' => $fallbackMediaId = uniqid(),
+            'getFallbackMediaId' => $fallbackMediaId = uniqid('fallbackMediaId'),
         ]);
 
+        $contextStub = $this->createStub(MediaLookupContextInterface::class);
         $fallbackMediaStub = $this->createStub(MediaInterface::class);
         $originalFacadeMock = $this->createMock(MediaFacadeInterface::class);
         $originalFacadeMock->method('getMedia')
-            ->willReturnCallback(function (string $mediaId) use (
+            ->willReturnCallback(function (
+                string $mediaId,
+                ?MediaLookupContextInterface $context
+            ) use (
+                $contextStub,
                 $fallbackMediaId,
                 $fallbackMediaStub,
             ) {
+                $this->assertSame($contextStub, $context);
                 if ($mediaId === $fallbackMediaId) {
                     return $fallbackMediaStub;
                 }
                 throw new MediaNotFoundException();
             });
 
-        $loggerSpy = $this->createMock(LoggerInterface::class);
-        $loggerSpy->expects($this->once())
-            ->method('warning')
-            ->with(
-                'Media not found, using fallback media.',
-                ['mediaId' => $exampleMediaId]
-            );
-
         $sut = $this->getSut(
             originalMediaFacade: $originalFacadeMock,
             fallbackMediaSettings: $settingsStub,
-            logger: $loggerSpy,
         );
 
-        $result = $sut->getMedia($exampleMediaId);
+        $result = $sut->getMedia($exampleMediaId, $contextStub);
         $this->assertSame($fallbackMediaStub, $result);
     }
 
     #[Test]
-    public function getMediaUrlReturnsFallbackResultAndLogsIfOriginalMediaNotFound(): void
+    public function getMediaUrlReturnsFallbackResultIfOriginalMediaNotFound(): void
     {
-        $exampleMediaId = uniqid();
+        $exampleMediaId = uniqid('mediaId');
         $settingsStub = $this->createConfiguredStub(FallbackMediaSettingsInterface::class, [
-            'getFallbackMediaId' => $fallbackMediaId = uniqid(),
+            'getFallbackMediaId' => $fallbackMediaId = uniqid('fallbackMediaId'),
         ]);
 
-        $fallbackMediaUrl = uniqid();
+        $contextStub = $this->createStub(MediaLookupContextInterface::class);
+        $fallbackMediaUrl = uniqid('fallbackMediaUrl');
         $originalFacadeMock = $this->createMock(MediaFacadeInterface::class);
         $originalFacadeMock->method('getMediaUrl')
-            ->willReturnCallback(function (string $mediaId) use (
+            ->willReturnCallback(function (
+                string $mediaId,
+                ?MediaLookupContextInterface $context
+            ) use (
+                $contextStub,
                 $fallbackMediaId,
                 $fallbackMediaUrl,
             ) {
+                $this->assertSame($contextStub, $context);
                 if ($mediaId === $fallbackMediaId) {
                     return $fallbackMediaUrl;
                 }
                 throw new MediaNotFoundException();
             });
 
-        $loggerSpy = $this->createMock(LoggerInterface::class);
-        $loggerSpy->expects($this->once())
-            ->method('warning')
-            ->with(
-                'Media not found, using fallback media.',
-                ['mediaId' => $exampleMediaId]
-            );
-
         $sut = $this->getSut(
             originalMediaFacade: $originalFacadeMock,
             fallbackMediaSettings: $settingsStub,
-            logger: $loggerSpy,
         );
 
-        $result = $sut->getMediaUrl($exampleMediaId);
+        $result = $sut->getMediaUrl($exampleMediaId, $contextStub);
         $this->assertSame($fallbackMediaUrl, $result);
     }
 
     #[Test]
     public function getMediaThrowsExceptionIfOriginalAndFallbackMediaNotFound(): void
     {
-        $exampleMediaId = uniqid();
+        $exampleMediaId = uniqid('mediaId');
         $settingsStub = $this->createConfiguredStub(FallbackMediaSettingsInterface::class, [
-            'getFallbackMediaId' => uniqid(),
+            'getFallbackMediaId' => uniqid('fallbackMediaId'),
         ]);
 
         $originalFacadeMock = $this->createMock(MediaFacadeInterface::class);
-        $originalFacadeMock->method('getMedia')
+        $originalFacadeMock->expects($this->exactly(2))
+            ->method('getMedia')
             ->willThrowException(new MediaNotFoundException());
 
         $sut = $this->getSut(
@@ -156,13 +155,14 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
     #[Test]
     public function getMediaUrlThrowsExceptionIfOriginalAndFallbackMediaNotFound(): void
     {
-        $exampleMediaId = uniqid();
+        $exampleMediaId = uniqid('mediaId');
         $settingsStub = $this->createConfiguredStub(FallbackMediaSettingsInterface::class, [
-            'getFallbackMediaId' => uniqid(),
+            'getFallbackMediaId' => uniqid('fallbackMediaId'),
         ]);
 
         $originalFacadeMock = $this->createMock(MediaFacadeInterface::class);
-        $originalFacadeMock->method('getMediaUrl')
+        $originalFacadeMock->expects($this->exactly(2))
+            ->method('getMediaUrl')
             ->willThrowException(new MediaNotFoundException());
 
         $sut = $this->getSut(
@@ -175,9 +175,9 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
     }
 
     #[Test]
-    public function getMediaKeepsTheRequestedIdInTheExceptionIfNoFallbackConfigured(): void
+    public function getMediaRethrowsOriginalExceptionIfNoFallbackConfigured(): void
     {
-        $exampleMediaId = uniqid();
+        $exampleMediaId = uniqid('mediaId');
         $settingsStub = $this->createConfiguredStub(FallbackMediaSettingsInterface::class, [
             'getFallbackMediaId' => '',
         ]);
@@ -186,24 +186,21 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
         $originalFacadeMock->expects($this->once())
             ->method('getMedia')
             ->with($exampleMediaId)
-            ->willThrowException(
-                new MediaNotFoundException(sprintf('Media with id "%s" not found.', $exampleMediaId))
-            );
+            ->willThrowException($exception = new MediaNotFoundException());
 
         $sut = $this->getSut(
             originalMediaFacade: $originalFacadeMock,
             fallbackMediaSettings: $settingsStub,
         );
 
-        $this->expectException(MediaNotFoundException::class);
-        $this->expectExceptionMessage(sprintf('Media with id "%s" not found.', $exampleMediaId));
+        $this->expectExceptionObject($exception);
         $sut->getMedia($exampleMediaId);
     }
 
     #[Test]
-    public function getMediaUrlKeepsTheRequestedIdInTheExceptionIfNoFallbackConfigured(): void
+    public function getMediaUrlRethrowsOriginalExceptionIfNoFallbackConfigured(): void
     {
-        $exampleMediaId = uniqid();
+        $exampleMediaId = uniqid('mediaId');
         $settingsStub = $this->createConfiguredStub(FallbackMediaSettingsInterface::class, [
             'getFallbackMediaId' => '',
         ]);
@@ -212,17 +209,14 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
         $originalFacadeMock->expects($this->once())
             ->method('getMediaUrl')
             ->with($exampleMediaId)
-            ->willThrowException(
-                new MediaNotFoundException(sprintf('Media with id "%s" not found.', $exampleMediaId))
-            );
+            ->willThrowException($exception = new MediaNotFoundException());
 
         $sut = $this->getSut(
             originalMediaFacade: $originalFacadeMock,
             fallbackMediaSettings: $settingsStub,
         );
 
-        $this->expectException(MediaNotFoundException::class);
-        $this->expectExceptionMessage(sprintf('Media with id "%s" not found.', $exampleMediaId));
+        $this->expectExceptionObject($exception);
         $sut->getMediaUrl($exampleMediaId);
     }
 
@@ -230,10 +224,10 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
     public function fallbackMediaIdAlwaysRegisteredForPreload(): void
     {
         $settingsStub = $this->createConfiguredStub(FallbackMediaSettingsInterface::class, [
-            'getFallbackMediaId' => $fallbackMediaId = uniqid(),
+            'getFallbackMediaId' => $fallbackMediaId = uniqid('fallbackMediaId'),
         ]);
 
-        $originalInput = [$originalId1 = uniqid(), $originalId2 = uniqid(),];
+        $originalInput = [$originalId1 = uniqid('mediaId'), $originalId2 = uniqid('mediaId'),];
         $originalMediaFacadeSpy = $this->createMock(MediaFacadeInterface::class);
         $originalMediaFacadeSpy->expects($this->once())
             ->method('registerForPreload')
@@ -249,16 +243,13 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
     private function getSut(
         ?MediaFacadeInterface $originalMediaFacade = null,
         ?FallbackMediaSettingsInterface $fallbackMediaSettings = null,
-        ?LoggerInterface $logger = null,
     ): MediaFacadeInterface {
         $originalMediaFacade ??= $this->createStub(MediaFacadeInterface::class);
         $fallbackMediaSettings ??= $this->createStub(FallbackMediaSettingsInterface::class);
-        $logger ??= $this->createStub(LoggerInterface::class);
 
         return new FallbackMediaFacadeDecorator(
             originalMediaFacade: $originalMediaFacade,
             fallbackMediaSettings: $fallbackMediaSettings,
-            logger: $logger,
         );
     }
 }

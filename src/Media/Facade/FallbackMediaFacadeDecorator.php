@@ -10,16 +10,15 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Media\Facade;
 
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
+use OxidEsales\MediaLibrary\Media\DataType\MediaLookupContextInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Settings\FallbackMediaSettingsInterface;
-use Psr\Log\LoggerInterface;
 
 class FallbackMediaFacadeDecorator implements MediaFacadeInterface
 {
     public function __construct(
         private readonly MediaFacadeInterface $originalMediaFacade,
         private readonly FallbackMediaSettingsInterface $fallbackMediaSettings,
-        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -31,47 +30,35 @@ class FallbackMediaFacadeDecorator implements MediaFacadeInterface
         $this->originalMediaFacade->registerForPreload(...$mediaIds);
     }
 
-    public function getMedia(string $mediaId): MediaInterface
+    public function getMedia(string $mediaId, ?MediaLookupContextInterface $context = null): MediaInterface
     {
         try {
-            $result = $this->originalMediaFacade->getMedia($mediaId);
+            $result = $this->originalMediaFacade->getMedia($mediaId, $context);
         } catch (MediaNotFoundException $exception) {
             $fallbackMediaId = $this->fallbackMediaSettings->getFallbackMediaId();
             if ($fallbackMediaId === '') {
                 throw $exception;
             }
 
-            $this->logWarning($mediaId);
-
-            $result = $this->originalMediaFacade->getMedia($fallbackMediaId);
+            $result = $this->originalMediaFacade->getMedia($fallbackMediaId, $context);
         }
 
         return $result;
     }
 
-    public function getMediaUrl(string $mediaId): string
+    public function getMediaUrl(string $mediaId, ?MediaLookupContextInterface $context = null): string
     {
         try {
-            $result = $this->originalMediaFacade->getMediaUrl($mediaId);
+            $result = $this->originalMediaFacade->getMediaUrl($mediaId, $context);
         } catch (MediaNotFoundException $exception) {
             $fallbackMediaId = $this->fallbackMediaSettings->getFallbackMediaId();
             if ($fallbackMediaId === '') {
                 throw $exception;
             }
 
-            $this->logWarning($mediaId);
-
-            $result = $this->originalMediaFacade->getMediaUrl($fallbackMediaId);
+            $result = $this->originalMediaFacade->getMediaUrl($fallbackMediaId, $context);
         }
 
         return $result;
-    }
-
-    private function logWarning(string $mediaId): void
-    {
-        $this->logger->warning(
-            'Media not found, using fallback media.',
-            ['mediaId' => $mediaId]
-        );
     }
 }

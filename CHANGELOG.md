@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [5.3.0] - unreleased
 
 ### Added
+- `MediaLookupContextInterface` and `MediaLookupContext`, letting a caller describe which feature requested a media item
+- Optional `MediaLookupContextInterface` parameter on `MediaFacadeInterface::getMedia()` and `getMediaUrl()`, logged with the warning written when the requested media is not found
 - Placeholder image, added to the media library and set as the fallback media on module activation
 - The media item configured as the fallback image, and the folder containing it, are protected against deletion in the media library
 
 ### Changed
+- `MediaFacadeInterface::getMedia()` and `getMediaUrl()` take an additional optional parameter. Callers are unaffected, but classes implementing or decorating `MediaFacadeInterface` must update their signatures
 - The `"Fallback" media ID` setting now has a default value pointing at the shipped placeholder image
 - Updated to work with OXID eShop 7.6.x
 - Updated `squizlabs/php_codesniffer` from `3.*` to `^4.0`
