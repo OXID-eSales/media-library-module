@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Media\Facade;
 
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
+use OxidEsales\MediaLibrary\Media\DataType\MediaLookupContext;
 use OxidEsales\MediaLibrary\Media\DataType\MediaLookupContextInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Settings\FallbackMediaSettingsInterface;
@@ -40,7 +41,10 @@ class FallbackMediaFacadeDecorator implements MediaFacadeInterface
                 throw $exception;
             }
 
-            $result = $this->originalMediaFacade->getMedia($fallbackMediaId, $context);
+            $result = $this->originalMediaFacade->getMedia(
+                $fallbackMediaId,
+                $this->createFallbackLookupContext($mediaId)
+            );
         }
 
         return $result;
@@ -56,9 +60,20 @@ class FallbackMediaFacadeDecorator implements MediaFacadeInterface
                 throw $exception;
             }
 
-            $result = $this->originalMediaFacade->getMediaUrl($fallbackMediaId, $context);
+            $result = $this->originalMediaFacade->getMediaUrl(
+                $fallbackMediaId,
+                $this->createFallbackLookupContext($mediaId)
+            );
         }
 
         return $result;
+    }
+
+    private function createFallbackLookupContext(string $originalMediaId): MediaLookupContextInterface
+    {
+        return new MediaLookupContext(
+            trigger: 'MediaLibrary/FallbackMedia',
+            identifier: $originalMediaId,
+        );
     }
 }

@@ -66,7 +66,7 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
             'getFallbackMediaId' => $fallbackMediaId = uniqid('fallbackMediaId'),
         ]);
 
-        $contextStub = $this->createStub(MediaLookupContextInterface::class);
+        $originalContextStub = $this->createStub(MediaLookupContextInterface::class);
         $fallbackMediaStub = $this->createStub(MediaInterface::class);
         $originalFacadeMock = $this->createMock(MediaFacadeInterface::class);
         $originalFacadeMock->method('getMedia')
@@ -74,15 +74,21 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
                 string $mediaId,
                 ?MediaLookupContextInterface $context
             ) use (
-                $contextStub,
+                $originalContextStub,
                 $fallbackMediaId,
                 $fallbackMediaStub,
+                $exampleMediaId,
             ) {
-                $this->assertSame($contextStub, $context);
                 if ($mediaId === $fallbackMediaId) {
+                    $this->assertNotSame($originalContextStub, $context);
+                    $this->assertSame('MediaLibrary/FallbackMedia', $context->getTrigger());
+                    $this->assertSame($exampleMediaId, $context->getIdentifier());
+
                     return $fallbackMediaStub;
+                } else {
+                    $this->assertSame($originalContextStub, $context);
+                    throw new MediaNotFoundException();
                 }
-                throw new MediaNotFoundException();
             });
 
         $sut = $this->getSut(
@@ -90,7 +96,7 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
             fallbackMediaSettings: $settingsStub,
         );
 
-        $result = $sut->getMedia($exampleMediaId, $contextStub);
+        $result = $sut->getMedia($exampleMediaId, $originalContextStub);
         $this->assertSame($fallbackMediaStub, $result);
     }
 
@@ -102,7 +108,7 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
             'getFallbackMediaId' => $fallbackMediaId = uniqid('fallbackMediaId'),
         ]);
 
-        $contextStub = $this->createStub(MediaLookupContextInterface::class);
+        $originalContextStub = $this->createStub(MediaLookupContextInterface::class);
         $fallbackMediaUrl = uniqid('fallbackMediaUrl');
         $originalFacadeMock = $this->createMock(MediaFacadeInterface::class);
         $originalFacadeMock->method('getMediaUrl')
@@ -110,15 +116,21 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
                 string $mediaId,
                 ?MediaLookupContextInterface $context
             ) use (
-                $contextStub,
+                $originalContextStub,
                 $fallbackMediaId,
                 $fallbackMediaUrl,
+                $exampleMediaId,
             ) {
-                $this->assertSame($contextStub, $context);
                 if ($mediaId === $fallbackMediaId) {
+                    $this->assertNotSame($originalContextStub, $context);
+                    $this->assertSame('MediaLibrary/FallbackMedia', $context->getTrigger());
+                    $this->assertSame($exampleMediaId, $context->getIdentifier());
+
                     return $fallbackMediaUrl;
+                } else {
+                    $this->assertSame($originalContextStub, $context);
+                    throw new MediaNotFoundException();
                 }
-                throw new MediaNotFoundException();
             });
 
         $sut = $this->getSut(
@@ -126,7 +138,7 @@ class FallbackMediaFacadeDecoratorTest extends TestCase
             fallbackMediaSettings: $settingsStub,
         );
 
-        $result = $sut->getMediaUrl($exampleMediaId, $contextStub);
+        $result = $sut->getMediaUrl($exampleMediaId, $originalContextStub);
         $this->assertSame($fallbackMediaUrl, $result);
     }
 
