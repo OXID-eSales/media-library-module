@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Twig;
 
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
+use OxidEsales\MediaLibrary\Media\DataType\MediaLookupContext;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface;
 use OxidEsales\MediaLibrary\Media\Twig\MediaDataLogic;
@@ -25,8 +26,12 @@ class MediaDataLogicTest extends TestCase
         $mediaId = uniqid();
 
         $mediaFacadeMock = $this->createMock(MediaFacadeInterface::class);
-        $mediaFacadeMock->method('getMediaUrl')
-            ->with($mediaId)
+        $mediaFacadeMock->expects($this->once())
+            ->method('getMediaUrl')
+            ->with($mediaId, new MediaLookupContext(
+                trigger: 'MediaLibrary/TwigFunction',
+                identifier: 'oeMediaUrl',
+            ))
             ->willReturn($expectedUrl = uniqid());
 
         $sut = $this->getSut(
@@ -43,8 +48,12 @@ class MediaDataLogicTest extends TestCase
         $mediaId = uniqid();
 
         $mediaFacadeMock = $this->createMock(MediaFacadeInterface::class);
-        $mediaFacadeMock->method('getMediaUrl')
-            ->with($mediaId)
+        $mediaFacadeMock->expects($this->once())
+            ->method('getMediaUrl')
+            ->with($mediaId, new MediaLookupContext(
+                trigger: 'MediaLibrary/TwigFunction',
+                identifier: 'oeMediaUrl',
+            ))
             ->willThrowException(new MediaNotFoundException());
 
         $sut = $this->getSut(
@@ -64,9 +73,16 @@ class MediaDataLogicTest extends TestCase
         $mediaStub = $this->createConfiguredStub(MediaInterface::class, ['getMediaAltText' => $expectedText]);
 
         $mediaFacadeMock = $this->createMock(MediaFacadeInterface::class);
-        $mediaFacadeMock->method('getMedia')->with($objectId)->willReturn($mediaStub);
+        $mediaFacadeMock->expects($this->once())
+            ->method('getMedia')
+            ->with($objectId, new MediaLookupContext(
+                trigger: 'MediaLibrary/TwigFunction',
+                identifier: 'oeMediaAlt',
+            ))
+            ->willReturn($mediaStub);
 
         $sut = $this->getSut(mediaFacade: $mediaFacadeMock);
+
         $result = $sut->getMediaAltText($objectId);
         $this->assertSame($expectedText, $result);
     }
@@ -75,10 +91,18 @@ class MediaDataLogicTest extends TestCase
     public function getMediaAltTextReturnsEmptyStringOnException(): void
     {
         $objectId = uniqid();
+
         $mediaFacadeMock = $this->createMock(MediaFacadeInterface::class);
-        $mediaFacadeMock->method('getMedia')->with($objectId)->willThrowException(new MediaNotFoundException());
+        $mediaFacadeMock->expects($this->once())
+            ->method('getMedia')
+            ->with($objectId, new MediaLookupContext(
+                trigger: 'MediaLibrary/TwigFunction',
+                identifier: 'oeMediaAlt',
+            ))
+            ->willThrowException(new MediaNotFoundException());
 
         $sut = $this->getSut(mediaFacade: $mediaFacadeMock);
+
         $result = $sut->getMediaAltText($objectId);
         $this->assertSame('', $result);
     }
