@@ -3,6 +3,10 @@
  * See LICENSE file for license details.
  */
 
+@use "sass:color";
+@use "sass:map";
+@use "sass:math";
+
 @import 'custom-variables';
 @import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
@@ -10,7 +14,7 @@
 $custom-colors: (
     "custom-color": $primary
 );
-$theme-colors: map-merge($theme-colors, $custom-colors);
+$theme-colors: map.merge($theme-colors, $custom-colors);
 
 @import 'bootstrap/scss/maps';
 @import 'bootstrap/scss/mixins';
@@ -99,7 +103,7 @@ $items-gutter-width: 12px;
     }
 
     .dd-media-list-toolbar {
-        width: percentage(8 / $grid-columns); // ~ 8 Columns width
+        width: math.percentage(math.div(8, $grid-columns)); // ~ 8 Columns width
         position: absolute;
         top: 0;
         left: 0;
@@ -109,7 +113,7 @@ $items-gutter-width: 12px;
     }
 
     .dd-media-list-breadcrumb, .dd-media-upload-breadcrumb {
-        width: percentage(8 / $grid-columns); // ~ 8 Columns width
+        width: math.percentage(math.div(8, $grid-columns)); // ~ 8 Columns width
         position: absolute;
         top: 52px;
         left: 0;
@@ -139,7 +143,7 @@ $items-gutter-width: 12px;
     }
 
     .dd-media-list-items {
-        width: percentage(8 / $grid-columns); // ~ 8 Columns width
+        width: math.percentage(math.div(8, $grid-columns)); // ~ 8 Columns width
         position: absolute;
         top: 83px;
         left: 0;
@@ -150,7 +154,7 @@ $items-gutter-width: 12px;
     }
 
     .dd-media-list-details {
-        width: percentage(4 / $grid-columns); // ~ 4 Columns width
+        width: math.percentage(math.div(4, $grid-columns)); // ~ 4 Columns width
         position: absolute;
         top: 0;
         right: 0;
@@ -161,13 +165,13 @@ $items-gutter-width: 12px;
     }
 
     .dd-media-list-items > .row {
-        margin-left: (floor($items-gutter-width / 2) * -1) + 0px;
-        margin-right: (floor($items-gutter-width / 2) * -1) + 0px;
+        margin-left: (math.floor(math.div($items-gutter-width, 2)) * -1) + 0px;
+        margin-right: (math.floor(math.div($items-gutter-width, 2)) * -1) + 0px;
     }
 
     .dd-media-col {
-        padding-left: (floor($items-gutter-width / 2)) + 0px;
-        padding-right: (floor($items-gutter-width / 2)) + 0px;
+        padding-left: (math.floor(math.div($items-gutter-width, 2))) + 0px;
+        padding-right: (math.floor(math.div($items-gutter-width, 2))) + 0px;
     }
 
     .dd-media-list-toolbar {
@@ -428,11 +432,11 @@ $items-gutter-width: 12px;
     &.dd-media-overview {
 
         .dd-media-list-items, .dd-media-list-toolbar, .dd-media-list-breadcrumb {
-            width: percentage(9 / $grid-columns); // ~ 9 Columns width
+            width: math.percentage(math.div(9, $grid-columns)); // ~ 9 Columns width
         }
 
         .dd-media-list-details {
-            width: percentage(3 / $grid-columns); // ~ 3 Columns width
+            width: math.percentage(math.div(3, $grid-columns)); // ~ 3 Columns width
         }
 
     }
@@ -468,7 +472,7 @@ $items-gutter-width: 12px;
 
         .modal-footer {
             .btn-primary {
-                @include button-variant($primary, $danger, darken($danger, 5%));
+                @include button-variant($primary, $danger, color.adjust($danger, $lightness: -5%));
             }
         }
     }
