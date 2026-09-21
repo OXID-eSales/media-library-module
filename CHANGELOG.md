@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.3.0] - Unreleased
+
+### Added
+- `setMediaUrlStore()` takes the object the media urls are kept in, so that frames evaluating this module separately can share one store
+
+### Deprecated
+- `preloadMediaUrls()` in favour of `setMediaUrlStore()`, which it now delegates to
+    - it will keep working but changed its meaning: the given object is used as the media url store itself instead of being copied into a module private cache.
+
+### Fixed
+- Media urls set while inserting an image are now visible to the editor the image was inserted into, which evaluates this module in a different frame
+
 ## [4.2.0] - 2026-05-13
 
 ### Added

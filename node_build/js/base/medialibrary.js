@@ -6,7 +6,7 @@
 import '../../scss/base.scss'
 import { Modal } from "bootstrap";
 import { ddh } from './helper.js';
-import { setMediaUrl } from './mediaService.js';
+import { setMediaUrl, setMediaUrlStore } from './mediaService.js';
 
 import FileManager from './fileManager.js';
 import UIRenderer from './uiRenderer.js';
@@ -131,6 +131,9 @@ class MediaLibraryClass {
 
         // Communicate with Overlay
         if (top.basefrm && top.basefrm.OverlayInstance) {
+            top.basefrm.mediaUrls = top.basefrm.mediaUrls || {};
+            setMediaUrlStore(top.basefrm.mediaUrls);
+
             top.basefrm.OverlayInstance.onContentLoad(function () {
                 const self = this;
                 const overlay = self.$overlay[0];
@@ -238,4 +241,4 @@ class MediaLibraryClass {
 export const MediaLibrary = new MediaLibraryClass();
 window.MediaLibrary = MediaLibrary;
 export { ddh };
-export { getMediaUrl, setMediaUrl, preloadMediaUrls } from './mediaService.js';
+export { getMediaUrl, setMediaUrl, setMediaUrlStore, preloadMediaUrls } from './mediaService.js';
