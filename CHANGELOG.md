@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [5.2.0] - Unreleased
 
+### Added
+- Changes from 4.3.0
+
 ### Fixed
 - `FallbackMediaFacadeDecorator` no longer search for an empty fallback media id and trhows the original exception instead.
 
@@ -25,6 +28,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - Media library search field now matches against media ID in addition to filename
+
+## [4.3.0] - Unreleased
+
+### Added
+- `setMediaUrlStore()` takes the object the media urls are kept in, so that frames evaluating this module separately can share one store
+
+### Deprecated
+- `preloadMediaUrls()` in favour of `setMediaUrlStore()`, which it now delegates to
+    - it will keep working but changed its meaning: the given object is used as the media url store itself instead of being copied into a module private cache.
+
+### Fixed
+- Media urls set while inserting an image are now visible to the editor the image was inserted into, which evaluates this module in a different frame
 
 ## [4.2.0] - 2026-05-13
 
