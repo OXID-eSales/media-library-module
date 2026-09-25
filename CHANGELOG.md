@@ -14,7 +14,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - The media item configured as the fallback image, and the folder containing it, are protected against deletion in the media library
 
 ### Changed
-- `MediaFacadeInterface::getMedia()` and `getMediaUrl()` take an additional optional parameter. Callers are unaffected, but classes implementing or decorating `MediaFacadeInterface` must update their signatures
+- `MediaFacadeInterface` changes:
+  - `getMedia()` and `getMediaUrl()` take an additional optional parameter. **Callers are unaffected, but classes implementing or decorating `MediaFacadeInterface` must update their signatures**
+  - The public method bacame private in the implementation - `MediaFacade::getMediaObject`. Noone should rely on the method that is not in the interface.
 - Logging of the Not found media cases is moved to original MediaFacade implementation (was in the fallback decorator)
 - The `"Fallback" media ID` setting now has a default value pointing at the shipped placeholder image
 - Updated to work with OXID eShop 7.6.x
