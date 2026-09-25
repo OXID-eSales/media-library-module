@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Media\Twig;
 
+use OxidEsales\MediaLibrary\Media\DataType\MediaLookupContext;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Facade\MediaFacadeInterface;
 
@@ -22,23 +23,31 @@ class MediaDataLogic implements MediaDataLogicInterface
     public function getMediaUrl(string $mediaId): string
     {
         try {
-            $url = $this->mediaFacade->getMediaUrl($mediaId);
-        } catch (MediaNotFoundException $e) {
-            // todo: log this case
-            $url = '';
+            return $this->mediaFacade->getMediaUrl(
+                $mediaId,
+                new MediaLookupContext(
+                    trigger: 'MediaLibrary/TwigFunction',
+                    identifier: 'oeMediaUrl',
+                )
+            );
+        } catch (MediaNotFoundException) {
+            return '';
         }
-
-        return $url;
     }
 
     public function getMediaAltText(string $objectId): string
     {
         try {
-            $media = $this->mediaFacade->getMedia($objectId);
+            $media = $this->mediaFacade->getMedia(
+                $objectId,
+                new MediaLookupContext(
+                    trigger: 'MediaLibrary/TwigFunction',
+                    identifier: 'oeMediaAlt',
+                )
+            );
             return $media->getMediaAltText();
-        } catch (MediaNotFoundException $e) {
-            // TODO: log exception
+        } catch (MediaNotFoundException) {
+            return '';
         }
-        return '';
     }
 }

@@ -8,6 +8,7 @@
 namespace OxidEsales\MediaLibrary\Media\Facade;
 
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
+use OxidEsales\MediaLibrary\Media\DataType\MediaLookupContextInterface;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 
 interface MediaFacadeInterface
@@ -17,10 +18,10 @@ interface MediaFacadeInterface
     /**
      * @throws MediaNotFoundException
      */
-    public function getMedia(string $mediaId): MediaInterface;
+    public function getMedia(string $mediaId, ?MediaLookupContextInterface $context = null): MediaInterface;
 
     /**
      * @throws MediaNotFoundException
      */
-    public function getMediaUrl(string $mediaId): string;
+    public function getMediaUrl(string $mediaId, ?MediaLookupContextInterface $context = null): string;
 }
