@@ -1,6 +1,6 @@
 # Media Library Module for OXID eShop
 
-[![Development](https://github.com/OXID-eSales/media-library-module/actions/workflows/trigger.yaml/badge.svg?branch=b-7.6.x)](https://github.com/OXID-eSales/media-library-module/actions/workflows/trigger.yaml)
+[![Development](https://github.com/OXID-eSales/media-library-module/actions/workflows/trigger.yaml/badge.svg?branch=b-7.7.x)](https://github.com/OXID-eSales/media-library-module/actions/workflows/trigger.yaml)
 [![Latest Version](https://img.shields.io/packagist/v/OXID-eSales/media-library-module?logo=composer&label=latest&include_prereleases&color=orange)](https://packagist.org/packages/oxid-esales/media-library-module)
 [![PHP Version](https://img.shields.io/packagist/php-v/oxid-esales/media-library-module)](https://github.com/oxid-esales/media-library-module)
 
@@ -21,6 +21,7 @@ Module provides basic media files management.
 * v1.0.x is compatible with eShop compilation 7.1.x and higher
 
 ### Branches
+* b-7.7.x is compatible with shop b-7.7.x branches
 * b-7.6.x is compatible with shop b-7.6.x branches
 * b-7.5.x is compatible with shop b-7.5.x branches
 * b-7.4.x is compatible with shop b-7.4.x branches
@@ -34,7 +35,7 @@ In order to install the module via composer run one of the following commands in
 (where the shop's composer.json file resides).
 * `composer require oxid-esales/media-library-module:^5.1.0`
   to install the released version compatible with OXID eShop v7.5.x
-* `composer require oxid-esales/media-library-module:dev-b-7.6.x`
+* `composer require oxid-esales/media-library-module:dev-b-7.7.x`
   to install the specific unreleased branch
 
 # Development installation on OXID eShop SDK
@@ -51,7 +52,7 @@ echo MyProject && git clone https://github.com/OXID-eSales/docker-eshop-sdk.git 
 
 2. Clone the repository to the source directory
 ```shell
-git clone --recurse-submodules https://github.com/OXID-eSales/media-library-module.git --branch=b-7.6.x ./source
+git clone --recurse-submodules https://github.com/OXID-eSales/media-library-module.git --branch=b-7.7.x ./source
 ```
 
 3. Run the recipe to setup the development environment
