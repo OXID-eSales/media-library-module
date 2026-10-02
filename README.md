@@ -31,12 +31,52 @@ Module provides basic media files management.
 
 ### Module installation via composer
 
-In order to install the module via composer run one of the following commands in commandline in your shop base directory
-(where the shop's composer.json file resides).
-* `composer require oxid-esales/media-library-module:^5.1.0`
-  to install the released version compatible with OXID eShop v7.5.x
-* `composer require oxid-esales/media-library-module:dev-b-7.7.x`
-  to install the specific unreleased branch
+Run the following commands in your shop base directory (where the shop's `composer.json` file resides).
+
+1. Install the module via composer, choosing the version that matches your shop (see [Compatibility](#compatibility)),
+   for example the latest release compatible with OXID eShop v7.5.x and higher:
+```bash
+composer require oxid-esales/media-library-module:^5.1.0
+```
+
+   To install a specific development version instead, for example the latest state of the `b-7.7.x` branch, require it explicitly:
+```bash
+composer require oxid-esales/media-library-module:dev-b-7.7.x
+```
+
+2. Run the module database migrations:
+```bash
+vendor/bin/oe-eshop-doctrine_migration migrations:migrate ddoemedialibrary
+```
+
+3. Activate the module:
+```bash
+vendor/bin/oe-console oe:module:activate ddoemedialibrary
+```
+
+## Migration
+
+After updating the Media Library module, ensure you run the database migrations:
+
+```bash
+vendor/bin/oe-eshop-doctrine_migration migrations:migrate ddoemedialibrary
+```
+
+### Fallback image
+
+The module ships a placeholder image. On activation it is added to the media library and stored in the
+`"Fallback" media ID` setting, and it is shown in place of a media item that is referenced somewhere but
+no longer exists.
+
+If you updated the module rather than installing it for the first time, activate it once to get the
+placeholder:
+
+```bash
+vendor/bin/oe-console oe:module:activate ddoemedialibrary
+```
+
+Activation never replaces a fallback you configured yourself. Clear the setting and activate again to get
+the shipped placeholder back.
 
 # Development installation on OXID eShop SDK
 
@@ -100,30 +140,6 @@ Alternatively, if you're actively developing and want changes to be applied auto
 ```shell
 npm run watch
 ```
-
-## Migration
-
-After updating the Media Library module, ensure you run the database migrations:
-
-```bash
-vendor/bin/oe-eshop-doctrine_migration migrations:migrate ddoemedialibrary
-```
-
-### Fallback image
-
-The module ships a placeholder image. On activation it is added to the media library and stored in the
-`"Fallback" media ID` setting, and it is shown in place of a media item that is referenced somewhere but
-no longer exists.
-
-If you updated the module rather than installing it for the first time, activate it once to get the
-placeholder:
-
-```bash
-vendor/bin/oe-console oe:module:activate ddoemedialibrary
-```
-
-Activation never replaces a fallback you configured yourself. Clear the setting and activate again to get
-the shipped placeholder back.
 
 ## License
 
