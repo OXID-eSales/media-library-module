@@ -11,6 +11,9 @@ namespace OxidEsales\MediaLibrary\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 
+/**
+ * @todo-medium segregate if needed, move to relevant domain
+ */
 interface FileSystemServiceInterface
 {
     public function ensureDirectory(string $path): bool;
@@ -23,9 +26,6 @@ interface FileSystemServiceInterface
 
     public function rename(string $oldPath, string $newPath): void;
 
-    /**
-     * @codeCoverageIgnore Its a proxy and complicated to test, so precisely checking this one once manually is enough
-     */
     public function moveUploadedFile(string $from, string $to): void;
 
     public function getFileSize(string $filePath): int;
