@@ -13,6 +13,9 @@ use Codeception\Attribute\Group;
 use OxidEsales\Codeception\Module\Translation\Translator;
 use OxidEsales\MediaLibrary\Tests\Codeception\Step\MediaLibraryAcceptanceTester;
 
+/**
+ * @todo-high should be splitted to multiple Cests, each testing its own functionality group
+ */
 #[Group('ddoemedialibrary')]
 final class MediaLibraryCest
 {

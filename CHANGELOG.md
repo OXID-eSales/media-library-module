@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Drop usage of deprecated shop `Request` class from module Request service
 - Database migrations are not executed on module activation anymore. Run them manually after installing or updating the module as describe in the installation instructions.
 
+### Fixed
+- `DocumentNameValidatorChain` now implements `DirectoryNameValidatorChainInterface` and `FileNameValidatorChainInterface`, matching the service ids it is registered under
+
 ## [6.0.0] - unreleased
 
 ### Added

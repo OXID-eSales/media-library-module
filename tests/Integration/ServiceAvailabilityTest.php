@@ -117,6 +117,8 @@ class ServiceAvailabilityTest extends IntegrationTestCase
             [\OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface::class],
 
             // Validation
+            [\OxidEsales\MediaLibrary\Validation\Service\DirectoryNameValidatorChainInterface::class],
+            [\OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChainInterface::class],
             [\OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface::class],
             [\OxidEsales\MediaLibrary\Validation\Format\FileFormatRegistryInterface::class],
             [\OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator::class],
