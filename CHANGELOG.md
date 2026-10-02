@@ -4,11 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [6.1.0] - unreleased
+## [7.0.0] - unreleased
 
 ### Changed
 - Drop usage of deprecated shop `Request` class from module Request service
 - Database migrations are not executed on module activation anymore. Run them manually after installing or updating the module as describe in the installation instructions.
+
+### Removed
+- Unused SVG validation leftovers, superseded by `Validation\Validator\ContentValidator\Svg` - the `Image\Sanitizer` directory and the `Validation\Validator\SvgContentValidator`
 
 ### Fixed
 - `DocumentNameValidatorChain` now implements `DirectoryNameValidatorChainInterface` and `FileNameValidatorChainInterface`, matching the service ids it is registered under
@@ -223,7 +226,7 @@ Module extracted from wysiwyg module, and used by it now
 - Thumbnails are generated on demand and the type of thumbnail file is matching the original image type
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
-[6.1.0]: https://github.com/OXID-eSales/media-library-module/compare/b-7.6.x..b-7.7.x
+[7.0.0]: https://github.com/OXID-eSales/media-library-module/compare/b-7.6.x..b-7.7.x
 [6.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.2.0..b-7.6.x
 [5.2.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.1.0..b-7.5.x
 [5.1.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.0.0..v5.1.0
