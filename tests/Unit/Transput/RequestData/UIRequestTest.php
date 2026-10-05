@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Transput\RequestData;
 
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequest;
+use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use OxidEsales\MediaLibrary\Transput\RequestInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +27,9 @@ class UIRequestTest extends TestCase
             [UIRequest::REQUEST_PARAM_POPUP, $requestExampleValue]
         ]);
 
-        $sut = new UIRequest($requestMock);
+        $sut = $this->getSut(
+            request: $requestMock,
+        );
         $this->assertSame($requestExampleValue, $sut->isPopout());
     }
 
@@ -39,7 +42,9 @@ class UIRequestTest extends TestCase
             [UIRequest::REQUEST_PARAM_MEDIA_IDS, $requestExampleValue]
         ]);
 
-        $sut = new UIRequest($requestMock);
+        $sut = $this->getSut(
+            request: $requestMock,
+        );
         $this->assertSame($requestExampleValue, $sut->getMediaIds());
     }
 
@@ -52,7 +57,9 @@ class UIRequestTest extends TestCase
             [UIRequest::REQUEST_PARAM_FOLDER_ID, '', $requestExampleValue]
         ]);
 
-        $sut = new UIRequest($requestMock);
+        $sut = $this->getSut(
+            request: $requestMock,
+        );
         $this->assertSame($requestExampleValue, $sut->getFolderId());
     }
 
@@ -65,7 +72,9 @@ class UIRequestTest extends TestCase
             [UIRequest::REQUEST_PARAM_TAB, '', $requestExampleValue]
         ]);
 
-        $sut = new UIRequest($requestMock);
+        $sut = $this->getSut(
+            request: $requestMock,
+        );
         $this->assertSame($requestExampleValue, $sut->getTabName());
     }
 
@@ -78,7 +87,9 @@ class UIRequestTest extends TestCase
             [UIRequest::REQUEST_PARAM_MEDIA_LIST_START_INDEX, $requestExampleValue]
         ]);
 
-        $sut = new UIRequest($requestMock);
+        $sut = $this->getSut(
+            request: $requestMock,
+        );
         $this->assertSame($requestExampleValue, $sut->getMediaListStartIndex());
     }
 
@@ -90,12 +101,20 @@ class UIRequestTest extends TestCase
             'name' => $fileName
         ];
 
-        $sut = new UIRequest(
-            request: $this->createStub(RequestInterface::class)
-        );
+        $sut = $this->getSut();
 
         $uploadedFile = $sut->getUploadedFile();
 
         $this->assertEquals($fileName, $uploadedFile->getFileName());
+    }
+
+    private function getSut(
+        ?RequestInterface $request = null,
+    ): UIRequestInterface {
+        $request ??= $this->createStub(RequestInterface::class);
+
+        return new UIRequest(
+            request: $request,
+        );
     }
 }

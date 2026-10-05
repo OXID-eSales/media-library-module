@@ -12,6 +12,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Transput;
 use OxidEsales\Eshop\Core\Utils;
 use OxidEsales\MediaLibrary\Exception\ResponseCreationException;
 use OxidEsales\MediaLibrary\Transput\Response;
+use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -36,7 +37,9 @@ class ResponseTest extends TestCase
             }
         });
 
-        $sut = new Response($utilsMock);
+        $sut = $this->getSut(
+            utils: $utilsMock,
+        );
         $sut->responseAsJson($exampleData);
 
         $this->assertTrue($correctHeaderSet);
@@ -47,8 +50,7 @@ class ResponseTest extends TestCase
     {
         $data = ["text" => "\xB1\x31"]; // Invalid UTF-8 bytes
 
-        $utilsStub = $this->createStub(Utils::class);
-        $sut = new Response($utilsStub);
+        $sut = $this->getSut();
 
         $this->expectException(ResponseCreationException::class);
         $sut->responseAsJson($data);
@@ -77,7 +79,9 @@ class ResponseTest extends TestCase
                 }
             });
 
-        $sut = new Response($utilsMock);
+        $sut = $this->getSut(
+            utils: $utilsMock,
+        );
         $sut->errorResponseAsJson($code, $message, $exampleData);
 
         $this->assertSame(0b11, $correctHeaderSet);
@@ -99,7 +103,9 @@ class ResponseTest extends TestCase
             }
         });
 
-        $sut = new Response($utilsMock);
+        $sut = $this->getSut(
+            utils: $utilsMock,
+        );
         $sut->responseAsJavaScript($exampleData);
 
         $this->assertTrue($correctHeaderSet);
@@ -121,9 +127,21 @@ class ResponseTest extends TestCase
             }
         });
 
-        $sut = new Response($utilsMock);
+        $sut = $this->getSut(
+            utils: $utilsMock,
+        );
         $sut->responseAsTextHtml($exampleData);
 
         $this->assertTrue($correctHeaderSet);
+    }
+
+    private function getSut(
+        ?Utils $utils = null,
+    ): ResponseInterface {
+        $utils ??= $this->createStub(Utils::class);
+
+        return new Response(
+            utils: $utils,
+        );
     }
 }

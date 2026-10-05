@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Transput\RequestData;
 
 use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequest;
+use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
 use OxidEsales\MediaLibrary\Transput\RequestInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +27,19 @@ class AddFolderRequestTest extends TestCase
             [AddFolderRequest::REQUEST_PARAM_NAME, '', $requestExampleValue]
         ]);
 
-        $sut = new AddFolderRequest($requestMock);
+        $sut = $this->getSut(
+            request: $requestMock,
+        );
         $this->assertSame($requestExampleValue, $sut->getName());
+    }
+
+    private function getSut(
+        ?RequestInterface $request = null,
+    ): AddFolderRequestInterface {
+        $request ??= $this->createStub(RequestInterface::class);
+
+        return new AddFolderRequest(
+            request: $request,
+        );
     }
 }

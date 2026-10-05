@@ -12,6 +12,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator;
 use org\bovigo\vfs\vfsStream;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
+use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\FileUploadStatusValidator;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +30,7 @@ class FileUploadStatusValidatorTest extends TestCase
             'getPath' => $root->url() . '/file1.txt',
         ]);
 
-        $sut = new FileUploadStatusValidator();
+        $sut = $this->getSut();
         $sut->validateFile($file);
 
         $this->addToAssertionCount(1);
@@ -43,7 +44,12 @@ class FileUploadStatusValidatorTest extends TestCase
 
         $this->expectException(ValidationFailedException::class);
 
-        $sut = new FileUploadStatusValidator();
+        $sut = $this->getSut();
         $sut->validateFile($file);
+    }
+
+    private function getSut(): FilePathValidatorInterface
+    {
+        return new FileUploadStatusValidator();
     }
 }

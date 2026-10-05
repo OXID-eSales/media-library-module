@@ -21,11 +21,9 @@ class ViewConfigTest extends IntegrationTestCase
         $imageResourceMock = $this->createMock(MediaResourceInterface::class);
         $imageResourceMock->method('getUrlToMediaFiles')->willReturn('someFilePath');
 
-        /** @var ViewConfig $sut */
-        $sut = $this->createPartialMock(oxNew(\OxidEsales\Eshop\Core\ViewConfig::class)::class, ['getService']);
-        $sut->method('getService')->willReturnMap([
-            [MediaResourceInterface::class, $imageResourceMock]
-        ]);
+        $sut = $this->getSut(
+            mediaResource: $imageResourceMock,
+        );
 
         $this->assertSame('someFilePath', $sut->getMediaUrl());
     }
@@ -37,12 +35,26 @@ class ViewConfigTest extends IntegrationTestCase
         file_put_contents($file, 'dummy content');
         $mtime = filemtime($file);
 
-        /** @var \OxidEsales\Eshop\Core\ViewConfig $viewConfig */
-        $viewConfig = oxNew(ViewConfig::class);
+        $sut = $this->getSut();
         $shopUrl = $config->getCurrentShopUrl(false);
 
-        $result = $viewConfig->formJsFileUrl($shopUrl . basename($file));
+        $result = $sut->formJsFileUrl($shopUrl . basename($file));
         $this->assertStringEndsWith('?' . $mtime, $result);
         unlink($file);
+    }
+
+    private function getSut(?MediaResourceInterface $mediaResource = null): ViewConfig
+    {
+        $mediaResource ??= $this->createStub(MediaResourceInterface::class);
+
+        $sut = $this->createPartialMock(
+            originalClassName: oxNew(\OxidEsales\Eshop\Core\ViewConfig::class)::class,
+            methods: ['getService'],
+        );
+        $sut->method('getService')->willReturnMap([
+            [MediaResourceInterface::class, $mediaResource],
+        ]);
+
+        return $sut;
     }
 }

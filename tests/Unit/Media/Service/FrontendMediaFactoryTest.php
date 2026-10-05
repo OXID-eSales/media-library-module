@@ -13,6 +13,7 @@ use OxidEsales\MediaLibrary\Media\DataType\FrontendMedia;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactory;
+use OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactoryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -21,8 +22,9 @@ class FrontendMediaFactoryTest extends TestCase
 {
     public function testFactory(): void
     {
-        $sut = new FrontendMediaFactory(
-            thumbnailService: $thumbnailService = $this->createMock(ThumbnailServiceInterface::class)
+        $thumbnailService = $this->createMock(ThumbnailServiceInterface::class);
+        $sut = $this->getSut(
+            thumbnailService: $thumbnailService,
         );
 
         $mediaStub = $this->createStub(MediaInterface::class);
@@ -51,8 +53,9 @@ class FrontendMediaFactoryTest extends TestCase
 
     public function testThumbnailEmptyForFolder(): void
     {
-        $sut = new FrontendMediaFactory(
-            thumbnailService: $thumbnailServiceSpy = $this->createMock(ThumbnailServiceInterface::class)
+        $thumbnailServiceSpy = $this->createMock(ThumbnailServiceInterface::class);
+        $sut = $this->getSut(
+            thumbnailService: $thumbnailServiceSpy,
         );
 
         $mediaStub = $this->createStub(MediaInterface::class);
@@ -75,5 +78,15 @@ class FrontendMediaFactoryTest extends TestCase
         );
 
         $this->assertEquals($expected, $sut->createFromMedia($mediaStub));
+    }
+
+    private function getSut(
+        ?ThumbnailServiceInterface $thumbnailService = null,
+    ): FrontendMediaFactoryInterface {
+        $thumbnailService ??= $this->createStub(ThumbnailServiceInterface::class);
+
+        return new FrontendMediaFactory(
+            thumbnailService: $thumbnailService,
+        );
     }
 }

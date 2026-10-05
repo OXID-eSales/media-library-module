@@ -17,7 +17,12 @@ class ThumbnailGeneratorAggregateTest extends IntegrationTestCase
 {
     public function testInitialization(): void
     {
-        $sut = $this->get(ThumbnailGeneratorAggregateInterface::class);
+        $sut = $this->getSut();
         $this->assertInstanceOf(ThumbnailGeneratorAggregateInterface::class, $sut);
+    }
+
+    private function getSut(): ThumbnailGeneratorAggregateInterface
+    {
+        return $this->get(ThumbnailGeneratorAggregateInterface::class);
     }
 }

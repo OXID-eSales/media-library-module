@@ -12,7 +12,9 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Service;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaServiceInterface;
 use OxidEsales\MediaLibrary\Media\Service\ValidatorStrategyService;
+use OxidEsales\MediaLibrary\Media\Service\ValidatorStrategyServiceInterface;
 use OxidEsales\MediaLibrary\Validation\Service\DirectoryNameValidatorChainInterface;
+use OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChainInterface;
 use OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChainInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -25,8 +27,10 @@ class ValidatorStrategyServiceTest extends TestCase
         $fileNameValidatorChain = $this->createStub(FileNameValidatorChainInterface::class);
         $directoryNameValidatorChain = $this->createStub(DirectoryNameValidatorChainInterface::class);
 
-        $sut = new ValidatorStrategyService(
-            mediaService: $mediaServiceMock = $this->createMock(MediaServiceInterface::class),
+        $mediaServiceMock = $this->createMock(MediaServiceInterface::class);
+
+        $sut = $this->getSut(
+            mediaService: $mediaServiceMock,
             fileNameValidatorChain: $fileNameValidatorChain,
             directoryNameValidatorChain: $directoryNameValidatorChain,
         );
@@ -48,8 +52,10 @@ class ValidatorStrategyServiceTest extends TestCase
         $fileNameValidatorChain = $this->createStub(FileNameValidatorChainInterface::class);
         $directoryNameValidatorChain = $this->createStub(DirectoryNameValidatorChainInterface::class);
 
-        $sut = new ValidatorStrategyService(
-            mediaService: $mediaServiceMock = $this->createMock(MediaServiceInterface::class),
+        $mediaServiceMock = $this->createMock(MediaServiceInterface::class);
+
+        $sut = $this->getSut(
+            mediaService: $mediaServiceMock,
             fileNameValidatorChain: $fileNameValidatorChain,
             directoryNameValidatorChain: $directoryNameValidatorChain,
         );
@@ -64,5 +70,21 @@ class ValidatorStrategyServiceTest extends TestCase
 
 
         $this->assertSame($fileNameValidatorChain, $sut->getValidatorChainByMediaId($exampleMediaId));
+    }
+
+    private function getSut(
+        ?MediaServiceInterface $mediaService = null,
+        ?DocumentNameValidatorChainInterface $fileNameValidatorChain = null,
+        ?DocumentNameValidatorChainInterface $directoryNameValidatorChain = null,
+    ): ValidatorStrategyServiceInterface {
+        $mediaService ??= $this->createStub(MediaServiceInterface::class);
+        $fileNameValidatorChain ??= $this->createStub(FileNameValidatorChainInterface::class);
+        $directoryNameValidatorChain ??= $this->createStub(DirectoryNameValidatorChainInterface::class);
+
+        return new ValidatorStrategyService(
+            mediaService: $mediaService,
+            fileNameValidatorChain: $fileNameValidatorChain,
+            directoryNameValidatorChain: $directoryNameValidatorChain,
+        );
     }
 }

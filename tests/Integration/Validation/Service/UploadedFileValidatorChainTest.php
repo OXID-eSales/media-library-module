@@ -16,7 +16,12 @@ class UploadedFileValidatorChainTest extends \OxidEsales\EshopCommunity\Tests\In
 {
     public function testInitialization(): void
     {
-        $sut = $this->get(UploadedFileValidatorChainInterface::class);
+        $sut = $this->getSut();
         $this->assertInstanceOf(UploadedFileValidatorChainInterface::class, $sut);
+    }
+
+    private function getSut(): UploadedFileValidatorChainInterface
+    {
+        return $this->get(UploadedFileValidatorChainInterface::class);
     }
 }

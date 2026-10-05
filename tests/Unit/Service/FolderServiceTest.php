@@ -15,6 +15,7 @@ use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Service\FolderService;
+use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -24,27 +25,32 @@ class FolderServiceTest extends TestCase
 {
     public function testCreateCustomDir(): void
     {
-        $sut = new FolderService(
-            $imageResourceStub = $this->createStub(MediaResourceInterface::class),
-            $namingServiceMock = $this->createStub(NamingServiceInterface::class),
-            $mediaRepositorySpy = $this->createMock(MediaRepositoryInterface::class),
-            $fileSystemServiceSpy = $this->createMock(FileSystemServiceInterface::class),
-            $shopAdapterStub = $this->createStub(ShopAdapterInterface::class),
-        );
-
         $uniqueId = 'someUniqueId';
-        $shopAdapterStub->method('generateUniqueId')->willReturn($uniqueId);
+        $shopAdapterMock = $this->createStub(ShopAdapterInterface::class);
+        $shopAdapterMock->method('generateUniqueId')
+            ->willReturn($uniqueId);
+
+        $sanitizedFolderName = 'sanitizedName';
+        $fullMediaPath = 'someMediaPath';
+        $imageResourceMock = $this->createStub(MediaResourceInterface::class);
+        $imageResourceMock->method('getPathToMediaFiles')
+            ->with($sanitizedFolderName)
+            ->willReturn($fullMediaPath);
 
         $newFolderName = 'inputName';
-        $sanitizedFolderName = 'sanitizedName';
-        $namingServiceMock->method('sanitizeFilename')->with($newFolderName)->willReturn($sanitizedFolderName);
-
-        $fullMediaPath = 'someMediaPath';
         $uniqueMediaPath = 'someUniqueMediaPath';
-        $imageResourceStub->method('getPathToMediaFiles')->with($sanitizedFolderName)->willReturn($fullMediaPath);
-        $namingServiceMock->method('getUniqueFilename')->willReturn($fullMediaPath)->willReturn($uniqueMediaPath);
+        $namingServiceMock = $this->createStub(NamingServiceInterface::class);
+        $namingServiceMock->method('sanitizeFilename')
+            ->with($newFolderName)
+            ->willReturn($sanitizedFolderName);
+        $namingServiceMock->method('getUniqueFilename')
+            ->with($fullMediaPath)
+            ->willReturn($uniqueMediaPath);
 
-        $fileSystemServiceSpy->expects($this->once())->method('ensureDirectory')->with($uniqueMediaPath);
+        $fileSystemServiceSpy = $this->createMock(FileSystemServiceInterface::class);
+        $fileSystemServiceSpy->expects($this->once())
+            ->method('ensureDirectory')
+            ->with($uniqueMediaPath);
 
         $newMediaItem = new MediaDataType(
             oxid: $uniqueId,
@@ -52,8 +58,41 @@ class FolderServiceTest extends TestCase
             fileType: 'directory'
         );
 
-        $mediaRepositorySpy->expects($this->once())->method('addMedia')->with($newMediaItem);
+        $mediaRepositorySpy = $this->createMock(MediaRepositoryInterface::class);
+        $mediaRepositorySpy->expects($this->once())
+            ->method('addMedia')
+            ->with($newMediaItem);
+
+        $sut = $this->getSut(
+            mediaResource: $imageResourceMock,
+            namingService: $namingServiceMock,
+            mediaRepository: $mediaRepositorySpy,
+            fileSystemService: $fileSystemServiceSpy,
+            shopAdapter: $shopAdapterMock,
+        );
 
         $this->assertEquals($newMediaItem, $sut->createCustomDir($newFolderName));
+    }
+
+    private function getSut(
+        ?MediaResourceInterface $mediaResource = null,
+        ?NamingServiceInterface $namingService = null,
+        ?MediaRepositoryInterface $mediaRepository = null,
+        ?FileSystemServiceInterface $fileSystemService = null,
+        ?ShopAdapterInterface $shopAdapter = null,
+    ): FolderServiceInterface {
+        $mediaResource ??= $this->createStub(MediaResourceInterface::class);
+        $namingService ??= $this->createStub(NamingServiceInterface::class);
+        $mediaRepository ??= $this->createStub(MediaRepositoryInterface::class);
+        $fileSystemService ??= $this->createStub(FileSystemServiceInterface::class);
+        $shopAdapter ??= $this->createStub(ShopAdapterInterface::class);
+
+        return new FolderService(
+            mediaResource: $mediaResource,
+            namingService: $namingService,
+            mediaRepository: $mediaRepository,
+            fileSystemService: $fileSystemService,
+            shopAdapter: $shopAdapter,
+        );
     }
 }

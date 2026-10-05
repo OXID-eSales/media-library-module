@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Image\ThumbnailGenerator;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\DefaultDriver;
+use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -19,13 +20,13 @@ class DefaultDriverTest extends TestCase
 {
     public function testIsOriginSupportedAlwaysReturnTrue(): void
     {
-        $sut = new DefaultDriver();
+        $sut = $this->getSut();
         $this->assertTrue($sut->isOriginSupported(uniqid()));
     }
 
     public function testGetThumbnailFileNameReturnsDefaultValue(): void
     {
-        $sut = new DefaultDriver();
+        $sut = $this->getSut();
         $this->assertSame(
             'default.svg',
             $sut->getThumbnailFileName(
@@ -38,10 +39,15 @@ class DefaultDriverTest extends TestCase
 
     public function testGetThumbnailsGlob(): void
     {
-        $sut = new DefaultDriver();
+        $sut = $this->getSut();
         $this->assertSame(
             'default.svg',
             $sut->getThumbnailsGlob(uniqid())
         );
+    }
+
+    private function getSut(): ThumbnailGeneratorInterface
+    {
+        return new DefaultDriver();
     }
 }

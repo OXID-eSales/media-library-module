@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Transput;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Request\RequestInterface as ShopRequestInterface;
 use OxidEsales\MediaLibrary\Transput\Request;
+use OxidEsales\MediaLibrary\Transput\RequestInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -31,7 +32,9 @@ class RequestTest extends TestCase
             [$paramName, $defaultValue, $requestValue]
         ]);
 
-        $sut = new Request(request: $requestMock);
+        $sut = $this->getSut(
+            request: $requestMock,
+        );
 
         if ($defaultValue) {
             $this->assertSame($expectedValue, $sut->getStringRequestParameter($paramName, $defaultValue));
@@ -63,7 +66,9 @@ class RequestTest extends TestCase
             [$paramName, null, $requestValue]
         ]);
 
-        $sut = new Request(request: $requestMock);
+        $sut = $this->getSut(
+            request: $requestMock,
+        );
 
         $this->assertSame($expectedValue, $sut->getArrayRequestParameter($paramName));
     }
@@ -89,7 +94,9 @@ class RequestTest extends TestCase
             [$paramName, null, $requestValue]
         ]);
 
-        $sut = new Request(request: $requestMock);
+        $sut = $this->getSut(
+            request: $requestMock,
+        );
         $this->assertSame($expectedValue, $sut->getBoolRequestParameter($paramName));
     }
 
@@ -115,7 +122,9 @@ class RequestTest extends TestCase
             [$paramName, null, $requestValue]
         ]);
 
-        $sut = new Request(request: $requestMock);
+        $sut = $this->getSut(
+            request: $requestMock,
+        );
         $this->assertSame($expectedValue, $sut->getIntRequestParameter($paramName));
     }
 
@@ -130,5 +139,15 @@ class RequestTest extends TestCase
             'string with 10 as start' => ['10something', 10],
             'string with 10 inside' => ['some10xx', 0]
         ];
+    }
+
+    private function getSut(
+        ?ShopRequestInterface $request = null,
+    ): RequestInterface {
+        $request ??= $this->createStub(ShopRequestInterface::class);
+
+        return new Request(
+            request: $request,
+        );
     }
 }

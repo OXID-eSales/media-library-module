@@ -13,6 +13,7 @@ use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ChainInputTypeException;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain;
+use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +24,9 @@ class UploadedFileValidatorChainTest extends TestCase
     public function testConstructorDoesNotAcceptWrongType(): void
     {
         $this->expectException(ChainInputTypeException::class);
-        new UploadedFileValidatorChain([new \stdClass()]);
+        $this->getSut(
+            fileValidators: [new \stdClass()],
+        );
     }
 
     public function testValidateFileWorksIfNoExceptionsThrown(): void
@@ -31,7 +34,9 @@ class UploadedFileValidatorChainTest extends TestCase
         $fileStub = $this->createStub(UploadedFileInterface::class);
         $validatorStub = $this->createStub(FilePathValidatorInterface::class);
 
-        $sut = new UploadedFileValidatorChain([$validatorStub]);
+        $sut = $this->getSut(
+            fileValidators: [$validatorStub],
+        );
         $sut->validateFile($fileStub);
 
         $this->addToAssertionCount(1);
@@ -46,7 +51,19 @@ class UploadedFileValidatorChainTest extends TestCase
 
         $this->expectException(ValidationFailedException::class);
 
-        $sut = new UploadedFileValidatorChain([$validatorStub]);
+        $sut = $this->getSut(
+            fileValidators: [$validatorStub],
+        );
         $sut->validateFile($fileStub);
+    }
+
+    private function getSut(
+        ?iterable $fileValidators = null,
+    ): UploadedFileValidatorChainInterface {
+        $fileValidators ??= [];
+
+        return new UploadedFileValidatorChain(
+            fileValidators: $fileValidators,
+        );
     }
 }
