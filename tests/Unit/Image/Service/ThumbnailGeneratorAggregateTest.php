@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Service;
 
-use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\Exception\AggregatorInputType;
 use OxidEsales\MediaLibrary\Image\Exception\NoSupportedDriversForSource;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregate;

@@ -8,7 +8,6 @@
 namespace OxidEsales\MediaLibrary\Image\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
-use Symfony\Component\Filesystem\Path;
 
 interface ThumbnailResourceInterface
 {

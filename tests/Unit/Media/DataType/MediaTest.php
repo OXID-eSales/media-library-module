@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Media\DataType;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
-use OxidEsales\MediaLibrary\Media\DataType\FrontendMedia;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;

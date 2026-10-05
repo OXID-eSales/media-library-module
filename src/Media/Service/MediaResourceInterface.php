@@ -8,7 +8,6 @@
 namespace OxidEsales\MediaLibrary\Media\Service;
 
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
-use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 
 interface MediaResourceInterface
 {
