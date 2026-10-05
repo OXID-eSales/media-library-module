@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Image\Service;
+namespace OxidEsales\MediaLibrary\Tests\Integration\Image\Service;
 
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregate;

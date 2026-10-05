@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Media\Service;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;

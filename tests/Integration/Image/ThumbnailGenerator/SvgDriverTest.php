@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Image\ThumbnailGenerator;
+namespace OxidEsales\MediaLibrary\Tests\Integration\Image\ThumbnailGenerator;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\SvgDriver;

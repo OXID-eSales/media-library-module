@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Image\DataTransfer;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Image\DataTransfer;
 
 use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
