@@ -26,6 +26,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Assets are built with Vite 8 and Sass 1.80 now, which requires Node 22.12 or newer (or Node 24 and newer)
 - Deprecated Sass syntax replaced in the module styles
 
+### Fixed
+- Uploaded items now show the file name stored by the server instead of the original name of the uploaded file
+
 ## [5.2.0] - Unreleased
 
 ### Added
