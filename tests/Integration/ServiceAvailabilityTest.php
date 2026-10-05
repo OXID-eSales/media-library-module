@@ -5,6 +5,8 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\MediaLibrary\Tests\Integration;
 
 use OxidEsales\EshopCommunity\Internal\Container\ContainerBuilderFactory;

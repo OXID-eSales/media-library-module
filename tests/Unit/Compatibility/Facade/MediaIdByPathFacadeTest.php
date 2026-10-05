@@ -5,6 +5,8 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\MediaLibrary\Tests\Unit\Compatibility\Facade;
 
 use OxidEsales\MediaLibrary\Compatibility\DTO\MediaFileInformationInterface;

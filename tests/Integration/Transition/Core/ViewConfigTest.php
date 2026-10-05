@@ -5,6 +5,8 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\MediaLibrary\Tests\Integration\Transition\Core;
 
 use OxidEsales\Eshop\Core\Registry;

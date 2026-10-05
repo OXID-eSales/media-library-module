@@ -5,6 +5,8 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace Image\DataTransfer;
 
 use OxidEsales\MediaLibrary\Media\DataType\FilePath;

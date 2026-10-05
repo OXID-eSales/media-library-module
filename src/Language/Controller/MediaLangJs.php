@@ -5,6 +5,8 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\MediaLibrary\Language\Controller;
 
 use OxidEsales\Eshop\Application\Controller\FrontendController;

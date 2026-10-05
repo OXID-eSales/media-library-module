@@ -5,6 +5,8 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace Media\Service;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;

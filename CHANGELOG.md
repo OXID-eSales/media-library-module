@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Drop usage of deprecated shop `Request` class from module Request service
 - Database migrations are not executed on module activation anymore. Run them manually after installing or updating the module as describe in the installation instructions.
+- `declare(strict_types=1)` is used in all module classes now, so wrong scalar types inside the module throw a `TypeError` instead of being silently converted; code calling the module is not affected
 
 ### Removed
 - Unused SVG validation leftovers, superseded by `Validation\Validator\ContentValidator\Svg` - the `Image\Sanitizer` directory and the `Validation\Validator\SvgContentValidator`

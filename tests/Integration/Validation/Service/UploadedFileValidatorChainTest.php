@@ -5,6 +5,8 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\MediaLibrary\Tests\Integration\Validation\Service;
 
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain;

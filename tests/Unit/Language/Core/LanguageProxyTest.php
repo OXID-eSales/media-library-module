@@ -5,6 +5,8 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\MediaLibrary\Tests\Unit\Language\Core;
 
 use OxidEsales\Eshop\Core\Language as ShopLanguage;
