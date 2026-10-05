@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Format;
 
-use OxidEsales\MediaLibrary\Validation\Format\DTO\FileFormatInterface;
 use OxidEsales\MediaLibrary\Validation\Format\FileFormatRegistry;
 use OxidEsales\MediaLibrary\Validation\Format\FileFormatRegistryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -23,29 +22,24 @@ class FileFormatRegistryTest extends TestCase
     #[Test]
     #[DataProvider('caseInsensitiveLookupProvider')]
     public function findByExtensionMatchesRegardlessOfCase(
-        string $registeredExtension,
         string $lookupExtension,
+        string $expectedExtension,
+        array $expectedMimeTypes,
     ): void {
-        $format = $this->createConfiguredStub(FileFormatInterface::class, [
-            'getExtension' => $registeredExtension,
-        ]);
-
-        $sut = $this->getSut(formats: [$format]);
+        $sut = $this->getSut();
         $foundFormat = $sut->findByExtension($lookupExtension);
 
-        $this->assertSame($format, $foundFormat);
+        $this->assertNotNull($foundFormat);
+        $this->assertSame($expectedExtension, $foundFormat->getExtension());
+        $this->assertSame($expectedMimeTypes, $foundFormat->getMimeTypes());
     }
 
     #[Test]
     public function findByExtensionReturnsNullWhenNotRegistered(): void
     {
-        $registeredFormat = $this->createConfiguredStub(FileFormatInterface::class, [
-            'getExtension' => uniqid(),
-        ]);
+        $sut = $this->getSut();
 
-        $sut = $this->getSut(formats: [$registeredFormat]);
-
-        $unregisteredExtension = uniqid();
+        $unregisteredExtension = uniqid('unregistered_extension_');
         $foundFormat = $sut->findByExtension($unregisteredExtension);
 
         $this->assertNull($foundFormat);
@@ -53,32 +47,27 @@ class FileFormatRegistryTest extends TestCase
 
     public static function caseInsensitiveLookupProvider(): \Generator
     {
-        yield 'lowercase registered, uppercase lookup' => [
-            'registeredExtension' => 'svg',
-            'lookupExtension' => 'SVG',
-        ];
-
-        yield 'uppercase registered, lowercase lookup' => [
-            'registeredExtension' => 'PNG',
+        yield 'lowercase lookup' => [
             'lookupExtension' => 'png',
+            'expectedExtension' => 'png',
+            'expectedMimeTypes' => ['image/png'],
         ];
 
-        yield 'mixed case registered, lowercase lookup' => [
-            'registeredExtension' => 'JpEg',
-            'lookupExtension' => 'jpeg',
+        yield 'uppercase lookup' => [
+            'lookupExtension' => 'SVG',
+            'expectedExtension' => 'svg',
+            'expectedMimeTypes' => ['image/svg+xml', 'image/svg', 'text/xml', 'application/xml'],
         ];
 
-        yield 'uppercase registered, uppercase lookup' => [
-            'registeredExtension' => 'GIF',
-            'lookupExtension' => 'GIF',
+        yield 'mixed case lookup' => [
+            'lookupExtension' => 'JpEg',
+            'expectedExtension' => 'jpeg',
+            'expectedMimeTypes' => ['image/jpeg'],
         ];
     }
 
-    /**
-     * @param iterable<FileFormatInterface> $formats
-     */
-    private function getSut(iterable $formats = []): FileFormatRegistryInterface
+    private function getSut(): FileFormatRegistryInterface
     {
-        return new FileFormatRegistry($formats);
+        return new FileFormatRegistry();
     }
 }

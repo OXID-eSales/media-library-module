@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 - Unused SVG validation leftovers, superseded by `Validation\Validator\ContentValidator\Svg` - the `Image\Sanitizer` directory and the `Validation\Validator\SvgContentValidator`
+- Registering file formats via the `oxid_esales.media_library.validation.file_format` service tag. The supported formats are defined in `FileFormatRegistry` itself now; to add or change formats, decorate `FileFormatRegistryInterface`
 
 ### Fixed
 - `DocumentNameValidatorChain` now implements `DirectoryNameValidatorChainInterface` and `FileNameValidatorChainInterface`, matching the service ids it is registered under
