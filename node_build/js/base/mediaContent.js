@@ -307,6 +307,7 @@ export default class MediaContent {
                             imagesize: response.imagesize || '',
                             thumb: response.thumb,
                         });
+                        itemEl.querySelector('.dd-media-item-label span').textContent = response.file;
                         itemEl.dataset.filetype = response.filetype;
                         itemEl.click();
                         self.dd.makeMovable(itemEl);
