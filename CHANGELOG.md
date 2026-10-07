@@ -10,8 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Drop usage of deprecated shop `Request` class from module Request service
 - Database migrations are not executed on module activation anymore. Run them manually after installing or updating the module as describe in the installation instructions.
 - `declare(strict_types=1)` is used in all module classes now, so wrong scalar types inside the module throw a `TypeError` instead of being silently converted; code calling the module is not affected
+- `MediaWrapperController` extends `AdminDetailsController` instead of `MediaController` now, as it did not use any of the media dialog functionality
 
 ### Removed
+- `MediaController::getBreadcrumb()` - the breadcrumbs are passed to the media dialog template as the `breadcrumbs` template parameter now
 - Unused SVG validation leftovers, superseded by `Validation\Validator\ContentValidator\Svg` - the `Image\Sanitizer` directory and the `Validation\Validator\SvgContentValidator`
 - Registering file formats via the `oxid_esales.media_library.validation.file_format` service tag. The supported formats are defined in `FileFormatRegistry` itself now; to add or change formats, decorate `FileFormatRegistryInterface`
 

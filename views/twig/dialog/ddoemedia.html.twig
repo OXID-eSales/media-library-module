@@ -39,7 +39,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">{{ translate({ ident: "DD_MEDIA_BREADCRUMB_PATH" }) }}:</li>
 
-                {% for oneBreadcrumb in oView.getBreadcrumb() %}
+                {% for oneBreadcrumb in breadcrumbs %}
                     <li class="breadcrumb-item {% if oneBreadcrumb.isActive %}active{% endif %}">{{ oneBreadcrumb.getName }}</li>
                 {% endfor %}
             </ol>

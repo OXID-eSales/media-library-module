@@ -9,13 +9,14 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Application\Controller\Admin;
 
+use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 
 /**
  * Class MediaWrapperController
  */
-class MediaWrapperController extends MediaController
+class MediaWrapperController extends AdminDetailsController
 {
     /**
      * @return void

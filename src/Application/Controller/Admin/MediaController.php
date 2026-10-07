@@ -74,6 +74,9 @@ class MediaController extends AdminDetailsController
         $this->addTplParam('sFolderId', $folderId);
         $this->addTplParam('sFoldername', $folderName);
 
+        $breadcrumbService = $this->getService(BreadcrumbServiceInterface::class);
+        $this->addTplParam('breadcrumbs', $breadcrumbService->getBreadcrumbsByRequest());
+
         $this->addTplParam('request', $uiRequest);
         $this->addTplParam('sTab', $uiRequest->getTabName());
 
@@ -258,11 +261,5 @@ class MediaController extends AdminDetailsController
 
         $responseService = $this->getService(ResponseInterface::class);
         $responseService->responseAsJson(['files' => $files, 'more' => $isThereMoreToLoad]);
-    }
-
-    public function getBreadcrumb(): array
-    {
-        $breadcrumbService = $this->getService(BreadcrumbServiceInterface::class);
-        return $breadcrumbService->getBreadcrumbsByRequest();
     }
 }
