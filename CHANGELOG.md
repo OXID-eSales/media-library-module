@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Media library search field now matches against media ID in addition to filename
 
-## [4.3.0] - Unreleased
+## [4.3.0] - 2026-10-08
 
 ### Added
 - `setMediaUrlStore()` takes the object the media urls are kept in, so that frames evaluating this module separately can share one store
@@ -195,6 +195,7 @@ Module extracted from wysiwyg module, and used by it now
 [5.2.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.1.0..b-7.5.x
 [5.1.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.0.0..v5.1.0
 [5.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.1.0..v5.0.0
+[4.3.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.2.0..v4.3.0
 [4.2.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.1.0..v4.2.0
 [4.1.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.0.0..v4.1.0
 [4.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v3.0.1..v4.0.0
