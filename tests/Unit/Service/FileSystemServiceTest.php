@@ -12,6 +12,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Service;
 use org\bovigo\vfs\vfsStream;
 use OxidEsales\MediaLibrary\Exception\DirectoryCreationException;
 use OxidEsales\MediaLibrary\Service\FileSystemService;
+use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -282,7 +283,7 @@ class FileSystemServiceTest extends TestCase
         $this->assertSame('', $sut->getMimeType('notExisting'));
     }
 
-    public function getSut(): FileSystemService
+    private function getSut(): FileSystemServiceInterface
     {
         return new FileSystemService();
     }

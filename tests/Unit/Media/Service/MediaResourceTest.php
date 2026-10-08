@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Service;
 
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\MediaLibrary\Media\Service\MediaResource;
+use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -234,11 +235,11 @@ class MediaResourceTest extends TestCase
         $this->assertSame($uniqueBaseName, $result->getFileName());
     }
 
-    protected function getSut(
+    private function getSut(
         Config $shopConfig = null,
         NamingServiceInterface $namingService = null,
         ModuleSettingsInterface $moduleSettings = null,
-    ): MediaResource {
+    ): MediaResourceInterface {
         return new MediaResource(
             shopConfig: $shopConfig ?? $this->createStub(Config::class),
             namingService: $namingService ?? $this->createStub(NamingServiceInterface::class),

@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Tests\Integration\Image\ThumbnailGenerator;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\SvgDriver;
+use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -88,9 +89,9 @@ class SvgDriverTest extends IntegrationTestCase
         $this->assertSame('5a1040df467f3ceae2623aa5918f542a.svg', $sut->getThumbnailsGlob($originalFilename));
     }
 
-    public function getSut(
+    private function getSut(
         FileSystemServiceInterface $fileSystemService = null
-    ): SvgDriver {
+    ): ThumbnailGeneratorInterface {
         return new SvgDriver(
             fileSystemService: $fileSystemService ?? $this->createStub(FileSystemServiceInterface::class)
         );

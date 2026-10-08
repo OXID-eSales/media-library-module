@@ -16,6 +16,7 @@ use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\FallbackMediaResourceInterface;
 use OxidEsales\MediaLibrary\Media\Service\FallbackMediaSeeder;
+use OxidEsales\MediaLibrary\Media\Service\FallbackMediaSeederInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Media\Settings\FallbackMediaSettingsInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
@@ -160,7 +161,7 @@ class FallbackMediaSeederTest extends TestCase
         ?FileSystemServiceInterface $fileSystemService = null,
         ?FallbackMediaSettingsInterface $fallbackMediaSettings = null,
         ?FallbackMediaResourceInterface $fallbackMediaResource = null,
-    ): FallbackMediaSeeder {
+    ): FallbackMediaSeederInterface {
         $mediaRepository ??= $this->createMediaNotFoundRepositoryStub();
         $mediaResource ??= $this->createConfiguredStub(MediaResourceInterface::class, [
             'getPossibleMediaFilePath' => new FilePath('/shop/out/pictures/ddmedia/nopic.jpg'),

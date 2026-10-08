@@ -14,6 +14,7 @@ use Intervention\Image\ImageManager;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionDriver;
+use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -297,10 +298,10 @@ class InterventionDriverTest extends IntegrationTestCase
         $this->assertSame('8910f1d8c070ff09e13d4977fc339a29*.*', $sut->getThumbnailsGlob($originalFilename));
     }
 
-    public function getSut(
+    private function getSut(
         ImageManager $imageManager = null,
         LoggerInterface $logger = null,
-    ): InterventionDriver {
+    ): ThumbnailGeneratorInterface {
         return new InterventionDriver(
             imageManager: $imageManager ?? new ImageManager(new Driver()),
             logger: $logger ?? $this->createStub(LoggerInterface::class)

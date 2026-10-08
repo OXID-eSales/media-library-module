@@ -13,6 +13,7 @@ use org\bovigo\vfs\vfsStream;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Service\NamingService;
+use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -138,7 +139,7 @@ class NamingServiceTest extends TestCase
     private function getSut(
         LanguageInterface $language = null,
         ShopAdapterInterface $shopAdapter = null,
-    ): NamingService {
+    ): NamingServiceInterface {
         return new NamingService(
             language: $language ?? $this->createStub(LanguageInterface::class),
             shopAdapter: $shopAdapter ?? $this->createStub(ShopAdapterInterface::class),

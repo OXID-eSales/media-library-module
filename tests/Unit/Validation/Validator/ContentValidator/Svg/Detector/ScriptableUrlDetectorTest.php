@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator\ContentValidat
 
 use DOMDocument;
 use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ScriptableUrlDetector;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\SvgViolationDetectorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -98,7 +99,7 @@ class ScriptableUrlDetectorTest extends TestCase
         return $document;
     }
 
-    protected function getSut(): ScriptableUrlDetector
+    private function getSut(): SvgViolationDetectorInterface
     {
         return new ScriptableUrlDetector();
     }

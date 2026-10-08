@@ -31,7 +31,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(MediaService::class)]
 class MediaServiceTest extends TestCase
 {
-    protected function getSut(
+    private function getSut(
         ?NamingServiceInterface $namingService = null,
         ?MediaRepositoryInterface $mediaRepository = null,
         ?FileSystemServiceInterface $fileSystemService = null,

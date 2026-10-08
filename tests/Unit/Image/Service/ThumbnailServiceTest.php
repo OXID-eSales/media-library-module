@@ -14,6 +14,7 @@ use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregateInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailService;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
@@ -108,12 +109,12 @@ class ThumbnailServiceTest extends TestCase
         $this->assertSame($expectedUrl, $sut->ensureAndGetThumbnailUrl($folderName, $fileName));
     }
 
-    public function getSut(
+    private function getSut(
         ThumbnailResourceInterface $thumbnailResource = null,
         FileSystemServiceInterface $fileSystemService = null,
         ThumbnailGeneratorAggregateInterface $tgAgt = null,
         MediaResourceInterface $imageResource = null,
-    ): ThumbnailService {
+    ): ThumbnailServiceInterface {
         return new ThumbnailService(
             thumbnailResource: $thumbnailResource ?? $this->createStub(ThumbnailResourceInterface::class),
             fileSystemService: $fileSystemService ?? $this->createStub(FileSystemServiceInterface::class),

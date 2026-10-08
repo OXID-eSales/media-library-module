@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Settings;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 use OxidEsales\MediaLibrary\Media\Settings\FallbackMediaSettings;
+use OxidEsales\MediaLibrary\Media\Settings\FallbackMediaSettingsInterface;
 use OxidEsales\MediaLibrary\Module;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -48,7 +49,7 @@ class FallbackMediaSettingsTest extends TestCase
 
     private function getSut(
         ?ModuleSettingServiceInterface $moduleSettingService = null,
-    ): FallbackMediaSettings {
+    ): FallbackMediaSettingsInterface {
         $moduleSettingService ??= $this->createStub(ModuleSettingServiceInterface::class);
 
         return new FallbackMediaSettings(

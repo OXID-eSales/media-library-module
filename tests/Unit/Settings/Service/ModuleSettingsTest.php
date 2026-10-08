@@ -52,7 +52,7 @@ class ModuleSettingsTest extends TestCase
         $this->assertSame(['jpg', 'gif', 'tar.gz'], $extensions);
     }
 
-    public function getSut(
+    private function getSut(
         ModuleSettingServiceInterface $moduleSettingService = null
     ): ModuleSettingsInterface {
         return new ModuleSettings(

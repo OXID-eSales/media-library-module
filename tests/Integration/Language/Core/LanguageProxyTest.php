@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Tests\Integration\Language\Core;
 
 use OxidEsales\Eshop\Core\Language as ShopLanguage;
 use OxidEsales\MediaLibrary\Language\Core\LanguageExtension;
+use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Language\Core\LanguageProxy;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -39,9 +40,9 @@ class LanguageProxyTest extends TestCase
         $this->assertSame($exampleLanguageStrings, $sut->getLanguageStringsArray());
     }
 
-    public function getSut(
+    private function getSut(
         ShopLanguage $shopLanguage = null
-    ): LanguageProxy {
+    ): LanguageInterface {
         return new LanguageProxy(
             language: $shopLanguage ?? $this->createStub(ShopLanguage::class)
         );

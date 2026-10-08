@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(ThumbnailResource::class)]
 class ThumbnailResourceTest extends TestCase
 {
-    protected function getSut(
+    private function getSut(
         MediaResourceInterface $imageResource = null,
     ) {
         return new ThumbnailResource(

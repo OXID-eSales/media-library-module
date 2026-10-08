@@ -13,6 +13,7 @@ use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator;
+use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -74,7 +75,7 @@ class FileExtensionValidatorTest extends TestCase
         ];
     }
 
-    public function getSut(): FileExtensionValidator
+    private function getSut(): FilePathValidatorInterface
     {
         return new FileExtensionValidator(
             moduleSettings: $this->createConfiguredStub(ModuleSettingsInterface::class, [

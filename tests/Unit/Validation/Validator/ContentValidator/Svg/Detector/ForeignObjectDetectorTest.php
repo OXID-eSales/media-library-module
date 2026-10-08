@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator\ContentValidat
 
 use DOMDocument;
 use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\ForeignObjectDetector;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\SvgViolationDetectorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -62,7 +63,7 @@ class ForeignObjectDetectorTest extends TestCase
         return $document;
     }
 
-    protected function getSut(): ForeignObjectDetector
+    private function getSut(): SvgViolationDetectorInterface
     {
         return new ForeignObjectDetector();
     }
