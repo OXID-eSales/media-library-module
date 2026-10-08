@@ -53,7 +53,10 @@ $aLang = array(
     'DD_MEDIA_RENAME_FILE_FOLDER'     => 'Datei/Ordner umbenennen',
     'DD_MEDIA_RENAME_FILE_FOLDER_BTN' => 'Umbenennen',
     'DD_MEDIA_DELETE_FILE_FOLDER_BTN' => 'Löschen',
+
     'DD_MEDIA_BREADCRUMB_PATH'        => 'Pfad',
+    'DD_MEDIA_BREADCRUMB_ROOT'        => 'Stammverzeichnis',
+
     'DD_MEDIA_LEVEL_UP'               => 'Ebene hoch',
     'DD_MEDIA_MOVE_FILE_ERR'          => 'Bild kann nicht verschoben werden, weil es in Verwendung ist!',
     'DD_MEDIA_RENAME_FILE_ERR'        => 'Bild oder Ordner kann nicht umbenannt werden, weil es in Verwendung ist!',

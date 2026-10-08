@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Breadcrumb\Service;
 
+use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Breadcrumb\DataType\BreadcrumbInterface;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbService;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
@@ -22,7 +23,16 @@ class BreadcrumbServiceTest extends TestCase
 {
     public function testEmptyFolderId(): void
     {
-        $sut = $this->getSut();
+        $rootTranslation = uniqid('rootTranslation');
+        $shopAdapterMock = $this->createStub(ShopAdapterInterface::class);
+        $shopAdapterMock->method('translateString')
+            ->willReturnMap([
+                ['DD_MEDIA_BREADCRUMB_ROOT', $rootTranslation],
+            ]);
+
+        $sut = $this->getSut(
+            shopAdapter: $shopAdapterMock,
+        );
 
         $result = $sut->getBreadcrumbs(folderId: '');
 
@@ -30,7 +40,7 @@ class BreadcrumbServiceTest extends TestCase
 
         /** @var BreadcrumbInterface $breadcrumb */
         $breadcrumb = array_shift($result);
-        $this->assertSame('Root', $breadcrumb->getName());
+        $this->assertSame($rootTranslation, $breadcrumb->getName());
         $this->assertTrue($breadcrumb->isActive());
     }
 
@@ -46,8 +56,16 @@ class BreadcrumbServiceTest extends TestCase
             ->with($folderId)
             ->willReturn($folderMediaStub);
 
+        $rootTranslation = uniqid('rootTranslation');
+        $shopAdapterMock = $this->createStub(ShopAdapterInterface::class);
+        $shopAdapterMock->method('translateString')
+            ->willReturnMap([
+                ['DD_MEDIA_BREADCRUMB_ROOT', $rootTranslation],
+            ]);
+
         $sut = $this->getSut(
             mediaRepository: $mediaRepositoryMock,
+            shopAdapter: $shopAdapterMock,
         );
 
         $result = $sut->getBreadcrumbs($folderId);
@@ -55,7 +73,7 @@ class BreadcrumbServiceTest extends TestCase
         $this->assertSame(2, count($result));
 
         $breadcrumb = array_shift($result);
-        $this->assertSame('Root', $breadcrumb->getName());
+        $this->assertSame($rootTranslation, $breadcrumb->getName());
         $this->assertFalse($breadcrumb->isActive());
 
         $breadcrumb = array_shift($result);
@@ -65,11 +83,14 @@ class BreadcrumbServiceTest extends TestCase
 
     private function getSut(
         ?MediaRepositoryInterface $mediaRepository = null,
+        ?ShopAdapterInterface $shopAdapter = null,
     ): BreadcrumbServiceInterface {
         $mediaRepository ??= $this->createStub(MediaRepositoryInterface::class);
+        $shopAdapter ??= $this->createStub(ShopAdapterInterface::class);
 
         return new BreadcrumbService(
             mediaRepository: $mediaRepository,
+            shopAdapter: $shopAdapter,
         );
     }
 }

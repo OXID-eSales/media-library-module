@@ -9,13 +9,15 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Breadcrumb\Service;
 
+use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Breadcrumb\DataType\Breadcrumb;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 
 class BreadcrumbService implements BreadcrumbServiceInterface
 {
     public function __construct(
-        private MediaRepositoryInterface $mediaRepository
+        private MediaRepositoryInterface $mediaRepository,
+        private ShopAdapterInterface $shopAdapter,
     ) {
     }
 
@@ -23,9 +25,9 @@ class BreadcrumbService implements BreadcrumbServiceInterface
     {
         $result = [];
 
-        // todo-high: translation for Root
+        $rootName = $this->shopAdapter->translateString('DD_MEDIA_BREADCRUMB_ROOT');
         $result[] = new Breadcrumb(
-            name: 'Root',
+            name: $rootName,
             active: !$folderId
         );
 
