@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [5.2.0] - Unreleased
+## [5.2.0] - 2026-10-08
 
 ### Added
 - Changes from 4.3.0
@@ -192,7 +192,7 @@ Module extracted from wysiwyg module, and used by it now
 - Thumbnails are generated on demand and the type of thumbnail file is matching the original image type
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
-[5.2.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.1.0..b-7.5.x
+[5.2.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.1.0..v5.2.0
 [5.1.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.0.0..v5.1.0
 [5.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.1.0..v5.0.0
 [4.3.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.2.0..v4.3.0
