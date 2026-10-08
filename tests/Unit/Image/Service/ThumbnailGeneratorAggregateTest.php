@@ -15,12 +15,14 @@ use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregate;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregateInterface;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ThumbnailGeneratorAggregate::class)]
 class ThumbnailGeneratorAggregateTest extends TestCase
 {
-    public function testConstructorDoesNotAcceptWrongType(): void
+    #[Test]
+    public function constructorDoesNotAcceptWrongType(): void
     {
         $this->expectException(AggregatorInputType::class);
         $this->getSut(
@@ -28,7 +30,8 @@ class ThumbnailGeneratorAggregateTest extends TestCase
         );
     }
 
-    public function testGetSupportedThumbnailGenerator(): void
+    #[Test]
+    public function getSupportedGeneratorReturnsFirstSupportedGenerator(): void
     {
         $filePath = uniqid();
 
@@ -52,7 +55,8 @@ class ThumbnailGeneratorAggregateTest extends TestCase
         $this->assertSame($expectedGeneratorStub, $sut->getSupportedGenerator($filePath));
     }
 
-    public function testNoSupportedDriversExceptionCase(): void
+    #[Test]
+    public function getSupportedGeneratorThrowsIfNoGeneratorSupportsSource(): void
     {
         $sut = $this->getSut(
             thumbnailGenerators: [],

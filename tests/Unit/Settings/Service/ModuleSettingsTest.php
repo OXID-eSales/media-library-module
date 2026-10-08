@@ -14,13 +14,15 @@ use OxidEsales\MediaLibrary\Module;
 use OxidEsales\MediaLibrary\Settings\Service\ModuleSettings;
 use OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\String\UnicodeString;
 
 #[CoversClass(ModuleSettings::class)]
 class ModuleSettingsTest extends TestCase
 {
-    public function testGetAlternativeImageUrl(): void
+    #[Test]
+    public function getAlternativeImageUrl(): void
     {
         $sut = $this->getSut(
             moduleSettingService: $settingService = $this->createMock(ModuleSettingServiceInterface::class)
@@ -34,7 +36,8 @@ class ModuleSettingsTest extends TestCase
         $this->assertEquals($expectedResult, $sut->getAlternativeImageUrl());
     }
 
-    public function testGetAllowedExtensions(): void
+    #[Test]
+    public function getAllowedExtensions(): void
     {
         $sut = $this->getSut(
             moduleSettingService: $settingService = $this->createMock(ModuleSettingServiceInterface::class)

@@ -15,12 +15,14 @@ use OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChain;
 use OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChainInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(DocumentNameValidatorChain::class)]
 class FileNameValidatorChainTest extends TestCase
 {
-    public function testConstructorDoesNotAcceptWrongType(): void
+    #[Test]
+    public function constructorDoesNotAcceptWrongType(): void
     {
         $this->expectException(ChainInputTypeException::class);
         $this->getSut(
@@ -28,7 +30,8 @@ class FileNameValidatorChainTest extends TestCase
         );
     }
 
-    public function testValidateFileWorksIfNoExceptionsThrown(): void
+    #[Test]
+    public function validateDocumentNamePassesIfNoValidatorThrows(): void
     {
         $validatorStub = $this->createStub(FilePathValidatorInterface::class);
 
@@ -40,7 +43,8 @@ class FileNameValidatorChainTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    public function testExceptionOnValidatorException(): void
+    #[Test]
+    public function validateDocumentNameRethrowsValidatorException(): void
     {
         $fileName = uniqid();
 

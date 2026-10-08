@@ -15,11 +15,13 @@ use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(SvgDriver::class)]
 class SvgDriverTest extends IntegrationTestCase
 {
-    public function testGenerateThumbnail(): void
+    #[Test]
+    public function generateThumbnail(): void
     {
         $sut = $this->getSut(
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class)
@@ -38,7 +40,8 @@ class SvgDriverTest extends IntegrationTestCase
         );
     }
 
-    public function testIsOriginSupported(): void
+    #[Test]
+    public function isOriginSupported(): void
     {
         $sut = $this->getSut();
         $this->assertTrue($sut->isOriginSupported('xxx/someSvgPath.svg'));
@@ -49,7 +52,8 @@ class SvgDriverTest extends IntegrationTestCase
     }
 
     #[DataProvider('getThumbnailFileNameDataProvider')]
-    public function testGetThumbnailFileName(
+    #[Test]
+    public function getThumbnailFileName(
         string $originalFileName,
         string $expectedName
     ): void {
@@ -75,7 +79,8 @@ class SvgDriverTest extends IntegrationTestCase
         ];
     }
 
-    public function testGetThumbnailsGlob(): void
+    #[Test]
+    public function getThumbnailsGlob(): void
     {
         $sut = $this->getSut();
 

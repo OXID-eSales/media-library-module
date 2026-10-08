@@ -16,12 +16,14 @@ use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(BreadcrumbService::class)]
 class BreadcrumbServiceTest extends TestCase
 {
-    public function testEmptyFolderId(): void
+    #[Test]
+    public function emptyFolderIdReturnsActiveRootOnly(): void
     {
         $rootTranslation = uniqid('rootTranslation');
         $shopAdapterMock = $this->createStub(ShopAdapterInterface::class);
@@ -44,7 +46,8 @@ class BreadcrumbServiceTest extends TestCase
         $this->assertTrue($breadcrumb->isActive());
     }
 
-    public function testWithFolderId(): void
+    #[Test]
+    public function folderIdReturnsRootAndActiveFolder(): void
     {
         $folderMediaStub = $this->createConfiguredStub(MediaInterface::class, [
             'getFileName' => $folderName = uniqid('folderName'),

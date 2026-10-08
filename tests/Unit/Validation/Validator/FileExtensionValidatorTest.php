@@ -14,12 +14,14 @@ use OxidEsales\MediaLibrary\Settings\Service\ModuleSettingsInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Validator\FileExtensionValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class FileExtensionValidatorTest extends TestCase
 {
     #[DataProvider('goodFileNamesDataProvider')]
-    public function testAllowedExtensionDoesNotThrowExceptions(string $fileName): void
+    #[Test]
+    public function allowedExtensionDoesNotThrowExceptions(string $fileName): void
     {
         $sut = $this->getSut();
 
@@ -44,7 +46,8 @@ class FileExtensionValidatorTest extends TestCase
     }
 
     #[DataProvider('wrongFileNamesDataProvider')]
-    public function testWrongFileNameCasesThrowsExceptions(string $fileName): void
+    #[Test]
+    public function wrongFileNameCasesThrowExceptions(string $fileName): void
     {
         $sut = $this->getSut();
 

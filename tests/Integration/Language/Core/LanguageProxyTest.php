@@ -13,12 +13,14 @@ use OxidEsales\Eshop\Core\Language as ShopLanguage;
 use OxidEsales\MediaLibrary\Language\Core\LanguageExtension;
 use OxidEsales\MediaLibrary\Language\Core\LanguageProxy;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(LanguageExtension::class)]
 class LanguageProxyTest extends TestCase
 {
-    public function testGetLanguageStringsArray(): void
+    #[Test]
+    public function getLanguageStringsArray(): void
     {
         $exampleLanguageStrings = [
             'key1' => 'value1',

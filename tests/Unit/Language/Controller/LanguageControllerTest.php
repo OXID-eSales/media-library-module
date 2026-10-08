@@ -12,13 +12,15 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Language\Controller;
 use OxidEsales\MediaLibrary\Language\Controller\LanguageController;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[CoversClass(LanguageController::class)]
 class LanguageControllerTest extends TestCase
 {
-    public function testGetTranslationsReturnsLanguageStringsAsJson(): void
+    #[Test]
+    public function getTranslationsReturnsLanguageStringsAsJson(): void
     {
         $languageStrings = [
             'SOME_KEY' => 'Some translation',

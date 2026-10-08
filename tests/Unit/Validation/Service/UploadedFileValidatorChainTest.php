@@ -16,12 +16,14 @@ use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(UploadedFileValidatorChain::class)]
 class UploadedFileValidatorChainTest extends TestCase
 {
-    public function testConstructorDoesNotAcceptWrongType(): void
+    #[Test]
+    public function constructorDoesNotAcceptWrongType(): void
     {
         $this->expectException(ChainInputTypeException::class);
         $this->getSut(
@@ -29,7 +31,8 @@ class UploadedFileValidatorChainTest extends TestCase
         );
     }
 
-    public function testValidateFileWorksIfNoExceptionsThrown(): void
+    #[Test]
+    public function validateFilePassesIfNoValidatorThrows(): void
     {
         $fileStub = $this->createStub(UploadedFileInterface::class);
         $validatorStub = $this->createStub(FilePathValidatorInterface::class);
@@ -42,7 +45,8 @@ class UploadedFileValidatorChainTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    public function testExceptionOnValidatorException(): void
+    #[Test]
+    public function validateFileRethrowsValidatorException(): void
     {
         $fileStub = $this->createStub(UploadedFileInterface::class);
 

@@ -13,18 +13,21 @@ use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\DefaultDriver;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(DefaultDriver::class)]
 class DefaultDriverTest extends TestCase
 {
-    public function testIsOriginSupportedAlwaysReturnTrue(): void
+    #[Test]
+    public function isOriginSupportedAlwaysReturnsTrue(): void
     {
         $sut = $this->getSut();
         $this->assertTrue($sut->isOriginSupported(uniqid()));
     }
 
-    public function testGetThumbnailFileNameReturnsDefaultValue(): void
+    #[Test]
+    public function getThumbnailFileNameReturnsDefaultValue(): void
     {
         $sut = $this->getSut();
         $this->assertSame(
@@ -37,7 +40,8 @@ class DefaultDriverTest extends TestCase
         );
     }
 
-    public function testGetThumbnailsGlob(): void
+    #[Test]
+    public function getThumbnailsGlob(): void
     {
         $sut = $this->getSut();
         $this->assertSame(

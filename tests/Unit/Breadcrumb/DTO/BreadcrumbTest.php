@@ -11,12 +11,14 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Breadcrumb\DTO;
 
 use OxidEsales\MediaLibrary\Breadcrumb\DTO\Breadcrumb;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Breadcrumb::class)]
 class BreadcrumbTest extends TestCase
 {
-    public function testGetters(): void
+    #[Test]
+    public function getters(): void
     {
         $name = uniqid();
 

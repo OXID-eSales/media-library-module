@@ -20,7 +20,8 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(Response::class)]
 class ResponseTest extends TestCase
 {
-    public function testRespondAsJson(): void
+    #[Test]
+    public function respondAsJson(): void
     {
         $exampleData = ['somekey' => 'someValue'];
         $jsonValue = json_encode($exampleData);
@@ -56,7 +57,8 @@ class ResponseTest extends TestCase
         $sut->responseAsJson($data);
     }
 
-    public function testErrorRespondAsJson(): void
+    #[Test]
+    public function errorRespondAsJson(): void
     {
         $exampleData = ['somekey' => 'someValue'];
         $jsonValue = json_encode($exampleData);
@@ -87,7 +89,8 @@ class ResponseTest extends TestCase
         $this->assertSame(0b11, $correctHeaderSet);
     }
 
-    public function testRespondAsJavaScript(): void
+    #[Test]
+    public function respondAsJavaScript(): void
     {
         $exampleData = 'someJavaScriptCodeExample';
 
@@ -111,7 +114,8 @@ class ResponseTest extends TestCase
         $this->assertTrue($correctHeaderSet);
     }
 
-    public function testRespondAsText(): void
+    #[Test]
+    public function respondAsText(): void
     {
         $exampleData = 'someTextExample';
 

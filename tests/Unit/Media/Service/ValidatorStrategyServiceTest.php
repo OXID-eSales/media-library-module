@@ -17,12 +17,14 @@ use OxidEsales\MediaLibrary\Validation\Service\DirectoryNameValidatorChainInterf
 use OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChainInterface;
 use OxidEsales\MediaLibrary\Validation\Service\FileNameValidatorChainInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ValidatorStrategyService::class)]
 class ValidatorStrategyServiceTest extends TestCase
 {
-    public function testGetMediaValidatorReturnsDirectoryValidatorIfMediaIsDirectory(): void
+    #[Test]
+    public function getValidatorChainByMediaIdReturnsDirectoryValidatorChainForDirectory(): void
     {
         $fileNameValidatorChain = $this->createStub(FileNameValidatorChainInterface::class);
         $directoryNameValidatorChain = $this->createStub(DirectoryNameValidatorChainInterface::class);
@@ -47,7 +49,8 @@ class ValidatorStrategyServiceTest extends TestCase
         $this->assertSame($directoryNameValidatorChain, $sut->getValidatorChainByMediaId($exampleMediaId));
     }
 
-    public function testGetMediaValidatorReturnsFileValidatorIfMediaIsDirectory(): void
+    #[Test]
+    public function getValidatorChainByMediaIdReturnsFileValidatorChainForFile(): void
     {
         $fileNameValidatorChain = $this->createStub(FileNameValidatorChainInterface::class);
         $directoryNameValidatorChain = $this->createStub(DirectoryNameValidatorChainInterface::class);

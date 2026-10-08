@@ -13,11 +13,13 @@ use OxidEsales\MediaLibrary\Language\Controller\MediaLangJs;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(MediaLangJs::class)]
 class MediaLangJsTest extends \PHPUnit\Framework\TestCase
 {
-    public function testInit(): void
+    #[Test]
+    public function initRespondsWithTranslationsAsJavaScript(): void
     {
         $exampleLanguageKeys = ['key' => 'value'];
         $languageMock = $this->createMock(LanguageInterface::class);

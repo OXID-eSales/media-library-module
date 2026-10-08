@@ -13,12 +13,14 @@ use OxidEsales\MediaLibrary\Transput\RequestData\UIRequest;
 use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use OxidEsales\MediaLibrary\Transput\RequestInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(UIRequest::class)]
 class UIRequestTest extends TestCase
 {
-    public function testIsPopup(): void
+    #[Test]
+    public function isPopup(): void
     {
         $requestExampleValue = (bool)rand(0, 1);
 
@@ -33,7 +35,8 @@ class UIRequestTest extends TestCase
         $this->assertSame($requestExampleValue, $sut->isPopout());
     }
 
-    public function testGetMediaIds(): void
+    #[Test]
+    public function getMediaIds(): void
     {
         $requestExampleValue = [uniqid(), uniqid()];
 
@@ -48,7 +51,8 @@ class UIRequestTest extends TestCase
         $this->assertSame($requestExampleValue, $sut->getMediaIds());
     }
 
-    public function testGetFolderId(): void
+    #[Test]
+    public function getFolderId(): void
     {
         $requestExampleValue = uniqid();
 
@@ -63,7 +67,8 @@ class UIRequestTest extends TestCase
         $this->assertSame($requestExampleValue, $sut->getFolderId());
     }
 
-    public function testGetTabName(): void
+    #[Test]
+    public function getTabName(): void
     {
         $requestExampleValue = uniqid();
 
@@ -78,7 +83,8 @@ class UIRequestTest extends TestCase
         $this->assertSame($requestExampleValue, $sut->getTabName());
     }
 
-    public function testGetMediaListStartIndex(): void
+    #[Test]
+    public function getMediaListStartIndex(): void
     {
         $requestExampleValue = rand(0, 1000);
 
@@ -93,7 +99,8 @@ class UIRequestTest extends TestCase
         $this->assertSame($requestExampleValue, $sut->getMediaListStartIndex());
     }
 
-    public function testGetUploadedFile(): void
+    #[Test]
+    public function getUploadedFile(): void
     {
         $fileName = uniqid();
 

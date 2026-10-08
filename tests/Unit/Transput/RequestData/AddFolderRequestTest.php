@@ -13,12 +13,14 @@ use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequest;
 use OxidEsales\MediaLibrary\Transput\RequestData\AddFolderRequestInterface;
 use OxidEsales\MediaLibrary\Transput\RequestInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(AddFolderRequest::class)]
 class AddFolderRequestTest extends TestCase
 {
-    public function testGetName(): void
+    #[Test]
+    public function getName(): void
     {
         $requestExampleValue = uniqid();
 

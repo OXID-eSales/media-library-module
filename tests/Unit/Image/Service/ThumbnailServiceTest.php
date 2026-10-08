@@ -19,12 +19,14 @@ use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ThumbnailService::class)]
 class ThumbnailServiceTest extends TestCase
 {
-    public function testDeleteMediaThumbnailsTriggersFilesystemDeleteByGlob(): void
+    #[Test]
+    public function deleteMediaThumbnailsTriggersFilesystemDeleteByGlob(): void
     {
         $sut = $this->getSut(
             thumbnailResource: $thumbnailResourceStub = $this->createStub(ThumbnailResourceInterface::class),
@@ -51,7 +53,8 @@ class ThumbnailServiceTest extends TestCase
         $sut->deleteMediaThumbnails($mediaStub);
     }
 
-    public function testGetThumbnailUrlTriggerDefaultThumbnailCreation(): void
+    #[Test]
+    public function getThumbnailUrlTriggersDefaultThumbnailCreation(): void
     {
         $vfsRootPath = vfsStream::setup('root', 0777, [])->url();
 

@@ -17,6 +17,7 @@ use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionDriver;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Log\LoggerInterface;
 
 #[CoversClass(InterventionDriver::class)]
@@ -49,7 +50,8 @@ class InterventionDriverTest extends IntegrationTestCase
     }
 
     #[DataProvider('getThumbnailDataProvider')]
-    public function testGenerateThumbnail(
+    #[Test]
+    public function generateThumbnail(
         $sourceWidth,
         $sourceHeight,
         $thumbnailSize,
@@ -79,7 +81,8 @@ class InterventionDriverTest extends IntegrationTestCase
         self::assertSame($expectedThumbnailHeight, $resultThumbnailImage->height());
     }
 
-    public function testInterventionExceptionDoesntExplodeButLogsError(): void
+    #[Test]
+    public function interventionExceptionDoesntExplodeButLogsError(): void
     {
         $loggerSpy = $this->createMock(LoggerInterface::class);
         $loggerSpy->expects($this->once())->method('error');
@@ -152,7 +155,8 @@ class InterventionDriverTest extends IntegrationTestCase
     }
 
     #[DataProvider('fileTypesDataProvider')]
-    public function testIsOriginSupported(string $filePath, bool $expectedResult): void
+    #[Test]
+    public function isOriginSupported(string $filePath, bool $expectedResult): void
     {
         $sut = $this->getSut();
 
@@ -224,7 +228,8 @@ class InterventionDriverTest extends IntegrationTestCase
     }
 
     #[DataProvider('getThumbnailFileNameDataProvider')]
-    public function testGetThumbnailFileName(
+    #[Test]
+    public function getThumbnailFileName(
         string $originalFileName,
         ImageSizeInterface $thumbnailSize,
         bool $crop,
@@ -283,7 +288,8 @@ class InterventionDriverTest extends IntegrationTestCase
         ];
     }
 
-    public function testGetThumbnailsGlob(): void
+    #[Test]
+    public function getThumbnailsGlob(): void
     {
         $sut = $this->getSut();
 

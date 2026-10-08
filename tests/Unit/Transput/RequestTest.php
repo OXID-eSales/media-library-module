@@ -14,13 +14,15 @@ use OxidEsales\MediaLibrary\Transput\Request;
 use OxidEsales\MediaLibrary\Transput\RequestInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Request::class)]
 class RequestTest extends TestCase
 {
     #[DataProvider('requestOnlyStringDataProvider')]
-    public function testGetStringRequestParameter(
+    #[Test]
+    public function getStringRequestParameter(
         mixed $requestValue,
         ?string $defaultValue,
         string $expectedValue
@@ -57,7 +59,8 @@ class RequestTest extends TestCase
     }
 
     #[DataProvider('requestArrayDataProvider')]
-    public function testGetArrayRequestParameter(mixed $requestValue, array $expectedValue): void
+    #[Test]
+    public function getArrayRequestParameter(mixed $requestValue, array $expectedValue): void
     {
         $paramName = uniqid();
 
@@ -85,7 +88,8 @@ class RequestTest extends TestCase
     }
 
     #[DataProvider('requestBoolDataProvider')]
-    public function testGetBoolRequestParameter($requestValue, $expectedValue): void
+    #[Test]
+    public function getBoolRequestParameter($requestValue, $expectedValue): void
     {
         $paramName = uniqid();
 
@@ -113,7 +117,8 @@ class RequestTest extends TestCase
     }
 
     #[DataProvider('getIntDataProvider')]
-    public function testGetIntRequestParameter($requestValue, $expectedValue): void
+    #[Test]
+    public function getIntRequestParameter($requestValue, $expectedValue): void
     {
         $paramName = uniqid();
 

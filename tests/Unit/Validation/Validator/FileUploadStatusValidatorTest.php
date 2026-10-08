@@ -15,12 +15,14 @@ use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\FileUploadStatusValidator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(FileUploadStatusValidator::class)]
 class FileUploadStatusValidatorTest extends TestCase
 {
-    public function testValidationPassesIfFileExist(): void
+    #[Test]
+    public function validationPassesIfFileExist(): void
     {
         $root = vfsStream::setup('root', 0777, [
             'file1.txt' => 'content1',
@@ -36,7 +38,8 @@ class FileUploadStatusValidatorTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    public function testValidationThrowsExceptionIfFileDoesNotExist(): void
+    #[Test]
+    public function validationThrowsExceptionIfFileDoesNotExist(): void
     {
         $file = $this->createConfiguredStub(FilePathInterface::class, [
             'getPath' => 'notExistingFilePath',

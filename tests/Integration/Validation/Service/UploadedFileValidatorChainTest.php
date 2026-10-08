@@ -12,11 +12,13 @@ namespace OxidEsales\MediaLibrary\Tests\Integration\Validation\Service;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(UploadedFileValidatorChain::class)]
 class UploadedFileValidatorChainTest extends \OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase
 {
-    public function testInitialization(): void
+    #[Test]
+    public function initialization(): void
     {
         $sut = $this->getSut();
         $this->assertInstanceOf(UploadedFileValidatorChainInterface::class, $sut);

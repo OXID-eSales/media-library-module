@@ -18,12 +18,14 @@ use OxidEsales\MediaLibrary\Service\FolderService;
 use OxidEsales\MediaLibrary\Service\FolderServiceInterface;
 use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(FolderService::class)]
 class FolderServiceTest extends TestCase
 {
-    public function testCreateCustomDir(): void
+    #[Test]
+    public function createCustomDir(): void
     {
         $uniqueId = 'someUniqueId';
         $shopAdapterMock = $this->createStub(ShopAdapterInterface::class);

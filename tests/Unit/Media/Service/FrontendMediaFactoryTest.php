@@ -17,12 +17,14 @@ use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactory;
 use OxidEsales\MediaLibrary\Media\Service\FrontendMediaFactoryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(FrontendMediaFactory::class)]
 class FrontendMediaFactoryTest extends TestCase
 {
-    public function testFactory(): void
+    #[Test]
+    public function createFromMedia(): void
     {
         $thumbnailService = $this->createMock(ThumbnailServiceInterface::class);
         $sut = $this->getSut(
@@ -53,7 +55,8 @@ class FrontendMediaFactoryTest extends TestCase
         $this->assertEquals($expected, $sut->createFromMedia($mediaStub));
     }
 
-    public function testThumbnailEmptyForFolder(): void
+    #[Test]
+    public function thumbnailEmptyForFolder(): void
     {
         $thumbnailServiceSpy = $this->createMock(ThumbnailServiceInterface::class);
         $sut = $this->getSut(

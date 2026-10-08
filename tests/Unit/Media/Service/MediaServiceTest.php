@@ -63,7 +63,8 @@ class MediaServiceTest extends TestCase
         );
     }
 
-    public function testDeleteRegularMedia(): void
+    #[Test]
+    public function deleteRegularMedia(): void
     {
         $sut = $this->getSut(
             mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
@@ -96,7 +97,8 @@ class MediaServiceTest extends TestCase
         $sut->deleteMedia($exampleMedia);
     }
 
-    public function testDeleteRemovesNothingWhenThePolicyRefuses(): void
+    #[Test]
+    public function deleteRemovesNothingWhenThePolicyRefuses(): void
     {
         $restrictedId = uniqid();
         $deletableId = uniqid();
@@ -123,7 +125,8 @@ class MediaServiceTest extends TestCase
         $sut->delete([$deletableId, $restrictedId]);
     }
 
-    public function testDeleteIgnoresMediaThatIsAlreadyGone(): void
+    #[Test]
+    public function deleteIgnoresMediaThatIsAlreadyGone(): void
     {
         $sut = $this->getSut(
             mediaRepository: $repositoryStub = $this->createMock(MediaRepositoryInterface::class),
@@ -135,7 +138,8 @@ class MediaServiceTest extends TestCase
         $sut->delete([uniqid()]);
     }
 
-    public function testRename(): void
+    #[Test]
+    public function rename(): void
     {
         $sut = $this->getSut(
             namingService: $namingMock = $this->createMock(NamingServiceInterface::class),
@@ -184,7 +188,8 @@ class MediaServiceTest extends TestCase
         $this->assertSame($renameResultStub, $sut->rename($mediaId, $newMediaNameInput));
     }
 
-    public function testMoveToFolder(): void
+    #[Test]
+    public function moveToFolder(): void
     {
         $sut = $this->getSut(
             mediaRepository: $repositorySpy = $this->createMock(MediaRepositoryInterface::class),
@@ -238,7 +243,8 @@ class MediaServiceTest extends TestCase
         $sut->moveToFolder($mediaId, $newFolderId);
     }
 
-    public function testUploadNew(): void
+    #[Test]
+    public function uploadNew(): void
     {
         $sut = $this->getSut(
             namingService: $namingMock = $this->createMock(NamingServiceInterface::class),
@@ -351,7 +357,8 @@ class MediaServiceTest extends TestCase
         $sut->upload($uploadedFilePath, $folderId, $maliciousFileName);
     }
 
-    public function testGetMediaById(): void
+    #[Test]
+    public function getMediaById(): void
     {
         $sut = $this->getSut(
             mediaRepository: $mediaRepositoryStub = $this->createStub(MediaRepositoryInterface::class)

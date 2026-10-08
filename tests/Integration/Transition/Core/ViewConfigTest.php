@@ -14,11 +14,13 @@ use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 use OxidEsales\MediaLibrary\Transition\Core\ViewConfig;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(ViewConfig::class)]
 class ViewConfigTest extends IntegrationTestCase
 {
-    public function testGetMediaUrl(): void
+    #[Test]
+    public function getMediaUrl(): void
     {
         $imageResourceMock = $this->createMock(MediaResourceInterface::class);
         $imageResourceMock->method('getUrlToMediaFiles')->willReturn('someFilePath');
@@ -30,7 +32,8 @@ class ViewConfigTest extends IntegrationTestCase
         $this->assertSame('someFilePath', $sut->getMediaUrl());
     }
 
-    public function testFormJsFileUrl(): void
+    #[Test]
+    public function formJsFileUrl(): void
     {
         $config = Registry::getConfig();
         $file = tempnam($config->getConfigParam('sShopDir'), 'test_');
