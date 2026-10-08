@@ -9,5 +9,5 @@ interface BreadcrumbServiceInterface
     /**
      * @return array<BreadcrumbInterface>
      */
-    public function getBreadcrumbsByRequest(): array;
+    public function getBreadcrumbs(string $folderId): array;
 }

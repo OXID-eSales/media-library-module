@@ -75,7 +75,7 @@ class MediaController extends AdminDetailsController
         $this->addTplParam('sFoldername', $folderName);
 
         $breadcrumbService = $this->getService(BreadcrumbServiceInterface::class);
-        $this->addTplParam('breadcrumbs', $breadcrumbService->getBreadcrumbsByRequest());
+        $this->addTplParam('breadcrumbs', $breadcrumbService->getBreadcrumbs($folderId));
 
         $this->addTplParam('request', $uiRequest);
         $this->addTplParam('sTab', $uiRequest->getTabName());

@@ -9,6 +9,9 @@ namespace OxidEsales\MediaLibrary\Transput\RequestData;
 
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 
+/**
+ * @todo-medium: segregation
+ */
 interface UIRequestInterface
 {
     public function isOverlay(): bool;

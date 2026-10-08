@@ -11,21 +11,19 @@ namespace OxidEsales\MediaLibrary\Breadcrumb\Service;
 
 use OxidEsales\MediaLibrary\Breadcrumb\DataType\Breadcrumb;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
-use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 
 class BreadcrumbService implements BreadcrumbServiceInterface
 {
     public function __construct(
-        private UIRequestInterface $request,
         private MediaRepositoryInterface $mediaRepository
     ) {
     }
 
-    public function getBreadcrumbsByRequest(): array
+    public function getBreadcrumbs(string $folderId): array
     {
         $result = [];
-        $folderId = $this->request->getFolderId();
 
+        // todo-high: translation for Root
         $result[] = new Breadcrumb(
             name: 'Root',
             active: !$folderId

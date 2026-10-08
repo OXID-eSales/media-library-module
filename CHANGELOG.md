@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `declare(strict_types=1)` is used in all module classes now, so wrong scalar types inside the module throw a `TypeError` instead of being silently converted; code calling the module is not affected
 - `MediaWrapperController` extends `AdminDetailsController` instead of `MediaController` now, as it did not use any of the media dialog functionality
 - Show loading icon instead of empty interface preload
+- `BreadcrumbServiceInterface::getBreadcrumbsByRequest()` replaced by `getBreadcrumbs(string $folderId)` - the folder id is passed by the caller instead of being read from the request; an empty folder id returns the root breadcrumb only
 
 ### Deprecated
 - `MediaLangJs` controller (`ddoelangjs`) - use the `GET /api/oeml-translations` route instead
