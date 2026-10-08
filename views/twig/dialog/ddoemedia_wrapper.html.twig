@@ -39,7 +39,7 @@
     {% endif %}
 
     <div class="dd-content">
-        {% include "@ddoemedialibrary/dialog/ddoemedia.html.twig" %}
+        <div class="dd-dialog-loader"></div>
     </div>
 
     {% set sActionLink = oViewConf.getSelfLink()|replace({'&amp;':'&'})|cat('overlay=' ~ request.isOverlay() ~ '&') %}
@@ -55,6 +55,8 @@
 
                 MediaLibrary.setActionLink("{{ sActionLink|raw }}");
                 MediaLibrary.setResourceLink("{{ sMediaLink }}");
+
+                // todo-high: find out how this filter part can be dropped from here as its not used in the module itself
                 const regexPattern = new RegExp("image/.*", "i");
                 MediaLibrary.init({filter: regexPattern}, null);
             } catch (error) {
