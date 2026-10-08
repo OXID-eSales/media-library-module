@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [6.0.0] - unreleased
+## [6.0.0] - 2026-10-08
 
 ### Added
 - `MediaLookupContextInterface` and `MediaLookupContext`, letting a caller describe which feature requested a media item
@@ -217,7 +217,7 @@ Module extracted from wysiwyg module, and used by it now
 - Thumbnails are generated on demand and the type of thumbnail file is matching the original image type
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
-[6.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.2.0..b-7.6.x
+[6.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.2.0..v6.0.0
 [5.2.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.1.0..v5.2.0
 [5.1.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.0.0..v5.1.0
 [5.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v4.1.0..v5.0.0
