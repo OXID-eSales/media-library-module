@@ -2,7 +2,7 @@
 
 namespace OxidEsales\MediaLibrary\Breadcrumb\Service;
 
-use OxidEsales\MediaLibrary\Breadcrumb\DataType\BreadcrumbInterface;
+use OxidEsales\MediaLibrary\Breadcrumb\DTO\BreadcrumbInterface;
 
 interface BreadcrumbServiceInterface
 {

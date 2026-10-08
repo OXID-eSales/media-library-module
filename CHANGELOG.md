@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Show loading icon instead of empty interface preload
 - `BreadcrumbServiceInterface::getBreadcrumbsByRequest()` replaced by `getBreadcrumbs(string $folderId)` - the folder id is passed by the caller instead of being read from the request; an empty folder id returns the root breadcrumb only
 - The "Root" breadcrumb in the media library is translated now
+- `Breadcrumb\DataType` namespace renamed to `Breadcrumb\DTO` - `Breadcrumb` and `BreadcrumbInterface` moved accordingly
 
 ### Deprecated
 - `MediaLangJs` controller (`ddoelangjs`) - use the `GET /api/oeml-translations` route instead

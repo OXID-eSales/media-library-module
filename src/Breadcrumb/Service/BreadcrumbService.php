@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Breadcrumb\Service;
 
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
-use OxidEsales\MediaLibrary\Breadcrumb\DataType\Breadcrumb;
+use OxidEsales\MediaLibrary\Breadcrumb\DTO\Breadcrumb;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 
 class BreadcrumbService implements BreadcrumbServiceInterface

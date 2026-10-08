@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Breadcrumb\DataType;
+namespace OxidEsales\MediaLibrary\Breadcrumb\DTO;
 
 class Breadcrumb implements BreadcrumbInterface
 {

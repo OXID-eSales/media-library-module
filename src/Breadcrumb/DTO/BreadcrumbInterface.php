@@ -1,6 +1,6 @@
 <?php
 
-namespace OxidEsales\MediaLibrary\Breadcrumb\DataType;
+namespace OxidEsales\MediaLibrary\Breadcrumb\DTO;
 
 interface BreadcrumbInterface
 {

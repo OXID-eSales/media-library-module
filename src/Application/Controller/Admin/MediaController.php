@@ -31,6 +31,8 @@ use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 
 /**
  * Class MediaController
+ *
+ * @todo-medium Rework to api routes with DI
  */
 class MediaController extends AdminDetailsController
 {

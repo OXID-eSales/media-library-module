@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Breadcrumb\Service;
 
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
-use OxidEsales\MediaLibrary\Breadcrumb\DataType\BreadcrumbInterface;
+use OxidEsales\MediaLibrary\Breadcrumb\DTO\BreadcrumbInterface;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbService;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;

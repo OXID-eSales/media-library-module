@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\MediaLibrary\Tests\Unit\Breadcrumb\DataType;
+namespace OxidEsales\MediaLibrary\Tests\Unit\Breadcrumb\DTO;
 
-use OxidEsales\MediaLibrary\Breadcrumb\DataType\Breadcrumb;
+use OxidEsales\MediaLibrary\Breadcrumb\DTO\Breadcrumb;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
