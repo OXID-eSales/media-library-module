@@ -3,7 +3,7 @@ imports:
   - { resource: src/Compatibility/services.yaml }
   - { resource: src/Image/Service/services.yaml }
   - { resource: src/Image/ThumbnailGenerator/services.yaml }
-  - { resource: src/Language/Core/services.yaml }
+  - { resource: src/Language/services.yaml }
   - { resource: src/Media/services.yaml }
   - { resource: src/Service/services.yaml }
   - { resource: src/Settings/services.yaml }

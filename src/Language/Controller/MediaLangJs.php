@@ -13,6 +13,10 @@ use OxidEsales\Eshop\Application\Controller\FrontendController;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 
+/**
+ * @deprecated will be removed in next major use the API route /api/oeml-translations to get
+ * the object with translations. The route will be used with new LanguageInterface in js.
+ */
 class MediaLangJs extends FrontendController
 {
     /**
