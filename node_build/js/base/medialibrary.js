@@ -3,16 +3,17 @@
  * See LICENSE file for license details.
  */
 
+import 'reflect-metadata';
 import '../../scss/base.scss'
 import { Modal } from "bootstrap";
 import { ddh } from './helper.js';
-import { setMediaUrl, setMediaUrlStore } from './mediaService.js';
+import { setMediaUrl, setMediaUrlStore } from './MediaService.ts';
 
 import FileManager from './fileManager.js';
 import UIRenderer from './uiRenderer.js';
 import DragDropHandler from './dragDropHandler.js'
 import MediaContent from "./mediaContent.js";
-import DataStore from "./dataStore.js";
+import DataStore from "./DataStore.ts";
 
 
 class MediaLibraryClass {
@@ -93,7 +94,6 @@ class MediaLibraryClass {
         });
 
         this.store.set(dialog, 'multiple', multiple);
-        this.store.set(dialog, 'filter', filter);
         this.mediaContent.loadMediaContent(dialog);
     }
 
@@ -127,7 +127,6 @@ class MediaLibraryClass {
         const dialog = document.querySelector('.dd-media-wrapper');
 
         this.store.set(dialog, 'multiple', multiple);
-        this.store.set(dialog, 'filter', filter);
 
         // Communicate with Overlay
         if (top.basefrm && top.basefrm.OverlayInstance) {
@@ -241,4 +240,4 @@ class MediaLibraryClass {
 export const MediaLibrary = new MediaLibraryClass();
 window.MediaLibrary = MediaLibrary;
 export { ddh };
-export { getMediaUrl, setMediaUrl, setMediaUrlStore, preloadMediaUrls } from './mediaService.js';
+export { getMediaUrl, setMediaUrl, setMediaUrlStore, preloadMediaUrls } from './MediaService.ts';

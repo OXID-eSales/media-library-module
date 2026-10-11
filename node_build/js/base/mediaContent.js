@@ -62,8 +62,8 @@ export default class MediaContent {
 
     _updateMediaState(dialog) {
         const mediaEl = dialog.querySelector('.dd-media');
-        this.currentFolderId = this.store.get(mediaEl, 'folderid');
-        this.fm.resourceLink = this.store.get(mediaEl, 'medialink');
+        this.currentFolderId = mediaEl.dataset.folderid;
+        this.fm.resourceLink = mediaEl.dataset.medialink;
 
         const prefix = 'out/pictures/';
         this.currentPath = this.fm.resourceLink.substring(this.fm.resourceLink.indexOf(prefix) + prefix.length);
@@ -229,7 +229,7 @@ export default class MediaContent {
 
                 const deleteIDs = Array.from(items).map(item => this.store.get(item, 'id'));
                 const mediaEl = dialog.querySelector('.dd-media');
-                const folderId = mediaEl ? this.store.get(mediaEl, 'folderid'): null;
+                const folderId = mediaEl ? mediaEl.dataset.folderid : null;
 
                 this.fm.removeFiles(deleteIDs, folderId).then((response) => {
                     if (response.success) {
@@ -273,7 +273,7 @@ export default class MediaContent {
         const previewTemplateEl = dialog.querySelector('.dd-media-list-items .dd-media-dz-helper');
 
         new Dropzone(mediaEl, {
-            url: this.fm.uploadUrl(this.store.get(mediaEl, 'folderid')),
+            url: this.fm.uploadUrl(mediaEl.dataset.folderid),
             parallelUploads: 10,
             previewsContainer: previewsContainer,
             previewTemplate: previewTemplateEl ? previewTemplateEl.innerHTML : '',
