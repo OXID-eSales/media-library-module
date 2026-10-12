@@ -3,7 +3,7 @@
  * See LICENSE file for license details.
  */
 
-import {ddh} from './helper.js';
+import {ddh} from './Ddh.ts';
 
 export default class DragDropHandler {
     constructor(fileManager, dataStore) {

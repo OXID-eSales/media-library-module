@@ -4,7 +4,7 @@
  */
 
 import Dropzone from "dropzone";
-import {ddh} from './helper.js';
+import {ddh} from './Ddh.ts';
 
 export default class MediaContent {
     constructor(fileManager, uiRenderer, dragDropHandler, dataStore) {

@@ -29,6 +29,7 @@ $aLang = array(
     'DD_OK'             => 'OK',
     'DD_CONFIRM_DIALOG' => 'Bestätigung erforderlich!',
     'DD_CONFIRM'        => 'Bestätigen',
+    'DD_INFORMATION'    => 'Information',
 
     'DD_MEDIA_DIALOG'                 => 'Mediathek',
     'DD_MEDIA_LIST'                   => 'Medien',

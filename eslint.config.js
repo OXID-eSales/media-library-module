@@ -10,7 +10,6 @@ export default tseslint.config(
             globals: {
                 ...globals.browser,
                 $: 'readonly',
-                i18n: 'readonly',
             },
         },
     },

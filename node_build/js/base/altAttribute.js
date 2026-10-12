@@ -1,5 +1,5 @@
 import FileManager from './fileManager.js';
-import {ddh} from "./helper.js";
+import {ddh} from './Ddh.ts';
 
 class AltAttributeManager {
     constructor(actionLink = '') {

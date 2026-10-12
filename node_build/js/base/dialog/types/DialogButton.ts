@@ -7,7 +7,7 @@ export type DialogButton = {
     /** Complete button markup; when set, label, type and css are ignored. */
     html?: string;
     label?: string;
-    type?: string;
+    type?: 'button' | 'submit' | 'reset';
     css?: string[];
     attributes?: Record<string, string>;
     action?: (modalEl: HTMLElement) => void;

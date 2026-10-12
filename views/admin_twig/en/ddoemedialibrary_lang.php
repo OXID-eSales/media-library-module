@@ -29,6 +29,7 @@ $aLang = array(
     'DD_OK'             => 'OK',
     'DD_CONFIRM_DIALOG' => 'Confirmation required!',
     'DD_CONFIRM'        => 'Confirm',
+    'DD_INFORMATION'    => 'Information',
 
     'DD_MEDIA_DIALOG'                 => 'Media gallery',
     'DD_MEDIA_LIST'                   => 'Media list',

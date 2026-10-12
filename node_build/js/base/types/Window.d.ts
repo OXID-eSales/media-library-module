@@ -9,6 +9,8 @@ declare global {
     interface Window {
         /** Translations, set by the MediaLangJs controller. */
         i18n?: Record<string, string>;
+        /** Enables Logger output. */
+        debug?: boolean;
         /** The admin content frame, reached through `top.basefrm`. */
         basefrm?: Window;
         mediaUrls?: MediaUrlStore;

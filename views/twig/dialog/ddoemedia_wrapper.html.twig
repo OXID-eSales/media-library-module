@@ -55,6 +55,7 @@
 
                 MediaLibrary.setActionLink("{{ sActionLink|raw }}");
                 MediaLibrary.setResourceLink("{{ sMediaLink }}");
+                MediaLibrary.setShopUrl("{{ oViewConf.getShopUrl() }}");
 
                 // todo-high: find out how this filter part can be dropped from here as its not used in the module itself
                 const regexPattern = new RegExp("image/.*", "i");
