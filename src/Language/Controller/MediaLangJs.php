@@ -27,7 +27,7 @@ class MediaLangJs extends FrontendController
         $languages = $this->getService(LanguageInterface::class);
         $responseService = $this->getService(ResponseInterface::class);
 
-        $jsonValue = json_encode($languages->getLanguageStringsArray());
+        $jsonValue = json_encode($languages->getAdminLanguageStringsArray());
         $responseService->responseAsJavaScript(";( function(g){ g.i18n = " . $jsonValue . "; })(window);");
     }
 }

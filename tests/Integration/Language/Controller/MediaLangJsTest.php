@@ -23,7 +23,7 @@ class MediaLangJsTest extends \PHPUnit\Framework\TestCase
     {
         $exampleLanguageKeys = ['key' => 'value'];
         $languageMock = $this->createMock(LanguageInterface::class);
-        $languageMock->method('getLanguageStringsArray')->willReturn($exampleLanguageKeys);
+        $languageMock->method('getAdminLanguageStringsArray')->willReturn($exampleLanguageKeys);
 
         $responseSpy = $this->createMock(ResponseInterface::class);
         $responseSpy->expects($this->once())

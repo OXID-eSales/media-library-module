@@ -9,7 +9,7 @@ namespace OxidEsales\MediaLibrary\Language\Core;
 
 interface LanguageInterface
 {
-    public function getLanguageStringsArray(): array;
+    public function getAdminLanguageStringsArray(): array;
 
     public function getSeoReplaceChars(): array;
 

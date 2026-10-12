@@ -28,7 +28,7 @@ class LanguageControllerTest extends TestCase
         ];
 
         $languageServiceStub = $this->createConfiguredStub(LanguageInterface::class, [
-            'getLanguageStringsArray' => $languageStrings,
+            'getAdminLanguageStringsArray' => $languageStrings,
         ]);
 
         $sut = $this->getSut(

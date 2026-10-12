@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 class LanguageProxyTest extends TestCase
 {
     #[Test]
-    public function getLanguageStringsArray(): void
+    public function getAdminLanguageStringsArray(): void
     {
         $exampleLanguageStrings = [
             'key1' => 'value1',
@@ -33,11 +33,11 @@ class LanguageProxyTest extends TestCase
         $shopLanguageMock->method('getTplLanguage')
             ->willReturn($exampleTplLanguage = rand(0, 100));
         $shopLanguageMock->method('getLanguageStrings')
-            ->with($exampleTplLanguage)
+            ->with($exampleTplLanguage, true)
             ->willReturn($exampleLanguageStrings);
 
         $sut = $this->getSut(shopLanguage: $shopLanguageMock);
-        $this->assertSame($exampleLanguageStrings, $sut->getLanguageStringsArray());
+        $this->assertSame($exampleLanguageStrings, $sut->getAdminLanguageStringsArray());
     }
 
     private function getSut(

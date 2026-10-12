@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [7.0.0] - unreleased
 
 ### Added
-- `GET /api/oeml-translations` shop API route, returning the shop translations of the current session language as JSON (`LanguageController::getTranslations()`)
+- `GET /api/oeml-translations` shop API route, returning the shop translations of the current session template language as JSON (`LanguageController::getTranslations()`)
 
 ### Changed
 - Drop usage of deprecated shop `Request` class from module Request service
@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `BreadcrumbServiceInterface::getBreadcrumbsByRequest()` replaced by `getBreadcrumbs(string $folderId)` - the folder id is passed by the caller instead of being read from the request; an empty folder id returns the root breadcrumb only
 - The "Root" breadcrumb in the media library is translated now
 - `Breadcrumb\DataType` namespace renamed to `Breadcrumb\DTO` - `Breadcrumb` and `BreadcrumbInterface` moved accordingly
+- `LanguageInterface::getLanguageStringsArray()` replaced by `getAdminLanguageStringsArray()` - it returns the admin translations of the current template language
 
 ### Deprecated
 - `MediaLangJs` controller (`ddoelangjs`) - use the `GET /api/oeml-translations` route instead
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `MediaController::getBreadcrumb()` - the breadcrumbs are passed to the media dialog template as the `breadcrumbs` template parameter now
 - Unused SVG validation leftovers, superseded by `Validation\Validator\ContentValidator\Svg` - the `Image\Sanitizer` directory and the `Validation\Validator\SvgContentValidator`
 - Registering file formats via the `oxid_esales.media_library.validation.file_format` service tag. The supported formats are defined in `FileFormatRegistry` itself now; to add or change formats, decorate `FileFormatRegistryInterface`
+- `LanguageInterface::getLanguageStringsArray()` - use `getAdminLanguageStringsArray()` instead
 
 ### Fixed
 - `DocumentNameValidatorChain` now implements `DirectoryNameValidatorChainInterface` and `FileNameValidatorChainInterface`, matching the service ids it is registered under
