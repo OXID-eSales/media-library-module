@@ -23,7 +23,6 @@ class MediaLibraryClass {
 
     currentPath = '';
     currentFolderId = '';
-    altAttributeManager = null;
 
     constructor() {
         this.store = new DataStore();

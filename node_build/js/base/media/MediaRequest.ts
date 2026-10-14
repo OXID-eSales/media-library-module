@@ -89,7 +89,7 @@ export default class MediaRequest implements MediaRequestInterface {
         const response = await this.#fetch('getAltTexts', this.settings.getActionUrl(params));
         const data: {altTexts: AltTexts | string[]} = await response.json();
 
-        return {...data.altTexts};
+        return Object.fromEntries(Object.entries(data.altTexts));
     }
 
     async saveAltTexts(objectId: string, altTexts: AltTexts): Promise<AltTextSaveResult> {

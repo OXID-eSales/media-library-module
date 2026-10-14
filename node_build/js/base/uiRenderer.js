@@ -3,14 +3,18 @@
  * See LICENSE file for license details.
  */
 import '../../scss/base.scss'
-import AltAttributeManager from "./altAttribute.js";
+import {DIContainer} from "./DIContainer.ts";
+import {AltTextManagerInterface} from "./altText/AltTextManagerInterface.ts";
 import {formatFileSize} from "./FileSize.ts";
 
 export default class UIRenderer {
     constructor(dragDropHandler, dataStore) {
         this.dd = dragDropHandler;
         this.store = dataStore;
-        this.altAttributeManager = new AltAttributeManager();
+    }
+
+    get altTextManager() {
+        return DIContainer.resolve(AltTextManagerInterface);
     }
 
     showItemDetails(file, dialog = document.querySelector('.dd-media')?.closest('.modal')) {
@@ -21,7 +25,6 @@ export default class UIRenderer {
 
         if (!file) {
             form.style.display = 'none';
-            this.altAttributeManager.altTexts = {};
             return;
         }
 
@@ -69,11 +72,9 @@ export default class UIRenderer {
             form.querySelector('#alt-attribute-wrapper').classList.replace('d-none', 'd-block');
             form.dataset.mediaId = file.id;
             form.dataset.mediaType = 'file';
-            this.altAttributeManager.loadAltTexts(file.id, form);
-            this.altAttributeManager.bindAltTextEvents(form);
+            this.altTextManager.show(file.id, form);
         } else {
             form.querySelector('#alt-attribute-wrapper').classList.replace('d-block', 'd-none');
-            this.altAttributeManager.altTexts = {};
         }
     }
 

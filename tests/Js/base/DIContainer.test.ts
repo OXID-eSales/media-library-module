@@ -17,6 +17,8 @@ import {SettingsInterface} from '../../../node_build/js/base/settings/SettingsIn
 import Settings from '../../../node_build/js/base/settings/Settings.ts';
 import {MediaRequestInterface} from '../../../node_build/js/base/media/MediaRequestInterface.ts';
 import MediaRequest from '../../../node_build/js/base/media/MediaRequest.ts';
+import {AltTextManagerInterface} from '../../../node_build/js/base/altText/AltTextManagerInterface.ts';
+import AltTextManager from '../../../node_build/js/base/altText/AltTextManager.ts';
 
 /**
  * Catches missing registrations and missing @inject decorators, which only fail at runtime.
@@ -29,6 +31,7 @@ describe('DIContainer', () => {
         {token: TranslationsRequestInterface, implementation: TranslationsRequest},
         {token: SettingsInterface, implementation: Settings},
         {token: MediaRequestInterface, implementation: MediaRequest},
+        {token: AltTextManagerInterface, implementation: AltTextManager},
     ])('should resolve $token.description as a singleton', ({token, implementation}) => {
         const first = DIContainer.resolve(token);
 
