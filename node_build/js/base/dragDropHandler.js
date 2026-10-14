@@ -4,11 +4,16 @@
  */
 
 import {ddh} from './Ddh.ts';
+import {DIContainer} from './DIContainer.ts';
+import {MediaRequestInterface} from './media/MediaRequestInterface.ts';
 
 export default class DragDropHandler {
-    constructor(fileManager, dataStore) {
-        this.fm = fileManager;
+    constructor(dataStore) {
         this.store = dataStore;
+    }
+
+    get mediaRequest() {
+        return DIContainer.resolve(MediaRequestInterface);
     }
 
     makeMovable(item) {
@@ -44,13 +49,10 @@ export default class DragDropHandler {
                     if (ui.draggable.length) {
                         const $drag = ui.draggable;
                         const fileId = this.store.get($drag[0], 'id');
-                        const file = this.store.get($drag[0], 'file');
                         const folderId = this.store.get(item, 'id');
-                        const folder = this.store.get(item, 'file');
-                        const thumb = this.store.get($drag[0], 'thumb');
 
                         if (fileId && folderId) {
-                            this.fm.moveFile(fileId, folderId, file, folder, thumb)
+                            this.mediaRequest.moveFile(fileId, folderId)
                                 .then((res) => {
                                     if (res.success) {
                                         $drag.get(0).parentElement.remove();

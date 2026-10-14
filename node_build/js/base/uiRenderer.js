@@ -4,10 +4,10 @@
  */
 import '../../scss/base.scss'
 import AltAttributeManager from "./altAttribute.js";
+import {formatFileSize} from "./FileSize.ts";
 
 export default class UIRenderer {
-    constructor(fileManager, dragDropHandler, dataStore) {
-        this.fm = fileManager;
+    constructor(dragDropHandler, dataStore) {
         this.dd = dragDropHandler;
         this.store = dataStore;
         this.altAttributeManager = new AltAttributeManager();
@@ -55,7 +55,7 @@ export default class UIRenderer {
         }
 
         const fileInfo = file.imagesize
-            ? `${file.imagesize} | ${this.fm.formatFileSize(file.filesize)}`
+            ? `${file.imagesize} | ${formatFileSize(file.filesize)}`
             : '';
 
         nameEl.textContent = file.file;
@@ -69,8 +69,8 @@ export default class UIRenderer {
             form.querySelector('#alt-attribute-wrapper').classList.replace('d-none', 'd-block');
             form.dataset.mediaId = file.id;
             form.dataset.mediaType = 'file';
-            this.altAttributeManager.loadAltTexts(file.id, form, this.fm.actionLink);
-            this.altAttributeManager.bindAltTextEvents(form, this.fm.actionLink);
+            this.altAttributeManager.loadAltTexts(file.id, form);
+            this.altAttributeManager.bindAltTextEvents(form);
         } else {
             form.querySelector('#alt-attribute-wrapper').classList.replace('d-block', 'd-none');
             this.altAttributeManager.altTexts = {};

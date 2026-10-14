@@ -58,6 +58,35 @@ describe('Settings', () => {
         });
     });
 
+    describe('getActionUrl', () => {
+        it('should append the parameters to the action link', () => {
+            const stoken = prepareStoken();
+            const sut = getSut();
+
+            sut.setActionLink(`https://shop.local/admin/index.php?stoken=${stoken}&`);
+
+            expect(sut.getActionUrl(new URLSearchParams({cl: 'ddoemedia_view', fnc: 'rename'})))
+                .toBe(`https://shop.local/admin/index.php?stoken=${stoken}&cl=ddoemedia_view&fnc=rename`);
+        });
+    });
+
+    describe('getResourceLink', () => {
+        it('should be empty when no resource link is set', () => {
+            const sut = getSut();
+
+            expect(sut.getResourceLink()).toBe('');
+        });
+
+        it('should return the resource link that was set', () => {
+            const resourceLink = `https://shop.local/out/pictures/ddmedia/${crypto.randomUUID()}/`;
+            const sut = getSut();
+
+            sut.setResourceLink(resourceLink);
+
+            expect(sut.getResourceLink()).toBe(resourceLink);
+        });
+    });
+
     /** The shop generates the stoken as upper case hex. */
     const prepareStoken = (): string => crypto.randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase();
 

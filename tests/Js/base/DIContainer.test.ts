@@ -15,6 +15,8 @@ import {TranslationsRequestInterface} from '../../../node_build/js/base/language
 import TranslationsRequest from '../../../node_build/js/base/language/TranslationsRequest.ts';
 import {SettingsInterface} from '../../../node_build/js/base/settings/SettingsInterface.ts';
 import Settings from '../../../node_build/js/base/settings/Settings.ts';
+import {MediaRequestInterface} from '../../../node_build/js/base/media/MediaRequestInterface.ts';
+import MediaRequest from '../../../node_build/js/base/media/MediaRequest.ts';
 
 /**
  * Catches missing registrations and missing @inject decorators, which only fail at runtime.
@@ -26,6 +28,7 @@ describe('DIContainer', () => {
         {token: LanguageInterface, implementation: Language},
         {token: TranslationsRequestInterface, implementation: TranslationsRequest},
         {token: SettingsInterface, implementation: Settings},
+        {token: MediaRequestInterface, implementation: MediaRequest},
     ])('should resolve $token.description as a singleton', ({token, implementation}) => {
         const first = DIContainer.resolve(token);
 

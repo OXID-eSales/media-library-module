@@ -5,17 +5,27 @@
 
 import Dropzone from "dropzone";
 import {ddh} from './Ddh.ts';
+import {DIContainer} from './DIContainer.ts';
+import {MediaRequestInterface} from './media/MediaRequestInterface.ts';
+import {SettingsInterface} from './settings/SettingsInterface.ts';
 
 export default class MediaContent {
-    constructor(fileManager, uiRenderer, dragDropHandler, dataStore) {
-        this.fm = fileManager;
+    constructor(uiRenderer, dragDropHandler, dataStore) {
         this.ui = uiRenderer;
         this.dd = dragDropHandler;
         this.store = dataStore;
     }
 
+    get mediaRequest() {
+        return DIContainer.resolve(MediaRequestInterface);
+    }
+
+    get settings() {
+        return DIContainer.resolve(SettingsInterface);
+    }
+
     loadMediaContent(dialog, folderId, tab) {
-        this.fm.loadFiles(folderId, tab).then((html) => {
+        this.mediaRequest.loadFiles(folderId, tab).then((html) => {
             if (!dialog) return;
 
             if (dialog.classList.contains('dd-media-wrapper')) {
@@ -63,10 +73,11 @@ export default class MediaContent {
     _updateMediaState(dialog) {
         const mediaEl = dialog.querySelector('.dd-media');
         this.currentFolderId = mediaEl.dataset.folderid;
-        this.fm.resourceLink = mediaEl.dataset.medialink;
+        this.settings.setResourceLink(mediaEl.dataset.medialink);
 
         const prefix = 'out/pictures/';
-        this.currentPath = this.fm.resourceLink.substring(this.fm.resourceLink.indexOf(prefix) + prefix.length);
+        const resourceLink = this.settings.getResourceLink();
+        this.currentPath = resourceLink.substring(resourceLink.indexOf(prefix) + prefix.length);
 
         const items = dialog.querySelectorAll('.dd-media-item[data-id]');
         items.forEach(el => {
@@ -129,7 +140,7 @@ export default class MediaContent {
 
             if (detailsItem) {
                 const itemData = this.store.getAll(detailsItem);
-                itemData.url = this.fm.resourceLink + this.store.get(detailsItem, 'file');
+                itemData.url = this.settings.getResourceLink() + this.store.get(detailsItem, 'file');
                 itemData.type = itemData.filetype;
                 itemData.size = itemData.filesize;
 
@@ -183,12 +194,12 @@ export default class MediaContent {
                     (val) => {
                         const currentFile = this.store.get(activeItem, 'file');
                         if (val !== currentFile) {
-                            this.fm.renameFile(this.store.get(activeItem, 'id'), val)
+                            this.mediaRequest.renameFile(this.store.get(activeItem, 'id'), val)
                                 .then((resultJson) => {
                                     this.store.setMultiple(activeItem, {
                                         id: resultJson.id,
                                         file: resultJson.name,
-                                        url: this.fm.resourceLink + resultJson.name
+                                        url: this.settings.getResourceLink() + resultJson.name
                                     });
 
                                     const labelSpan = activeItem.querySelector('.dd-media-item-label span');
@@ -228,10 +239,8 @@ export default class MediaContent {
                 items.forEach(item => item.classList.add('dd-media-item-removing'));
 
                 const deleteIDs = Array.from(items).map(item => this.store.get(item, 'id'));
-                const mediaEl = dialog.querySelector('.dd-media');
-                const folderId = mediaEl ? mediaEl.dataset.folderid : null;
 
-                this.fm.removeFiles(deleteIDs, folderId).then((response) => {
+                this.mediaRequest.removeFiles(deleteIDs).then((response) => {
                     if (response.success) {
                         const fileCountEl = dialog.querySelector('.dd-media-file-count');
                         if (fileCountEl) {
@@ -273,7 +282,7 @@ export default class MediaContent {
         const previewTemplateEl = dialog.querySelector('.dd-media-list-items .dd-media-dz-helper');
 
         new Dropzone(mediaEl, {
-            url: this.fm.uploadUrl(mediaEl.dataset.folderid),
+            url: this.mediaRequest.getUploadUrl(mediaEl.dataset.folderid),
             parallelUploads: 10,
             previewsContainer: previewsContainer,
             previewTemplate: previewTemplateEl ? previewTemplateEl.innerHTML : '',
@@ -354,7 +363,7 @@ export default class MediaContent {
 
         folderActionBtn.addEventListener('click', () => {
             ddh.prompt(ddh.translate('DD_MEDIA_ADD_FOLDER'), (val) => {
-                this.fm.addFolder(val)
+                this.mediaRequest.addFolder(val)
                     .then((res) => {
                         if (res.id) {
                             this.ui.addMediaItem({
@@ -362,7 +371,7 @@ export default class MediaContent {
                                 file: res.name,
                                 filetype: 'directory',
                                 filesize: 0,
-                                thumb: null,
+                                thumb: '',
                                 imagesize: ''
                             }, true);
 
@@ -373,7 +382,7 @@ export default class MediaContent {
                         }
                     })
                     .catch((err) => {
-                        ddh.alert(ddh.translate(err.responseJSON?.error || 'Error creating folder'));
+                        ddh.alert(ddh.translate(err.message));
                     });
             });
         });
@@ -389,19 +398,10 @@ export default class MediaContent {
     }
 
     _loadMoreMediaContent(page = 0) {
-        this.fm.fetchMoreFiles(page, this.currentFolderId).then(data => {
-            if (data.files?.length) {
-                data.files.forEach(file => {
-                    this.ui.addMediaItem({
-                        id: file.id,
-                        file: file.file,
-                        filetype: file.filetype,
-                        filesize: file.filesize,
-                        thumb: file.thumb || false,
-                        imagesize: file.imageSize || null
-                    });
-                });
-            }
+        this.mediaRequest.fetchMoreFiles(page, this.currentFolderId).then(data => {
+            data.files.forEach(file => {
+                this.ui.addMediaItem(file);
+            });
             if (data.more) {
                 this._loadMoreMediaContent(page + 1);
             }

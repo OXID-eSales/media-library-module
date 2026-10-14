@@ -9,7 +9,6 @@ import { Modal } from "bootstrap";
 import { ddh } from './Ddh.ts';
 import { setMediaUrl, setMediaUrlStore } from './MediaService.ts';
 
-import FileManager from './fileManager.js';
 import UIRenderer from './uiRenderer.js';
 import DragDropHandler from './dragDropHandler.js'
 import MediaContent from "./mediaContent.js";
@@ -28,19 +27,17 @@ class MediaLibraryClass {
 
     constructor() {
         this.store = new DataStore();
-        this.fm = new FileManager();
-        this.dd = new DragDropHandler(this.fm, this.store);
-        this.ui = new UIRenderer(this.fm, this.dd, this.store);
-        this.mediaContent = new MediaContent(this.fm, this.ui, this.dd, this.store);
+        this.dd = new DragDropHandler(this.store);
+        this.ui = new UIRenderer(this.dd, this.store);
+        this.mediaContent = new MediaContent(this.ui, this.dd, this.store);
     }
 
     setActionLink(url) {
-        this.fm.setActionLink(url);
-        DIContainer.resolve(SettingsInterface).setActionLink(url);
+        DIContainer.resolve(SettingsInterface).setActionLink(decodeURI(url));
     }
 
     setResourceLink(url) {
-        this.fm.setResourceLink(url);
+        DIContainer.resolve(SettingsInterface).setResourceLink(decodeURI(url));
     }
 
     setShopUrl(url) {
@@ -201,7 +198,7 @@ class MediaLibraryClass {
         const items = dialogEl.querySelectorAll('.dd-media-item.active');
         const mediaEl = dialogEl.querySelector('.dd-media');
         const folderName = mediaEl?.dataset.foldername || '';
-        const resourceLink = this.fm.resourceLink;
+        const resourceLink = DIContainer.resolve(SettingsInterface).getResourceLink();
 
         if (!items.length) return [];
 

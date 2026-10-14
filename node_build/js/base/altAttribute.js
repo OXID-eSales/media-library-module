@@ -1,21 +1,24 @@
-import FileManager from './fileManager.js';
 import {ddh} from './Ddh.ts';
+import {DIContainer} from './DIContainer.ts';
+import {MediaRequestInterface} from './media/MediaRequestInterface.ts';
 
 class AltAttributeManager {
-    constructor(actionLink = '') {
-        this.fileManager = new FileManager(actionLink);
+    constructor() {
         this.altTexts = {};
     }
 
-    loadAltTexts(objectId, detailForm, actionLink) {
+    get mediaRequest() {
+        return DIContainer.resolve(MediaRequestInterface);
+    }
+
+    loadAltTexts(objectId, detailForm) {
         const $detailForm = $(detailForm);
         this._showAltTextLoading($detailForm);
         this._hideMessages($detailForm);
-        this.fileManager.setActionLink(actionLink);
         this.altTexts = {};
-        return this.fileManager.getAltTexts(objectId)
-            .then(data => {
-                this.altTexts = data.altTexts || {};
+        return this.mediaRequest.getAltTexts(objectId)
+            .then(altTexts => {
+                this.altTexts = altTexts;
                 this._renderAltTextInputs($detailForm);
             })
             .catch(error => {
@@ -27,7 +30,7 @@ class AltAttributeManager {
             });
     }
 
-    bindAltTextEvents(detailForm, actionLink) {
+    bindAltTextEvents(detailForm) {
         const $detailForm = $(detailForm);
         const langSelect = $detailForm.find('.dd-media-alttext-language');
         const altInputsContainer = $detailForm.find('.dd-media-alttext-inputs');
@@ -55,8 +58,7 @@ class AltAttributeManager {
             saveBtn.prop('disabled', true);
             errorDiv.hide().text('');
             successDiv.hide().text('');
-            this.fileManager.setActionLink(actionLink);
-            this.fileManager.saveAltText(objectId, altTexts)
+            this.mediaRequest.saveAltTexts(objectId, altTexts)
                 .then(data => {
                     if (data.success) {
                         successDiv.text(data.message).show();

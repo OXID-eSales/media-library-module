@@ -9,6 +9,8 @@ import {SettingsInterface} from './SettingsInterface.ts';
 @injectable()
 export default class Settings implements SettingsInterface {
     #shopUrl = '/';
+    #actionLink = '';
+    #resourceLink = '';
     #stoken = '';
 
     setShopUrl(url: string): void {
@@ -16,7 +18,20 @@ export default class Settings implements SettingsInterface {
     }
 
     setActionLink(url: string): void {
+        this.#actionLink = url;
         this.#stoken = new URL(url, window.location.href).searchParams.get('stoken') ?? '';
+    }
+
+    getActionUrl(params: URLSearchParams): string {
+        return this.#actionLink + params;
+    }
+
+    setResourceLink(url: string): void {
+        this.#resourceLink = url;
+    }
+
+    getResourceLink(): string {
+        return this.#resourceLink;
     }
 
     getApiUrl(path: string): string {
