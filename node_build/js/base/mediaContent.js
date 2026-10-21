@@ -79,11 +79,6 @@ export default class MediaContent {
         const resourceLink = this.settings.getResourceLink();
         this.currentPath = resourceLink.substring(resourceLink.indexOf(prefix) + prefix.length);
 
-        const items = dialog.querySelectorAll('.dd-media-item[data-id]');
-        items.forEach(el => {
-            this.ui.updateMediaState(el);
-        });
-
         const actionEls = dialog.querySelectorAll('.dd-media-remove-action, .dd-media-move-action, .dd-media-rename-action');
         actionEls.forEach(el => el.disabled = true);
     }
@@ -115,7 +110,7 @@ export default class MediaContent {
         const media = dialog.querySelector('.dd-media');
         media.addEventListener('click', (e) => {
             const target = e.target.closest('.dd-media-item');
-            if (this.dd.dragMoved || !target) {
+            if (!target) {
                 return;
             }
             e.preventDefault();
@@ -266,7 +261,7 @@ export default class MediaContent {
                         ddh.alert(ddh.translate(response.msg));
                     }
                 });
-            }, null, true);
+            }, undefined, true);
         });
     }
 
