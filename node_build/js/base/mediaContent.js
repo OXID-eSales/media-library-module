@@ -8,12 +8,20 @@ import {ddh} from './Ddh.ts';
 import {DIContainer} from './DIContainer.ts';
 import {MediaRequestInterface} from './media/MediaRequestInterface.ts';
 import {SettingsInterface} from './settings/SettingsInterface.ts';
+import {DataStoreInterface} from './dataStore/DataStoreInterface.ts';
+import {DragDropHandlerInterface} from './dragDrop/DragDropHandlerInterface.ts';
 
 export default class MediaContent {
-    constructor(uiRenderer, dragDropHandler, dataStore) {
+    constructor(uiRenderer) {
         this.ui = uiRenderer;
-        this.dd = dragDropHandler;
-        this.store = dataStore;
+    }
+
+    get store() {
+        return DIContainer.resolve(DataStoreInterface);
+    }
+
+    get dd() {
+        return DIContainer.resolve(DragDropHandlerInterface);
     }
 
     get mediaRequest() {

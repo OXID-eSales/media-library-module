@@ -5,12 +5,17 @@
 import '../../scss/base.scss'
 import {DIContainer} from "./DIContainer.ts";
 import {AltTextManagerInterface} from "./altText/AltTextManagerInterface.ts";
+import {DataStoreInterface} from "./dataStore/DataStoreInterface.ts";
+import {DragDropHandlerInterface} from "./dragDrop/DragDropHandlerInterface.ts";
 import {formatFileSize} from "./FileSize.ts";
 
 export default class UIRenderer {
-    constructor(dragDropHandler, dataStore) {
-        this.dd = dragDropHandler;
-        this.store = dataStore;
+    get store() {
+        return DIContainer.resolve(DataStoreInterface);
+    }
+
+    get dd() {
+        return DIContainer.resolve(DragDropHandlerInterface);
     }
 
     get altTextManager() {

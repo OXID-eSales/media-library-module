@@ -3,7 +3,7 @@
  * See LICENSE file for license details.
  */
 
-import type {ElementData} from './types/ElementData.ts';
+import type {ElementData} from '../types/ElementData.ts';
 
 export const DataStoreInterface = Symbol('DataStoreInterface');
 

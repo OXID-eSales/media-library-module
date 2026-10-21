@@ -5,7 +5,7 @@
 
 import {injectable} from 'tsyringe';
 import {DataStoreInterface} from './DataStoreInterface.ts';
-import type {ElementData} from './types/ElementData.ts';
+import type {ElementData} from '../types/ElementData.ts';
 
 @injectable()
 export default class DataStore implements DataStoreInterface {

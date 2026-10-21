@@ -4,8 +4,8 @@
  */
 
 import {describe, expect, it} from 'vitest';
-import DataStore from '../../../node_build/js/base/DataStore.ts';
-import {DataStoreInterface} from '../../../node_build/js/base/DataStoreInterface.ts';
+import DataStore from '../../../../node_build/js/base/dataStore/DataStore.ts';
+import {DataStoreInterface} from '../../../../node_build/js/base/dataStore/DataStoreInterface.ts';
 
 describe('DataStore', () => {
     describe('get', () => {

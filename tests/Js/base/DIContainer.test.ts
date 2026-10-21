@@ -19,6 +19,10 @@ import {MediaRequestInterface} from '../../../node_build/js/base/media/MediaRequ
 import MediaRequest from '../../../node_build/js/base/media/MediaRequest.ts';
 import {AltTextManagerInterface} from '../../../node_build/js/base/altText/AltTextManagerInterface.ts';
 import AltTextManager from '../../../node_build/js/base/altText/AltTextManager.ts';
+import {DataStoreInterface} from '../../../node_build/js/base/dataStore/DataStoreInterface.ts';
+import DataStore from '../../../node_build/js/base/dataStore/DataStore.ts';
+import {DragDropHandlerInterface} from '../../../node_build/js/base/dragDrop/DragDropHandlerInterface.ts';
+import DragDropHandler from '../../../node_build/js/base/dragDrop/DragDropHandler.ts';
 
 /**
  * Catches missing registrations and missing @inject decorators, which only fail at runtime.
@@ -32,6 +36,8 @@ describe('DIContainer', () => {
         {token: SettingsInterface, implementation: Settings},
         {token: MediaRequestInterface, implementation: MediaRequest},
         {token: AltTextManagerInterface, implementation: AltTextManager},
+        {token: DataStoreInterface, implementation: DataStore},
+        {token: DragDropHandlerInterface, implementation: DragDropHandler},
     ])('should resolve $token.description as a singleton', ({token, implementation}) => {
         const first = DIContainer.resolve(token);
 

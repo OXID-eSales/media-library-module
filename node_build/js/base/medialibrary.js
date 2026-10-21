@@ -10,10 +10,9 @@ import { ddh } from './Ddh.ts';
 import { setMediaUrl, setMediaUrlStore } from './MediaService.ts';
 
 import UIRenderer from './uiRenderer.js';
-import DragDropHandler from './dragDropHandler.js'
 import MediaContent from "./mediaContent.js";
-import DataStore from "./DataStore.ts";
 import { DIContainer } from "./DIContainer.ts";
+import { DataStoreInterface } from "./dataStore/DataStoreInterface.ts";
 import { SettingsInterface } from "./settings/SettingsInterface.ts";
 import { LanguageInterface } from "./language/LanguageInterface.ts";
 
@@ -25,10 +24,12 @@ class MediaLibraryClass {
     currentFolderId = '';
 
     constructor() {
-        this.store = new DataStore();
-        this.dd = new DragDropHandler(this.store);
-        this.ui = new UIRenderer(this.dd, this.store);
-        this.mediaContent = new MediaContent(this.ui, this.dd, this.store);
+        this.ui = new UIRenderer();
+        this.mediaContent = new MediaContent(this.ui);
+    }
+
+    get store() {
+        return DIContainer.resolve(DataStoreInterface);
     }
 
     setActionLink(url) {
