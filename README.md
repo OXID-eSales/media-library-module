@@ -46,7 +46,7 @@ composer require oxid-esales/media-library-module:dev-b-7.7.x
 
 2. Run the module database migrations:
 ```bash
-vendor/bin/oe-eshop-doctrine_migration migrations:migrate ddoemedialibrary
+vendor/bin/oe-console oe:database:migrate
 ```
 
 3. Activate the module:
@@ -59,7 +59,7 @@ vendor/bin/oe-console oe:module:activate ddoemedialibrary
 After updating the Media Library module, ensure you run the database migrations:
 
 ```bash
-vendor/bin/oe-eshop-doctrine_migration migrations:migrate ddoemedialibrary
+vendor/bin/oe-console oe:database:migrate
 ```
 
 ### Fallback image

@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [7.0.0] - unreleased
 
 ### Added
-- `GET /api/oeml-translations` shop API route, returning the shop translations of the current session template language as JSON (`LanguageController::getTranslations()`)
+- `GET /api/oeml-admin-translations` shop API route, returning the admin translations of the current session template language as JSON (`LanguageController::getTranslations()`)
+- The module JS is moved to TypeScript with tsyringe dependency injection. Converted so far:
+  - `DialogInterface`, `InteractionInterface` (`confirm`, `prompt`, `alert`), `LanguageInterface` and `SettingsInterface` - split out of `helper.js` (`ddh`)
+  - `MediaRequestInterface` - all requests of the media dialog, replaces `fileManager.js`
+  - `AltTextManagerInterface` - replaces `altAttribute.js`
+  - `DragDropHandlerInterface` - replaces `dragDropHandler.js`
+  - `DataStoreInterface` - registered in the DI container, so all classes share one instance
+- JS unit tests (Vitest) and the npm scripts `typecheck`, `lint`, `test` and `test:coverage`
 
 ### Changed
 - Drop usage of deprecated shop `Request` class from module Request service
@@ -19,10 +26,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - The "Root" breadcrumb in the media library is translated now
 - `Breadcrumb\DataType` namespace renamed to `Breadcrumb\DTO` - `Breadcrumb` and `BreadcrumbInterface` moved accordingly
 - `LanguageInterface::getLanguageStringsArray()` replaced by `getAdminLanguageStringsArray()` - it returns the admin translations of the current template language
+- The media library JS loads its translations from the `GET /api/oeml-admin-translations` route, `window.i18n` is only used as a fallback
+- The media dialog no longer sends the parameters the shop ignores: `file`, `folder` and `thumb` on `movefile`, `folderid` on `remove`
 
 ### Deprecated
-- `MediaLangJs` controller (`ddoelangjs`) - use the `GET /api/oeml-translations` route instead
+- `MediaLangJs` controller (`ddoelangjs`) - use the `GET /api/oeml-admin-translations` route instead
   - The route only returns the translations list, it does not set the `window.i18n` object as `MediaLangJs` did
+- The `ddh` JS export - it is kept as a wrapper around the new `Dialog`, `Interaction` and `Language` services for the Visual CMS and wysiwyg modules
 
 ### Removed
 - `MediaController::getBreadcrumb()` - the breadcrumbs are passed to the media dialog template as the `breadcrumbs` template parameter now
