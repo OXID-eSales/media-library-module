@@ -19,7 +19,7 @@
   "prefer-stable": true,
   "prefer-dist": true,
   "require": {
-    "php": "^8.3",
+    "php": "^8.4",
     "symfony/filesystem": "*",
     "ext-gd": "*",
     "ext-fileinfo": "*",
