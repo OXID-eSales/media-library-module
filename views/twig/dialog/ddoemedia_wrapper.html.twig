@@ -9,6 +9,9 @@
 
     {% set oViewConf = oView.getViewConfig() %}
 
+    {# import map has to come before any module script, otherwise it is ignored #}
+    {% include "@ddoemedialibrary/di/importmap.html.twig" %}
+
     {{ style({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/css/bootstrap.min.css') }) }}
     {{ style({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/css/bootstrap-icons.min.css') }) }}
     {{ style({ include: oViewConf.getModuleUrl('ddoemedialibrary', 'out/src/css/base.min.css') }) }}

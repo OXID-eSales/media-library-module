@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [6.1.0] - Unreleased
+
+### Added
+- Shared DI runtime based on `tsyringe`, so admin modules can use one DI container
+  - Built separately into `out/di/js/di.min.js`, together with `reflect-metadata`
+  - Import map template `@ddoemedialibrary/di/importmap.html.twig`, mapping `tsyringe` to the shared runtime. Every page loading scripts which import `tsyringe` has to include it before the first module script
+- The main media library template includes the import map, so the media library can use the shared DI container
+
+### Changed
+- `tsyringe` is not bundled into the media library scripts anymore, it is loaded from the shared runtime via the import map
+- `npm run build` builds the DI runtime as well, `npm run build:di` builds only the DI runtime
+
 ## [6.0.0] - 2026-10-08
 
 ### Added
