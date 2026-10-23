@@ -33,6 +33,8 @@ export default defineConfig({
         sourcemap: true,
         rollupOptions: {
             preserveEntrySignatures: 'strict',
+            // tsyringe is loaded from the shared di.min.js via import map, so all modules use the same container
+            external: ['tsyringe'],
             input: {
                 base: path.resolve(import.meta.dirname, 'node_build/js/base/medialibrary.js'),
                 medialibrary: path.resolve(import.meta.dirname, 'node_build/scss/medialibrary.scss'),
