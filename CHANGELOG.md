@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Shared DI runtime based on `tsyringe`, so admin modules can use one DI container
   - Built separately into `out/di/js/di.min.js`, together with `reflect-metadata`
   - Import map template `@ddoemedialibrary/di/importmap.html.twig`, mapping `tsyringe` to the shared runtime. Every page loading scripts which import `tsyringe` has to include it before the first module script
+  - Console warning for `container.afterResolution()` callbacks whose service is not registered yet when the page is loaded, e.g. because of a mistyped `Symbol.for` key
 - The main media library template includes the import map, so the media library can use the shared DI container
 
 ### Changed
