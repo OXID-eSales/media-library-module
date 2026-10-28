@@ -13,6 +13,7 @@ export default class Logger {
             return;
         }
 
+        // eslint-disable-next-line no-console
         console[type]?.(`[Media Library][${this.#timestamp()}]`, msg);
     }
 }

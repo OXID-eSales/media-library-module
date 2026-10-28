@@ -224,7 +224,7 @@ export default class MediaContent {
 
     _initRemoveAction(dialog) {
         const removeBtn = dialog.querySelector('.dd-media-remove-action');
-        removeBtn.addEventListener('click', (e) => {
+        removeBtn.addEventListener('click', () => {
             const items = dialog.querySelectorAll('.dd-media-item.active');
 
             if (removeBtn.disabled || !items.length) {

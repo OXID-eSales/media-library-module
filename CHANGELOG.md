@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Drop usage of deprecated shop `Request` class from module Request service
+  - `RequestInterface::getStringRequestParameter()` returns the raw value now, not HTML escaped
 - Database migrations are not executed on module activation anymore. Run them manually after installing or updating the module as describe in the installation instructions.
 - `declare(strict_types=1)` is used in all module classes now, so wrong scalar types inside the module throw a `TypeError` instead of being silently converted; code calling the module is not affected
 - `MediaWrapperController` extends `AdminDetailsController` instead of `MediaController` now, as it did not use any of the media dialog functionality

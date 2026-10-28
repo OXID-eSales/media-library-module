@@ -6,6 +6,7 @@
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import Dialog from '../../../../node_build/js/base/dialog/Dialog.ts';
 import {DialogInterface} from '../../../../node_build/js/base/dialog/DialogInterface.ts';
+import type {DialogOptions} from '../../../../node_build/js/base/dialog/types/DialogOptions.ts';
 
 describe('Dialog', () => {
     const removeListeners: Array<() => void> = [];
@@ -78,6 +79,14 @@ describe('Dialog', () => {
             const modalEl = sut.open({message});
 
             expect(message.parentElement).toBe(modalEl.querySelector('.modal-body'));
+        });
+
+        it('should open with an empty body when a JS caller leaves the message out', () => {
+            const sut = getSut();
+
+            const modalEl = sut.open({} as DialogOptions);
+
+            expect(modalEl.querySelector('.modal-body')!.innerHTML).toBe('');
         });
 
         it('should render a button from html', () => {

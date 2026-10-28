@@ -123,16 +123,4 @@ export default class UIRenderer {
 
         this.dd.makeMovable(item);
     }
-
-    updateMediaState(dialog) {
-        const list = dialog.querySelector('.dd-media-list-items > .row');
-        const items = list.querySelectorAll('.dd-media-item');
-        const hasItems = items.length > 0;
-
-        const noFiles = dialog.querySelector('.dd-media-no-files');
-        noFiles.style.display = hasItems ? 'none' : '';
-        items.forEach(el => {
-            this.dd.makeMovable(el);
-        });
-    }
 }

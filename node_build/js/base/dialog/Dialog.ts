@@ -19,10 +19,10 @@ export default class Dialog implements DialogInterface {
         }
 
         const body = modalEl.querySelector('.modal-body')!;
-        if (typeof options.message === 'string') {
-            body.innerHTML = options.message;
-        } else {
+        if (options.message instanceof HTMLElement) {
             body.appendChild(options.message);
+        } else if (options.message) {
+            body.innerHTML = options.message;
         }
 
         const footer = modalEl.querySelector('.modal-footer')!;
