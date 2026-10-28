@@ -178,6 +178,50 @@ describe('AltTextManager', () => {
             expect(mediaRequestSpy.saveAltTexts).toHaveBeenCalledWith(currentObjectId, expect.anything());
         });
 
+        it('should not save the texts of the previous file while the alt texts are loading', async () => {
+            const loading = prepareDeferred<AltTexts>();
+            const mediaRequestSpy = prepareMediaRequestMock({altTexts: {0: crypto.randomUUID(), 1: crypto.randomUUID()}});
+            const form = prepareForm();
+            const sut = getSut({mediaRequest: mediaRequestSpy});
+            await sut.show(crypto.randomUUID(), form);
+            vi.mocked(mediaRequestSpy.getAltTexts).mockReturnValueOnce(loading.promise);
+
+            const show = sut.show(crypto.randomUUID(), form);
+            findSaveButton(form).click();
+
+            expect(mediaRequestSpy.saveAltTexts).not.toHaveBeenCalled();
+            expect(findSaveButton(form).disabled).toBe(true);
+            expect(form.querySelectorAll('input.dd-media-alttext-input')).toHaveLength(0);
+
+            loading.resolve({});
+            await show;
+            expect(findSaveButton(form).disabled).toBe(false);
+        });
+
+        it('should ignore the save result of a file that is no longer shown', async () => {
+            const saving = prepareDeferred<AltTextSaveResult>();
+            const loading = prepareDeferred<AltTexts>();
+            const mediaRequest = prepareMediaRequestMock();
+            vi.mocked(mediaRequest.saveAltTexts).mockReturnValueOnce(saving.promise);
+            const form = prepareForm();
+            const sut = getSut({mediaRequest});
+            await sut.show(crypto.randomUUID(), form);
+            findSaveButton(form).click();
+            vi.mocked(mediaRequest.getAltTexts).mockReturnValueOnce(loading.promise);
+            const show = sut.show(crypto.randomUUID(), form);
+
+            saving.resolve({success: true, message: crypto.randomUUID()});
+            await flushPromises();
+
+            expect(findSaveButton(form).disabled).toBe(true);
+            expect(isShown(findSuccess(form))).toBe(false);
+            expect(form.querySelector('.dd-alttext-spinner')).not.toBeNull();
+
+            loading.resolve({});
+            await show;
+            expect(findSaveButton(form).disabled).toBe(false);
+        });
+
         it('should hide the message after 4 seconds', async () => {
             vi.useFakeTimers();
             const form = prepareForm();
@@ -231,6 +275,9 @@ describe('AltTextManager', () => {
 
         return {promise, resolve};
     };
+
+    /** Lets all pending promise callbacks run. */
+    const flushPromises = (): Promise<void> => new Promise(resolve => setTimeout(resolve));
 
     const findWrapper = (form: HTMLElement, languageId: string): HTMLElement =>
         form.querySelector<HTMLElement>(`.dd-media-alttext-input-wrapper[data-lang-id="${languageId}"]`)!;

@@ -7,7 +7,7 @@ import {inject, injectable} from 'tsyringe';
 import {AltTextManagerInterface} from './AltTextManagerInterface.ts';
 import {MediaRequestInterface} from '../media/MediaRequestInterface.ts';
 import {LanguageInterface} from '../language/LanguageInterface.ts';
-import type {AltTexts} from '../media/types/AltTexts.ts';
+import type {AltTexts, AltTextSaveResult} from '../media/types/AltTexts.ts';
 
 const MESSAGE_DURATION = 4000;
 
@@ -39,6 +39,9 @@ export default class AltTextManager implements AltTextManagerInterface {
         this.#objectId = objectId;
         this.#bindEvents(objectId, elements);
         this.#hideMessages(elements);
+        // The inputs still hold the texts of the previous file, they must not be saved for this one.
+        elements.inputs.replaceChildren();
+        elements.saveButton.disabled = true;
         this.#showLoading(elements);
 
         let altTexts: AltTexts = {};
@@ -107,6 +110,7 @@ export default class AltTextManager implements AltTextManagerInterface {
         }));
 
         this.#showSelectedLanguage(elements);
+        elements.saveButton.disabled = false;
     }
 
     #showSelectedLanguage(elements: AltTextElements): void {
@@ -126,18 +130,25 @@ export default class AltTextManager implements AltTextManagerInterface {
         this.#showLoading(elements);
         elements.saveButton.disabled = true;
 
+        let result: AltTextSaveResult | null = null;
         try {
-            const result = await this.mediaRequest.saveAltTexts(objectId, altTexts);
-            if (result.success) {
-                this.#showMessage(elements.success, result.message);
-            } else {
-                this.#showMessage(elements.error, this.language.translate('DD_MEDIA_ALT_TEXT_SAVE_ERROR'));
-            }
+            result = await this.mediaRequest.saveAltTexts(objectId, altTexts);
         } catch {
+            // MediaRequest logs the error, the error message is shown below.
+        }
+
+        // Another file is shown now, its loading state and button belong to that file.
+        if (this.#objectId !== objectId) {
+            return;
+        }
+
+        this.#hideLoading(elements);
+        elements.saveButton.disabled = false;
+
+        if (result?.success) {
+            this.#showMessage(elements.success, result.message);
+        } else {
             this.#showMessage(elements.error, this.language.translate('DD_MEDIA_ALT_TEXT_SAVE_ERROR'));
-        } finally {
-            this.#hideLoading(elements);
-            elements.saveButton.disabled = false;
         }
     }
 
