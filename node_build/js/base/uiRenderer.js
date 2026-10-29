@@ -3,14 +3,23 @@
  * See LICENSE file for license details.
  */
 import '../../scss/base.scss'
-import AltAttributeManager from "./altAttribute.js";
+import {DIContainer} from "./DIContainer.ts";
+import {AltTextManagerInterface} from "./altText/AltTextManagerInterface.ts";
+import {DataStoreInterface} from "./dataStore/DataStoreInterface.ts";
+import {DragDropHandlerInterface} from "./dragDrop/DragDropHandlerInterface.ts";
+import {formatFileSize} from "./FileSize.ts";
 
 export default class UIRenderer {
-    constructor(fileManager, dragDropHandler, dataStore) {
-        this.fm = fileManager;
-        this.dd = dragDropHandler;
-        this.store = dataStore;
-        this.altAttributeManager = new AltAttributeManager();
+    get store() {
+        return DIContainer.resolve(DataStoreInterface);
+    }
+
+    get dd() {
+        return DIContainer.resolve(DragDropHandlerInterface);
+    }
+
+    get altTextManager() {
+        return DIContainer.resolve(AltTextManagerInterface);
     }
 
     showItemDetails(file, dialog = document.querySelector('.dd-media')?.closest('.modal')) {
@@ -21,7 +30,6 @@ export default class UIRenderer {
 
         if (!file) {
             form.style.display = 'none';
-            this.altAttributeManager.altTexts = {};
             return;
         }
 
@@ -55,7 +63,7 @@ export default class UIRenderer {
         }
 
         const fileInfo = file.imagesize
-            ? `${file.imagesize} | ${this.fm.formatFileSize(file.filesize)}`
+            ? `${file.imagesize} | ${formatFileSize(file.filesize)}`
             : '';
 
         nameEl.textContent = file.file;
@@ -69,11 +77,9 @@ export default class UIRenderer {
             form.querySelector('#alt-attribute-wrapper').classList.replace('d-none', 'd-block');
             form.dataset.mediaId = file.id;
             form.dataset.mediaType = 'file';
-            this.altAttributeManager.loadAltTexts(file.id, form, this.fm.actionLink);
-            this.altAttributeManager.bindAltTextEvents(form, this.fm.actionLink);
+            this.altTextManager.show(file.id, form);
         } else {
             form.querySelector('#alt-attribute-wrapper').classList.replace('d-block', 'd-none');
-            this.altAttributeManager.altTexts = {};
         }
     }
 
@@ -116,17 +122,5 @@ export default class UIRenderer {
         }
 
         this.dd.makeMovable(item);
-    }
-
-    updateMediaState(dialog) {
-        const list = dialog.querySelector('.dd-media-list-items > .row');
-        const items = list.querySelectorAll('.dd-media-item');
-        const hasItems = items.length > 0;
-
-        const noFiles = dialog.querySelector('.dd-media-no-files');
-        noFiles.style.display = hasItems ? 'none' : '';
-        items.forEach(el => {
-            this.dd.makeMovable(el);
-        });
     }
 }

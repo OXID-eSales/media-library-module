@@ -21,6 +21,7 @@ use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepository;
 use OxidEsales\MediaLibrary\Media\Repository\MediaAltRepositoryInterface;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
+use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -202,7 +203,7 @@ class MediaRepositoryTest extends RepositoryIntegrationTestCase
         ?MediaFactoryInterface $mediaFactory = null,
         ?LanguageInterface $language = null,
         ?MediaAltRepositoryInterface $mediaAltRepository = null
-    ): MediaRepository {
+    ): MediaRepositoryInterface {
         return new MediaRepository(
             queryBuilderFactory: $queryBuilderFactory ?? $this->get(QueryBuilderFactoryInterface::class),
             context: $context ?? $this->get(ContextInterface::class),

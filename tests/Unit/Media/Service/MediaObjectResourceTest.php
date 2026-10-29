@@ -60,7 +60,7 @@ class MediaObjectResourceTest extends TestCase
         $this->assertSame($mediaFilePath, $result);
     }
 
-    protected function getSut(
+    private function getSut(
         MediaResourceInterface $mediaResource = null,
     ): MediaObjectResourceInterface {
         return new MediaObjectResource(

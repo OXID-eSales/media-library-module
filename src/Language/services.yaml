@@ -1,0 +1,13 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\MediaLibrary\Language\Core\LanguageInterface:
+    class: OxidEsales\MediaLibrary\Language\Core\LanguageProxy
+    public: true
+    bind:
+      OxidEsales\Eshop\Core\Language: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getLang()'
+
+  OxidEsales\MediaLibrary\Language\Controller\LanguageController:
+    public: true

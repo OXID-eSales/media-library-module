@@ -16,7 +16,7 @@ on:
           - 'PHP8.5/MySQL8.0'
           - 'PHP8.5/MySQL8.4'
           - 'PHP8.5/MariaDb11'
-        default: 'PHP8.3/MySQL8.0'
+        default: 'PHP8.4/MySQL8.0'
         description: 'Limit to one PHP/MySQL combination'
       gha_version:
         type: choice

@@ -9,25 +9,25 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Breadcrumb\Service;
 
-use OxidEsales\MediaLibrary\Breadcrumb\DataType\Breadcrumb;
+use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
+use OxidEsales\MediaLibrary\Breadcrumb\DTO\Breadcrumb;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
-use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 
 class BreadcrumbService implements BreadcrumbServiceInterface
 {
     public function __construct(
-        private UIRequestInterface $request,
-        private MediaRepositoryInterface $mediaRepository
+        private MediaRepositoryInterface $mediaRepository,
+        private ShopAdapterInterface $shopAdapter,
     ) {
     }
 
-    public function getBreadcrumbsByRequest(): array
+    public function getBreadcrumbs(string $folderId): array
     {
         $result = [];
-        $folderId = $this->request->getFolderId();
 
+        $rootName = $this->shopAdapter->translateString('DD_MEDIA_BREADCRUMB_ROOT');
         $result[] = new Breadcrumb(
-            name: 'Root',
+            name: $rootName,
             active: !$folderId
         );
 

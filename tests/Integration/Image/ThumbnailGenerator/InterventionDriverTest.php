@@ -5,6 +5,8 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\MediaLibrary\Tests\Integration\Image\ThumbnailGenerator;
 
 use Intervention\Image\Drivers\Gd\Driver;
@@ -12,9 +14,11 @@ use Intervention\Image\ImageManager;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\InterventionDriver;
+use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Log\LoggerInterface;
 
 #[CoversClass(InterventionDriver::class)]
@@ -47,7 +51,8 @@ class InterventionDriverTest extends IntegrationTestCase
     }
 
     #[DataProvider('getThumbnailDataProvider')]
-    public function testGenerateThumbnail(
+    #[Test]
+    public function generateThumbnail(
         $sourceWidth,
         $sourceHeight,
         $thumbnailSize,
@@ -77,7 +82,8 @@ class InterventionDriverTest extends IntegrationTestCase
         self::assertSame($expectedThumbnailHeight, $resultThumbnailImage->height());
     }
 
-    public function testInterventionExceptionDoesntExplodeButLogsError(): void
+    #[Test]
+    public function interventionExceptionDoesntExplodeButLogsError(): void
     {
         $loggerSpy = $this->createMock(LoggerInterface::class);
         $loggerSpy->expects($this->once())->method('error');
@@ -150,7 +156,8 @@ class InterventionDriverTest extends IntegrationTestCase
     }
 
     #[DataProvider('fileTypesDataProvider')]
-    public function testIsOriginSupported(string $filePath, bool $expectedResult): void
+    #[Test]
+    public function isOriginSupported(string $filePath, bool $expectedResult): void
     {
         $sut = $this->getSut();
 
@@ -222,7 +229,8 @@ class InterventionDriverTest extends IntegrationTestCase
     }
 
     #[DataProvider('getThumbnailFileNameDataProvider')]
-    public function testGetThumbnailFileName(
+    #[Test]
+    public function getThumbnailFileName(
         string $originalFileName,
         ImageSizeInterface $thumbnailSize,
         bool $crop,
@@ -281,7 +289,8 @@ class InterventionDriverTest extends IntegrationTestCase
         ];
     }
 
-    public function testGetThumbnailsGlob(): void
+    #[Test]
+    public function getThumbnailsGlob(): void
     {
         $sut = $this->getSut();
 
@@ -289,10 +298,10 @@ class InterventionDriverTest extends IntegrationTestCase
         $this->assertSame('8910f1d8c070ff09e13d4977fc339a29*.*', $sut->getThumbnailsGlob($originalFilename));
     }
 
-    public function getSut(
+    private function getSut(
         ImageManager $imageManager = null,
         LoggerInterface $logger = null,
-    ): InterventionDriver {
+    ): ThumbnailGeneratorInterface {
         return new InterventionDriver(
             imageManager: $imageManager ?? new ImageManager(new Driver()),
             logger: $logger ?? $this->createStub(LoggerInterface::class)

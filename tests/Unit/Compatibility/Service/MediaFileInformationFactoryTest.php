@@ -13,6 +13,7 @@ use OxidEsales\MediaLibrary\Compatibility\DTO\MediaFileInformation;
 use OxidEsales\MediaLibrary\Compatibility\DTO\MediaFileInformationInterface;
 use OxidEsales\MediaLibrary\Compatibility\Exception\UnknownPathFormatException;
 use OxidEsales\MediaLibrary\Compatibility\Factory\MediaFileInformationFactory;
+use OxidEsales\MediaLibrary\Compatibility\Factory\MediaFileInformationFactoryInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +24,7 @@ class MediaFileInformationFactoryTest extends TestCase
     #[DataProvider('pathDataProvider')]
     public function pathInformationCalculatedCorrectly(string $path, MediaFileInformationInterface $expected): void
     {
-        $sut = new MediaFileInformationFactory();
+        $sut = $this->getSut();
         $this->assertEquals(
             $expected,
             $sut->fromPath($path)
@@ -82,7 +83,7 @@ class MediaFileInformationFactoryTest extends TestCase
     #[DataProvider('badPathDataProvider')]
     public function pathInformationCalculatedWithError(string $path): void
     {
-        $sut = new MediaFileInformationFactory();
+        $sut = $this->getSut();
 
         $this->expectException(UnknownPathFormatException::class);
         $sut->fromPath($path);
@@ -105,5 +106,10 @@ class MediaFileInformationFactoryTest extends TestCase
         yield 'unknown full path with subdirectory only' => [
             'path' => '/something/fileExample.gif',
         ];
+    }
+
+    private function getSut(): MediaFileInformationFactoryInterface
+    {
+        return new MediaFileInformationFactory();
     }
 }

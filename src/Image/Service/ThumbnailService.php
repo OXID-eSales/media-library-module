@@ -13,7 +13,6 @@ use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
-use Symfony\Component\Filesystem\Path;
 
 class ThumbnailService implements ThumbnailServiceInterface
 {

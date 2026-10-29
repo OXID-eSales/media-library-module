@@ -11,6 +11,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator\ContentValidat
 
 use DOMDocument;
 use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\EventHandlerDetector;
+use OxidEsales\MediaLibrary\Validation\Validator\ContentValidator\Svg\Detector\SvgViolationDetectorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -74,7 +75,7 @@ class EventHandlerDetectorTest extends TestCase
         return $document;
     }
 
-    protected function getSut(): EventHandlerDetector
+    private function getSut(): SvgViolationDetectorInterface
     {
         return new EventHandlerDetector();
     }

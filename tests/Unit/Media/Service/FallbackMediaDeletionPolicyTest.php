@@ -15,6 +15,7 @@ use OxidEsales\MediaLibrary\Media\Exception\MediaDeletionErrorException;
 use OxidEsales\MediaLibrary\Media\Exception\MediaNotFoundException;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\Service\FallbackMediaDeletionPolicyService;
+use OxidEsales\MediaLibrary\Media\Service\MediaDeletionPolicyServiceInterface;
 use OxidEsales\MediaLibrary\Media\Settings\FallbackMediaSettingsInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -161,7 +162,7 @@ class FallbackMediaDeletionPolicyTest extends TestCase
         string $fallbackMediaId = '',
         string $fallbackFolderId = '',
         bool $fallbackMediaExists = true,
-    ): FallbackMediaDeletionPolicyService {
+    ): MediaDeletionPolicyServiceInterface {
         $mediaRepositoryStub = $this->createStub(MediaRepositoryInterface::class);
 
         if ($fallbackMediaExists) {

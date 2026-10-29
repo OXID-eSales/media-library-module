@@ -5,12 +5,13 @@
  * See LICENSE file for license details.
  */
 
-declare(strict_types=1);
-
 namespace OxidEsales\MediaLibrary\Transput\RequestData;
 
 use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 
+/**
+ * @todo-medium: segregation
+ */
 interface UIRequestInterface
 {
     public function isOverlay(): bool;

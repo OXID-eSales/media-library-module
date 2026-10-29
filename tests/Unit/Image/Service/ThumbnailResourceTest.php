@@ -5,17 +5,20 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Service;
 
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResource;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ThumbnailResource::class)]
 class ThumbnailResourceTest extends TestCase
 {
-    protected function getSut(
+    private function getSut(
         MediaResourceInterface $imageResource = null,
     ) {
         return new ThumbnailResource(
@@ -23,7 +26,8 @@ class ThumbnailResourceTest extends TestCase
         );
     }
 
-    public function testGetDefaultThumbnailSize(): void
+    #[Test]
+    public function getDefaultThumbnailSize(): void
     {
         $sut = $this->getSut();
 
@@ -42,7 +46,8 @@ class ThumbnailResourceTest extends TestCase
         ];
     }
 
-    public function testGetPathToThumbnailFilesNoFolder(): void
+    #[Test]
+    public function getPathToThumbnailFilesNoFolder(): void
     {
         $mediaFilesPath = 'somePathToMediaFiles';
 
@@ -54,7 +59,8 @@ class ThumbnailResourceTest extends TestCase
         $this->assertSame($mediaFilesPath . '/thumbs', $sut->getPathToThumbnailFiles());
     }
 
-    public function testGetPathToThumbnailFilesWithFolder(): void
+    #[Test]
+    public function getPathToThumbnailFilesWithFolder(): void
     {
         $mediaFilesPath = 'somePathToMediaFilesWithFolder';
         $folder = uniqid();
@@ -67,7 +73,8 @@ class ThumbnailResourceTest extends TestCase
         $this->assertSame($mediaFilesPath . '/thumbs', $sut->getPathToThumbnailFiles($folder));
     }
 
-    public function testGetUrlToThumbnailFilesNoFolder(): void
+    #[Test]
+    public function getUrlToThumbnailFilesNoFolder(): void
     {
         $mediaFilesUrl = 'someUrlToMediaFiles';
 
@@ -79,7 +86,8 @@ class ThumbnailResourceTest extends TestCase
         $this->assertSame($mediaFilesUrl . '/thumbs', $sut->getUrlToThumbnailFiles());
     }
 
-    public function testGetUrlToThumbnailFilesWithFolder(): void
+    #[Test]
+    public function getUrlToThumbnailFilesWithFolder(): void
     {
         $mediaFilesUrlWithFolder = 'someUrlToMediaFiles';
         $folder = uniqid();
@@ -92,7 +100,8 @@ class ThumbnailResourceTest extends TestCase
         $this->assertSame($mediaFilesUrlWithFolder . '/thumbs', $sut->getUrlToThumbnailFiles($folder));
     }
 
-    public function testGetPathToThumbnailFile(): void
+    #[Test]
+    public function getPathToThumbnailFile(): void
     {
         $thumbFilesPath = 'somePathToThumbnailFile';
         $fileName = uniqid();
@@ -104,7 +113,8 @@ class ThumbnailResourceTest extends TestCase
         $this->assertSame($thumbFilesPath . '/' . $fileName, $sut->getPathToThumbnailFile($fileName, $folder));
     }
 
-    public function testGetPathToThumbnailFileWithoutFolder(): void
+    #[Test]
+    public function getPathToThumbnailFileWithoutFolder(): void
     {
         $thumbFilesPath = 'somePathToThumbnailFile';
         $fileName = uniqid();
@@ -115,7 +125,8 @@ class ThumbnailResourceTest extends TestCase
         $this->assertSame($thumbFilesPath . '/' . $fileName, $sut->getPathToThumbnailFile($fileName));
     }
 
-    public function testGetUrlToThumbnailFile(): void
+    #[Test]
+    public function getUrlToThumbnailFile(): void
     {
         $mediaFilesUrlWithoutFolder = 'someUrlToThumbnailFiles';
         $fileName = uniqid();
@@ -130,7 +141,8 @@ class ThumbnailResourceTest extends TestCase
         );
     }
 
-    public function testGetUrlToThumbnailFileWithoutFolder(): void
+    #[Test]
+    public function getUrlToThumbnailFileWithoutFolder(): void
     {
         $mediaFilesUrlWithoutFolder = 'someUrlToThumbnailFiles';
         $thumbnailFileName = uniqid();

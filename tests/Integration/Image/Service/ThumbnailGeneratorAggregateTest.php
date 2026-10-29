@@ -5,19 +5,28 @@
  * See LICENSE file for license details.
  */
 
-namespace Image\Service;
+declare(strict_types=1);
+
+namespace OxidEsales\MediaLibrary\Tests\Integration\Image\Service;
 
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregate;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregateInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(ThumbnailGeneratorAggregate::class)]
 class ThumbnailGeneratorAggregateTest extends IntegrationTestCase
 {
-    public function testInitialization(): void
+    #[Test]
+    public function initialization(): void
     {
-        $sut = $this->get(ThumbnailGeneratorAggregateInterface::class);
+        $sut = $this->getSut();
         $this->assertInstanceOf(ThumbnailGeneratorAggregateInterface::class, $sut);
+    }
+
+    private function getSut(): ThumbnailGeneratorAggregateInterface
+    {
+        return $this->get(ThumbnailGeneratorAggregateInterface::class);
     }
 }

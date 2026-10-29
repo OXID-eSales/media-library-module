@@ -13,8 +13,10 @@ use org\bovigo\vfs\vfsStream;
 use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Service\NamingService;
+use OxidEsales\MediaLibrary\Service\NamingServiceInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(NamingService::class)]
@@ -35,7 +37,8 @@ class NamingServiceTest extends TestCase
     }
 
     #[DataProvider('sanitizeFilenameDataProvider')]
-    public function testSanitizeFilename($filename, $expectedResult): void
+    #[Test]
+    public function sanitizeFilename($filename, $expectedResult): void
     {
         $exampleTranslation = [
             'x' => 'y',
@@ -60,7 +63,8 @@ class NamingServiceTest extends TestCase
     }
 
     #[DataProvider('getUniqueFilenameDataProvider')]
-    public function testGetUniqueFilename(string $filename, string $expectation): void
+    #[Test]
+    public function getUniqueFilename(string $filename, string $expectation): void
     {
         $sut = $this->getSut();
         $this->assertSame($expectation, $sut->getUniqueFilename($filename));
@@ -119,7 +123,8 @@ class NamingServiceTest extends TestCase
         ];
     }
 
-    public function testGetUniqueMediaId(): void
+    #[Test]
+    public function getUniqueMediaId(): void
     {
         $sut = $this->getSut(
             shopAdapter: $shopAdapterStub = $this->createStub(ShopAdapterInterface::class)
@@ -134,7 +139,7 @@ class NamingServiceTest extends TestCase
     private function getSut(
         LanguageInterface $language = null,
         ShopAdapterInterface $shopAdapter = null,
-    ): NamingService {
+    ): NamingServiceInterface {
         return new NamingService(
             language: $language ?? $this->createStub(LanguageInterface::class),
             shopAdapter: $shopAdapter ?? $this->createStub(ShopAdapterInterface::class),

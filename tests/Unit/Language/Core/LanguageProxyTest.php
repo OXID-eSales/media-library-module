@@ -5,17 +5,22 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\MediaLibrary\Tests\Unit\Language\Core;
 
 use OxidEsales\Eshop\Core\Language as ShopLanguage;
+use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Language\Core\LanguageProxy;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(LanguageProxy::class)]
 class LanguageProxyTest extends TestCase
 {
-    public function testGetSeoReplaceChars(): void
+    #[Test]
+    public function getSeoReplaceChars(): void
     {
         $exampleTranslation = [
             'x' => 'y',
@@ -33,7 +38,8 @@ class LanguageProxyTest extends TestCase
         $this->assertSame($exampleTranslation, $sut->getSeoReplaceChars());
     }
 
-    public function testGetLanguageArray(): void
+    #[Test]
+    public function getLanguageArray(): void
     {
         $expected = [uniqid()];
         $shopLanguageMock = $this->createPartialMock(ShopLanguage::class, ['getLanguageArray']);
@@ -45,7 +51,8 @@ class LanguageProxyTest extends TestCase
         $this->assertSame($expected, $sut->getLanguageArray());
     }
 
-    public function testGetBaseLanguageWithString(): void
+    #[Test]
+    public function getBaseLanguageWithString(): void
     {
         $languageId = rand(0, 10);
         $shopLanguageMock = $this->createPartialMock(ShopLanguage::class, ['getBaseLanguage']);
@@ -57,7 +64,8 @@ class LanguageProxyTest extends TestCase
         $this->assertSame($languageId, $sut->getBaseLanguage());
     }
 
-    public function testGetBaseLanguageWithInt(): void
+    #[Test]
+    public function getBaseLanguageWithInt(): void
     {
         $shopLanguageMock = $this->createPartialMock(ShopLanguage::class, ['getBaseLanguage']);
         $shopLanguageMock->expects($this->once())
@@ -68,9 +76,9 @@ class LanguageProxyTest extends TestCase
         $this->assertSame($languageId, $sut->getBaseLanguage());
     }
 
-    public function getSut(
+    private function getSut(
         ShopLanguage $shopLanguage = null
-    ): LanguageProxy {
+    ): LanguageInterface {
         return new LanguageProxy(
             language: $shopLanguage ?? $this->createStub(ShopLanguage::class)
         );

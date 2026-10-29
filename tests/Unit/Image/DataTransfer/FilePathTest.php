@@ -5,7 +5,9 @@
  * See LICENSE file for license details.
  */
 
-namespace Image\DataTransfer;
+declare(strict_types=1);
+
+namespace OxidEsales\MediaLibrary\Tests\Unit\Image\DataTransfer;
 
 use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;

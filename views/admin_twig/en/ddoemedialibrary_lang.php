@@ -29,6 +29,7 @@ $aLang = array(
     'DD_OK'             => 'OK',
     'DD_CONFIRM_DIALOG' => 'Confirmation required!',
     'DD_CONFIRM'        => 'Confirm',
+    'DD_INFORMATION'    => 'Information',
 
     'DD_MEDIA_DIALOG'                 => 'Media gallery',
     'DD_MEDIA_LIST'                   => 'Media list',
@@ -53,7 +54,10 @@ $aLang = array(
     'DD_MEDIA_RENAME_FILE_FOLDER'     => 'Rename file/folder',
     'DD_MEDIA_RENAME_FILE_FOLDER_BTN' => 'Rename',
     'DD_MEDIA_DELETE_FILE_FOLDER_BTN' => 'Delete',
+
     'DD_MEDIA_BREADCRUMB_PATH'        => 'Path',
+    'DD_MEDIA_BREADCRUMB_ROOT'        => 'Root',
+
     'DD_MEDIA_LEVEL_UP'               => 'Level up',
     'DD_MEDIA_MOVE_FILE_ERR'          => 'Image can not be moved because it is in use!',
     'DD_MEDIA_RENAME_FILE_ERR'        => 'Image or folder can not be renamed because it is in use!',

@@ -13,27 +13,47 @@ use OxidEsales\MediaLibrary\Language\Controller\MediaLangJs;
 use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(MediaLangJs::class)]
 class MediaLangJsTest extends \PHPUnit\Framework\TestCase
 {
-    public function testInit(): void
+    #[Test]
+    public function initRespondsWithTranslationsAsJavaScript(): void
     {
         $exampleLanguageKeys = ['key' => 'value'];
         $languageMock = $this->createMock(LanguageInterface::class);
-        $languageMock->method('getLanguageStringsArray')->willReturn($exampleLanguageKeys);
+        $languageMock->method('getAdminLanguageStringsArray')->willReturn($exampleLanguageKeys);
 
-        $responseMock = $this->createMock(ResponseInterface::class);
-        $responseMock->expects($this->once())
+        $responseSpy = $this->createMock(ResponseInterface::class);
+        $responseSpy->expects($this->once())
             ->method('responseAsJavaScript')
             ->with($this->matchesRegularExpression('/i18n\s?=\s?' . json_encode($exampleLanguageKeys) . ';/'));
 
-        $sut = $this->createPartialMock(MediaLangJs::class, ['getService']);
-        $sut->method('getService')->willReturnMap([
-            [LanguageInterface::class, $languageMock],
-            [ResponseInterface::class, $responseMock]
-        ]);
+        $sut = $this->getSut(
+            language: $languageMock,
+            response: $responseSpy,
+        );
 
         $sut->init();
+    }
+
+    private function getSut(
+        ?LanguageInterface $language = null,
+        ?ResponseInterface $response = null,
+    ): MediaLangJs {
+        $language ??= $this->createStub(LanguageInterface::class);
+        $response ??= $this->createStub(ResponseInterface::class);
+
+        $sut = $this->createPartialMock(
+            originalClassName: MediaLangJs::class,
+            methods: ['getService'],
+        );
+        $sut->method('getService')->willReturnMap([
+            [LanguageInterface::class, $language],
+            [ResponseInterface::class, $response],
+        ]);
+
+        return $sut;
     }
 }

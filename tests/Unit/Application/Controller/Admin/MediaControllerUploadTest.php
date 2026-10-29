@@ -20,12 +20,14 @@ use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(MediaController::class)]
 class MediaControllerUploadTest extends TestCase
 {
-    public function testUploadServiceTriggeredAndResponseBuiltCorrectly(): void
+    #[Test]
+    public function uploadServiceTriggeredAndResponseBuiltCorrectly(): void
     {
         $sut = $this->getSut(
             response: $responseSpy = $this->createMock(ResponseInterface::class),
@@ -76,7 +78,8 @@ class MediaControllerUploadTest extends TestCase
         $sut->upload();
     }
 
-    public function testValidationExceptionTriggersErrorResponseDuringUpload(): void
+    #[Test]
+    public function validationExceptionTriggersErrorResponseDuringUpload(): void
     {
         $sut = $this->getSut(
             response: $responseSpy = $this->createMock(ResponseInterface::class),

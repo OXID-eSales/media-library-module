@@ -10,16 +10,17 @@ declare(strict_types=1);
 namespace OxidEsales\MediaLibrary\Tests\Unit\Media\DataType;
 
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
-use OxidEsales\MediaLibrary\Media\DataType\FrontendMedia;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Media::class)]
 class MediaTest extends TestCase
 {
-    public function testGetters(): void
+    #[Test]
+    public function getters(): void
     {
         $imageSize = new ImageSize(100, 100);
 
@@ -44,7 +45,8 @@ class MediaTest extends TestCase
         $this->assertSame($altText, $sut->getMediaAltText());
     }
 
-    public function testOptionalDefaults(): void
+    #[Test]
+    public function optionalDefaults(): void
     {
         $sut = new Media(
             oxid: 'someOxid',
@@ -62,7 +64,8 @@ class MediaTest extends TestCase
     }
 
     #[DataProvider('isDirectoryDataProvider')]
-    public function testIsDirectory(string $fileType, bool $expectedResult): void
+    #[Test]
+    public function isDirectory(string $fileType, bool $expectedResult): void
     {
         $sut = new Media(
             oxid: 'someOxid',

@@ -9,35 +9,42 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Service;
 
-use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ChainInputTypeException;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChain;
-use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain;
+use OxidEsales\MediaLibrary\Validation\Service\DocumentNameValidatorChainInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(DocumentNameValidatorChain::class)]
 class FileNameValidatorChainTest extends TestCase
 {
-    public function testConstructorDoesNotAcceptWrongType(): void
+    #[Test]
+    public function constructorDoesNotAcceptWrongType(): void
     {
         $this->expectException(ChainInputTypeException::class);
-        new DocumentNameValidatorChain([new \stdClass()]);
+        $this->getSut(
+            fileValidators: [new \stdClass()],
+        );
     }
 
-    public function testValidateFileWorksIfNoExceptionsThrown(): void
+    #[Test]
+    public function validateDocumentNamePassesIfNoValidatorThrows(): void
     {
         $validatorStub = $this->createStub(FilePathValidatorInterface::class);
 
-        $sut = new DocumentNameValidatorChain([$validatorStub]);
+        $sut = $this->getSut(
+            fileValidators: [$validatorStub],
+        );
         $sut->validateDocumentName(uniqid());
 
         $this->addToAssertionCount(1);
     }
 
-    public function testExceptionOnValidatorException(): void
+    #[Test]
+    public function validateDocumentNameRethrowsValidatorException(): void
     {
         $fileName = uniqid();
 
@@ -46,7 +53,19 @@ class FileNameValidatorChainTest extends TestCase
 
         $this->expectException(ValidationFailedException::class);
 
-        $sut = new DocumentNameValidatorChain([$validatorMock]);
+        $sut = $this->getSut(
+            fileValidators: [$validatorMock],
+        );
         $sut->validateDocumentName($fileName);
+    }
+
+    private function getSut(
+        ?iterable $fileValidators = null,
+    ): DocumentNameValidatorChainInterface {
+        $fileValidators ??= [];
+
+        return new DocumentNameValidatorChain(
+            fileValidators: $fileValidators,
+        );
     }
 }

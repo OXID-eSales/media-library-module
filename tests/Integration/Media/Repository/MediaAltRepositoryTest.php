@@ -13,6 +13,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
 use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
 use OxidEsales\MediaLibrary\Media\DataType\MediaAltTextInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaAltRepository;
+use OxidEsales\MediaLibrary\Media\Repository\MediaAltRepositoryInterface;
 use PHPUnit\Framework\Attributes\Test;
 
 class MediaAltRepositoryTest extends RepositoryIntegrationTestCase
@@ -229,7 +230,7 @@ class MediaAltRepositoryTest extends RepositoryIntegrationTestCase
 
     private function getSut(
         ?QueryBuilderFactoryInterface $queryBuilderFactory = null
-    ): MediaAltRepository {
+    ): MediaAltRepositoryInterface {
         return new MediaAltRepository(
             $queryBuilderFactory ?? ContainerFacade::get(QueryBuilderFactoryInterface::class)
         );

@@ -5,6 +5,8 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\MediaLibrary\Application\Controller\Admin;
 
 use OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController;
@@ -29,6 +31,8 @@ use OxidEsales\MediaLibrary\Language\Core\LanguageInterface;
 
 /**
  * Class MediaController
+ *
+ * @todo-medium Rework to api routes with DI
  */
 class MediaController extends AdminDetailsController
 {
@@ -71,6 +75,9 @@ class MediaController extends AdminDetailsController
         $this->addTplParam('sThumbsUrl', $thumbnailResource->getUrlToThumbnailFiles($folderName));
         $this->addTplParam('sFolderId', $folderId);
         $this->addTplParam('sFoldername', $folderName);
+
+        $breadcrumbService = $this->getService(BreadcrumbServiceInterface::class);
+        $this->addTplParam('breadcrumbs', $breadcrumbService->getBreadcrumbs($folderId));
 
         $this->addTplParam('request', $uiRequest);
         $this->addTplParam('sTab', $uiRequest->getTabName());
@@ -256,11 +263,5 @@ class MediaController extends AdminDetailsController
 
         $responseService = $this->getService(ResponseInterface::class);
         $responseService->responseAsJson(['files' => $files, 'more' => $isThereMoreToLoad]);
-    }
-
-    public function getBreadcrumb(): array
-    {
-        $breadcrumbService = $this->getService(BreadcrumbServiceInterface::class);
-        return $breadcrumbService->getBreadcrumbsByRequest();
     }
 }

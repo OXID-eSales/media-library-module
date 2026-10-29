@@ -16,7 +16,9 @@ use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 /**
  * @todo: constructor can be reused with UploadedFileValidatorChain
  */
-class DocumentNameValidatorChain implements DocumentNameValidatorChainInterface
+class DocumentNameValidatorChain implements
+    DirectoryNameValidatorChainInterface,
+    FileNameValidatorChainInterface
 {
     /** @var iterable<FilePathValidatorInterface> */
     private iterable $fileValidators;

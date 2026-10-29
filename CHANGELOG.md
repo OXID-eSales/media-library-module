@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [7.0.0] - unreleased
+
+### Added
+- `GET /api/oeml-admin-translations` shop API route, returning the admin translations of the current session template language as JSON (`LanguageController::getTranslations()`)
+- The module JS is moved to TypeScript with tsyringe dependency injection. Converted so far:
+  - `DialogInterface`, `InteractionInterface` (`confirm`, `prompt`, `alert`), `LanguageInterface` and `SettingsInterface` - split out of `helper.js` (`ddh`)
+  - `MediaRequestInterface` - all requests of the media dialog, replaces `fileManager.js`
+  - `AltTextManagerInterface` - replaces `altAttribute.js`
+  - `DragDropHandlerInterface` - replaces `dragDropHandler.js`
+  - `DataStoreInterface` - registered in the DI container, so all classes share one instance
+- JS unit tests (Vitest) and the npm scripts `typecheck`, `lint`, `test` and `test:coverage`
+
+### Changed
+- Drop usage of deprecated shop `Request` class from module Request service
+  - `RequestInterface::getStringRequestParameter()` returns the raw value now, not HTML escaped
+- Database migrations are not executed on module activation anymore. Run them manually after installing or updating the module as describe in the installation instructions.
+- `declare(strict_types=1)` is used in all module classes now, so wrong scalar types inside the module throw a `TypeError` instead of being silently converted; code calling the module is not affected
+- `MediaWrapperController` extends `AdminDetailsController` instead of `MediaController` now, as it did not use any of the media dialog functionality
+- Show loading icon instead of empty interface preload
+- `BreadcrumbServiceInterface::getBreadcrumbsByRequest()` replaced by `getBreadcrumbs(string $folderId)` - the folder id is passed by the caller instead of being read from the request; an empty folder id returns the root breadcrumb only
+- The "Root" breadcrumb in the media library is translated now
+- `Breadcrumb\DataType` namespace renamed to `Breadcrumb\DTO` - `Breadcrumb` and `BreadcrumbInterface` moved accordingly
+- `LanguageInterface::getLanguageStringsArray()` replaced by `getAdminLanguageStringsArray()` - it returns the admin translations of the current template language
+- The media library JS loads its translations from the `GET /api/oeml-admin-translations` route, `window.i18n` is only used as a fallback
+- The media dialog no longer sends the parameters the shop ignores: `file`, `folder` and `thumb` on `movefile`, `folderid` on `remove`
+
+### Deprecated
+- `MediaLangJs` controller (`ddoelangjs`) - use the `GET /api/oeml-admin-translations` route instead
+  - The route only returns the translations list, it does not set the `window.i18n` object as `MediaLangJs` did
+- The `ddh` JS export - it is kept as a wrapper around the new `Dialog`, `Interaction` and `Language` services for the Visual CMS and wysiwyg modules
+
+### Removed
+- `MediaController::getBreadcrumb()` - the breadcrumbs are passed to the media dialog template as the `breadcrumbs` template parameter now
+- Unused SVG validation leftovers, superseded by `Validation\Validator\ContentValidator\Svg` - the `Image\Sanitizer` directory and the `Validation\Validator\SvgContentValidator`
+- Registering file formats via the `oxid_esales.media_library.validation.file_format` service tag. The supported formats are defined in `FileFormatRegistry` itself now; to add or change formats, decorate `FileFormatRegistryInterface`
+- `LanguageInterface::getLanguageStringsArray()` - use `getAdminLanguageStringsArray()` instead
+
+### Fixed
+- `DocumentNameValidatorChain` now implements `DirectoryNameValidatorChainInterface` and `FileNameValidatorChainInterface`, matching the service ids it is registered under
+
 ## [6.0.0] - unreleased
 
 ### Added
@@ -217,6 +257,7 @@ Module extracted from wysiwyg module, and used by it now
 - Thumbnails are generated on demand and the type of thumbnail file is matching the original image type
 - Alternative image directory setting renamed to fit its functionality: Alternative image URL
 
+[7.0.0]: https://github.com/OXID-eSales/media-library-module/compare/b-7.6.x..b-7.7.x
 [6.0.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.2.0..b-7.6.x
 [5.2.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.1.0..b-7.5.x
 [5.1.0]: https://github.com/OXID-eSales/media-library-module/compare/v5.0.0..v5.1.0

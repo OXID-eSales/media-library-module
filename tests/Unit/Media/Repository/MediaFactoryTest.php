@@ -11,13 +11,16 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Media\Repository;
 
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaFactory;
+use OxidEsales\MediaLibrary\Media\Repository\MediaFactoryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(MediaFactory::class)]
 class MediaFactoryTest extends TestCase
 {
-    public function testFromDatabaseArray(): void
+    #[Test]
+    public function fromDatabaseArray(): void
     {
         $sut = $this->getSut();
         $fileNameValue = 'filenameValue';
@@ -52,9 +55,9 @@ class MediaFactoryTest extends TestCase
         $this->assertSame(200, $size->getHeight());
     }
 
-    public function getSut(
+    private function getSut(
         ThumbnailResourceInterface $thumbnailResource = null
-    ): MediaFactory {
+    ): MediaFactoryInterface {
         return new MediaFactory();
     }
 }

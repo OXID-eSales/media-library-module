@@ -12,15 +12,18 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Service;
 use org\bovigo\vfs\vfsStream;
 use OxidEsales\MediaLibrary\Exception\DirectoryCreationException;
 use OxidEsales\MediaLibrary\Service\FileSystemService;
+use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(FileSystemService::class)]
 class FileSystemServiceTest extends TestCase
 {
     #[DataProvider('ensureDirectorySuccessCasesDataProvider')]
-    public function testEnsureDirectorySuccessful(string $pathExample): void
+    #[Test]
+    public function ensureDirectorySuccessful(string $pathExample): void
     {
         $root = vfsStream::setup('root', 0777, [])->url();
         $path = $root . DIRECTORY_SEPARATOR . $pathExample;
@@ -36,7 +39,8 @@ class FileSystemServiceTest extends TestCase
         yield ['pathExample' => 'someDirectory/withSubDirectory'];
     }
 
-    public function testEnsureDirectoryError(): void
+    #[Test]
+    public function ensureDirectoryError(): void
     {
         $root = vfsStream::setup('root', 0444, [])->url();
         $path = $root . DIRECTORY_SEPARATOR . 'someDirectory';
@@ -47,7 +51,8 @@ class FileSystemServiceTest extends TestCase
         $sut->ensureDirectory($path);
     }
 
-    public function testGetImageSize(): void
+    #[Test]
+    public function getImageSize(): void
     {
         $sut = $this->getSut();
 
@@ -57,7 +62,8 @@ class FileSystemServiceTest extends TestCase
         $this->assertSame(853, $size->getHeight());
     }
 
-    public function testGetImageSizeOnNotImageGivesZeros(): void
+    #[Test]
+    public function getImageSizeOnNotImageGivesZeros(): void
     {
         $sut = $this->getSut();
 
@@ -67,7 +73,8 @@ class FileSystemServiceTest extends TestCase
         $this->assertSame(0, $size->getHeight());
     }
 
-    public function testGetImageSizeOnNotExistingFileGivesZeros(): void
+    #[Test]
+    public function getImageSizeOnNotExistingFileGivesZeros(): void
     {
         $sut = $this->getSut();
 
@@ -77,7 +84,8 @@ class FileSystemServiceTest extends TestCase
         $this->assertSame(0, $size->getHeight());
     }
 
-    public function testDeleteOneFile(): void
+    #[Test]
+    public function deleteOneFile(): void
     {
         $root = vfsStream::setup('root', 0777, [
             'file1.txt' => 'content1',
@@ -94,7 +102,8 @@ class FileSystemServiceTest extends TestCase
         $this->assertTrue($root->hasChild('file3.txt'));
     }
 
-    public function testDeleteDirectoryWithContent(): void
+    #[Test]
+    public function deleteDirectoryWithContent(): void
     {
         $directoryName = 'someDirectory';
 
@@ -118,7 +127,8 @@ class FileSystemServiceTest extends TestCase
         $this->assertFalse($root->hasChild($directoryName));
     }
 
-    public function testDeleteByGlob(): void
+    #[Test]
+    public function deleteByGlob(): void
     {
         $root = vfsStream::setup('root', 0777, [
             'file1.txt' => 'content1',
@@ -135,7 +145,8 @@ class FileSystemServiceTest extends TestCase
         $this->assertTrue($root->hasChild('file.txt'));
     }
 
-    public function testRenameFile(): void
+    #[Test]
+    public function renameFile(): void
     {
         $root = vfsStream::setup('root', 0777, [
             'file1.txt' => 'content1',
@@ -151,7 +162,8 @@ class FileSystemServiceTest extends TestCase
         $this->assertTrue($root->hasChild('file2.txt'));
     }
 
-    public function testRenameFolder(): void
+    #[Test]
+    public function renameFolder(): void
     {
         $root = vfsStream::setup('root', 0777, [
             'file1.txt' => 'content1',
@@ -169,7 +181,8 @@ class FileSystemServiceTest extends TestCase
         $this->assertTrue($root->hasChild('someOtherFolder/folderFile1.txt'));
     }
 
-    public function testMoveFileWithRename(): void
+    #[Test]
+    public function renameMovesFileToAnotherDirectory(): void
     {
         $root = vfsStream::setup('root', 0777, [
             'file1.txt' => 'content1',
@@ -187,7 +200,8 @@ class FileSystemServiceTest extends TestCase
         $this->assertTrue($root->hasChild('someFolder/movedFile1.txt'));
     }
 
-    public function testMoveFileToNotExistingDirectory(): void
+    #[Test]
+    public function renameMovesFileToNotExistingDirectory(): void
     {
         $root = vfsStream::setup('root', 0777, [
             'file1.txt' => 'content1',
@@ -203,7 +217,8 @@ class FileSystemServiceTest extends TestCase
         $this->assertTrue($root->hasChild('someFolder/movedFile1.txt'));
     }
 
-    public function testCopyFileWithCopy(): void
+    #[Test]
+    public function copyFile(): void
     {
         $root = vfsStream::setup('root', 0777, [
             'file1.txt' => 'content1',
@@ -221,7 +236,8 @@ class FileSystemServiceTest extends TestCase
         $this->assertTrue($root->hasChild('someFolder/copiedFile1.txt'));
     }
 
-    public function testCopyToNotExistingFolderCreatesFolder(): void
+    #[Test]
+    public function copyToNotExistingFolderCreatesFolder(): void
     {
         $root = vfsStream::setup('root', 0777, [
             'file1.txt' => 'content1',
@@ -235,7 +251,8 @@ class FileSystemServiceTest extends TestCase
         $this->assertTrue($root->hasChild('someNewFolder/copiedFile1.txt'));
     }
 
-    public function testGetFileSize(): void
+    #[Test]
+    public function getFileSize(): void
     {
         $root = vfsStream::setup('root', 0777, [
             'file1.txt' => 'content1',
@@ -250,7 +267,8 @@ class FileSystemServiceTest extends TestCase
         $this->assertSame(0, $sut->getFileSize('notExisting'));
     }
 
-    public function testGetMimeType(): void
+    #[Test]
+    public function getMimeType(): void
     {
         $root = vfsStream::setup('root', 0777, [
             'file1.txt' => 'content1',
@@ -265,7 +283,7 @@ class FileSystemServiceTest extends TestCase
         $this->assertSame('', $sut->getMimeType('notExisting'));
     }
 
-    public function getSut(): FileSystemService
+    private function getSut(): FileSystemServiceInterface
     {
         return new FileSystemService();
     }

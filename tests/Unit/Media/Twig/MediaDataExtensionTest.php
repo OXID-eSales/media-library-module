@@ -20,13 +20,14 @@ class MediaDataExtensionTest extends TestCase
     #[Test]
     public function twigFunctionsAreRegistered(): void
     {
-        $sut = new MediaDataExtension(
-            container: $containerMock = $this->createMock(ContainerInterface::class),
-        );
-
+        $containerMock = $this->createMock(ContainerInterface::class);
         $containerMock->method('get')
             ->with(MediaDataLogicInterface::class)
             ->willReturn($logicStub = $this->createStub(MediaDataLogicInterface::class));
+
+        $sut = $this->getSut(
+            container: $containerMock,
+        );
 
         $functions = $sut->getFunctions();
         $functionMap = [];
@@ -39,5 +40,15 @@ class MediaDataExtensionTest extends TestCase
 
         $this->assertArrayHasKey('oeMediaAlt', $functionMap);
         $this->assertSame([$logicStub, 'getMediaAltText'], $functionMap['oeMediaAlt']->getCallable());
+    }
+
+    private function getSut(
+        ?ContainerInterface $container = null,
+    ): MediaDataExtension {
+        $container ??= $this->createStub(ContainerInterface::class);
+
+        return new MediaDataExtension(
+            container: $container,
+        );
     }
 }

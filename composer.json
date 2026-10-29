@@ -19,12 +19,13 @@
   "prefer-stable": true,
   "prefer-dist": true,
   "require": {
-    "php": "^8.3",
+    "php": "^8.4",
     "symfony/filesystem": "*",
     "ext-gd": "*",
     "ext-fileinfo": "*",
     "ext-dom": "*",
-    "intervention/image": "^4.0"
+    "intervention/image": "^4.0",
+    "oxid-esales/session-authentication-component": "^1.0"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^4.0",

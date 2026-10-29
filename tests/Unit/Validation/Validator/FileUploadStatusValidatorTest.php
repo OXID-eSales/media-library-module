@@ -12,14 +12,17 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator;
 use org\bovigo\vfs\vfsStream;
 use OxidEsales\MediaLibrary\Media\DataType\FilePathInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
+use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\FileUploadStatusValidator;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(FileUploadStatusValidator::class)]
 class FileUploadStatusValidatorTest extends TestCase
 {
-    public function testValidationPassesIfFileExist(): void
+    #[Test]
+    public function validationPassesIfFileExist(): void
     {
         $root = vfsStream::setup('root', 0777, [
             'file1.txt' => 'content1',
@@ -29,13 +32,14 @@ class FileUploadStatusValidatorTest extends TestCase
             'getPath' => $root->url() . '/file1.txt',
         ]);
 
-        $sut = new FileUploadStatusValidator();
+        $sut = $this->getSut();
         $sut->validateFile($file);
 
         $this->addToAssertionCount(1);
     }
 
-    public function testValidationThrowsExceptionIfFileDoesNotExist(): void
+    #[Test]
+    public function validationThrowsExceptionIfFileDoesNotExist(): void
     {
         $file = $this->createConfiguredStub(FilePathInterface::class, [
             'getPath' => 'notExistingFilePath',
@@ -43,7 +47,12 @@ class FileUploadStatusValidatorTest extends TestCase
 
         $this->expectException(ValidationFailedException::class);
 
-        $sut = new FileUploadStatusValidator();
+        $sut = $this->getSut();
         $sut->validateFile($file);
+    }
+
+    private function getSut(): FilePathValidatorInterface
+    {
+        return new FileUploadStatusValidator();
     }
 }

@@ -5,6 +5,8 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\MediaLibrary\Tests\Unit\Image\Service;
 
 use org\bovigo\vfs\vfsStream;
@@ -12,17 +14,20 @@ use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailGeneratorAggregateInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailResourceInterface;
 use OxidEsales\MediaLibrary\Image\Service\ThumbnailService;
+use OxidEsales\MediaLibrary\Image\Service\ThumbnailServiceInterface;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Service\MediaResourceInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ThumbnailService::class)]
 class ThumbnailServiceTest extends TestCase
 {
-    public function testDeleteMediaThumbnailsTriggersFilesystemDeleteByGlob(): void
+    #[Test]
+    public function deleteMediaThumbnailsTriggersFilesystemDeleteByGlob(): void
     {
         $sut = $this->getSut(
             thumbnailResource: $thumbnailResourceStub = $this->createStub(ThumbnailResourceInterface::class),
@@ -49,7 +54,8 @@ class ThumbnailServiceTest extends TestCase
         $sut->deleteMediaThumbnails($mediaStub);
     }
 
-    public function testGetThumbnailUrlTriggerDefaultThumbnailCreation(): void
+    #[Test]
+    public function getThumbnailUrlTriggersDefaultThumbnailCreation(): void
     {
         $vfsRootPath = vfsStream::setup('root', 0777, [])->url();
 
@@ -103,12 +109,12 @@ class ThumbnailServiceTest extends TestCase
         $this->assertSame($expectedUrl, $sut->ensureAndGetThumbnailUrl($folderName, $fileName));
     }
 
-    public function getSut(
+    private function getSut(
         ThumbnailResourceInterface $thumbnailResource = null,
         FileSystemServiceInterface $fileSystemService = null,
         ThumbnailGeneratorAggregateInterface $tgAgt = null,
         MediaResourceInterface $imageResource = null,
-    ): ThumbnailService {
+    ): ThumbnailServiceInterface {
         return new ThumbnailService(
             thumbnailResource: $thumbnailResource ?? $this->createStub(ThumbnailResourceInterface::class),
             fileSystemService: $fileSystemService ?? $this->createStub(FileSystemServiceInterface::class),

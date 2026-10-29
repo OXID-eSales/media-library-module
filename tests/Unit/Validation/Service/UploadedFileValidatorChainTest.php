@@ -13,31 +13,40 @@ use OxidEsales\MediaLibrary\Media\DataType\UploadedFileInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ChainInputTypeException;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChain;
+use OxidEsales\MediaLibrary\Validation\Service\UploadedFileValidatorChainInterface;
 use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(UploadedFileValidatorChain::class)]
 class UploadedFileValidatorChainTest extends TestCase
 {
-    public function testConstructorDoesNotAcceptWrongType(): void
+    #[Test]
+    public function constructorDoesNotAcceptWrongType(): void
     {
         $this->expectException(ChainInputTypeException::class);
-        new UploadedFileValidatorChain([new \stdClass()]);
+        $this->getSut(
+            fileValidators: [new \stdClass()],
+        );
     }
 
-    public function testValidateFileWorksIfNoExceptionsThrown(): void
+    #[Test]
+    public function validateFilePassesIfNoValidatorThrows(): void
     {
         $fileStub = $this->createStub(UploadedFileInterface::class);
         $validatorStub = $this->createStub(FilePathValidatorInterface::class);
 
-        $sut = new UploadedFileValidatorChain([$validatorStub]);
+        $sut = $this->getSut(
+            fileValidators: [$validatorStub],
+        );
         $sut->validateFile($fileStub);
 
         $this->addToAssertionCount(1);
     }
 
-    public function testExceptionOnValidatorException(): void
+    #[Test]
+    public function validateFileRethrowsValidatorException(): void
     {
         $fileStub = $this->createStub(UploadedFileInterface::class);
 
@@ -46,7 +55,19 @@ class UploadedFileValidatorChainTest extends TestCase
 
         $this->expectException(ValidationFailedException::class);
 
-        $sut = new UploadedFileValidatorChain([$validatorStub]);
+        $sut = $this->getSut(
+            fileValidators: [$validatorStub],
+        );
         $sut->validateFile($fileStub);
+    }
+
+    private function getSut(
+        ?iterable $fileValidators = null,
+    ): UploadedFileValidatorChainInterface {
+        $fileValidators ??= [];
+
+        return new UploadedFileValidatorChain(
+            fileValidators: $fileValidators,
+        );
     }
 }

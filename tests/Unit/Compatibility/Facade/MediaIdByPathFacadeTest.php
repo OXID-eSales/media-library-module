@@ -5,6 +5,8 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\MediaLibrary\Tests\Unit\Compatibility\Facade;
 
 use OxidEsales\MediaLibrary\Compatibility\DTO\MediaFileInformationInterface;
@@ -73,7 +75,7 @@ class MediaIdByPathFacadeTest extends TestCase
         $sut->getMediaIdByPath(uniqid());
     }
 
-    public function getSut(
+    private function getSut(
         ?MediaFileInformationFactoryInterface $fileInformationFactory = null,
         ?PathMappingRepositoryInterface $pathMappingRepository = null,
     ): MediaIdByPathFacadeInterface {

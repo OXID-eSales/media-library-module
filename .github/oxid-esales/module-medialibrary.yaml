@@ -1,6 +1,7 @@
 install:
   cache:
     prepared_shop: false
+  add_services: 'node selenium-chrome-126'
   composer:
     root_url: ''
     transform: |
@@ -16,6 +17,7 @@ install:
   custom_script_container: |
     vendor/bin/oe-console oe:database:reset --db-host=mysql --db-port=3306 --db-name=example --db-user=root --db-password=root --force
     vendor/bin/oe-console oe:module:install ./
+    vendor/bin/oe-console oe:database:migrate
 
     vendor/bin/oe-console oe:module:activate ddoemedialibrary
     vendor/bin/oe-console oe:theme:activate apex
@@ -27,12 +29,25 @@ runscript: &runscript
         "report:tests-unit",
         "report:tests-integration",
         "no_report:tests-codeception",
+        "medialibrary-node:test",
+        "medialibrary-node:typecheck",
+        "medialibrary-node:lint",
       ]
   report:
     path: ''
   no_report:
     path: ''
     coverage_prefix: ''
+  medialibrary-node:
+    composer:
+      early: true # Should set true to skip "Run composer if there is no transform" step
+    path: ''
+    coverage_prefix: ''
+    container_name: 'node'
+    container_method: 'run'
+    script_runner: 'npm run'
+    custom_script: |
+      docker compose run node npm install
 
 runslim:
   <<: *runscript

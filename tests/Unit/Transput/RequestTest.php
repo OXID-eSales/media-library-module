@@ -9,29 +9,34 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Transput;
 
-use OxidEsales\Eshop\Core\Request as ShopRequest;
+use OxidEsales\EshopCommunity\Internal\Framework\Request\RequestInterface as ShopRequestInterface;
 use OxidEsales\MediaLibrary\Transput\Request;
+use OxidEsales\MediaLibrary\Transput\RequestInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Request::class)]
 class RequestTest extends TestCase
 {
     #[DataProvider('requestOnlyStringDataProvider')]
-    public function testGetStringRequestParameter(
+    #[Test]
+    public function getStringRequestParameter(
         mixed $requestValue,
         ?string $defaultValue,
         string $expectedValue
     ): void {
         $paramName = uniqid();
 
-        $requestMock = $this->createPartialMock(ShopRequest::class, ['getRequestEscapedParameter']);
-        $requestMock->method('getRequestEscapedParameter')->willReturnMap([
+        $requestMock = $this->createMock(ShopRequestInterface::class);
+        $requestMock->method('get')->willReturnMap([
             [$paramName, $defaultValue, $requestValue]
         ]);
 
-        $sut = new Request($requestMock);
+        $sut = $this->getSut(
+            request: $requestMock,
+        );
 
         if ($defaultValue) {
             $this->assertSame($expectedValue, $sut->getStringRequestParameter($paramName, $defaultValue));
@@ -54,16 +59,19 @@ class RequestTest extends TestCase
     }
 
     #[DataProvider('requestArrayDataProvider')]
-    public function testGetArrayRequestParameter(mixed $requestValue, array $expectedValue): void
+    #[Test]
+    public function getArrayRequestParameter(mixed $requestValue, array $expectedValue): void
     {
         $paramName = uniqid();
 
-        $requestMock = $this->createPartialMock(ShopRequest::class, ['getRequestParameter']);
-        $requestMock->method('getRequestParameter')->willReturnMap([
+        $requestMock = $this->createMock(ShopRequestInterface::class);
+        $requestMock->method('get')->willReturnMap([
             [$paramName, null, $requestValue]
         ]);
 
-        $sut = new Request($requestMock);
+        $sut = $this->getSut(
+            request: $requestMock,
+        );
 
         $this->assertSame($expectedValue, $sut->getArrayRequestParameter($paramName));
     }
@@ -80,16 +88,19 @@ class RequestTest extends TestCase
     }
 
     #[DataProvider('requestBoolDataProvider')]
-    public function testGetBoolRequestParameter($requestValue, $expectedValue): void
+    #[Test]
+    public function getBoolRequestParameter($requestValue, $expectedValue): void
     {
         $paramName = uniqid();
 
-        $requestMock = $this->createPartialMock(ShopRequest::class, ['getRequestParameter']);
-        $requestMock->method('getRequestParameter')->willReturnMap([
+        $requestMock = $this->createMock(ShopRequestInterface::class);
+        $requestMock->method('get')->willReturnMap([
             [$paramName, null, $requestValue]
         ]);
 
-        $sut = new Request($requestMock);
+        $sut = $this->getSut(
+            request: $requestMock,
+        );
         $this->assertSame($expectedValue, $sut->getBoolRequestParameter($paramName));
     }
 
@@ -106,16 +117,19 @@ class RequestTest extends TestCase
     }
 
     #[DataProvider('getIntDataProvider')]
-    public function testGetIntRequestParameter($requestValue, $expectedValue): void
+    #[Test]
+    public function getIntRequestParameter($requestValue, $expectedValue): void
     {
         $paramName = uniqid();
 
-        $requestMock = $this->createPartialMock(ShopRequest::class, ['getRequestParameter']);
-        $requestMock->method('getRequestParameter')->willReturnMap([
+        $requestMock = $this->createMock(ShopRequestInterface::class);
+        $requestMock->method('get')->willReturnMap([
             [$paramName, null, $requestValue]
         ]);
 
-        $sut = new Request($requestMock);
+        $sut = $this->getSut(
+            request: $requestMock,
+        );
         $this->assertSame($expectedValue, $sut->getIntRequestParameter($paramName));
     }
 
@@ -130,5 +144,15 @@ class RequestTest extends TestCase
             'string with 10 as start' => ['10something', 10],
             'string with 10 inside' => ['some10xx', 0]
         ];
+    }
+
+    private function getSut(
+        ?ShopRequestInterface $request = null,
+    ): RequestInterface {
+        $request ??= $this->createStub(ShopRequestInterface::class);
+
+        return new Request(
+            request: $request,
+        );
     }
 }

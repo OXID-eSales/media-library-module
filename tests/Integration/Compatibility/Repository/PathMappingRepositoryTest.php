@@ -13,6 +13,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
 use OxidEsales\MediaLibrary\Compatibility\DTO\MediaFileInformationInterface;
 use OxidEsales\MediaLibrary\Compatibility\Exception\MediaNotFoundByFileInformationException;
 use OxidEsales\MediaLibrary\Compatibility\Repository\PathMappingRepository;
+use OxidEsales\MediaLibrary\Compatibility\Repository\PathMappingRepositoryInterface;
 use OxidEsales\MediaLibrary\Media\DataType\Media;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
@@ -36,9 +37,7 @@ class PathMappingRepositoryTest extends IntegrationTestCase
             'getFolderName' => '',
         ]);
 
-        $sut = new PathMappingRepository(
-            queryBuilderFactory: $this->get(QueryBuilderFactoryInterface::class),
-        );
+        $sut = $this->getSut();
 
         $this->assertEquals($oxid, $sut->getMediaIdByInformation($mediaFileInformationStub));
     }
@@ -66,9 +65,7 @@ class PathMappingRepositoryTest extends IntegrationTestCase
             'getFolderName' => $folderName,
         ]);
 
-        $sut = new PathMappingRepository(
-            queryBuilderFactory: $this->get(QueryBuilderFactoryInterface::class),
-        );
+        $sut = $this->getSut();
 
         $this->assertEquals($oxid, $sut->getMediaIdByInformation($mediaFileInformationStub));
     }
@@ -81,11 +78,16 @@ class PathMappingRepositoryTest extends IntegrationTestCase
             'getFolderName' => uniqid(),
         ]);
 
-        $sut = new PathMappingRepository(
-            queryBuilderFactory: $this->get(QueryBuilderFactoryInterface::class),
-        );
+        $sut = $this->getSut();
 
         $this->expectException(MediaNotFoundByFileInformationException::class);
         $sut->getMediaIdByInformation($fileInformation);
+    }
+
+    private function getSut(): PathMappingRepositoryInterface
+    {
+        return new PathMappingRepository(
+            queryBuilderFactory: $this->get(QueryBuilderFactoryInterface::class),
+        );
     }
 }

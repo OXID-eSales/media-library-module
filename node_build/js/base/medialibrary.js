@@ -3,16 +3,18 @@
  * See LICENSE file for license details.
  */
 
+import 'reflect-metadata';
 import '../../scss/base.scss'
 import { Modal } from "bootstrap";
-import { ddh } from './helper.js';
-import { setMediaUrl, setMediaUrlStore } from './mediaService.js';
+import { ddh } from './Ddh.ts';
+import { setMediaUrl, setMediaUrlStore } from './MediaService.ts';
 
-import FileManager from './fileManager.js';
 import UIRenderer from './uiRenderer.js';
-import DragDropHandler from './dragDropHandler.js'
 import MediaContent from "./mediaContent.js";
-import DataStore from "./dataStore.js";
+import { DIContainer } from "./DIContainer.ts";
+import { DataStoreInterface } from "./dataStore/DataStoreInterface.ts";
+import { SettingsInterface } from "./settings/SettingsInterface.ts";
+import { LanguageInterface } from "./language/LanguageInterface.ts";
 
 
 class MediaLibraryClass {
@@ -20,22 +22,26 @@ class MediaLibraryClass {
 
     currentPath = '';
     currentFolderId = '';
-    altAttributeManager = null;
 
     constructor() {
-        this.store = new DataStore();
-        this.fm = new FileManager();
-        this.dd = new DragDropHandler(this.fm, this.store);
-        this.ui = new UIRenderer(this.fm, this.dd, this.store);
-        this.mediaContent = new MediaContent(this.fm, this.ui, this.dd, this.store);
+        this.ui = new UIRenderer();
+        this.mediaContent = new MediaContent(this.ui);
+    }
+
+    get store() {
+        return DIContainer.resolve(DataStoreInterface);
     }
 
     setActionLink(url) {
-        this.fm.setActionLink(url);
+        DIContainer.resolve(SettingsInterface).setActionLink(decodeURI(url));
     }
 
     setResourceLink(url) {
-        this.fm.setResourceLink(url);
+        DIContainer.resolve(SettingsInterface).setResourceLink(decodeURI(url));
+    }
+
+    setShopUrl(url) {
+        DIContainer.resolve(SettingsInterface).setShopUrl(url);
     }
 
     /**
@@ -57,7 +63,9 @@ class MediaLibraryClass {
      * @param {boolean} [options.multiple=false] - Allow selecting multiple items.
      * @param {Function} callback - Function called when an item (or items) is selected.
      */
-    open(options = {}, callback) {
+    async open(options = {}, callback) {
+        await DIContainer.resolve(LanguageInterface).load();
+
         if (typeof options === 'function') {
             callback = options;
             options = {};
@@ -93,7 +101,6 @@ class MediaLibraryClass {
         });
 
         this.store.set(dialog, 'multiple', multiple);
-        this.store.set(dialog, 'filter', filter);
         this.mediaContent.loadMediaContent(dialog);
     }
 
@@ -116,7 +123,9 @@ class MediaLibraryClass {
      * @param {boolean} [options.multiple=false] - Allow selecting multiple media items.
      * @param {Function} [callback] - Function called when media is applied.
      */
-    init(options = {}, callback) {
+    async init(options = {}, callback) {
+        await DIContainer.resolve(LanguageInterface).load();
+
         if (typeof options === 'function') {
             callback = options;
             options = {};
@@ -127,7 +136,6 @@ class MediaLibraryClass {
         const dialog = document.querySelector('.dd-media-wrapper');
 
         this.store.set(dialog, 'multiple', multiple);
-        this.store.set(dialog, 'filter', filter);
 
         // Communicate with Overlay
         if (top.basefrm && top.basefrm.OverlayInstance) {
@@ -190,7 +198,7 @@ class MediaLibraryClass {
         const items = dialogEl.querySelectorAll('.dd-media-item.active');
         const mediaEl = dialogEl.querySelector('.dd-media');
         const folderName = mediaEl?.dataset.foldername || '';
-        const resourceLink = this.fm.resourceLink;
+        const resourceLink = DIContainer.resolve(SettingsInterface).getResourceLink();
 
         if (!items.length) return [];
 
@@ -241,4 +249,4 @@ class MediaLibraryClass {
 export const MediaLibrary = new MediaLibraryClass();
 window.MediaLibrary = MediaLibrary;
 export { ddh };
-export { getMediaUrl, setMediaUrl, setMediaUrlStore, preloadMediaUrls } from './mediaService.js';
+export { getMediaUrl, setMediaUrl, setMediaUrlStore, preloadMediaUrls } from './MediaService.ts';

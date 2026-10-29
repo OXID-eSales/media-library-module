@@ -17,12 +17,14 @@ use OxidEsales\MediaLibrary\Transput\ResponseInterface;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Service\DirectoryNameValidatorChainInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(MediaController::class)]
 class MediaControllerAddFolderTest extends TestCase
 {
-    public function testAddFolderSuccess(): void
+    #[Test]
+    public function addFolderSuccess(): void
     {
         $folderName = uniqid();
 
@@ -58,7 +60,8 @@ class MediaControllerAddFolderTest extends TestCase
         $sut->addFolder();
     }
 
-    public function testValidationExceptionTriggersErrorResponseDuringAddFolder(): void
+    #[Test]
+    public function validationExceptionTriggersErrorResponseDuringAddFolder(): void
     {
         $validationMock = $this->createMock(DirectoryNameValidatorChainInterface::class);
         $sut = $this->getSut(

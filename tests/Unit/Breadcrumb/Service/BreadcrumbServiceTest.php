@@ -9,79 +9,91 @@ declare(strict_types=1);
 
 namespace OxidEsales\MediaLibrary\Tests\Unit\Breadcrumb\Service;
 
-use OxidEsales\MediaLibrary\Breadcrumb\DataType\BreadcrumbInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Adapter\ShopAdapterInterface;
+use OxidEsales\MediaLibrary\Breadcrumb\DTO\BreadcrumbInterface;
 use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbService;
+use OxidEsales\MediaLibrary\Breadcrumb\Service\BreadcrumbServiceInterface;
 use OxidEsales\MediaLibrary\Media\DataType\MediaInterface;
 use OxidEsales\MediaLibrary\Media\Repository\MediaRepositoryInterface;
-use OxidEsales\MediaLibrary\Transput\RequestData\UIRequestInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(BreadcrumbService::class)]
 class BreadcrumbServiceTest extends TestCase
 {
-    public function testNoFolderId(): void
+    #[Test]
+    public function emptyFolderIdReturnsActiveRootOnly(): void
     {
-        $sut = $this->getSutWithoutFolderIdInRequest();
+        $rootTranslation = uniqid('rootTranslation');
+        $shopAdapterMock = $this->createStub(ShopAdapterInterface::class);
+        $shopAdapterMock->method('translateString')
+            ->willReturnMap([
+                ['DD_MEDIA_BREADCRUMB_ROOT', $rootTranslation],
+            ]);
 
-        $result = $sut->getBreadcrumbsByRequest();
+        $sut = $this->getSut(
+            shopAdapter: $shopAdapterMock,
+        );
+
+        $result = $sut->getBreadcrumbs(folderId: '');
 
         $this->assertSame(1, count($result));
 
         /** @var BreadcrumbInterface $breadcrumb */
         $breadcrumb = array_shift($result);
-        $this->assertSame('Root', $breadcrumb->getName());
+        $this->assertSame($rootTranslation, $breadcrumb->getName());
         $this->assertTrue($breadcrumb->isActive());
     }
 
-    public function testWithFolderId(): void
+    #[Test]
+    public function folderIdReturnsRootAndActiveFolder(): void
     {
-        $sut = $this->getSutWithFolderIdInRequestPreconfigured();
+        $folderMediaStub = $this->createConfiguredStub(MediaInterface::class, [
+            'getFileName' => $folderName = uniqid('folderName'),
+        ]);
 
-        $result = $sut->getBreadcrumbsByRequest();
+        $folderId = uniqid('folderId');
+        $mediaRepositoryMock = $this->createMock(MediaRepositoryInterface::class);
+        $mediaRepositoryMock->method('getMediaById')
+            ->with($folderId)
+            ->willReturn($folderMediaStub);
+
+        $rootTranslation = uniqid('rootTranslation');
+        $shopAdapterMock = $this->createStub(ShopAdapterInterface::class);
+        $shopAdapterMock->method('translateString')
+            ->willReturnMap([
+                ['DD_MEDIA_BREADCRUMB_ROOT', $rootTranslation],
+            ]);
+
+        $sut = $this->getSut(
+            mediaRepository: $mediaRepositoryMock,
+            shopAdapter: $shopAdapterMock,
+        );
+
+        $result = $sut->getBreadcrumbs($folderId);
 
         $this->assertSame(2, count($result));
 
-        /** @var BreadcrumbInterface $breadcrumb */
         $breadcrumb = array_shift($result);
-        $this->assertSame('Root', $breadcrumb->getName());
+        $this->assertSame($rootTranslation, $breadcrumb->getName());
         $this->assertFalse($breadcrumb->isActive());
 
-        /** @var BreadcrumbInterface $breadcrumb */
         $breadcrumb = array_shift($result);
-        $this->assertSame('someMediaName', $breadcrumb->getName());
+        $this->assertSame($folderName, $breadcrumb->getName());
         $this->assertTrue($breadcrumb->isActive());
     }
 
-    private function getSutWithFolderIdInRequestPreconfigured(): BreadcrumbService
-    {
-        $requestStub = $this->createMock(UIRequestInterface::class);
-        $requestStub->method('getFolderId')->willReturn('someFolderId');
+    private function getSut(
+        ?MediaRepositoryInterface $mediaRepository = null,
+        ?ShopAdapterInterface $shopAdapter = null,
+    ): BreadcrumbServiceInterface {
+        $mediaRepository ??= $this->createStub(MediaRepositoryInterface::class);
+        $shopAdapter ??= $this->createStub(ShopAdapterInterface::class);
 
-        $exampleMedia = $this->createMock(MediaInterface::class);
-        $exampleMedia->method('getFileName')->willReturn('someMediaName');
-
-        $mediaRepository = $this->createMock(MediaRepositoryInterface::class);
-        $mediaRepository->method('getMediaById')->with('someFolderId')->willReturn($exampleMedia);
-
-        $sut = new BreadcrumbService(
-            request: $requestStub,
-            mediaRepository: $mediaRepository
+        return new BreadcrumbService(
+            mediaRepository: $mediaRepository,
+            shopAdapter: $shopAdapter,
         );
-
-        return $sut;
-    }
-
-    private function getSutWithoutFolderIdInRequest(): BreadcrumbService
-    {
-        $requestStub = $this->createStub(UIRequestInterface::class);
-        $mediaRepository = $this->createStub(MediaRepositoryInterface::class);
-
-        $sut = new BreadcrumbService(
-            request: $requestStub,
-            mediaRepository: $mediaRepository
-        );
-
-        return $sut;
     }
 }

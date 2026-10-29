@@ -6,7 +6,6 @@ services:
     public: false
     autowire: true
     bind:
-      OxidEsales\Eshop\Core\Request: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getRequest()'
       OxidEsales\Eshop\Core\Utils: '@=service("OxidEsales\\MediaLibrary\\Core\\Registry").getUtils()'
 
   OxidEsales\MediaLibrary\Transput\RequestInterface:

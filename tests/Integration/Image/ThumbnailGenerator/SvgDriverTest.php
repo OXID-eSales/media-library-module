@@ -5,21 +5,24 @@
  * See LICENSE file for license details.
  */
 
-namespace Image\ThumbnailGenerator;
+declare(strict_types=1);
 
-use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSize;
+namespace OxidEsales\MediaLibrary\Tests\Integration\Image\ThumbnailGenerator;
+
 use OxidEsales\MediaLibrary\Image\DataTransfer\ImageSizeInterface;
-use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\DefaultDriver;
 use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\SvgDriver;
+use OxidEsales\MediaLibrary\Image\ThumbnailGenerator\ThumbnailGeneratorInterface;
 use OxidEsales\MediaLibrary\Service\FileSystemServiceInterface;
 use OxidEsales\MediaLibrary\Tests\Integration\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 #[CoversClass(SvgDriver::class)]
 class SvgDriverTest extends IntegrationTestCase
 {
-    public function testGenerateThumbnail(): void
+    #[Test]
+    public function generateThumbnail(): void
     {
         $sut = $this->getSut(
             fileSystemService: $fileSystemSpy = $this->createMock(FileSystemServiceInterface::class)
@@ -38,7 +41,8 @@ class SvgDriverTest extends IntegrationTestCase
         );
     }
 
-    public function testIsOriginSupported(): void
+    #[Test]
+    public function isOriginSupported(): void
     {
         $sut = $this->getSut();
         $this->assertTrue($sut->isOriginSupported('xxx/someSvgPath.svg'));
@@ -49,7 +53,8 @@ class SvgDriverTest extends IntegrationTestCase
     }
 
     #[DataProvider('getThumbnailFileNameDataProvider')]
-    public function testGetThumbnailFileName(
+    #[Test]
+    public function getThumbnailFileName(
         string $originalFileName,
         string $expectedName
     ): void {
@@ -75,7 +80,8 @@ class SvgDriverTest extends IntegrationTestCase
         ];
     }
 
-    public function testGetThumbnailsGlob(): void
+    #[Test]
+    public function getThumbnailsGlob(): void
     {
         $sut = $this->getSut();
 
@@ -83,9 +89,9 @@ class SvgDriverTest extends IntegrationTestCase
         $this->assertSame('5a1040df467f3ceae2623aa5918f542a.svg', $sut->getThumbnailsGlob($originalFilename));
     }
 
-    public function getSut(
+    private function getSut(
         FileSystemServiceInterface $fileSystemService = null
-    ): SvgDriver {
+    ): ThumbnailGeneratorInterface {
         return new SvgDriver(
             fileSystemService: $fileSystemService ?? $this->createStub(FileSystemServiceInterface::class)
         );

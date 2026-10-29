@@ -12,6 +12,7 @@ namespace OxidEsales\MediaLibrary\Tests\Unit\Validation\Validator;
 use OxidEsales\MediaLibrary\Media\DataType\FilePath;
 use OxidEsales\MediaLibrary\Validation\Exception\ValidationFailedException;
 use OxidEsales\MediaLibrary\Validation\Validator\FileNameValidator;
+use OxidEsales\MediaLibrary\Validation\Validator\FilePathValidatorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -81,7 +82,7 @@ class FileNameValidatorTest extends TestCase
         $sut->validateFile($filePathStub);
     }
 
-    protected function getSut(): FileNameValidator
+    private function getSut(): FilePathValidatorInterface
     {
         return new FileNameValidator();
     }

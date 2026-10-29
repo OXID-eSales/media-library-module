@@ -18,6 +18,9 @@ class DefaultDriver implements ThumbnailGeneratorInterface
         return true;
     }
 
+    /**
+     * @todo-medium check what is this "default" about
+     */
     public function generateThumbnail(
         string $sourcePath,
         string $thumbnailPath,
