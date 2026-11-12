@@ -33,7 +33,7 @@
     "phpunit/phpunit": "^11.2",
     "oxid-esales/oxideshop-ce": "dev-b-7.7.x",
     "mikey179/vfsstream": "~1.6.8",
-    "phpmd/phpmd": "^2.15",
+    "phpmd/phpmd": "^3.0",
     "codeception/codeception": "^5.0",
     "codeception/module-asserts": "^3.0",
     "codeception/module-db": "^3.0",
